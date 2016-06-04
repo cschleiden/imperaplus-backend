@@ -1,0 +1,193 @@
+﻿<?
+
+require_once( "Map.php" );
+
+class WorldDeluxe extends CMap
+{
+	public function WorldDeluxe()
+	{
+		$laender = 42;
+	 	
+	 	$Image = "worlddeluxe.jpg";
+	 
+		// countries	
+		$L[1] = "Alaska";
+		$L[2] = "Nordwest-Territorium";
+		$L[3] = "Groenland";
+		$L[4] = "Quebec";
+		$L[5] = "Ontario";
+		$L[6] = "Alberta";
+		$L[7] = "Weststaaten";
+		$L[8] = "Oststaaten";
+		$L[9] = "Mittel-Amerika";
+		$L[10] = "Venezuela";
+		$L[11] = "Brasilien";
+		$L[12] = "Peru";
+		$L[13] = "Argentinien";
+		$L[14] = "Nordwest-Afrika";
+		$L[15] = "Aegypten";
+		$L[16] = "Ost-Afrika";
+		$L[17] = "Kongo";
+		$L[18] = "Sued-Afrika";
+		$L[19] = "Madagaskar";
+		$L[20] = "West-Europa";
+		$L[21] = "Sued-Europa";
+		$L[22] = "Mittel-Europa";
+		$L[23] = "Gross-Britannien";
+		$L[24] = "Island";
+		$L[25] = "Skandinavien";
+		$L[26] = "Ukraine";
+		$L[27] = "Mittlerer-Osten";
+		$L[28] = "Afghanistan";
+		$L[29] = "Ural";
+		$L[30] = "Sibirien";
+		$L[31] = "Jakutien";
+		$L[32] = "Kamtschatka";
+		$L[33] = "Irkutsk";
+		$L[34] = "Mongolei";
+		$L[35] = "Japan";
+		$L[36] = "China";
+		$L[37] = "Indien";
+		$L[38] = "Siam";
+		$L[39] = "Indonesien";
+		$L[40] = "Neu-Guinea";
+		$L[41] = "Ost-Australien";
+		$L[42] = "West-Australien";
+		
+		foreach ( $L as $key => $value )
+		{
+			$L2[$value] = $key;
+		}
+		
+		//-----------------------------------------
+		
+		// connections
+		
+		$A[15] = array( 14, 21, 27, 16 );
+		$A[30] = array(31,33,34,36,29);
+		$A[8] = array(4,5,7,9);
+		$A[40] = array(41,42,39);
+		$A[23] = array(24,25,22,20);
+		$A[31] = array(32,33,30);
+		$A[16] = array(19,18,17,14,15);
+		$A[35] = array(34,32);
+		$A[7] = array(6,5,8,9);
+		$A[22] = array(25,26,21,20,23);
+		$A[34] = array(35,32,33,30,36);
+		$A[32] = array(31,33,34,35,1);
+		$A[41] = array(42,40);
+		$A[9] = array(7,8,10);
+		$A[33] = array(32,31,30,34);
+		$A[21] = array(20,22,26,27,15,14);
+		$A[6] = array(1,2,5,7);
+		$A[1] = array(6,2,32);
+		$A[29] = array(26,28,36,30);
+		$A[14] = array(11,17,16,15,21,20);
+		$A[42] = array(41,40,39);
+		$A[24] = array(3,23,25);
+		$A[4] = array(3,5,8);
+		$A[36] = array(38,37,28,29,30,34);
+		$A[19] = array(18,16);
+		$A[26] = array(29,28,27,21,22,25);
+		$A[11] = array(10,12,14,13);
+		$A[18] = array(17,16,19);
+		$A[3] = array(24,4,5,2);
+		$A[39] = array(40,42,38);
+		$A[12] = array(10,11,13);
+		$A[27] = array(37,28,26,21,15);
+		$A[17] = array(18,16,14);
+		$A[2] = array(1,6,5,3);
+		$A[13] = array(12,11);
+		$A[38] = array(39,37,36);
+		$A[28] = array(29,36,37,27,26);
+		$A[20] = array(23,22,21,14);
+		$A[37] = array(38,36,28,27);
+		$A[25] = array(24,23,22,26);
+		$A[10] = array(9,11,12);
+		$A[5] = array(2,6,7,8,4,3);
+		
+		//---------------------------------------
+		
+		// bonus
+		$k[0][0] = 6;
+		
+		$k[1][0] = 5;
+		$k[1][1] = "(landid = 1 OR landid = 2 OR landid = 3 OR landid = 4 OR landid = 5 OR landid = 6 OR landid = 7 OR landid = 8 OR landid = 9)";
+		
+		$k[2][0] = 2;
+		$k[2][1] = "(landid = 10 OR landid = 11 OR landid = 12 OR landid = 13)";
+		
+		$k[3][0] = 3;
+		$k[3][1] = "(landid = 14 OR landid = 15 OR landid = 16 OR landid = 17 OR landid = 18 OR landid = 19)";
+		
+		$k[4][0] = 5;
+		$k[4][1] = "(landid = 24 OR landid = 23 OR landid = 20 OR landid = 21 OR landid = 22 OR landid = 26 OR landid = 25)";
+		
+		$k[5][0] = 7;
+		$k[5][1] = "(landid = 27 OR landid = 28 OR landid = 29 OR landid = 30 OR landid = 31 OR landid = 32 OR landid = 33 OR landid = 34 OR landid = 36 OR landid = 37 OR landid = 38 OR landid = 35)";
+		
+		$k[6][0] = 2;
+		$k[6][1] = "(landid = 39 OR landid = 40 OR landid = 41 OR landid = 42)";		
+		
+		//---------------------------------------
+		
+		// graphical represensation
+		$P[1][0] = 81; $P[1][1] = 124;
+		$P[2][0] = 159; $P[2][1] = 124;
+		$P[3][0] = 393; $P[3][1] = 78;
+		$P[4][0] = 315; $P[4][1] = 193;
+		$P[5][0] = 237; $P[5][1] = 192;
+		$P[6][0] = 159; $P[6][1] = 170;
+		$P[7][0] = 159; $P[7][1] = 239;
+		$P[8][0] = 237; $P[8][1] = 262;
+		$P[9][0] = 185; $P[9][1] = 308;
+		$P[10][0] = 237; $P[10][1] = 378;
+		$P[11][0] = 315; $P[11][1] = 423;
+		$P[12][0] = 263; $P[12][1] = 446;
+		$P[13][0] = 263; $P[13][1] = 538;
+		$P[14][0] = 445; $P[14][1] = 354;
+		$P[15][0] = 523; $P[15][1] = 331;
+		$P[16][0] = 575; $P[16][1] = 423;
+		$P[17][0] = 523; $P[17][1] = 446;
+		$P[18][0] = 523; $P[18][1] = 538;
+		$P[19][0] = 601; $P[19][1] = 538;
+		$P[20][0] = 445; $P[20][1] = 262;
+		$P[21][0] = 497; $P[21][1] = 262;
+		$P[22][0] = 497; $P[22][1] = 216;
+		$P[23][0] = 419; $P[23][1] = 217;
+		$P[24][0] = 419; $P[24][1] = 147;
+		$P[25][0] = 497; $P[25][1] = 147;
+		$P[26][0] = 575; $P[26][1] = 193;
+		$P[27][0] = 601; $P[27][1] = 308;
+		$P[28][0] = 653; $P[28][1] = 239;
+		$P[29][0] = 679; $P[29][1] = 170;
+		$P[30][0] = 731; $P[30][1] = 124;
+		$P[31][0] = 809; $P[31][1] = 124;
+		$P[32][0] = 887; $P[32][1] = 124;
+		$P[33][0] = 783; $P[33][1] = 193;
+		$P[34][0] = 785; $P[34][1] = 240;
+		$P[35][0] = 887; $P[35][1] = 262;
+		$P[36][0] = 757; $P[36][1] = 285;
+		$P[37][0] = 705; $P[37][1] = 354;
+		$P[38][0] = 783; $P[38][1] = 376;
+		$P[39][0] = 835; $P[39][1] = 446;
+		$P[40][0] = 913; $P[40][1] = 469;
+		$P[41][0] = 913; $P[41][1] = 561;
+		$P[42][0] = 835; $P[42][1] = 561;
+
+		
+		//---------------------------------------
+		$this->L = $L;
+		$this->L2 = $L2;
+		$this->A = $A;
+		$this->k = $k;
+		$this->P = $P;
+		
+		$this->laender = $laender;
+		
+		$this->Image = $Image;
+	}
+}
+
+?>
+

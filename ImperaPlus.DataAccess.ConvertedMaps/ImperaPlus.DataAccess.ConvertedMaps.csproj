@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3C4E70AD-B549-4F8C-9929-0A64A4262E0E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ImperaPlus.DataAccess.ConvertedMaps</RootNamespace>
+    <AssemblyName>ImperaPlus.DataAccess.ConvertedMaps</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Maps.Abstractum.cs" />
+    <Compile Include="Maps.Afrika.cs" />
+    <Compile Include="Maps.AirOceanWorld.cs" />
+    <Compile Include="Maps.Asien.cs" />
+    <Compile Include="Maps.barcelona.cs" />
+    <Compile Include="Maps.Bayern.cs" />
+    <Compile Include="Maps.BerlinBrandenburg.cs" />
+    <Compile Include="Maps.BerlinCity.cs" />
+    <Compile Include="Maps.bmt.cs" />
+    <Compile Include="Maps.braveNewWorld.cs" />
+    <Compile Include="Maps.BRD.cs" />
+    <Compile Include="Maps.BT_3130.cs" />
+    <Compile Include="Maps.Central_America.cs" />
+    <Compile Include="Maps.China.cs" />
+    <Compile Include="Maps.ColdWar.cs" />
+    <Compile Include="Maps.Deutschland.cs" />
+    <Compile Include="Maps.dkr.cs" />
+    <Compile Include="Maps.erfurt.cs" />
+    <Compile Include="Maps.Essen.cs" />
+    <Compile Include="Maps.Europa.cs" />
+    <Compile Include="Maps.Europa_Neu.cs" />
+    <Compile Include="Maps.FanoPlane.cs" />
+    <Compile Include="Maps.Frankreich.cs" />
+    <Compile Include="Maps.FreistaatSachsen.cs" />
+    <Compile Include="Maps.Fussball.cs" />
+    <Compile Include="Maps.Galaxy_Far_Away.cs" />
+    <Compile Include="Maps.Graffiti.cs" />
+    <Compile Include="Maps.GreatBritain.cs" />
+    <Compile Include="Maps.griechenland.cs" />
+    <Compile Include="Maps.gta.cs" />
+    <Compile Include="Maps.Hamburg.cs" />
+    <Compile Include="Maps.Hessen.cs" />
+    <Compile Include="Maps.HoI1939.cs" />
+    <Compile Include="Maps.Imperaolympiade.cs" />
+    <Compile Include="Maps.Imperawins.cs" />
+    <Compile Include="Maps.Infractus.cs" />
+    <Compile Include="Maps.Inselreiche.cs" />
+    <Compile Include="Maps.Iopoly.cs" />
+    <Compile Include="Maps.irland.cs" />
+    <Compile Include="Maps.Italien.cs" />
+    <Compile Include="Maps.Japan.cs" />
+    <Compile Include="Maps.LotRisk.cs" />
+    <Compile Include="Maps.Maedin.cs" />
+    <Compile Include="Maps.Magdeburg.cs" />
+    <Compile Include="Maps.Minenkolonie.cs" />
+    <Compile Include="Maps.Mittelalter.cs" />
+    <Compile Include="Maps.Mittelerde.cs" />
+    <Compile Include="Maps.Muehldorf.cs" />
+    <Compile Include="Maps.NewYork.cs" />
+    <Compile Include="Maps.Niedersachsen.cs" />
+    <Compile Include="Maps.Nordstaat.cs" />
+    <Compile Include="Maps.NovaAtlantis.cs" />
+    <Compile Include="Maps.Oesterreich.cs" />
+    <Compile Include="Maps.oesterreich_ungarn.cs" />
+    <Compile Include="Maps.Ostsee.cs" />
+    <Compile Include="Maps.Phantasia.cs" />
+    <Compile Include="Maps.Pirateninseln.cs" />
+    <Compile Include="Maps.PirateWars.cs" />
+    <Compile Include="Maps.Polen.cs" />
+    <Compile Include="Maps.Psycube.cs" />
+    <Compile Include="Maps.Randland.cs" />
+    <Compile Include="Maps.RandSwelt.cs" />
+    <Compile Include="Maps.Rom.cs" />
+    <Compile Include="Maps.RomeTotalWar.cs" />
+    <Compile Include="Maps.Rumaenien.cs" />
+    <Compile Include="Maps.Scherbenwelten.cs" />
+    <Compile Include="Maps.Sezessionskrieg_1861.cs" />
+    <Compile Include="Maps.Shogun.cs" />
+    <Compile Include="Maps.SonnenSys.cs" />
+    <Compile Include="Maps.Stadt_Muenster.cs" />
+    <Compile Include="Maps.Sternbilder.cs" />
+    <Compile Include="Maps.Suedamerika.cs" />
+    <Compile Include="Maps.Suedostasien.cs" />
+    <Compile Include="Maps.ThirtyYearsWar.cs" />
+    <Compile Include="Maps.Thueringen.cs" />
+    <Compile Include="Maps.USA.cs" />
+    <Compile Include="Maps.Utopia.cs" />
+    <Compile Include="Maps.Venezia.cs" />
+    <Compile Include="Maps.Waterworld.cs" />
+    <Compile Include="Maps.Whitehouse.cs" />
+    <Compile Include="Maps.Wien.cs" />
+    <Compile Include="Maps.WorldDeluxe.cs" />
+    <Compile Include="Maps.Zuerich.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestMaps.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ImperaPlus.Domain\ImperaPlus.Domain.csproj">
+      <Project>{b6d49e7c-ff58-4814-993b-eae2b60d9618}</Project>
+      <Name>ImperaPlus.Domain</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,151 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using ImperaPlus.Domain.Events;
+using ImperaPlus.Domain.Games;
+using ImperaPlus.Domain.Services;
+using ImperaPlus.Domain.Tournaments;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Moq;
+
+namespace ImperaPlus.Domain.Tests.Tournaments
+{
+    [TestClass]
+    public class TournamentServiceTests
+    {
+        [TestMethod]
+        public void CheckOpenShouldStart()
+        {
+            // Arrange
+            var mockUnitOfWork = TestUtils.GetUnitOfWorkMock();
+            var tournamentRepository = new MockTournamentRepository();
+            mockUnitOfWork.SetupGet(x => x.Tournaments).Returns(tournamentRepository);
+            var unitOfWork = mockUnitOfWork.Object;
+            var gameServiceMock = new Mock<IGameService>();
+            var eventAggregatorMock = new Mock<IEventAggregator>();
+            var service = new TournamentService(unitOfWork, gameServiceMock.Object, eventAggregatorMock.Object);
+
+            var openTournament = new Tournament(
+                "Tournament", 
+                8, 
+                3, 
+                3, 
+                3, 
+                DateTime.UtcNow.AddDays(-1),
+                DateTime.UtcNow, 
+                new Domain.Games.GameOptions
+                {
+                    NumberOfPlayersPerTeam = 1
+                });
+            tournamentRepository.Add(openTournament);
+
+            for (int i = 0; i < 8; ++i)
+            {
+                openTournament.AddUser(TestUtils.CreateUser($"User{i}"));
+            }
+
+            // Act
+            var started = service.CheckOpenTournaments();
+
+            // Assert
+            Assert.IsTrue(started);
+            Assert.AreEqual(TournamentState.Groups, openTournament.State);
+            Assert.AreEqual(12, openTournament.Pairings.Count());
+        }        
+
+        [TestMethod]
+        public void CreateGames()
+        {
+            // Arrange
+            var mockUnitOfWork = TestUtils.GetUnitOfWorkMock();
+            var tournamentRepository = new MockTournamentRepository();
+            mockUnitOfWork.SetupGet(x => x.Tournaments).Returns(tournamentRepository);
+            var unitOfWork = mockUnitOfWork.Object;
+
+            var gameServiceMock = new Mock<IGameService>();
+            gameServiceMock.Setup(x => x.Create(It.IsAny<Domain.Enums.GameType>(), It.IsAny<User>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<GameOptions>())).Verifiable();
+
+            var eventAggregatorMock = new Mock<IEventAggregator>();
+            var service = new TournamentService(unitOfWork, gameServiceMock.Object, eventAggregatorMock.Object);
+
+            var tournament = new Tournament("T", 2, 0, 3, 3, DateTime.UtcNow, DateTime.UtcNow, new Domain.Games.GameOptions { NumberOfPlayersPerTeam = 1 });
+            tournamentRepository.Add(tournament);
+
+            tournament.MapTemplates.Add("WorldDeluxe");
+
+            tournament.AddUser(TestUtils.CreateUser("User1"));
+            tournament.AddUser(TestUtils.CreateUser("User2"));
+            tournament.Start();
+
+            // Act
+            service.CreateGamesForPairings(tournament);
+
+            // Assert
+            gameServiceMock.Verify();
+        }
+
+        [TestMethod]
+        public void SynchronizeGames()
+        {
+            // Arrange
+            var mockUnitOfWork = TestUtils.GetUnitOfWorkMock();
+            mockUnitOfWork.SetupGet(x => x.Tournaments).Returns(new MockTournamentRepository());
+            mockUnitOfWork.SetupGet(x => x.Games).Returns(new MockGamesRepository());
+            var unitOfWork = mockUnitOfWork.Object;
+            
+            var gameServiceMock = new Mock<IGameService>();
+
+            var eventAggregatorMock = new Mock<IEventAggregator>();
+            var service = new TournamentService(unitOfWork, gameServiceMock.Object, eventAggregatorMock.Object);
+
+            var tournament = new Tournament("T", 2, 0, 1, 1, DateTime.UtcNow, DateTime.UtcNow, new GameOptions { NumberOfPlayersPerTeam = 1 });
+
+            var user1 = TestUtils.CreateUser("1");
+            var user2 = TestUtils.CreateUser("2");
+
+            var teamA = new TournamentTeam(tournament);
+            teamA.AddUser(user1);
+
+            var teamB = new TournamentTeam(tournament);
+            teamB.AddUser(user2);
+
+            var pairing = new TournamentPairing(tournament, 1, 1, teamA, teamB, 1);
+            pairing.State = PairingState.Active;
+            tournament.Pairings = new[] { pairing };
+
+            tournament.Teams.Add(teamA);
+            tournament.Teams.Add(teamB);
+
+            var game = new Game(null, Enums.GameType.Tournament, "T", "WorldDeluxe", new GameOptions());
+
+            game.State = Enums.GameState.Ended;
+
+            var team1 = new Team(game);            
+            team1.Players.Add(new Player(user1, team1)
+            {
+                Outcome = Enums.PlayerOutcome.Won
+            });
+            game.Teams.Add(team1);
+
+            var team2 = new Team(game);
+            team2.Players.Add(new Player(user2, team2)
+            {
+                Outcome = Enums.PlayerOutcome.Defeated
+            });
+            game.Teams.Add(team2);
+
+            pairing.Games = new[] { game };
+
+            // Act
+            service.SynchronizeGamesToPairings(tournament);
+
+            // Assert
+            Assert.IsTrue(tournament.Pairings.First().CanWinnerBeDetermined);
+            Assert.AreEqual(PairingState.Done, pairing.State);
+            Assert.AreEqual(TournamentTeamState.InActive, teamB.State);
+            Assert.AreEqual(TournamentTeamState.Active, teamA.State);
+        }
+    }
+}

@@ -1,0 +1,84 @@
+﻿@model ImperaPlus.DTO.Tournaments.Tournament
+@{
+    ViewBag.Title = "Tournaments - Create";
+}
+
+<h2>New Tournament</h2>
+
+@using (Html.BeginForm("PostCreate", "Tournaments", FormMethod.Post))
+{
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab">
+            <h4 class="panel-title"></h4>
+        </div>
+        <div class="panel-collapse">
+            <div class="panel-body form-horizontal">
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Name, htmlAttributes: new { @class = "control-label col-md-3" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(x => x.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(x => x.StartOfRegistration, htmlAttributes: new { @class = "control-label col-md-3" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(x => x.StartOfRegistration, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(x => x.StartOfTournament, htmlAttributes: new { @class = "control-label col-md-3" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(x => x.StartOfTournament, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(x => x.NumberOfTeams, htmlAttributes: new { @class = "control-label col-md-3" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(x => x.NumberOfTeams, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(x => x.NumberOfGroupGames, htmlAttributes: new { @class = "control-label col-md-3" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(x => x.NumberOfGroupGames, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(x => x.NumberOfKnockoutGames, htmlAttributes: new { @class = "control-label col-md-3" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(x => x.NumberOfKnockoutGames, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(x => x.NumberOfFinalGames, htmlAttributes: new { @class = "control-label col-md-3" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(x => x.NumberOfFinalGames, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(x => x.MapTemplates, htmlAttributes: new { @class = "control-label col-md-3" })
+                    <div class="col-md-6">
+                        @Html.ListBoxFor(x => x.MapTemplates,
+                                new MultiSelectList(ViewBag.MapTemplates as IEnumerable<string>, Model.MapTemplates),
+                                new { @class = "form-control" })
+                    </div>
+                </div>
+
+                @Html.EditorFor(x => x.Options, "../Shared/GameOptions", new {  })
+            </div>
+
+            <div class="panel-footer clearfix">
+                <div class="pull-right">
+                    <button type="submit" class="btn btn-sm btn-info">Create</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

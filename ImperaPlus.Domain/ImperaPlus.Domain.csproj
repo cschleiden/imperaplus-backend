@@ -1,0 +1,198 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B6D49E7C-FF58-4814-993B-EAE2B60D9618}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ImperaPlus.Domain</RootNamespace>
+    <AssemblyName>ImperaPlus.Domain</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Autofac, Version=3.5.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Jil, Version=2.13.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Jil.2.13.0-beta1\lib\net45\Jil.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.EntityFramework, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.1\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.0.1\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Sigil, Version=4.5.1.0, Culture=neutral, PublicKeyToken=2d06c3494341c8ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sigil.4.5.1\lib\net45\Sigil.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Alliance.cs" />
+    <Compile Include="Bots\Bot.cs" />
+    <Compile Include="Chat\Channel.cs" />
+    <Compile Include="DependencyInjectionModule.cs" />
+    <Compile Include="Entity.cs" />
+    <Compile Include="Enums\Channel.cs" />
+    <Compile Include="Chat\Message.cs" />
+    <Compile Include="Configuration.cs" />
+    <Compile Include="Enums\GameType.cs" />
+    <Compile Include="Enums\MapDistribution.cs" />
+    <Compile Include="Utilities\MapTemplateList.cs" />
+    <Compile Include="Messages\MessageFolder.cs" />
+    <Compile Include="Enums\PlayerOutcome.cs" />
+    <Compile Include="Enums\PlayerState.cs" />
+    <Compile Include="Enums\PlayState.cs" />
+    <Compile Include="Enums\VisibilityModifier.cs" />
+    <Compile Include="ErrorCode.cs" />
+    <Compile Include="Events\DomainEvent.cs" />
+    <Compile Include="Events\IDomainEvent.cs" />
+    <Compile Include="Events\IEventHandler.cs" />
+    <Compile Include="Events\ICompletedEventHandler.cs" />
+    <Compile Include="Exceptions\DomainException.cs" />
+    <Compile Include="Games\BonusCard.cs" />
+    <Compile Include="Games\Chat\GameChatMessage.cs" />
+    <Compile Include="Games\Country.cs" />
+    <Compile Include="Enums\GameState.cs" />
+    <Compile Include="Games\Distribution\TeamClusterDistribution.cs" />
+    <Compile Include="Games\Events\GameEndedEvent.cs" />
+    <Compile Include="Games\Events\GameEvent.cs" />
+    <Compile Include="Games\Events\GameStartedEvent.cs" />
+    <Compile Include="Games\Events\PlayerSurrenderedEvent.cs" />
+    <Compile Include="Games\Events\TurnEndedEvent.cs" />
+    <Compile Include="Games\Game.cs" />
+    <Compile Include="Games\GameOptions.cs" />
+    <Compile Include="Games\History\GameHistory.cs" />
+    <Compile Include="Games\History\HistoryAction.cs" />
+    <Compile Include="Games\History\HistoryEntry.cs" />
+    <Compile Include="IOwnedEntity.cs" />
+    <Compile Include="Games\Map.cs" />
+    <Compile Include="IChangeTrackedEntity.cs" />
+    <Compile Include="IEvent.cs" />
+    <Compile Include="IIdentifiableEntity.cs" />
+    <Compile Include="Games\Distribution\DefaultMapDistribution.cs" />
+    <Compile Include="Games\Distribution\IMapDistribution.cs" />
+    <Compile Include="Games\Distribution\MalibuMapDistribution.cs" />
+    <Compile Include="Games\Distribution\MapDistributionFactory.cs" />
+    <Compile Include="Ladders\Events\LadderGameStartedEvent.cs" />
+    <Compile Include="Ladders\Ladder.cs" />
+    <Compile Include="Map\Connection.cs" />
+    <Compile Include="Map\Continent.cs" />
+    <Compile Include="Map\CountryTemplate.cs" />
+    <Compile Include="Map\MapTemplate.cs" />
+    <Compile Include="Games\Player.cs" />
+    <Compile Include="Games\Team.cs" />
+    <Compile Include="Messages\Message.cs" />
+    <Compile Include="News\NewsContent.cs" />
+    <Compile Include="News\NewsEntry.cs" />
+    <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Repositories\IChannelRepository.cs" />
+    <Compile Include="Repositories\IChatMessageRepository.cs" />
+    <Compile Include="Repositories\IGameRepository.cs" />
+    <Compile Include="Repositories\IGenericRepository.cs" />
+    <Compile Include="Repositories\ILadderRepository.cs" />
+    <Compile Include="Repositories\IMapTemplateRepository.cs" />
+    <Compile Include="Repositories\IMessageRepository.cs" />
+    <Compile Include="Repositories\INewsRepository.cs" />
+    <Compile Include="Repositories\IPlayerRepository.cs" />
+    <Compile Include="Repositories\IRoleRepository.cs" />
+    <Compile Include="Repositories\ITeamRepository.cs" />
+    <Compile Include="Repositories\ITournamentRepository.cs" />
+    <Compile Include="Repositories\IUnitOfWork.cs" />
+    <Compile Include="Repositories\IUserRepository.cs" />
+    <Compile Include="Services\AttackService.cs" />
+    <Compile Include="Services\GameService.cs" />
+    <Compile Include="Services\IMapTemplateProvider.cs" />
+    <Compile Include="Services\LadderService.cs" />
+    <Compile Include="Services\RandomGen.cs" />
+    <Compile Include="Services\ScoringService.cs" />
+    <Compile Include="Services\Scoring\Glicko2.cs" />
+    <Compile Include="Services\TournamentService.cs" />
+    <Compile Include="Tournaments\TournamentTeamState.cs" />
+    <Compile Include="Tournaments\TournamentPhase.cs" />
+    <Compile Include="Tournaments\TournamentState.cs" />
+    <Compile Include="Tournaments\TournamentGroup.cs" />
+    <Compile Include="Tournaments\TournamentPairing.cs" />
+    <Compile Include="Tournaments\TournamentParticipant.cs" />
+    <Compile Include="Tournaments\TournamentTeam.cs" />
+    <Compile Include="Tournaments\Tournament.cs" />
+    <Compile Include="User.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\LinqExtensions.cs" />
+    <Compile Include="Utilities\Require.cs" />
+    <Compile Include="Utilities\SerializedCollection.cs" />
+    <Compile Include="VictoryConditions\ControlContinentVictoryCondition.cs" />
+    <Compile Include="Enums\VictoryConditionType.cs" />
+    <Compile Include="VictoryConditions\SurvivalVictoryCondition.cs" />
+    <Compile Include="VictoryConditions\IVictoryCondition.cs" />
+    <Compile Include="VictoryConditions\VictoryConditionFactory.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ImperaPlus.Utils\ImperaPlus.Utils.csproj">
+      <Project>{bf729418-63d8-4c6d-9ed6-cd02226570fe}</Project>
+      <Name>ImperaPlus.Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

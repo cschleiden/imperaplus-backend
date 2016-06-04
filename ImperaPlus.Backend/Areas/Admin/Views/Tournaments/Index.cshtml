@@ -1,0 +1,76 @@
+﻿@model IEnumerable<ImperaPlus.DTO.Tournaments.Tournament>
+@{
+    ViewBag.Title = "Tournaments";
+}
+
+<h2>Tournaments</h2>
+
+
+@foreach (ImperaPlus.DTO.Tournaments.Tournament tournament in Model)
+{
+    <div class="panel panel-default">
+        <div class="panel-heading clearfix" role="tab">
+            <h4 class="panel-title pull-left">
+                <a class="collapsed" role="button" data-toggle="collapse" href="#ladder-@tournament.Id">
+                    @tournament.Name
+                </a>
+            </h4>
+
+            <div class="pull-right">
+                @using (Html.BeginForm("Delete", "Tournaments", FormMethod.Post))
+                {
+                    @Html.Hidden("id", tournament.Id);
+
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                }
+            </div>
+
+            @if (tournament.State == ImperaPlus.DTO.Tournaments.TournamentState.Open)
+                {
+                <div class="pull-right">
+                    @using (Html.BeginForm("PostStart", "Tournaments", FormMethod.Post))
+                    {
+                        @Html.Hidden("id", tournament.Id);
+
+                        <button type="submit" class="btn btn-sm btn-success">Start</button>
+                    }
+                </div>
+            }
+        </div>
+
+        @using (Html.BeginForm("PostUpdate", "Tournaments", FormMethod.Post))
+        {
+            @Html.HiddenFor(x => tournament.Id)
+
+            <div class="panel-collapse collapse" id="ladder-@tournament.Id">
+                <div class="panel-body form-horizontal">
+                    <div class="form-group">
+                        @Html.LabelFor(x => tournament.MapTemplates, htmlAttributes: new { @class = "control-label col-md-3" })
+                        <div class="col-md-6">
+                            @Html.ListBoxFor(x => tournament.MapTemplates,
+                                new MultiSelectList(ViewBag.MapTemplates as IEnumerable<string>, tournament.MapTemplates),
+                                new { @class = "form-control" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(x => tournament.State, htmlAttributes: new { @class = "control-label col-md-3" })
+                        <div class="col-md-6">
+                            <div class="form-control-static">
+                                @Html.DisplayTextFor(x => tournament.State)
+                            </div>
+                        </div>
+                    </div>
+
+                    @Html.EditorFor(x => tournament.Options, "../Shared/GameOptions")
+                </div>
+
+                <div class="panel-footer clearfix">                    
+                    <div class="pull-right">
+                        <button type="submit" class="btn btn-sm btn-info">Update</button>
+                    </div>
+                </div>
+            </div>
+        }
+        </div>
+    }
