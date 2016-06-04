@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImperaPlus.Backend", "ImperaPlus.Backend\ImperaPlus.Backend.csproj", "{A8B43DFB-2469-4B3D-B4AB-49D07054DDC2}"
 EndProject
@@ -25,9 +25,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImperaPlus.TestSupport", "I
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A0795CDD-8D63-431A-AF14-9D95A0334065}"
 	ProjectSection(SolutionItems) = preProject
-		client.config = client.config
 		Credentials.config = Credentials.config
-		WebEssentials-Settings.json = WebEssentials-Settings.json
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImperaPlus.Integration.Tests", "ImperaPlus.Integration.Tests\ImperaPlus.Integration.Tests.csproj", "{BF578C32-00BC-4429-A96C-7BA038E753D5}"
@@ -88,9 +86,6 @@ Global
 		{3C4E70AD-B549-4F8C-9929-0A64A4262E0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C4E70AD-B549-4F8C-9929-0A64A4262E0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C4E70AD-B549-4F8C-9929-0A64A4262E0E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3D94ECAB-3D27-47ED-8E9A-794227A99926}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3D94ECAB-3D27-47ED-8E9A-794227A99926}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3D94ECAB-3D27-47ED-8E9A-794227A99926}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BF729418-63D8-4C6D-9ED6-CD02226570FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BF729418-63D8-4C6D-9ED6-CD02226570FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BF729418-63D8-4C6D-9ED6-CD02226570FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
