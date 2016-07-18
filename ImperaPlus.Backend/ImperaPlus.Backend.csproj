@@ -24,6 +24,8 @@
     <RestorePackages>true</RestorePackages>
     <UseGlobalApplicationHostFile />
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -188,8 +190,8 @@
     <Reference Include="MiniProfiler.EntityFramework6">
       <HintPath>..\packages\MiniProfiler.EF6.3.0.11\lib\net40\MiniProfiler.EntityFramework6.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
@@ -466,7 +468,7 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ImperaPlus.Business\ImperaPlus.Application.csproj">
+    <ProjectReference Include="..\ImperaPlus.Application\ImperaPlus.Application.csproj">
       <Project>{10F47789-AAFB-4C67-AD7C-7B7FB3F8BEAD}</Project>
       <Name>ImperaPlus.Application</Name>
     </ProjectReference>
@@ -499,11 +501,18 @@
   <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
     <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
   </Target>
+  <Target Name="AfterBuild">
+    <Exec Command="copy App_Data\XmlDocument.xml $(OutDir)ImperaPlus.Backend.xml" />
+    <Exec Command="$(NSwagExe) webapi2swagger /assembly:$(OutDir)/ImperaPlus.Backend.dll /output:swagger.json" />
+    <Exec Command="$(NSwagExe) swagger2tsclient /input:swagger.json /output:../ImperaPlus.GeneratedClient.TypeScript/imperaClients.ts /template:JQueryPromises /promisetype:QPromise" />
+    <Exec Command="$(NSwagExe) swagger2csclient /input:swagger.json /output:../ImperaPlus.GeneratedClient/ImperaClients.cs /namespace:ImperaPlus.GeneratedClient /classstyle:Poco /clientbaseclass:ImperaHttpClient /generatedtotypes:True /UseHttpClientCreationMethod:True /arraytype:IEnumerable" />
+    <Exec Command="powershell.exe -Command &quot;(Get-Content ../ImperaPlus.GeneratedClient/ImperaClients.cs) -replace '{(.*?):.*?}', '{$1}' | Out-File ..\ImperaPlus.GeneratedClient\ImperaClients.cs&quot;" /> 
+  </Target>
   <ProjectExtensions>
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>57676</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
@@ -529,4 +538,11 @@
     <CopyAllFilesToSingleFolderForPackageDependsOn>CustomCollectFiles</CopyAllFilesToSingleFolderForPackageDependsOn>
     <CopyAllFilesToSingleFolderForMsdeployDependsOn>CustomCollectFiles</CopyAllFilesToSingleFolderForMsdeployDependsOn>
   </PropertyGroup>
+  <Import Project="..\packages\NSwag.MSBuild.3.26.0\build\NSwag.MSBuild.targets" Condition="Exists('..\packages\NSwag.MSBuild.3.26.0\build\NSwag.MSBuild.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\NSwag.MSBuild.3.26.0\build\NSwag.MSBuild.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NSwag.MSBuild.3.26.0\build\NSwag.MSBuild.targets'))" />
+  </Target>
 </Project>

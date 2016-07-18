@@ -19,7 +19,7 @@ namespace ImperaPlus.DTO.Games
         /// </summary>
         [Required]
         [StringLength(64, MinimumLength = 3)]
-        public string Name { get; set; }        
+        public string Name { get; set; }
 
         /// <summary>
         /// Value indicating whether the bot will join the game
@@ -31,6 +31,6 @@ namespace ImperaPlus.DTO.Games
         /// </summary>
         [Required]
         [StringLength(64, MinimumLength = 1)]
-        public string MapTemplate { get; set; }        
+        public string MapTemplate { get; set; }
     }
 }

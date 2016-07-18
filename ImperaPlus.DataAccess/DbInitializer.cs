@@ -151,7 +151,7 @@ namespace ImperaPlus.DataAccess
                 InitLadder(context, systemUser);
 
                 // Default set of maps
-                if (includeMaps)
+                if (includeMaps && false)
                 {
                     var mapType = typeof(Maps);
                     foreach (var mapMethod in mapType.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static))

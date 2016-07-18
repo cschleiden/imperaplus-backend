@@ -2,6 +2,8 @@
 using System.Text.RegularExpressions;
 using System.Web.Http;
 using ImperaPlus.Application.Messages;
+using System.Web.Http.Description;
+using System.Collections.Generic;
 
 namespace ImperaPlus.Backend.Controllers
 {
@@ -17,18 +19,21 @@ namespace ImperaPlus.Backend.Controllers
         }
 
         [Route("folder/{folder}")]
+        [ResponseType(typeof(IEnumerable<DTO.Messages.Message>))]
         public IHttpActionResult Get(DTO.Messages.MessageFolder folder = DTO.Messages.MessageFolder.Inbox)
         {
             return this.Ok(this.messageService.Get(folder));
         }
 
         [Route("{messageId}")]
+        [ResponseType(typeof(DTO.Messages.Message))]
         public IHttpActionResult Get(Guid messageId)
         {
             return this.Ok(this.messageService.Get(messageId));
         }
 
         [Route("folders")]
+        [ResponseType(typeof(DTO.Messages.FolderInformation))]
         public IHttpActionResult GetFolderInformation()
         {
             return this.Ok(this.messageService.GetFolderInformation());

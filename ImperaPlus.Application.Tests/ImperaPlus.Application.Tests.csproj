@@ -98,7 +98,7 @@
     <Compile Include="TestSetup.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ImperaPlus.Business\ImperaPlus.Application.csproj">
+    <ProjectReference Include="..\ImperaPlus.Application\ImperaPlus.Application.csproj">
       <Project>{10F47789-AAFB-4C67-AD7C-7B7FB3F8BEAD}</Project>
       <Name>ImperaPlus.Application</Name>
     </ProjectReference>

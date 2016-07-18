@@ -1,24 +1,21 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
+﻿using ImperaPlus.GeneratedClient;
 using ImperaPlus.TestSupport;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ImperaPlus.Integration.Tests
 {
     [TestClass]    
     public class NewsTests : BaseIntegrationTest
-    {        
-        private const string GetAll = "api/news";
-
+    {
         [TestMethod]
         [Integration]
         [TestProperty("Controller", "News")]
         public async Task News_GetAll()
         {
-            var response = await this.HttpClientDefault.GetAsync(GetAll);
-            var news = await response.Content.ReadAsAsync<IEnumerable<DTO.News.NewsItem>>();
+            var client = await ApiClient.GetAuthenticatedClientDefaultUser<NewsClient>();
+            var news = await client.GetAllAsync();
 
             Assert.IsNotNull(news);
             Assert.IsTrue(news.Any());

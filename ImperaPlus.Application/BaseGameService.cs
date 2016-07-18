@@ -70,14 +70,5 @@ namespace ImperaPlus.Application
                 return this.userProvider.GetCurrentUserId();
             }
         }
-
-        protected User CurrentUser
-        {
-            get
-            {
-                // TODO: Move to user provider
-                return this.UnitOfWork.Users.FindById(this.userProvider.GetCurrentUserId());
-            }
-        }        
     }
 }

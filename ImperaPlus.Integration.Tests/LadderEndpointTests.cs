@@ -1,13 +1,5 @@
-﻿using ImperaPlus.DataAccess.ConvertedMaps;
-using ImperaPlus.DTO.Ladder;
-using ImperaPlus.Integration.Tests.Support;
-using ImperaPlus.TestSupport;
+﻿using ImperaPlus.TestSupport;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ImperaPlus.Integration.Tests
@@ -25,10 +17,10 @@ namespace ImperaPlus.Integration.Tests
         [Integration]
         // TODO: Admin controller referenced doesn't exist anymore!
         [Ignore]
-        public async Task NewLadderQueueAndCreate()
+        public void NewLadderQueueAndCreate()
         {
-            var player1Client = new TestClient(this.HttpClientDefault);
-            var gamesBefore1 = await player1Client.GetMyGames();        
+            /*var player1GameClient = 
+            var gamesBefore1 = await player1Client.GetMyGames();
 
             var player2HttpClient = await ApiClient.GetAuthenticatedClient(2);
             var player2Client = new TestClient(player2HttpClient);
@@ -131,7 +123,7 @@ namespace ImperaPlus.Integration.Tests
             Assert.AreEqual(1, player1Standing.GamesWon);
             Assert.AreEqual(1, player1Standing.Position, "Player 1 should be first");
             Assert.AreEqual(2, player2Standing.Position, "Player 2 should be second");
-            Assert.IsTrue(player1Standing.Rating > player2Standing.Rating, "Player 1 should be above player 2");
+            Assert.IsTrue(player1Standing.Rating > player2Standing.Rating, "Player 1 should be above player 2");*/
         }
     }
 }

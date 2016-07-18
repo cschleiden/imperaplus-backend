@@ -1,0 +1,3453 @@
+﻿{
+  "swagger": "2.0",
+  "info": {
+    "title": "Web API Swagger specification",
+    "version": "1.0.0"
+  },
+  "schemes": [],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/Account/UserNameAvailable": {
+      "get": {
+        "tags": [
+          "AccountController"
+        ],
+        "summary": "Checks if a username is available",
+        "operationId": "Account_GetUserNameAvailable",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "userName",
+            "in": "query",
+            "required": true,
+            "x-nullable": true,
+            "description": "Username to check"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "True if username is available",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/Account/UserInfo": {
+      "get": {
+        "tags": [
+          "AccountController"
+        ],
+        "summary": "Get user information",
+        "operationId": "Account_GetUserInfo",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/UserInfo"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/Account/ExternalUserInfo": {
+      "get": {
+        "tags": [
+          "AccountController"
+        ],
+        "summary": "Get user information for an external user (i.e., just logged in using an external provider)",
+        "operationId": "Account_GetExternalUserInfo",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/UserInfo"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/Account/Logout": {
+      "post": {
+        "tags": [
+          "AccountController"
+        ],
+        "operationId": "Account_Logout",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/Account/ManageInfo": {
+      "get": {
+        "tags": [
+          "AccountController"
+        ],
+        "operationId": "Account_GetManageInfo",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "returnUrl",
+            "in": "query",
+            "required": true,
+            "x-nullable": true
+          },
+          {
+            "type": "boolean",
+            "name": "generateState",
+            "in": "query",
+            "x-nullable": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/ManageInfoViewModel"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/Account/ChangePassword": {
+      "post": {
+        "tags": [
+          "AccountController"
+        ],
+        "operationId": "Account_ChangePassword",
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/ChangePasswordBindingModel"
+            },
+            "x-nullable": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/Account/SetPassword": {
+      "post": {
+        "tags": [
+          "AccountController"
+        ],
+        "operationId": "Account_SetPassword",
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/SetPasswordBindingModel"
+            },
+            "x-nullable": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/Account/Language": {
+      "post": {
+        "tags": [
+          "AccountController"
+        ],
+        "operationId": "Account_SetLanguage",
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/LanguageModel"
+            },
+            "x-nullable": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/Account/AddExternalLogin": {
+      "post": {
+        "tags": [
+          "AccountController"
+        ],
+        "operationId": "Account_AddExternalLogin",
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/AddExternalLoginBindingModel"
+            },
+            "x-nullable": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/Account/RemoveLogin": {
+      "post": {
+        "tags": [
+          "AccountController"
+        ],
+        "operationId": "Account_RemoveLogin",
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/RemoveLoginBindingModel"
+            },
+            "x-nullable": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/Account/ExternalLogin": {
+      "get": {
+        "tags": [
+          "AccountController"
+        ],
+        "operationId": "Account_GetExternalLogin",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "provider",
+            "in": "query",
+            "required": true,
+            "x-nullable": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/Account/ExternalLogins": {
+      "get": {
+        "tags": [
+          "AccountController"
+        ],
+        "operationId": "Account_GetExternalLogins",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "returnUrl",
+            "in": "query",
+            "required": true,
+            "x-nullable": true
+          },
+          {
+            "type": "boolean",
+            "name": "generateState",
+            "in": "query",
+            "x-nullable": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ExternalLoginViewModel"
+              }
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/Account/Register": {
+      "post": {
+        "tags": [
+          "AccountController"
+        ],
+        "operationId": "Account_Register",
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/RegisterBindingModel"
+            },
+            "x-nullable": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/Account/ResendConfirmation": {
+      "post": {
+        "tags": [
+          "AccountController"
+        ],
+        "summary": "Resend the email confirmation account to the given user account",
+        "operationId": "Account_ResendConfirmationCode",
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/ResendConfirmationModel"
+            },
+            "x-nullable": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/Account/ConfirmEmail": {
+      "post": {
+        "tags": [
+          "AccountController"
+        ],
+        "summary": "Confirm user account using code provided in mail",
+        "operationId": "Account_ConfirmEmail",
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/ConfirmationModel"
+            },
+            "x-nullable": true,
+            "description": "Model containing id and code"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success if successfully activated",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/Account/ForgotPassword": {
+      "post": {
+        "tags": [
+          "AccountController"
+        ],
+        "summary": "Request password reset link",
+        "operationId": "Account_ForgotPassword",
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/ForgotPasswordViewModel"
+            },
+            "x-nullable": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/Account/ResetPassword": {
+      "post": {
+        "tags": [
+          "AccountController"
+        ],
+        "summary": "Reset password confirmation",
+        "operationId": "Account_ResetPassword",
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/ResetPasswordViewModel"
+            },
+            "x-nullable": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/Account/RegisterExternal": {
+      "post": {
+        "tags": [
+          "AccountController"
+        ],
+        "summary": "Create user accout for an external login",
+        "operationId": "Account_RegisterExternal",
+        "parameters": [
+          {
+            "name": "model",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/RegisterExternalBindingModel"
+            },
+            "x-nullable": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/games/{gameId:long:min(1)}/history/{turnId:long:min(1)}": {
+      "get": {
+        "tags": [
+          "HistoryController"
+        ],
+        "summary": "Gets the specified turn including the actions and current state of the map",
+        "operationId": "History_GetTurn",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "format": "long"
+          },
+          {
+            "type": "integer",
+            "name": "turnId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "format": "long"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/HistoryTurn"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/ladder": {
+      "get": {
+        "tags": [
+          "LadderController"
+        ],
+        "summary": "Returns active ladders",
+        "operationId": "Ladder_GetAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of ladders",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/LadderSummary"
+              }
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/ladder/{ladderId:guid}": {
+      "get": {
+        "tags": [
+          "LadderController"
+        ],
+        "summary": "Gets ladder identified by given id",
+        "operationId": "Ladder_Get",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "ladderId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "description": "Id of ladder",
+            "format": "guid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Ladder"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/ladder/{ladderId:guid}/queue": {
+      "post": {
+        "tags": [
+          "LadderController"
+        ],
+        "summary": "Queue up for a new game in the given ladder",
+        "operationId": "Ladder_PostJoin",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "ladderId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "description": "Ladder id",
+            "format": "guid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/ladder/{ladderId:guid}/standings": {
+      "get": {
+        "tags": [
+          "LadderController"
+        ],
+        "summary": "Gets ladder standings",
+        "operationId": "Ladder_GetStandings",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "ladderId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "description": "Id of ladder",
+            "format": "guid"
+          },
+          {
+            "type": "integer",
+            "name": "start",
+            "in": "query",
+            "x-nullable": false,
+            "description": "Items to skip before returning"
+          },
+          {
+            "type": "integer",
+            "name": "count",
+            "in": "query",
+            "x-nullable": false,
+            "description": "Count of standings to return"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/LadderStanding"
+              }
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/map": {
+      "get": {
+        "tags": [
+          "MapController"
+        ],
+        "operationId": "Map_GetAllSummary",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/MapTemplateSummary"
+              }
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/map/{name:minlength(1)}": {
+      "get": {
+        "tags": [
+          "MapController"
+        ],
+        "summary": "Get map template identified by name",
+        "operationId": "Map_GetMapTemplate",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "x-nullable": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/MapTemplate"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/games/open": {
+      "get": {
+        "tags": [
+          "GameController"
+        ],
+        "summary": "Get a list of open games, excluding games by the current player",
+        "operationId": "Game_GetAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of games",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/GameSummary"
+              }
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/games/my": {
+      "get": {
+        "tags": [
+          "GameController"
+        ],
+        "summary": "Get a list of the games for the current player",
+        "operationId": "Game_GetMy",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of games for the current user",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/GameSummary"
+              }
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/games/myturn": {
+      "get": {
+        "tags": [
+          "GameController"
+        ],
+        "summary": "Get list of games where it's the current player's team",
+        "operationId": "Game_GetMyTurn",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of games where it's the current user's team",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/GameSummary"
+              }
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/games": {
+      "post": {
+        "tags": [
+          "GameController"
+        ],
+        "summary": "Create a new game",
+        "operationId": "Game_Post",
+        "parameters": [
+          {
+            "name": "creationOptions",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/GameCreationOptions"
+            },
+            "x-nullable": true,
+            "description": "Creation options"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Summary of newly created game",
+            "schema": {
+              "$ref": "#/definitions/GameSummary"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/games/{gameId:long:min(1)}": {
+      "get": {
+        "tags": [
+          "GameController"
+        ],
+        "summary": "Get detailed information about a single game",
+        "operationId": "Game_Get",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "description": "Id of the requested game",
+            "format": "long"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Information about the requested game",
+            "schema": {
+              "$ref": "#/definitions/Game"
+            },
+            "x-nullable": true
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "GameController"
+        ],
+        "summary": "Cancel/delete the requested game, if possible.",
+        "operationId": "Game_Delete",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "description": "Id of the game to delete",
+            "format": "long"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Status",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/games/{gameId:long:min(1)}/messages": {
+      "get": {
+        "tags": [
+          "GameController"
+        ],
+        "summary": "Get messages for a single game",
+        "operationId": "Game_GetMessages",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "description": "Id of the requested game",
+            "format": "long"
+          },
+          {
+            "type": "boolean",
+            "name": "isPublic",
+            "in": "query",
+            "x-nullable": false,
+            "description": "Value indicating whether to return only public messages, default is true"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Messages posted in the requested game",
+            "schema": {
+              "$ref": "#/definitions/Game"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/games/{gameId:long:min(1)}/join": {
+      "post": {
+        "tags": [
+          "GameController"
+        ],
+        "summary": "Join the given game",
+        "operationId": "Game_PostJoin",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "description": "Id of game to join",
+            "format": "long"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/games/{gameId:long:min(1)}/leave": {
+      "post": {
+        "tags": [
+          "GameController"
+        ],
+        "summary": "Leave the given game, only possible if game hasn't started yet, and current player\nis not the creator.",
+        "operationId": "Game_PostLeave",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "description": "Id of game to leave",
+            "format": "long"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/games/{gameId:long:min(1)}/surrender": {
+      "post": {
+        "tags": [
+          "GameController"
+        ],
+        "summary": "Surrender in the given game, only possible if current player\nand game are still active.",
+        "operationId": "Game_PostSurrender",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "description": "Id of game to surrender in",
+            "format": "long"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/GameSummary"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/games/{gameId:long:min(1)}/hide": {
+      "post": {
+        "tags": [
+          "GameController"
+        ],
+        "summary": "Hides the given game for the current player",
+        "operationId": "Game_PatchHide",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "description": "Id of game to hide",
+            "format": "long"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/games/hide": {
+      "post": {
+        "tags": [
+          "GameController"
+        ],
+        "summary": "Hide all games which can be hidden for the current player",
+        "operationId": "Game_PatchHideAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/messages/folder/{folder}": {
+      "get": {
+        "tags": [
+          "MessageController"
+        ],
+        "operationId": "Message_GetAll",
+        "parameters": [
+          {
+            "name": "folder",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "$ref": "#/definitions/MessageFolder"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Message"
+              }
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/messages/{messageId}": {
+      "get": {
+        "tags": [
+          "MessageController"
+        ],
+        "operationId": "Message_Get",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "messageId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "format": "guid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Message"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/messages/folders": {
+      "get": {
+        "tags": [
+          "MessageController"
+        ],
+        "operationId": "Message_GetFolderInformation",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/FolderInformation"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/messages": {
+      "post": {
+        "tags": [
+          "MessageController"
+        ],
+        "operationId": "Message_PostSend",
+        "parameters": [
+          {
+            "name": "message",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/SendMessage"
+            },
+            "x-nullable": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/messages/{messageId:guid}": {
+      "post": {
+        "tags": [
+          "MessageController"
+        ],
+        "operationId": "Message_PatchMarkRead",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "messageId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "format": "guid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "MessageController"
+        ],
+        "operationId": "Message_Delete",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "messageId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "format": "guid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/news": {
+      "get": {
+        "tags": [
+          "NewsController"
+        ],
+        "summary": "Returns the last 10 news items for all languages",
+        "operationId": "News_GetAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of news items",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/NewsItem"
+              }
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/notifications/summary": {
+      "get": {
+        "tags": [
+          "NotificationController"
+        ],
+        "summary": "Get notification summary for current user",
+        "operationId": "Notification_GetSummary",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/games/{gameId:long:min(1)}/play/place": {
+      "post": {
+        "tags": [
+          "PlayController"
+        ],
+        "summary": "Place units to countries.",
+        "operationId": "Play_PostPlace",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "description": "Id of the game",
+            "format": "long"
+          },
+          {
+            "name": "placeUnitsOptions",
+            "in": "body",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/PlaceUnitsOptions"
+              }
+            },
+            "x-nullable": true,
+            "description": "List of country/unit count pairs"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GameActionResult of action",
+            "schema": {
+              "$ref": "#/definitions/GameActionResult"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/games/{gameId:long:min(1)}/play/exchange": {
+      "post": {
+        "tags": [
+          "PlayController"
+        ],
+        "summary": "Exchange cards for the current player. Which cards to exchange is automatically chosen to gain the most bonus for the player.",
+        "operationId": "Play_PostExchange",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "description": "Id of the game",
+            "format": "long"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GameActionResult of action",
+            "schema": {
+              "$ref": "#/definitions/GameActionResult"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/games/{gameId:long:min(1)}/play/attack": {
+      "post": {
+        "tags": [
+          "PlayController"
+        ],
+        "summary": "Attack from one to another country.",
+        "operationId": "Play_PostAttack",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "description": "Id of the game",
+            "format": "long"
+          },
+          {
+            "name": "options",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/AttackOptions"
+            },
+            "x-nullable": true,
+            "description": "Options for the command"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GameActionResult of action",
+            "schema": {
+              "$ref": "#/definitions/GameActionResult"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/games/{gameId:long:min(1)}/play/endattack": {
+      "post": {
+        "tags": [
+          "PlayController"
+        ],
+        "summary": "Switch to moving.",
+        "operationId": "Play_PostEndAttack",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "description": "Id of the game",
+            "format": "long"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GameActionResult of action",
+            "schema": {
+              "$ref": "#/definitions/GameActionResult"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/games/{gameId:long:min(1)}/play/move": {
+      "post": {
+        "tags": [
+          "PlayController"
+        ],
+        "summary": "Move units between countries. Only allowed after placing. Cancels any attacks that the player had left before. Attacking is not\npossible anymore after moving.",
+        "operationId": "Play_PostMove",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "description": "Id of the game",
+            "format": "long"
+          },
+          {
+            "name": "options",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/MoveOptions"
+            },
+            "x-nullable": true,
+            "description": "Options for the command"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GameActionResult of action",
+            "schema": {
+              "$ref": "#/definitions/GameActionResult"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/games/{gameId:long:min(1)}/play/endturn": {
+      "post": {
+        "tags": [
+          "PlayController"
+        ],
+        "summary": "End the current turn",
+        "operationId": "Play_PostEndTurn",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "description": "Id of the game",
+            "format": "long"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "GameActionResult of action",
+            "schema": {
+              "$ref": "#/definitions/Game"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/tournaments": {
+      "get": {
+        "tags": [
+          "TournamentController"
+        ],
+        "summary": "Returns tournaments",
+        "operationId": "Tournament_GetAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of tournaments",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Tournament"
+              }
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/tournaments/{tournamentId:guid}": {
+      "get": {
+        "tags": [
+          "TournamentController"
+        ],
+        "summary": "Get tournament identified by Id",
+        "operationId": "Tournament_GetById",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "tournamentId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "description": "Id of tournament",
+            "format": "guid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Tournament"
+            },
+            "x-nullable": true
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "TournamentController"
+        ],
+        "summary": "Join tournament",
+        "operationId": "Tournament_PostJoin",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "tournamentId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "description": "Id of tournament",
+            "format": "guid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/TournamentTeam"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/tournaments/{tournamentId:guid}/teams": {
+      "get": {
+        "tags": [
+          "TournamentController"
+        ],
+        "summary": "Get teams for tournament",
+        "operationId": "Tournament_GetTeams",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "tournamentId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "description": "Id of tournament",
+            "format": "guid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TournamentTeam"
+              }
+            },
+            "x-nullable": true
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "TournamentController"
+        ],
+        "summary": "Create new team for a tournament",
+        "operationId": "Tournament_PostCreateTeam",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "tournamentId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "description": "Id of tournament",
+            "format": "guid"
+          },
+          {
+            "type": "string",
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "x-nullable": true,
+            "description": "Name of team"
+          },
+          {
+            "type": "string",
+            "name": "password",
+            "in": "query",
+            "x-nullable": true,
+            "description": "Optional password for team"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Summary of newly created team",
+            "schema": {
+              "$ref": "#/definitions/TournamentTeamSummary"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/tournaments/{tournamentId:guid}/teams/{teamId:guid}": {
+      "post": {
+        "tags": [
+          "TournamentController"
+        ],
+        "summary": "Join existing team",
+        "operationId": "Tournament_PostJoinTeam",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "tournamentId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "description": "Id of tournament",
+            "format": "guid"
+          },
+          {
+            "type": "string",
+            "name": "teamId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "description": "Id of team",
+            "format": "guid"
+          },
+          {
+            "type": "string",
+            "name": "password",
+            "in": "query",
+            "x-nullable": true,
+            "description": "Optional password for team to join"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "TournamentController"
+        ],
+        "summary": "Delete a team. Only allowed if user created it",
+        "operationId": "Tournament_DeleteTeam",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "tournamentId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "description": "Id of tournament",
+            "format": "guid"
+          },
+          {
+            "type": "string",
+            "name": "teamId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "description": "Id of team to delete",
+            "format": "guid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/tournaments/{tournamentId:guid}/teams/me": {
+      "post": {
+        "tags": [
+          "TournamentController"
+        ],
+        "summary": "Leave a team and tournament",
+        "operationId": "Tournament_LeaveTournament",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "tournamentId",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "description": "Id of tournament",
+            "format": "guid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/users/find/{query:minlength(3):maxlength(50)}": {
+      "get": {
+        "tags": [
+          "UserController"
+        ],
+        "summary": "Find users starting with the given query",
+        "operationId": "User_FindUsers",
+        "parameters": [
+          {
+            "type": "string",
+            "name": "query",
+            "in": "path",
+            "required": true,
+            "x-nullable": false,
+            "description": "Query to search for"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/UserReference"
+              }
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "UserInfo": {
+      "type": "object",
+      "x-typeName": "UserInfo",
+      "additionalProperties": false,
+      "required": [
+        "HasRegistered"
+      ],
+      "properties": {
+        "UserId": {
+          "type": "string"
+        },
+        "UserName": {
+          "type": "string"
+        },
+        "HasRegistered": {
+          "type": "boolean"
+        },
+        "LoginProvider": {
+          "type": "string"
+        },
+        "Language": {
+          "type": "string"
+        },
+        "Roles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ManageInfoViewModel": {
+      "type": "object",
+      "x-typeName": "ManageInfoViewModel",
+      "additionalProperties": false,
+      "properties": {
+        "LocalLoginProvider": {
+          "type": "string"
+        },
+        "UserName": {
+          "type": "string"
+        },
+        "Logins": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UserLoginInfoViewModel"
+          }
+        },
+        "ExternalLoginProviders": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ExternalLoginViewModel"
+          }
+        }
+      }
+    },
+    "UserLoginInfoViewModel": {
+      "type": "object",
+      "x-typeName": "UserLoginInfoViewModel",
+      "additionalProperties": false,
+      "properties": {
+        "LoginProvider": {
+          "type": "string"
+        },
+        "ProviderKey": {
+          "type": "string"
+        }
+      }
+    },
+    "ExternalLoginViewModel": {
+      "type": "object",
+      "x-typeName": "ExternalLoginViewModel",
+      "additionalProperties": false,
+      "properties": {
+        "Name": {
+          "type": "string"
+        },
+        "Url": {
+          "type": "string"
+        },
+        "State": {
+          "type": "string"
+        }
+      }
+    },
+    "ChangePasswordBindingModel": {
+      "type": "object",
+      "x-typeName": "ChangePasswordBindingModel",
+      "additionalProperties": false,
+      "required": [
+        "OldPassword",
+        "NewPassword"
+      ],
+      "properties": {
+        "OldPassword": {
+          "type": "string"
+        },
+        "NewPassword": {
+          "type": "string"
+        },
+        "ConfirmPassword": {
+          "type": "string"
+        }
+      }
+    },
+    "SetPasswordBindingModel": {
+      "type": "object",
+      "x-typeName": "SetPasswordBindingModel",
+      "additionalProperties": false,
+      "required": [
+        "NewPassword"
+      ],
+      "properties": {
+        "NewPassword": {
+          "type": "string"
+        },
+        "ConfirmPassword": {
+          "type": "string"
+        }
+      }
+    },
+    "LanguageModel": {
+      "type": "object",
+      "x-typeName": "LanguageModel",
+      "additionalProperties": false,
+      "required": [
+        "Language"
+      ],
+      "properties": {
+        "Language": {
+          "type": "string"
+        }
+      }
+    },
+    "AddExternalLoginBindingModel": {
+      "type": "object",
+      "x-typeName": "AddExternalLoginBindingModel",
+      "additionalProperties": false,
+      "required": [
+        "ExternalAccessToken"
+      ],
+      "properties": {
+        "ExternalAccessToken": {
+          "type": "string"
+        }
+      }
+    },
+    "RemoveLoginBindingModel": {
+      "type": "object",
+      "x-typeName": "RemoveLoginBindingModel",
+      "additionalProperties": false,
+      "required": [
+        "LoginProvider",
+        "ProviderKey"
+      ],
+      "properties": {
+        "LoginProvider": {
+          "type": "string"
+        },
+        "ProviderKey": {
+          "type": "string"
+        }
+      }
+    },
+    "RegisterBindingModel": {
+      "type": "object",
+      "x-typeName": "RegisterBindingModel",
+      "additionalProperties": false,
+      "required": [
+        "UserName",
+        "Password",
+        "Email",
+        "Language",
+        "CallbackUrl"
+      ],
+      "properties": {
+        "UserName": {
+          "type": "string"
+        },
+        "Password": {
+          "type": "string"
+        },
+        "ConfirmPassword": {
+          "type": "string"
+        },
+        "Email": {
+          "type": "string"
+        },
+        "Language": {
+          "type": "string"
+        },
+        "CallbackUrl": {
+          "type": "string"
+        }
+      }
+    },
+    "ResendConfirmationModel": {
+      "type": "object",
+      "x-typeName": "ResendConfirmationModel",
+      "additionalProperties": false,
+      "required": [
+        "CallbackUrl",
+        "UserName",
+        "Password",
+        "Language"
+      ],
+      "properties": {
+        "CallbackUrl": {
+          "type": "string"
+        },
+        "UserName": {
+          "type": "string"
+        },
+        "Password": {
+          "type": "string"
+        },
+        "Language": {
+          "type": "string"
+        }
+      }
+    },
+    "ConfirmationModel": {
+      "type": "object",
+      "x-typeName": "ConfirmationModel",
+      "additionalProperties": false,
+      "required": [
+        "UserId",
+        "Code"
+      ],
+      "properties": {
+        "UserId": {
+          "type": "string"
+        },
+        "Code": {
+          "type": "string"
+        }
+      }
+    },
+    "ForgotPasswordViewModel": {
+      "type": "object",
+      "x-typeName": "ForgotPasswordViewModel",
+      "additionalProperties": false,
+      "required": [
+        "CallbackUrl",
+        "UserName",
+        "Email",
+        "Language"
+      ],
+      "properties": {
+        "CallbackUrl": {
+          "type": "string"
+        },
+        "UserName": {
+          "type": "string"
+        },
+        "Email": {
+          "type": "string"
+        },
+        "Language": {
+          "type": "string"
+        }
+      }
+    },
+    "ResetPasswordViewModel": {
+      "type": "object",
+      "x-typeName": "ResetPasswordViewModel",
+      "additionalProperties": false,
+      "required": [
+        "UserId",
+        "Password",
+        "Code"
+      ],
+      "properties": {
+        "UserId": {
+          "type": "string"
+        },
+        "Password": {
+          "type": "string"
+        },
+        "ConfirmPassword": {
+          "type": "string"
+        },
+        "Code": {
+          "type": "string"
+        }
+      }
+    },
+    "RegisterExternalBindingModel": {
+      "type": "object",
+      "x-typeName": "RegisterExternalBindingModel",
+      "additionalProperties": false,
+      "required": [
+        "UserName"
+      ],
+      "properties": {
+        "UserName": {
+          "type": "string"
+        }
+      }
+    },
+    "HistoryTurn": {
+      "type": "object",
+      "x-typeName": "HistoryTurn",
+      "additionalProperties": false,
+      "required": [
+        "GameId",
+        "TurnId"
+      ],
+      "properties": {
+        "GameId": {
+          "type": "integer",
+          "format": "long"
+        },
+        "TurnId": {
+          "type": "integer",
+          "format": "long"
+        },
+        "Actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/HistoryEntry"
+          }
+        },
+        "Game": {
+          "$ref": "#/definitions/Game"
+        }
+      }
+    },
+    "HistoryEntry": {
+      "type": "object",
+      "x-typeName": "HistoryEntry",
+      "additionalProperties": false,
+      "required": [
+        "Id",
+        "TurnNo",
+        "DateTime",
+        "ActorId",
+        "Action"
+      ],
+      "properties": {
+        "Id": {
+          "type": "integer",
+          "format": "long"
+        },
+        "TurnNo": {
+          "type": "integer",
+          "format": "long"
+        },
+        "DateTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ActorId": {
+          "type": "string",
+          "format": "guid"
+        },
+        "OtherPlayerId": {
+          "type": "string",
+          "format": "guid"
+        },
+        "Action": {
+          "$ref": "#/definitions/HistoryAction"
+        },
+        "OriginIdentifier": {
+          "type": "string"
+        },
+        "DestinationIdentifier": {
+          "type": "string"
+        },
+        "Units": {
+          "type": "integer"
+        },
+        "UnitsLost": {
+          "type": "integer"
+        },
+        "UnitsLostOther": {
+          "type": "integer"
+        },
+        "Result": {
+          "type": "boolean"
+        }
+      }
+    },
+    "HistoryAction": {
+      "type": "integer",
+      "x-typeName": "HistoryAction",
+      "x-enumNames": [
+        "None",
+        "StartGame",
+        "EndGame",
+        "PlaceUnits",
+        "Attack",
+        "Move",
+        "ExchangeCards",
+        "PlayerLost",
+        "PlayerWon",
+        "PlayerTimeout",
+        "OwnerChange",
+        "EndTurn"
+      ],
+      "enum": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "description": ""
+    },
+    "Game": {
+      "type": "object",
+      "x-typeName": "Game",
+      "additionalProperties": false,
+      "required": [
+        "Id",
+        "Type",
+        "State",
+        "PlayState",
+        "LastModifiedAt",
+        "TimeoutSecondsLeft",
+        "TurnCounter",
+        "UnitsToPlace",
+        "AttacksInCurrentTurn",
+        "MovesInCurrentTurn"
+      ],
+      "properties": {
+        "Id": {
+          "type": "integer",
+          "format": "long"
+        },
+        "Type": {
+          "$ref": "#/definitions/GameType"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "MapTemplate": {
+          "type": "string"
+        },
+        "Teams": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Team"
+          }
+        },
+        "State": {
+          "$ref": "#/definitions/GameState"
+        },
+        "PlayState": {
+          "$ref": "#/definitions/PlayState"
+        },
+        "CurrentPlayer": {
+          "$ref": "#/definitions/PlayerSummary"
+        },
+        "Map": {
+          "$ref": "#/definitions/Map"
+        },
+        "Options": {
+          "$ref": "#/definitions/GameOptions"
+        },
+        "LastModifiedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "TimeoutSecondsLeft": {
+          "type": "integer"
+        },
+        "TurnCounter": {
+          "type": "integer"
+        },
+        "UnitsToPlace": {
+          "type": "integer"
+        },
+        "AttacksInCurrentTurn": {
+          "type": "integer"
+        },
+        "MovesInCurrentTurn": {
+          "type": "integer"
+        }
+      }
+    },
+    "GameType": {
+      "type": "integer",
+      "x-typeName": "GameType",
+      "x-enumNames": [
+        "Fun",
+        "Ranking",
+        "Tournament"
+      ],
+      "enum": [
+        0,
+        1,
+        2
+      ],
+      "description": ""
+    },
+    "Team": {
+      "type": "object",
+      "x-typeName": "Team",
+      "additionalProperties": false,
+      "required": [
+        "Id",
+        "PlayOrder"
+      ],
+      "properties": {
+        "Id": {
+          "type": "string",
+          "format": "guid"
+        },
+        "PlayOrder": {
+          "type": "integer"
+        },
+        "Players": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Player"
+          }
+        }
+      }
+    },
+    "Player": {
+      "type": "object",
+      "x-typeName": "Player",
+      "additionalProperties": false,
+      "required": [
+        "PlacedInitialUnits",
+        "NumberOfUnits",
+        "NumberOfCountries"
+      ],
+      "properties": {
+        "Cards": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "x-typeName": "BonusCard",
+            "x-enumNames": [
+              "A",
+              "B",
+              "C"
+            ],
+            "enum": [
+              0,
+              1,
+              2
+            ],
+            "description": ""
+          }
+        },
+        "PlacedInitialUnits": {
+          "type": "boolean"
+        },
+        "NumberOfUnits": {
+          "type": "integer"
+        },
+        "NumberOfCountries": {
+          "type": "integer"
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/PlayerSummary"
+        }
+      ]
+    },
+    "BonusCard": {
+      "type": "integer",
+      "x-typeName": "BonusCard",
+      "x-enumNames": [
+        "A",
+        "B",
+        "C"
+      ],
+      "enum": [
+        0,
+        1,
+        2
+      ],
+      "description": ""
+    },
+    "PlayerSummary": {
+      "type": "object",
+      "x-typeName": "PlayerSummary",
+      "additionalProperties": false,
+      "required": [
+        "Id",
+        "State",
+        "Outcome",
+        "TeamId",
+        "PlayOrder",
+        "Timeouts"
+      ],
+      "properties": {
+        "Id": {
+          "type": "string",
+          "format": "guid"
+        },
+        "UserId": {
+          "type": "string"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "State": {
+          "$ref": "#/definitions/PlayerState"
+        },
+        "Outcome": {
+          "$ref": "#/definitions/PlayerOutcome"
+        },
+        "TeamId": {
+          "type": "string",
+          "format": "guid"
+        },
+        "PlayOrder": {
+          "type": "integer"
+        },
+        "Timeouts": {
+          "type": "integer"
+        }
+      }
+    },
+    "PlayerState": {
+      "type": "integer",
+      "x-typeName": "PlayerState",
+      "x-enumNames": [
+        "None",
+        "Active",
+        "InActive"
+      ],
+      "enum": [
+        0,
+        1,
+        2
+      ],
+      "description": ""
+    },
+    "PlayerOutcome": {
+      "type": "integer",
+      "x-typeName": "PlayerOutcome",
+      "x-enumNames": [
+        "None",
+        "Won",
+        "Defeated",
+        "Surrendered",
+        "Timeout"
+      ],
+      "enum": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "description": ""
+    },
+    "GameState": {
+      "type": "integer",
+      "x-typeName": "GameState",
+      "x-enumNames": [
+        "None",
+        "Open",
+        "Active",
+        "Ended"
+      ],
+      "enum": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "description": ""
+    },
+    "PlayState": {
+      "type": "integer",
+      "x-typeName": "PlayState",
+      "x-enumNames": [
+        "None",
+        "PlaceUnits",
+        "Attack",
+        "Move",
+        "Done"
+      ],
+      "enum": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "description": ""
+    },
+    "Map": {
+      "type": "object",
+      "x-typeName": "Map",
+      "additionalProperties": false,
+      "properties": {
+        "Countries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Country"
+          }
+        }
+      }
+    },
+    "Country": {
+      "type": "object",
+      "x-typeName": "Country",
+      "additionalProperties": false,
+      "required": [
+        "PlayerId",
+        "TeamId",
+        "Units"
+      ],
+      "properties": {
+        "Identifier": {
+          "type": "string"
+        },
+        "PlayerId": {
+          "type": "string",
+          "format": "guid"
+        },
+        "TeamId": {
+          "type": "string",
+          "format": "guid"
+        },
+        "Units": {
+          "type": "integer"
+        }
+      }
+    },
+    "GameOptions": {
+      "type": "object",
+      "x-typeName": "GameOptions",
+      "additionalProperties": false,
+      "required": [
+        "NumberOfPlayersPerTeam",
+        "NumberOfTeams",
+        "MinUnitsPerCountry",
+        "NewUnitsPerTurn",
+        "AttacksPerTurn",
+        "MovesPerTurn",
+        "InitialCountryUnits",
+        "MapDistribution",
+        "TimeoutInSeconds",
+        "MaximumTimeoutsPerPlayer",
+        "MaximumNumberOfCards",
+        "VictoryConditions",
+        "VisibilityModifier"
+      ],
+      "properties": {
+        "NumberOfPlayersPerTeam": {
+          "type": "integer",
+          "maximum": 8.0,
+          "minimum": 1.0
+        },
+        "NumberOfTeams": {
+          "type": "integer",
+          "maximum": 16.0,
+          "minimum": 2.0
+        },
+        "MinUnitsPerCountry": {
+          "type": "integer",
+          "maximum": 5.0,
+          "minimum": 0.0
+        },
+        "NewUnitsPerTurn": {
+          "type": "integer",
+          "maximum": 10.0,
+          "minimum": 3.0
+        },
+        "AttacksPerTurn": {
+          "type": "integer",
+          "maximum": 100.0,
+          "minimum": 1.0
+        },
+        "MovesPerTurn": {
+          "type": "integer",
+          "maximum": 100.0,
+          "minimum": 1.0
+        },
+        "InitialCountryUnits": {
+          "type": "integer",
+          "maximum": 5.0,
+          "minimum": 0.0
+        },
+        "MapDistribution": {
+          "$ref": "#/definitions/MapDistribution"
+        },
+        "TimeoutInSeconds": {
+          "type": "integer",
+          "maximum": 432000.0,
+          "minimum": 180.0
+        },
+        "MaximumTimeoutsPerPlayer": {
+          "type": "integer"
+        },
+        "MaximumNumberOfCards": {
+          "type": "integer",
+          "maximum": 10.0,
+          "minimum": 0.0
+        },
+        "VictoryConditions": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "x-typeName": "VictoryConditionType",
+            "x-enumNames": [
+              "Survival",
+              "ControlContinent"
+            ],
+            "enum": [
+              0,
+              1
+            ],
+            "description": ""
+          },
+          "minItems": 1
+        },
+        "VisibilityModifier": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "x-typeName": "VisibilityModifierType",
+            "x-enumNames": [
+              "None",
+              "Fog"
+            ],
+            "enum": [
+              0,
+              1
+            ],
+            "description": ""
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "MapDistribution": {
+      "type": "integer",
+      "x-typeName": "MapDistribution",
+      "x-enumNames": [
+        "Default",
+        "Malibu",
+        "TeamCluster"
+      ],
+      "enum": [
+        0,
+        1,
+        2
+      ],
+      "description": ""
+    },
+    "VictoryConditionType": {
+      "type": "integer",
+      "x-typeName": "VictoryConditionType",
+      "x-enumNames": [
+        "Survival",
+        "ControlContinent"
+      ],
+      "enum": [
+        0,
+        1
+      ],
+      "description": ""
+    },
+    "VisibilityModifierType": {
+      "type": "integer",
+      "x-typeName": "VisibilityModifierType",
+      "x-enumNames": [
+        "None",
+        "Fog"
+      ],
+      "enum": [
+        0,
+        1
+      ],
+      "description": ""
+    },
+    "LadderSummary": {
+      "type": "object",
+      "x-typeName": "LadderSummary",
+      "additionalProperties": false,
+      "required": [
+        "Id",
+        "IsQueued",
+        "QueueCount",
+        "MapTemplates"
+      ],
+      "properties": {
+        "Id": {
+          "type": "string",
+          "format": "guid"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "Options": {
+          "$ref": "#/definitions/GameOptions"
+        },
+        "Standing": {
+          "$ref": "#/definitions/LadderStanding"
+        },
+        "IsQueued": {
+          "type": "boolean"
+        },
+        "QueueCount": {
+          "type": "integer"
+        },
+        "MapTemplates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "LadderStanding": {
+      "type": "object",
+      "x-typeName": "LadderStanding",
+      "additionalProperties": false,
+      "required": [
+        "Position",
+        "GamesPlayed",
+        "GamesWon",
+        "GamesLost",
+        "Rating",
+        "LastGame"
+      ],
+      "properties": {
+        "UserId": {
+          "type": "string"
+        },
+        "UserName": {
+          "type": "string"
+        },
+        "Position": {
+          "type": "integer"
+        },
+        "GamesPlayed": {
+          "type": "integer"
+        },
+        "GamesWon": {
+          "type": "integer"
+        },
+        "GamesLost": {
+          "type": "integer"
+        },
+        "Rating": {
+          "type": "number",
+          "format": "double"
+        },
+        "LastGame": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "Ladder": {
+      "type": "object",
+      "x-typeName": "Ladder",
+      "additionalProperties": false,
+      "required": [
+        "IsActive"
+      ],
+      "properties": {
+        "Standings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LadderStanding"
+          }
+        },
+        "IsActive": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/LadderSummary"
+        }
+      ]
+    },
+    "MapTemplateSummary": {
+      "type": "object",
+      "x-typeName": "MapTemplateSummary",
+      "additionalProperties": false,
+      "required": [
+        "Id"
+      ],
+      "properties": {
+        "Id": {
+          "type": "integer",
+          "format": "long"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "Image": {
+          "type": "string"
+        }
+      }
+    },
+    "MapTemplate": {
+      "type": "object",
+      "x-typeName": "MapTemplate",
+      "additionalProperties": false,
+      "properties": {
+        "Name": {
+          "type": "string"
+        },
+        "Image": {
+          "type": "string"
+        },
+        "Countries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CountryTemplate"
+          }
+        },
+        "Connections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Connection"
+          }
+        },
+        "Continents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Continent"
+          }
+        }
+      }
+    },
+    "CountryTemplate": {
+      "type": "object",
+      "x-typeName": "CountryTemplate",
+      "additionalProperties": false,
+      "required": [
+        "X",
+        "Y"
+      ],
+      "properties": {
+        "Identifier": {
+          "type": "string"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "X": {
+          "type": "integer"
+        },
+        "Y": {
+          "type": "integer"
+        }
+      }
+    },
+    "Connection": {
+      "type": "object",
+      "x-typeName": "Connection",
+      "additionalProperties": false,
+      "properties": {
+        "Origin": {
+          "type": "string"
+        },
+        "Destination": {
+          "type": "string"
+        }
+      }
+    },
+    "Continent": {
+      "type": "object",
+      "x-typeName": "Continent",
+      "additionalProperties": false,
+      "required": [
+        "Id",
+        "Bonus"
+      ],
+      "properties": {
+        "Id": {
+          "type": "integer",
+          "format": "long"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "Bonus": {
+          "type": "integer"
+        },
+        "Countries": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "GameSummary": {
+      "type": "object",
+      "x-typeName": "GameSummary",
+      "additionalProperties": false,
+      "required": [
+        "Id",
+        "Type",
+        "LastActionAt",
+        "TimeoutSecondsLeft",
+        "State"
+      ],
+      "properties": {
+        "Id": {
+          "type": "integer",
+          "format": "long"
+        },
+        "Type": {
+          "$ref": "#/definitions/GameType"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "LadderId": {
+          "type": "string",
+          "format": "guid"
+        },
+        "LadderName": {
+          "type": "string"
+        },
+        "Options": {
+          "$ref": "#/definitions/GameOptions"
+        },
+        "CreatedByUserId": {
+          "type": "string"
+        },
+        "CreatedByName": {
+          "type": "string"
+        },
+        "StartedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "LastActionAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "TimeoutSecondsLeft": {
+          "type": "integer"
+        },
+        "MapTemplate": {
+          "type": "string"
+        },
+        "State": {
+          "$ref": "#/definitions/GameState"
+        },
+        "CurrentPlayer": {
+          "$ref": "#/definitions/PlayerSummary"
+        },
+        "Teams": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TeamSummary"
+          }
+        }
+      }
+    },
+    "TeamSummary": {
+      "type": "object",
+      "x-typeName": "TeamSummary",
+      "additionalProperties": false,
+      "required": [
+        "Id",
+        "PlayOrder"
+      ],
+      "properties": {
+        "Id": {
+          "type": "string",
+          "format": "guid"
+        },
+        "PlayOrder": {
+          "type": "integer"
+        },
+        "Players": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PlayerSummary"
+          }
+        }
+      }
+    },
+    "GameCreationOptions": {
+      "type": "object",
+      "x-typeName": "GameCreationOptions",
+      "additionalProperties": false,
+      "required": [
+        "Name",
+        "AddBot",
+        "MapTemplate"
+      ],
+      "properties": {
+        "Name": {
+          "type": "string"
+        },
+        "AddBot": {
+          "type": "boolean"
+        },
+        "MapTemplate": {
+          "type": "string"
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/GameOptions"
+        }
+      ]
+    },
+    "MessageFolder": {
+      "type": "integer",
+      "x-typeName": "MessageFolder",
+      "x-enumNames": [
+        "None",
+        "Inbox",
+        "Sent"
+      ],
+      "enum": [
+        0,
+        1,
+        2
+      ],
+      "description": ""
+    },
+    "Message": {
+      "type": "object",
+      "x-typeName": "Message",
+      "additionalProperties": false,
+      "required": [
+        "Id",
+        "Folder",
+        "SentAt",
+        "IsRead"
+      ],
+      "properties": {
+        "Id": {
+          "type": "string",
+          "format": "guid"
+        },
+        "From": {
+          "$ref": "#/definitions/UserReference"
+        },
+        "Folder": {
+          "$ref": "#/definitions/MessageFolder"
+        },
+        "SentAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "IsRead": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/SendMessage"
+        }
+      ]
+    },
+    "UserReference": {
+      "type": "object",
+      "x-typeName": "UserReference",
+      "additionalProperties": false,
+      "properties": {
+        "Id": {
+          "type": "string"
+        },
+        "Name": {
+          "type": "string"
+        }
+      }
+    },
+    "SendMessage": {
+      "type": "object",
+      "x-typeName": "SendMessage",
+      "additionalProperties": false,
+      "required": [
+        "To"
+      ],
+      "properties": {
+        "To": {
+          "$ref": "#/definitions/UserReference"
+        },
+        "Subject": {
+          "type": "string"
+        },
+        "Text": {
+          "type": "string"
+        }
+      }
+    },
+    "FolderInformation": {
+      "type": "object",
+      "x-typeName": "FolderInformation",
+      "additionalProperties": false,
+      "required": [
+        "Folder",
+        "Count",
+        "UnreadCount"
+      ],
+      "properties": {
+        "Folder": {
+          "$ref": "#/definitions/MessageFolder"
+        },
+        "Count": {
+          "type": "integer"
+        },
+        "UnreadCount": {
+          "type": "integer"
+        }
+      }
+    },
+    "NewsItem": {
+      "type": "object",
+      "x-typeName": "NewsItem",
+      "additionalProperties": false,
+      "required": [
+        "DateTime"
+      ],
+      "properties": {
+        "DateTime": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "PostedBy": {
+          "type": "string"
+        },
+        "Content": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/NewsContent"
+          }
+        }
+      }
+    },
+    "NewsContent": {
+      "type": "object",
+      "x-typeName": "NewsContent",
+      "additionalProperties": false,
+      "properties": {
+        "Language": {
+          "type": "string"
+        },
+        "Title": {
+          "type": "string"
+        },
+        "Text": {
+          "type": "string"
+        }
+      }
+    },
+    "PlaceUnitsOptions": {
+      "type": "object",
+      "x-typeName": "PlaceUnitsOptions",
+      "additionalProperties": false,
+      "required": [
+        "CountryIdentifier",
+        "NumberOfUnits"
+      ],
+      "properties": {
+        "CountryIdentifier": {
+          "type": "string"
+        },
+        "NumberOfUnits": {
+          "type": "integer",
+          "maximum": 64000.0,
+          "minimum": 1.0
+        }
+      }
+    },
+    "GameActionResult": {
+      "type": "object",
+      "x-typeName": "GameActionResult",
+      "additionalProperties": false,
+      "required": [
+        "Id",
+        "State",
+        "PlayState",
+        "ActionResult",
+        "AttacksInCurrentTurn",
+        "MovesInCurrentTurn"
+      ],
+      "properties": {
+        "Id": {
+          "type": "integer",
+          "format": "long"
+        },
+        "Teams": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Team"
+          }
+        },
+        "State": {
+          "$ref": "#/definitions/GameState"
+        },
+        "PlayState": {
+          "$ref": "#/definitions/PlayState"
+        },
+        "CountryUpdates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Country"
+          }
+        },
+        "ActionResult": {
+          "$ref": "#/definitions/ActionResult"
+        },
+        "AttacksInCurrentTurn": {
+          "type": "integer"
+        },
+        "MovesInCurrentTurn": {
+          "type": "integer"
+        },
+        "Cards": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Player/properties/Cards/items"
+          }
+        },
+        "CurrentPlayer": {
+          "$ref": "#/definitions/Player"
+        }
+      }
+    },
+    "ActionResult": {
+      "type": "integer",
+      "x-typeName": "ActionResult",
+      "x-enumNames": [
+        "None",
+        "Successful",
+        "NotSuccessful"
+      ],
+      "enum": [
+        0,
+        1,
+        2
+      ],
+      "description": ""
+    },
+    "AttackOptions": {
+      "type": "object",
+      "x-typeName": "AttackOptions",
+      "additionalProperties": false,
+      "required": [
+        "OriginCountryIdentifier",
+        "DestinationCountryIdentifier",
+        "NumberOfUnits"
+      ],
+      "properties": {
+        "OriginCountryIdentifier": {
+          "type": "string"
+        },
+        "DestinationCountryIdentifier": {
+          "type": "string"
+        },
+        "NumberOfUnits": {
+          "type": "integer",
+          "maximum": 64000.0,
+          "minimum": 1.0
+        }
+      }
+    },
+    "MoveOptions": {
+      "type": "object",
+      "x-typeName": "MoveOptions",
+      "additionalProperties": false,
+      "required": [
+        "OriginCountryIdentifier",
+        "DestinationCountryIdentifier",
+        "NumberOfUnits"
+      ],
+      "properties": {
+        "OriginCountryIdentifier": {
+          "type": "string"
+        },
+        "DestinationCountryIdentifier": {
+          "type": "string"
+        },
+        "NumberOfUnits": {
+          "type": "integer",
+          "maximum": 64000.0,
+          "minimum": 1.0
+        }
+      }
+    },
+    "Tournament": {
+      "type": "object",
+      "x-typeName": "Tournament",
+      "additionalProperties": false,
+      "required": [
+        "Phase"
+      ],
+      "properties": {
+        "Teams": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TournamentTeam"
+          }
+        },
+        "Groups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TournamentGroup"
+          }
+        },
+        "Pairings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TournamentPairing"
+          }
+        },
+        "MapTemplates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "Winner": {
+          "$ref": "#/definitions/TournamentTeam"
+        },
+        "Phase": {
+          "type": "integer"
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/TournamentSummary"
+        }
+      ]
+    },
+    "TournamentTeam": {
+      "type": "object",
+      "x-typeName": "TournamentTeam",
+      "additionalProperties": false,
+      "properties": {
+        "Participants": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UserReference"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "$ref": "#/definitions/TournamentTeamSummary"
+        }
+      ]
+    },
+    "TournamentTeamSummary": {
+      "type": "object",
+      "x-typeName": "TournamentTeamSummary",
+      "additionalProperties": false,
+      "required": [
+        "Id",
+        "GroupOrder",
+        "State"
+      ],
+      "properties": {
+        "Id": {
+          "type": "string",
+          "format": "guid"
+        },
+        "Name": {
+          "type": "string"
+        },
+        "GroupOrder": {
+          "type": "integer"
+        },
+        "State": {
+          "$ref": "#/definitions/TournamentTeamState"
+        }
+      }
+    },
+    "TournamentTeamState": {
+      "type": "integer",
+      "x-typeName": "TournamentTeamState",
+      "x-enumNames": [
+        "Open",
+        "Active",
+        "InActive"
+      ],
+      "enum": [
+        0,
+        1,
+        2
+      ],
+      "description": ""
+    },
+    "TournamentGroup": {
+      "type": "object",
+      "x-typeName": "TournamentGroup",
+      "additionalProperties": false,
+      "required": [
+        "Id"
+      ],
+      "properties": {
+        "Id": {
+          "type": "string",
+          "format": "guid"
+        },
+        "Teams": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TournamentTeamSummary"
+          }
+        }
+      }
+    },
+    "TournamentPairing": {
+      "type": "object",
+      "x-typeName": "TournamentPairing",
+      "additionalProperties": false,
+      "required": [
+        "TeamAWon",
+        "TeamBWon",
+        "NumberOfGames",
+        "Phase",
+        "Order"
+      ],
+      "properties": {
+        "TeamA": {
+          "$ref": "#/definitions/TournamentTeamSummary"
+        },
+        "TeamB": {
+          "$ref": "#/definitions/TournamentTeamSummary"
+        },
+        "TeamAWon": {
+          "type": "integer"
+        },
+        "TeamBWon": {
+          "type": "integer"
+        },
+        "NumberOfGames": {
+          "type": "integer"
+        },
+        "Phase": {
+          "type": "integer"
+        },
+        "Order": {
+          "type": "integer"
+        }
+      }
+    },
+    "TournamentSummary": {
+      "type": "object",
+      "x-typeName": "TournamentSummary",
+      "additionalProperties": false,
+      "required": [
+        "Id",
+        "Name",
+        "State",
+        "NumberOfTeams",
+        "NumberOfGroupGames",
+        "NumberOfKnockoutGames",
+        "NumberOfFinalGames",
+        "StartOfRegistration",
+        "StartOfTournament",
+        "EndOfTournament",
+        "Completion"
+      ],
+      "properties": {
+        "Id": {
+          "type": "string",
+          "format": "guid"
+        },
+        "Name": {
+          "type": "string",
+          "minLength": 3
+        },
+        "State": {
+          "$ref": "#/definitions/TournamentState"
+        },
+        "Options": {
+          "$ref": "#/definitions/GameOptions"
+        },
+        "NumberOfTeams": {
+          "type": "integer"
+        },
+        "NumberOfGroupGames": {
+          "type": "integer"
+        },
+        "NumberOfKnockoutGames": {
+          "type": "integer"
+        },
+        "NumberOfFinalGames": {
+          "type": "integer"
+        },
+        "StartOfRegistration": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "StartOfTournament": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "EndOfTournament": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "Completion": {
+          "type": "integer"
+        }
+      }
+    },
+    "TournamentState": {
+      "type": "integer",
+      "x-typeName": "TournamentState",
+      "x-enumNames": [
+        "Open",
+        "Groups",
+        "Knockout",
+        "Closed"
+      ],
+      "enum": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "description": ""
+    }
+  },
+  "responses": {},
+  "securityDefinitions": {}
+}

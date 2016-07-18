@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImperaPlus.Backend", "ImperaPlus.Backend\ImperaPlus.Backend.csproj", "{A8B43DFB-2469-4B3D-B4AB-49D07054DDC2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImperaPlus.Application", "ImperaPlus.Business\ImperaPlus.Application.csproj", "{10F47789-AAFB-4C67-AD7C-7B7FB3F8BEAD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImperaPlus.Application", "ImperaPlus.Application\ImperaPlus.Application.csproj", "{10F47789-AAFB-4C67-AD7C-7B7FB3F8BEAD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Backend", "Backend", "{F86A43BD-6FAB-4A06-923A-4856902CA3F1}"
 EndProject
@@ -39,6 +39,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImperaPlus.Utils", "ImperaPlus.Utils\ImperaPlus.Utils.csproj", "{BF729418-63D8-4C6D-9ED6-CD02226570FE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImperaPlus.DTO", "ImperaPlus.DTO\ImperaPlus.DTO.csproj", "{21E0C9DD-AD85-42DD-AACB-9E36D96BAAAF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImperaPlus.GeneratedClient", "ImperaPlus.GeneratedClient\ImperaPlus.GeneratedClient.csproj", "{7173F28C-3E87-4B1A-8BA4-C7C7A809EE6C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -94,6 +96,10 @@ Global
 		{21E0C9DD-AD85-42DD-AACB-9E36D96BAAAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{21E0C9DD-AD85-42DD-AACB-9E36D96BAAAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{21E0C9DD-AD85-42DD-AACB-9E36D96BAAAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7173F28C-3E87-4B1A-8BA4-C7C7A809EE6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7173F28C-3E87-4B1A-8BA4-C7C7A809EE6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7173F28C-3E87-4B1A-8BA4-C7C7A809EE6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7173F28C-3E87-4B1A-8BA4-C7C7A809EE6C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -111,5 +117,6 @@ Global
 		{3C4E70AD-B549-4F8C-9929-0A64A4262E0E} = {F86A43BD-6FAB-4A06-923A-4856902CA3F1}
 		{BF729418-63D8-4C6D-9ED6-CD02226570FE} = {F86A43BD-6FAB-4A06-923A-4856902CA3F1}
 		{21E0C9DD-AD85-42DD-AACB-9E36D96BAAAF} = {E78C61C3-A31F-4C5E-A0B5-9FB383CD00A4}
+		{7173F28C-3E87-4B1A-8BA4-C7C7A809EE6C} = {E78C61C3-A31F-4C5E-A0B5-9FB383CD00A4}
 	EndGlobalSection
 EndGlobal

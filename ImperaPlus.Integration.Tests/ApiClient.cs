@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
+using ImperaPlus.GeneratedClient;
 
 namespace ImperaPlus.Integration.Tests
 {
@@ -19,64 +14,39 @@ namespace ImperaPlus.Integration.Tests
 
     public class ApiClient
     {
-        public static Task<HttpClient> GetClient()
+        public static Task<TClientType> GetClient<TClientType>() where TClientType : ImperaHttpClient
         {
-            var client = new HttpClient(TestSetup.TestServer.Handler)
-            {
-                BaseAddress = new Uri(ConfigurationManager.AppSettings["BaseUri"])
-            };
-
+            var client = ImperaClientFactory.GetClient<TClientType>(ConfigurationManager.AppSettings["BaseUri"], null, TestSetup.TestServer.Handler);
             return Task.FromResult(client);
         }
 
-        public static async Task<HttpClient> GetAuthenticatedClientAdminUser()
+        public static async Task<TClientType> GetAuthenticatedClient<TClientType>(string username, string password) where TClientType : ImperaHttpClient
         {
-            return await GetAuthenticatedClient("TestAdmin", "TestAdmin");
-        }
+            // Login
+            var accountClient = await GetClient<AccountClient>();
+            var token = await accountClient.LoginAsync(username, password);
 
-        public static async Task<HttpClient> GetAuthenticatedClientDefaultUser()
-        {
-            return await GetAuthenticatedClient((int)TestUser.Default);
-        }
-
-        public static async Task<HttpClient> GetAuthenticatedClient(int user)
-        {
-            return await GetAuthenticatedClient(
-                ConfigurationManager.AppSettings["TestUser" + user], 
-                ConfigurationManager.AppSettings["TestPassword" + user]);
-        }
-
-        public static async Task<HttpClient> GetAuthenticatedClient(string username, string password)
-        {
-            var client = await GetClient();
-
-            var content = new FormUrlEncodedContent(new[]
-            {
-                new KeyValuePair<string, string>("grant_type", "password"),
-                new KeyValuePair<string, string>("username", username),
-                new KeyValuePair<string, string>("password", password)
-            });
-
-            var result = await client.PostAsync("Token", content);
-            var tokenString = await result.Content.ReadAsStringAsync();
-
-            if (tokenString.Contains("incorrect"))
-            {
-                Assert.Fail("Cannot authenticate, user does not exist?");
-            }
-
-            if (tokenString.Contains("confirmed"))
-            {
-                Assert.Fail("Cannot authenticate, user is not confirmed");
-            }
-
-            var ticket = JObject.Parse(tokenString);
-            var token = ticket["access_token"].ToString();
-
-            client.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", token);
-
+            // Create requested client
+            var client = await ApiClient.GetClient<TClientType>();
+            client.AuthToken = token;
             return client;
+        }
+
+        public static async Task<TClientType> GetAuthenticatedClientAdminUser<TClientType>() where TClientType : ImperaHttpClient
+        {
+            return await GetAuthenticatedClient<TClientType>("TestAdmin", "TestAdmin");
+        }
+
+        public static async Task<TClientType> GetAuthenticatedClientDefaultUser<TClientType>() where TClientType : ImperaHttpClient
+        {
+            return await GetAuthenticatedClient<TClientType>((int)TestUser.Default);
+        }
+
+        public static async Task<TClientType> GetAuthenticatedClient<TClientType>(int user) where TClientType : ImperaHttpClient
+        {
+            return await GetAuthenticatedClient<TClientType>(
+                ConfigurationManager.AppSettings["TestUser" + user],
+                ConfigurationManager.AppSettings["TestPassword" + user]);
         }
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Web.Http;
 using System.Web.Http.Description;
 using ImperaPlus.Application.Tournaments;
-using ImperaPlus.DTO.Tournaments;
 
 namespace ImperaPlus.Backend.Controllers
 {
@@ -24,26 +23,18 @@ namespace ImperaPlus.Backend.Controllers
         /// <returns>List of tournaments</returns>
         [Route("")]
         [ResponseType(typeof(IEnumerable<DTO.Tournaments.Tournament>))]
-        public IHttpActionResult Get()
+        public IHttpActionResult GetAll()
         {
             return this.Ok(this.tournamentService.GetAll());
         }
-
+        
         /// <summary>
-        /// Returns tournaments
+        /// Get tournament identified by Id
         /// </summary>
-        /// <param name="state">Optional state of tournaments; defaults to open</param>
-        /// <returns>List of tournaments</returns>
-        [Route("")]
-        [ResponseType(typeof(IEnumerable<DTO.Tournaments.Tournament>))]
-        public IHttpActionResult Get(TournamentState state)
-        {
-            return this.Ok(this.tournamentService.GetAll(state));
-        }
-
+        /// <param name="tournamentId">Id of tournament</param>
         [Route("{tournamentId:guid}")]
         [ResponseType(typeof(DTO.Tournaments.Tournament))]
-        public IHttpActionResult Get(Guid tournamentId)
+        public IHttpActionResult GetById(Guid tournamentId)
         {
             return this.Ok(this.tournamentService.Get(tournamentId));
         }
@@ -52,13 +43,17 @@ namespace ImperaPlus.Backend.Controllers
         /// Join tournament
         /// </summary>
         /// <param name="tournamentId">Id of tournament</param>
-        [Route("{tournamentId:guid}/teams")]
+        [Route("{tournamentId:guid}")]
         [ResponseType(typeof(DTO.Tournaments.TournamentTeam))]
         public IHttpActionResult PostJoin(Guid tournamentId)
         {
             return this.Ok(this.tournamentService.Join(tournamentId));
         }
 
+        /// <summary>
+        /// Get teams for tournament
+        /// </summary>
+        /// <param name="tournamentId">Id of tournament</param>
         [Route("{tournamentId:guid}/teams")]
         [ResponseType(typeof(IEnumerable<DTO.Tournaments.TournamentTeam>))]
         public IHttpActionResult GetTeams(Guid tournamentId)
@@ -98,7 +93,7 @@ namespace ImperaPlus.Backend.Controllers
         /// Delete a team. Only allowed if user created it
         /// </summary>
         /// <param name="tournamentId">Id of tournament</param>
-        /// <param name="teamId">Id of team to delete</param>       
+        /// <param name="teamId">Id of team to delete</param>
         [Route("{tournamentId:guid}/teams/{teamId:guid}")]
         public IHttpActionResult DeleteTeam(Guid tournamentId, Guid teamId)
         {
@@ -108,12 +103,11 @@ namespace ImperaPlus.Backend.Controllers
         }
 
         /// <summary>
-        /// Leave a team
+        /// Leave a team and tournament
         /// </summary>
         /// <param name="tournamentId">Id of tournament</param>
-        /// <param name="teamId">Id of team to leave</param>
         [Route("{tournamentId:guid}/teams/me")]
-        public IHttpActionResult DeleteLeaveTeam(Guid tournamentId)
+        public IHttpActionResult LeaveTournament(Guid tournamentId)
         {
             this.tournamentService.Leave(tournamentId);
 

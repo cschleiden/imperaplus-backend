@@ -86,13 +86,13 @@ namespace ImperaPlus.Backend.Controllers
         /// Get messages for a single game
         /// </summary>
         /// <param name="gameId">Id of the requested game</param>
-        /// <param name="public">Value indicating whether to return only public messages, default is true</param>
+        /// <param name="isPublic">Value indicating whether to return only public messages, default is true</param>
         /// <returns>Messages posted in the requested game</returns>
         [Route("{gameId:long:min(1)}/messages")]
         [ResponseType(typeof(Game))]
-        public IHttpActionResult GetMessages(long gameId, bool @public = true)
+        public IHttpActionResult GetMessages(long gameId, bool isPublic = true)
         {
-            var messages = this.gameService.GetMessages(gameId, @public);
+            var messages = this.gameService.GetMessages(gameId, isPublic);
 
             return this.Ok(messages);
         }

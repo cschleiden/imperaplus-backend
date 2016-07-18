@@ -178,3 +178,5 @@ src/modules/**/*.js
 /ImperaPlus.sln.ide
 *.mo
 *.sublime-workspace
+/Credentials.config
+/.vs/config
