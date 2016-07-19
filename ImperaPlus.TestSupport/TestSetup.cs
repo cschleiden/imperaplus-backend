@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Autofac.Core;
+using ImperaPlus.Application;
 using ImperaPlus.DataAccess;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Services;
@@ -30,7 +31,7 @@ namespace ImperaPlus.TestSupport
             builder.RegisterType<ImperaContext>().As<IImperaContext>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<TestUserProvider>().As<IUserProvider>().InstancePerLifetimeScope();
             builder.RegisterType<UnitOfWork>().As<IUnitOfWork>();
-            builder.RegisterType<TestMapTemplateProvider>().As<IMapTemplateProvider>();
+            builder.RegisterType<MapTemplateProvider>().As<IMapTemplateProvider>();
 
             builder.RegisterType<AttackService>().As<IAttackService>();
 

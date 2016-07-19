@@ -17,7 +17,7 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
 
         protected void AddLookups()
         {
-            this.ViewBag.MapTemplates = this.unitOfWork.MapTemplates.Query().Select(x => x.Name).ToList();
+            this.ViewBag.MapTemplates = this.unitOfWork.MapTemplateDescriptors.Query().Select(x => x.Name).ToList();
             this.ViewBag.VictoryConditionValues = Enum.GetNames(typeof(Domain.Enums.VictoryConditionType));
             this.ViewBag.VisibilityModifierValues = Enum.GetNames(typeof(Domain.Enums.VisibilityModifierType));
         }

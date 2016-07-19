@@ -16,9 +16,7 @@ namespace ImperaPlus.DataAccess.ConvertedMaps
 
             var mapTemplate = new MapTemplate("TestMap")
             {
-                Image = "testmap.jpg",
-                CreatedAt = DateTime.UtcNow,
-                CreatedBy = "System"
+                Image = "testmap.jpg"
             };
 
             var countryA = new CountryTemplate("A", "A") { X = 0, Y = 0 };

@@ -176,7 +176,7 @@ namespace ImperaPlus.Application.Tournaments
             foreach (var mapTemplateName in tournament.MapTemplates)
             {
                 // Ensure MapTemplates exist
-                if (this.UnitOfWork.MapTemplates.Get(mapTemplateName) == null)
+                if (this.UnitOfWork.MapTemplateDescriptors.Get(mapTemplateName) == null)
                 {
                     throw new Exceptions.ApplicationException("Cannot find map template", ErrorCode.CannotFindMapTemplate);
                 }

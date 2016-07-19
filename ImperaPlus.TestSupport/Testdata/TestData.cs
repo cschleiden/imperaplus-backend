@@ -47,8 +47,6 @@ namespace ImperaPlus.TestSupport.Testdata
         public Game CreateGame(int teams = 2, int playerPerTeam = 1)
         {
             var mapTemplate = this.CreateAndSaveMapTemplate();
-            this.context.MapTemplates.Add(mapTemplate);
-            this.SaveChanges();
 
             var game = this.GameService.Create(
                 GameType.Fun,
@@ -67,7 +65,14 @@ namespace ImperaPlus.TestSupport.Testdata
         {
             var mapTemplate = Maps.WorldDeluxe();
 
-            this.context.MapTemplates.Add(mapTemplate);
+            if (!this.context.MapTemplates.Any(x => x.Name == "WorldDeluxe"))
+            {
+                this.context.MapTemplates.Add(new MapTemplateDescriptor
+                {
+                    Name = "WorldDeluxe"
+                });
+                this.SaveChanges();
+            }
 
             return mapTemplate;
         }

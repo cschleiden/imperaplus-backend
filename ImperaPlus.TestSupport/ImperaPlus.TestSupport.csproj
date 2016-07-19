@@ -115,7 +115,6 @@
     <Compile Include="TestDbConfig.cs" />
     <Compile Include="TestDbConnectionFactory.cs" />
     <Compile Include="TestHelper.cs" />
-    <Compile Include="TestMapTemplateProvider.cs" />
     <Compile Include="TestSetup.cs" />
     <Compile Include="TestUserProvider.cs" />
   </ItemGroup>
@@ -126,6 +125,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ImperaPlus.Application\ImperaPlus.Application.csproj">
+      <Project>{10F47789-AAFB-4C67-AD7C-7B7FB3F8BEAD}</Project>
+      <Name>ImperaPlus.Application</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ImperaPlus.DataAccess.ConvertedMaps\ImperaPlus.DataAccess.ConvertedMaps.csproj">
       <Project>{3c4e70ad-b549-4f8c-9929-0a64a4262e0e}</Project>
       <Name>ImperaPlus.DataAccess.ConvertedMaps</Name>

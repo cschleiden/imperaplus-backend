@@ -18,7 +18,7 @@ namespace ImperaPlus.Backend.Controllers
         }
 
         [Route("")]
-        public IEnumerable<MapTemplateSummary> GetAllSummary()
+        public IEnumerable<MapTemplateDescriptor> GetAllSummary()
         {
             return this.mapTemplateService.QuerySummary();
         }

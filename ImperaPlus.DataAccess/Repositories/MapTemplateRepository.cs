@@ -5,7 +5,7 @@ using ImperaPlus.Domain.Repositories;
 
 namespace ImperaPlus.DataAccess.Repositories
 {
-    class MapTemplateRepository : GenericRepository<MapTemplate>, IMapTemplateRepository
+    class MapTemplateRepository : GenericRepository<MapTemplate>, IMapTemplateDescriptorRepository
     {
         public MapTemplateRepository(DbContext context) 
             : base(context)

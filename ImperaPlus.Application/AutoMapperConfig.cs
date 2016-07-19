@@ -165,7 +165,7 @@ namespace ImperaPlus.Application
             Mapper.CreateMap<Domain.Games.Team, DTO.Games.TeamSummary>();
 
             Mapper.CreateMap<Domain.Map.MapTemplate, DTO.Games.Map.MapTemplate>();
-            Mapper.CreateMap<Domain.Map.MapTemplate, DTO.Games.Map.MapTemplateSummary>();
+            Mapper.CreateMap<Domain.Map.MapTemplateDescriptor, DTO.Games.Map.MapTemplateDescriptor>();
 
             Mapper.CreateMap<Domain.Enums.VictoryConditionType, DTO.Games.VictoryConditionType>().ReverseMap();
             Mapper.CreateMap<Domain.Enums.VisibilityModifierType, DTO.Games.VisibilityModifierType>().ReverseMap();

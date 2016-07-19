@@ -11,7 +11,7 @@ namespace ImperaPlus.Domain.Repositories
 
         IPlayerRepository Players { get; }
 
-        IMapTemplateRepository MapTemplates { get; }
+        IMapTemplateDescriptorRepository MapTemplateDescriptors { get; }
 
         IChannelRepository Channels { get; }
 

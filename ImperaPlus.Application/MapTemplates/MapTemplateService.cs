@@ -10,7 +10,7 @@ namespace ImperaPlus.Application
 {
     public interface IMapTemplateService
     {
-        IQueryable<MapTemplateSummary> QuerySummary();
+        IQueryable<MapTemplateDescriptor> QuerySummary();
 
         MapTemplate Get(string name);
     }
@@ -25,9 +25,9 @@ namespace ImperaPlus.Application
             this.mapTemplateProvider = mapTemplateProvider;
         }
 
-        public IQueryable<MapTemplateSummary> QuerySummary()
+        public IQueryable<MapTemplateDescriptor> QuerySummary()
         {
-            return this.UnitOfWork.MapTemplates.Query().Project().To<MapTemplateSummary>();
+            return this.UnitOfWork.MapTemplateDescriptors.Query().Project().To<MapTemplateDescriptor>();
         }
 
         public MapTemplate Get(string name)

@@ -3,7 +3,7 @@ using ImperaPlus.Domain.Map;
 
 namespace ImperaPlus.Domain.Repositories
 {
-    public interface IMapTemplateRepository : IGenericRepository<MapTemplate>
+    public interface IMapTemplateDescriptorRepository : IGenericRepository<MapTemplate>
     {
         MapTemplate Get(string name);
     }

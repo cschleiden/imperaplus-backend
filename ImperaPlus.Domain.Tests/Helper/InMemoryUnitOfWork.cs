@@ -21,7 +21,7 @@ namespace ImperaPlus.Domain.Tests.Helper
             get { throw new NotImplementedException(); }
         }
 
-        public IMapTemplateRepository MapTemplates
+        public IMapTemplateDescriptorRepository MapTemplateDescriptors
         {
             get { throw new NotImplementedException(); }
         }

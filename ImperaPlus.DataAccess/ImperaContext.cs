@@ -1,21 +1,21 @@
-﻿using System;
+﻿using Autofac;
+using ImperaPlus.Domain;
+using ImperaPlus.Domain.Chat;
+using ImperaPlus.Domain.Events;
+using ImperaPlus.Domain.Games;
+using ImperaPlus.Domain.Games.History;
+using ImperaPlus.Domain.Ladders;
+using ImperaPlus.Domain.Map;
+using ImperaPlus.Domain.News;
+using ImperaPlus.Domain.Tournaments;
+using ImperaPlus.Domain.Utilities;
+using Microsoft.AspNet.Identity.EntityFramework;
+using StackExchange.Profiling;
+using System;
 using System.Data.Entity;
 using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
-using Autofac;
-using ImperaPlus.Domain;
-using ImperaPlus.Domain.Chat;
-using ImperaPlus.Domain.Games;
-using ImperaPlus.Domain.Map;
-using ImperaPlus.Domain.News;
-using Microsoft.AspNet.Identity.EntityFramework;
-using ImperaPlus.Domain.Events;
-using StackExchange.Profiling;
-using ImperaPlus.Domain.Ladders;
-using ImperaPlus.Domain.Games.History;
-using ImperaPlus.Domain.Utilities;
-using ImperaPlus.Domain.Tournaments;
 
 namespace ImperaPlus.DataAccess
 {
@@ -58,7 +58,7 @@ namespace ImperaPlus.DataAccess
 
         public virtual IDbSet<Game> Games { get; set; }
 
-        public virtual IDbSet<MapTemplate> MapTemplates { get; set; }
+        public virtual IDbSet<MapTemplateDescriptor> MapTemplates { get; set; }
 
         public virtual IDbSet<Channel> Channels { get; set; }
 
@@ -67,6 +67,8 @@ namespace ImperaPlus.DataAccess
         public virtual IDbSet<NewsEntry> NewsEntries { get; set; }
 
         public virtual IDbSet<Ladder> Ladders { get; set; }
+
+        public virtual IDbSet<GameOptions> GameOptions { get; set; }
 
         public override int SaveChanges()
         {
@@ -191,7 +193,5 @@ namespace ImperaPlus.DataAccess
 
             base.OnModelCreating(modelBuilder);
         }
-
-        public System.Data.Entity.DbSet<ImperaPlus.Domain.Games.GameOptions> GameOptions { get; set; }
     }
 }

@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace ImperaPlus.Domain.Map
 {
-    public class MapTemplate : IIdentifiableEntity, IChangeTrackedEntity
+    public class MapTemplate
     {
-        private ILookup<string, string> connectionDict;
-
-        private MapTemplate()
-        {            
-        }
+        private ILookup<string, string> connectionDict;        
 
         public MapTemplate(string name)
         {
@@ -20,26 +15,17 @@ namespace ImperaPlus.Domain.Map
             this.Countries = new HashSet<CountryTemplate>();
             this.Continents = new HashSet<Continent>();
             this.Connections = new HashSet<Connection>();
-        }
-
-        public long Id { get; set; }
-
-        [Required]
+        }        
+        
         public string Name { get; set; }
 
-        public virtual ICollection<CountryTemplate> Countries { get; private set; }
-
-        public virtual ICollection<Continent> Continents { get; private set; }
-
-        public virtual ICollection<Connection> Connections { get; private set; }
-        
-        public DateTime CreatedAt { get; set; }
-
-        public string CreatedBy { get; set; }
-        
-        public DateTime LastModifiedAt { get; set; }
-
         public string Image { get; set; }
+
+        public ICollection<CountryTemplate> Countries { get; set; }
+
+        public ICollection<Continent> Continents { get; set; }
+
+        public ICollection<Connection> Connections { get; set; }        
 
         /// <summary>
         /// Returns a value indicating whether the given countries are connected

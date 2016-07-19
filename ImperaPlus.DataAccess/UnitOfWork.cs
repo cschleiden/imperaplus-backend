@@ -13,7 +13,7 @@ namespace ImperaPlus.DataAccess
         private readonly ImperaContext context;
 
         private IGameRepository games;
-        private IMapTemplateRepository mapTemplates;
+        private IMapTemplateDescriptorRepository mapTemplates;
         private IUserRepository userRepository;
         private IChannelRepository channels;
         private IChatMessageRepository chatMessages;
@@ -67,7 +67,7 @@ namespace ImperaPlus.DataAccess
             }
         }
 
-        public IMapTemplateRepository MapTemplates
+        public IMapTemplateDescriptorRepository MapTemplateDescriptors
         {
             get
             {

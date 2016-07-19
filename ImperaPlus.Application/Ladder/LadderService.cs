@@ -71,7 +71,7 @@ namespace ImperaPlus.Application.Ladder
             foreach (var mapTemplateName in mapTemplateNames)
             {
                 // Ensure MapTemplates exist
-                if (this.UnitOfWork.MapTemplates.Get(mapTemplateName) == null)
+                if (this.UnitOfWork.MapTemplateDescriptors.Get(mapTemplateName) == null)
                 {
                     throw new Exceptions.ApplicationException("Cannot find map template", ErrorCode.CannotFindMapTemplate);
                 }

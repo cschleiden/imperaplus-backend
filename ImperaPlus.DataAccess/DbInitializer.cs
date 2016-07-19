@@ -11,6 +11,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Data.Entity;
 using ImperaPlus.Domain.Ladders;
+using ImperaPlus.Domain.Map;
 
 namespace ImperaPlus.DataAccess
 {
@@ -44,7 +45,7 @@ namespace ImperaPlus.DataAccess
                 context.Database.Create();
 
                 this.Seed(context);
-            }            
+            }
         }
 
         protected virtual void Seed(ImperaContext context) { }
@@ -74,7 +75,7 @@ namespace ImperaPlus.DataAccess
 
     public static class DbSeed
     {
-        public static void Seed(ImperaContext context, bool includeMaps = true)
+        public static void Seed(ImperaContext context)
         {
             // Enable if seed should be debugged locally
             // if (System.Diagnostics.Debugger.IsAttached == false)
@@ -151,22 +152,17 @@ namespace ImperaPlus.DataAccess
                 InitLadder(context, systemUser);
 
                 // Default set of maps
-                if (includeMaps && false)
+                var mapType = typeof(Maps);
+                foreach (var mapMethod in mapType.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static))
                 {
-                    var mapType = typeof(Maps);
-                    foreach (var mapMethod in mapType.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static))
+                    var mapName = mapMethod.Name;
+                    var mapTemplateDescriptor = new MapTemplateDescriptor
                     {
-                        var mapTemplate = (ImperaPlus.Domain.Map.MapTemplate)mapMethod.Invoke(null, null);
+                        Name = mapName
+                    };
 
-                        // if (mapTemplate.Name != "WorldDeluxe")
-                        // {
-                        //     continue;
-                        // }
-
-                        mapTemplate.LastModifiedAt = mapTemplate.CreatedAt = DateTime.UtcNow;
-
-                        context.MapTemplates.AddOrUpdate(x => x.Name, mapTemplate);
-                    }
+                    mapTemplateDescriptor.LastModifiedAt = mapTemplateDescriptor.CreatedAt = DateTime.UtcNow;
+                    context.MapTemplates.AddOrUpdate(x => x.Name, mapTemplateDescriptor);
                 }
 
                 context.SaveChanges();
@@ -191,7 +187,7 @@ namespace ImperaPlus.DataAccess
 
             context.SaveChanges();
         }
-      
+
         private static void InitLadder(ImperaContext context, User systemUser)
         {
             var ladder = new Ladder("Default", 2, 2);

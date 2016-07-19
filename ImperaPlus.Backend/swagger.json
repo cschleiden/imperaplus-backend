@@ -667,7 +667,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/MapTemplateSummary"
+                "$ref": "#/definitions/MapTemplateDescriptor"
               }
             },
             "x-nullable": true
@@ -2704,22 +2704,12 @@
         }
       ]
     },
-    "MapTemplateSummary": {
+    "MapTemplateDescriptor": {
       "type": "object",
-      "x-typeName": "MapTemplateSummary",
+      "x-typeName": "MapTemplateDescriptor",
       "additionalProperties": false,
-      "required": [
-        "Id"
-      ],
       "properties": {
-        "Id": {
-          "type": "integer",
-          "format": "long"
-        },
         "Name": {
-          "type": "string"
-        },
-        "Image": {
           "type": "string"
         }
       }

@@ -13,10 +13,7 @@ namespace ImperaPlus.Integration.Tests
     {
         protected override void Seed(ImperaContext context)
         {
-            DbSeed.Seed(context, false);
-
-            context.MapTemplates.Add(Maps.WorldDeluxe());            
-            context.MapTemplates.Add(TestMaps.TestMap());
+            DbSeed.Seed(context);
 
             // Add dummy news entry
             var newsEntry = NewsEntry.Create();

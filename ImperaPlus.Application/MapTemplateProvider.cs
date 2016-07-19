@@ -1,20 +1,26 @@
-using Autofac;
+using ImperaPlus.DataAccess.ConvertedMaps;
 using ImperaPlus.Domain.Map;
-using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Services;
-using ApplicationException = ImperaPlus.Application.Exceptions.ApplicationException;
+using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 
 namespace ImperaPlus.Application
 {
     public sealed class MapTemplateProvider : IMapTemplateProvider
     {
+        private readonly Dictionary<string, Func<MapTemplate>> mapTemplateFactory = new Dictionary<string, Func<MapTemplate>>();
         private readonly ConcurrentDictionary<string, MapTemplate> mapTemplates = new ConcurrentDictionary<string, MapTemplate>();
-        private readonly Autofac.ILifetimeScope scope;
-
-        public MapTemplateProvider(Autofac.ILifetimeScope scope)
+        
+        public MapTemplateProvider()
         {
-            this.scope = scope;
+            var type = typeof(Maps);
+            var methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+
+            foreach(var method in methods)
+            {
+                this.mapTemplateFactory.Add(method.Name.ToLowerInvariant(), () => (MapTemplate)method.Invoke(null, null));
+            }
         }
 
         public MapTemplate GetTemplate(string name)
@@ -24,17 +30,14 @@ namespace ImperaPlus.Application
 
         private MapTemplate GetTemplateFromStore(string name)
         {
-            using (var lifetimeScope = scope.BeginLifetimeScope("AutofacWebRequest"))
-            using (var unitOfWork = lifetimeScope.Resolve<IUnitOfWork>())
-            {
-                var template = unitOfWork.MapTemplates.Get(name);
-                if (template == null)
-                {
-                    throw new ApplicationException("Cannot find map template", ErrorCode.CannotFindMapTemplate);
-                }
+            var transformedName = name.ToLowerInvariant().Replace(" ", "_");
 
-                return template;
+            if (!this.mapTemplateFactory.ContainsKey(transformedName))
+            {
+                throw new Exceptions.ApplicationException("Cannot find map template", ErrorCode.CannotFindMapTemplate);
             }
+
+            return this.mapTemplateFactory[transformedName]();
         }        
     }
 }

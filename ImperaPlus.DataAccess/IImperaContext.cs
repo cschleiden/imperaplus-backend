@@ -13,7 +13,7 @@ namespace ImperaPlus.DataAccess
     {
         IDbSet<Game> Games { get; set; }
         
-        IDbSet<MapTemplate> MapTemplates { get; set; }
+        IDbSet<MapTemplateDescriptor> MapTemplates { get; set; }
         
         IDbSet<Channel> Channels { get; set; }
             

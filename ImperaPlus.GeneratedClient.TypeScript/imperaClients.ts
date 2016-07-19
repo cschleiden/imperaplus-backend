@@ -1414,13 +1414,13 @@ export class MapClient {
         this.baseUrl = baseUrl !== undefined ? baseUrl : ""; 
     }
 
-    getAllSummary(): Q.Promise<MapTemplateSummary[]> {
-        return Q.Promise<MapTemplateSummary[]>((resolve, reject) => {
+    getAllSummary(): Q.Promise<MapTemplateDescriptor[]> {
+        return Q.Promise<MapTemplateDescriptor[]>((resolve, reject) => {
             this.getAllSummaryWithCallbacks((result) => resolve(result), (exception, reason) => reject(exception));
         });
     }
     
-    private getAllSummaryWithCallbacks(onSuccess?: (result: MapTemplateSummary[]) => void, onFail?: (exception: string, reason: string) => void) {
+    private getAllSummaryWithCallbacks(onSuccess?: (result: MapTemplateDescriptor[]) => void, onFail?: (exception: string, reason: string) => void) {
         var url = this.baseUrl + "/api/map?"; 
 
         var content = "";
@@ -1457,9 +1457,9 @@ export class MapClient {
         var status = xhr.status.toString(); 
 
         if (status === "200") {
-            var result200: MapTemplateSummary[] = null; 
+            var result200: MapTemplateDescriptor[] = null; 
             if (data !== undefined && data !== null && data !== "") {
-                result200 = data === "" ? null : <MapTemplateSummary[]>jQuery.parseJSON(data);
+                result200 = data === "" ? null : <MapTemplateDescriptor[]>jQuery.parseJSON(data);
             }
             return result200;
         }
@@ -4058,10 +4058,8 @@ export interface Ladder extends LadderSummary {
     IsActive: boolean;
 }
 
-export interface MapTemplateSummary {
-    Id: number;
+export interface MapTemplateDescriptor {
     Name: string;
-    Image: string;
 }
 
 export interface MapTemplate {
