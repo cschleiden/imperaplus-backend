@@ -537,11 +537,11 @@
     <CopyAllFilesToSingleFolderForPackageDependsOn>CustomCollectFiles</CopyAllFilesToSingleFolderForPackageDependsOn>
     <CopyAllFilesToSingleFolderForMsdeployDependsOn>CustomCollectFiles</CopyAllFilesToSingleFolderForMsdeployDependsOn>
   </PropertyGroup>
-  <Import Project="..\packages\NSwag.MSBuild.3.28.0\build\NSwag.MSBuild.targets" Condition="Exists('..\packages\NSwag.MSBuild.3.28.0\build\NSwag.MSBuild.targets')" />
+  <Import Project="..\packages\NSwag.MSBuild.4.2.0\build\NSwag.MSBuild.targets" Condition="Exists('..\packages\NSwag.MSBuild.4.2.0\build\NSwag.MSBuild.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\NSwag.MSBuild.3.28.0\build\NSwag.MSBuild.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NSwag.MSBuild.3.28.0\build\NSwag.MSBuild.targets'))" />
+    <Error Condition="!Exists('..\packages\NSwag.MSBuild.4.2.0\build\NSwag.MSBuild.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NSwag.MSBuild.4.2.0\build\NSwag.MSBuild.targets'))" />
   </Target>
 </Project>
