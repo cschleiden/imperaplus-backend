@@ -133,17 +133,19 @@ namespace ImperaPlus.DataAccess
             modelBuilder.Entity<HistoryEntry>().HasOptional(x => x.Actor).WithMany().WillCascadeOnDelete(false);
             modelBuilder.Entity<HistoryEntry>().HasOptional(x => x.OtherPlayer).WithMany().WillCascadeOnDelete(false);          
             
-            // 
+            // Chat
             modelBuilder.Entity<Channel>().HasOptional(x => x.Game);
             modelBuilder.Entity<Channel>().HasOptional(x => x.Alliance).WithRequired(x => x.Channel);
             modelBuilder.Entity<Channel>().HasMany(x => x.Messages).WithRequired(x => x.Channel).WillCascadeOnDelete();
 
-            // Map Template
-            modelBuilder.Entity<Continent>().HasMany(x => x.Countries).WithMany();
-             
             // Country is serialized manually
+            modelBuilder.Ignore<Continent>();
+            modelBuilder.Ignore<CountryTemplate>();
             modelBuilder.Ignore<Country>();
+            modelBuilder.Ignore<Connection>();
+            modelBuilder.Ignore<MapTemplate>();
              
+            // Ladder
             modelBuilder.Entity<LadderStanding>().HasKey(x => new { x.LadderId, x.UserId });
             modelBuilder.Entity<LadderQueueEntry>().HasKey(x => new { x.LadderId, x.UserId });
 

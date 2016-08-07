@@ -41,6 +41,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImperaPlus.DTO", "ImperaPlus.DTO\ImperaPlus.DTO.csproj", "{21E0C9DD-AD85-42DD-AACB-9E36D96BAAAF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImperaPlus.GeneratedClient", "ImperaPlus.GeneratedClient\ImperaPlus.GeneratedClient.csproj", "{7173F28C-3E87-4B1A-8BA4-C7C7A809EE6C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A8B43DFB-2469-4B3D-B4AB-49D07054DDC2} = {A8B43DFB-2469-4B3D-B4AB-49D07054DDC2}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

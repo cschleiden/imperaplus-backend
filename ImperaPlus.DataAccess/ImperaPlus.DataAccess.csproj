@@ -74,9 +74,9 @@
   <ItemGroup>
     <Compile Include="DbInitializer.cs" />
     <Compile Include="IUserProvider.cs" />
-    <Compile Include="Migrations\201602150131064_InitialV9-6.cs" />
-    <Compile Include="Migrations\201602150131064_InitialV9-6.Designer.cs">
-      <DependentUpon>201602150131064_InitialV9-6.cs</DependentUpon>
+    <Compile Include="Migrations\201607230458393_ImperaV9-7.cs" />
+    <Compile Include="Migrations\201607230458393_ImperaV9-7.Designer.cs">
+      <DependentUpon>201607230458393_ImperaV9-7.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Repositories\ChannelRepository.cs" />
@@ -112,8 +112,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201602150131064_InitialV9-6.resx">
-      <DependentUpon>201602150131064_InitialV9-6.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201607230458393_ImperaV9-7.resx">
+      <DependentUpon>201607230458393_ImperaV9-7.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

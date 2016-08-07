@@ -5,6 +5,7 @@ using ImperaPlus.Domain.News;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
+using System.Data.Entity.Migrations;
 using System.Linq;
 
 namespace ImperaPlus.Integration.Tests
@@ -14,6 +15,13 @@ namespace ImperaPlus.Integration.Tests
         protected override void Seed(ImperaContext context)
         {
             DbSeed.Seed(context);
+
+            context.MapTemplates.AddOrUpdate(new Domain.Map.MapTemplateDescriptor
+            {
+                Name = "TestMap",
+                LastModifiedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.UtcNow
+            });
 
             // Add dummy news entry
             var newsEntry = NewsEntry.Create();

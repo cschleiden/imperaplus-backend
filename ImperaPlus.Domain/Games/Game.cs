@@ -35,6 +35,8 @@ namespace ImperaPlus.Domain.Games
             this.GameHistory = new GameHistory(this);
 
             this.Countries = new CountryCollection();
+
+            this.Teams = new HashSet<Team>();
         }
 
         public Game(
@@ -74,9 +76,7 @@ namespace ImperaPlus.Domain.Games
 
             this.MapTemplateName = mapTemplateName;
 
-            this.Options = options;
-
-            this.Teams = new HashSet<Team>();
+            this.Options = options;            
 
             this.State = GameState.Open;
             this.PlayState = PlayState.None;
@@ -119,13 +119,14 @@ namespace ImperaPlus.Domain.Games
         public string Name { get; private set; }
 
         private Map map;
+
         public Map Map
         {
             get
             {
                 if (this.map == null)
                 {
-                    this.map = new Map(this);
+                    this.map = new Map(this, this.Countries);
                 }
 
                 return this.map;

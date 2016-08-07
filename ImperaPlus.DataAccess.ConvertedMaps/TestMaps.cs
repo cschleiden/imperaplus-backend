@@ -3,7 +3,7 @@ using ImperaPlus.Domain.Map;
 
 namespace ImperaPlus.DataAccess.ConvertedMaps
 {
-    public static partial class TestMaps    
+    public static partial class Maps    
     {
         public static MapTemplate TestMap()
         {

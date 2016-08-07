@@ -56,37 +56,6 @@ namespace ImperaPlus.Domain.Tests.Tournaments
         }        
 
         [TestMethod]
-        public void CreateGames()
-        {
-            // Arrange
-            var mockUnitOfWork = TestUtils.GetUnitOfWorkMock();
-            var tournamentRepository = new MockTournamentRepository();
-            mockUnitOfWork.SetupGet(x => x.Tournaments).Returns(tournamentRepository);
-            var unitOfWork = mockUnitOfWork.Object;
-
-            var gameServiceMock = new Mock<IGameService>();
-            gameServiceMock.Setup(x => x.Create(It.IsAny<Domain.Enums.GameType>(), It.IsAny<User>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<GameOptions>())).Verifiable();
-
-            var eventAggregatorMock = new Mock<IEventAggregator>();
-            var service = new TournamentService(unitOfWork, gameServiceMock.Object, eventAggregatorMock.Object);
-
-            var tournament = new Tournament("T", 2, 0, 3, 3, DateTime.UtcNow, DateTime.UtcNow, new Domain.Games.GameOptions { NumberOfPlayersPerTeam = 1 });
-            tournamentRepository.Add(tournament);
-
-            tournament.MapTemplates.Add("WorldDeluxe");
-
-            tournament.AddUser(TestUtils.CreateUser("User1"));
-            tournament.AddUser(TestUtils.CreateUser("User2"));
-            tournament.Start();
-
-            // Act
-            service.CreateGamesForPairings(tournament);
-
-            // Assert
-            gameServiceMock.Verify();
-        }
-
-        [TestMethod]
         public void SynchronizeGames()
         {
             // Arrange

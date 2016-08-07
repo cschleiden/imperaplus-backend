@@ -2,7 +2,7 @@
 
 namespace ImperaPlus.Domain.Map
 {
-    public class Continent : IIdentifiableEntity
+    public class Continent
     {
         private Continent()
         {            

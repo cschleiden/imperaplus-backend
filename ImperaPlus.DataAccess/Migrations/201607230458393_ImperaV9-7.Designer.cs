@@ -7,13 +7,13 @@ namespace ImperaPlus.DataAccess.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class InitialV96 : IMigrationMetadata
+    public sealed partial class ImperaV97 : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(InitialV96));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(ImperaV97));
         
         string IMigrationMetadata.Id
         {
-            get { return "201602150131064_InitialV9-6"; }
+            get { return "201607230458393_ImperaV9-7"; }
         }
         
         string IMigrationMetadata.Source

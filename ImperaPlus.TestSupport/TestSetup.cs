@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Autofac.Core;
 using ImperaPlus.Application;
 using ImperaPlus.DataAccess;
 using ImperaPlus.Domain.Repositories;

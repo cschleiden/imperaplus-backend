@@ -90,7 +90,7 @@ namespace ImperaPlus.Integration.Tests
             return new GameCreationOptions
             {
                 Name = name,
-                MapTemplate = TestMaps.TestMap().Name,
+                MapTemplate = Maps.TestMap().Name,
                 TimeoutInSeconds = 60 * 60 * 24,
                 NumberOfTeams = numberOfTeams,
                 NumberOfPlayersPerTeam = numberOfPlayersPerTeam,

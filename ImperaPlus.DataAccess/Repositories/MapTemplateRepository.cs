@@ -5,21 +5,17 @@ using ImperaPlus.Domain.Repositories;
 
 namespace ImperaPlus.DataAccess.Repositories
 {
-    class MapTemplateRepository : GenericRepository<MapTemplate>, IMapTemplateDescriptorRepository
+    class MapTemplateDescriptorRepository : GenericRepository<MapTemplateDescriptor>, IMapTemplateDescriptorRepository
     {
-        public MapTemplateRepository(DbContext context) 
+        public MapTemplateDescriptorRepository(DbContext context) 
             : base(context)
         {
         }
 
-        public MapTemplate Get(string name)
+        public MapTemplateDescriptor Get(string name)
         {
             return
                 this.DbSet
-                    .Include(x => x.Countries)
-                    .Include(x => x.Connections)
-                    .Include(x => x.Continents)
-                    .Include(x => x.Continents.Select(c => c.Countries))
                     .FirstOrDefault(x => x.Name == name);
         }
     }

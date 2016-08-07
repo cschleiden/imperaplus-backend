@@ -492,7 +492,7 @@
         }
       }
     },
-    "/api/games/{gameId:long:min(1)}/history/{turnId:long:min(1)}": {
+    "/api/games/{gameId}/history/{turnId}": {
       "get": {
         "tags": [
           "HistoryController"
@@ -550,7 +550,7 @@
         }
       }
     },
-    "/api/ladder/{ladderId:guid}": {
+    "/api/ladder/{ladderId}": {
       "get": {
         "tags": [
           "LadderController"
@@ -579,7 +579,7 @@
         }
       }
     },
-    "/api/ladder/{ladderId:guid}/queue": {
+    "/api/ladder/{ladderId}/queue": {
       "post": {
         "tags": [
           "LadderController"
@@ -608,7 +608,7 @@
         }
       }
     },
-    "/api/ladder/{ladderId:guid}/standings": {
+    "/api/ladder/{ladderId}/standings": {
       "get": {
         "tags": [
           "LadderController"
@@ -675,7 +675,7 @@
         }
       }
     },
-    "/api/map/{name:minlength(1)}": {
+    "/api/map/{name}": {
       "get": {
         "tags": [
           "MapController"
@@ -797,7 +797,7 @@
         }
       }
     },
-    "/api/games/{gameId:long:min(1)}": {
+    "/api/games/{gameId}": {
       "get": {
         "tags": [
           "GameController"
@@ -853,7 +853,7 @@
         }
       }
     },
-    "/api/games/{gameId:long:min(1)}/messages": {
+    "/api/games/{gameId}/messages": {
       "get": {
         "tags": [
           "GameController"
@@ -889,7 +889,7 @@
         }
       }
     },
-    "/api/games/{gameId:long:min(1)}/join": {
+    "/api/games/{gameId}/join": {
       "post": {
         "tags": [
           "GameController"
@@ -918,7 +918,7 @@
         }
       }
     },
-    "/api/games/{gameId:long:min(1)}/leave": {
+    "/api/games/{gameId}/leave": {
       "post": {
         "tags": [
           "GameController"
@@ -947,7 +947,7 @@
         }
       }
     },
-    "/api/games/{gameId:long:min(1)}/surrender": {
+    "/api/games/{gameId}/surrender": {
       "post": {
         "tags": [
           "GameController"
@@ -976,7 +976,7 @@
         }
       }
     },
-    "/api/games/{gameId:long:min(1)}/hide": {
+    "/api/games/{gameId}/hide": {
       "post": {
         "tags": [
           "GameController"
@@ -1078,54 +1078,7 @@
             "x-nullable": true
           }
         }
-      }
-    },
-    "/api/messages/folders": {
-      "get": {
-        "tags": [
-          "MessageController"
-        ],
-        "operationId": "Message_GetFolderInformation",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "",
-            "schema": {
-              "$ref": "#/definitions/FolderInformation"
-            },
-            "x-nullable": true
-          }
-        }
-      }
-    },
-    "/api/messages": {
-      "post": {
-        "tags": [
-          "MessageController"
-        ],
-        "operationId": "Message_PostSend",
-        "parameters": [
-          {
-            "name": "message",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/SendMessage"
-            },
-            "x-nullable": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "schema": {
-              "type": "file"
-            },
-            "x-nullable": true
-          }
-        }
-      }
-    },
-    "/api/messages/{messageId:guid}": {
+      },
       "post": {
         "tags": [
           "MessageController"
@@ -1164,6 +1117,51 @@
             "required": true,
             "x-nullable": false,
             "format": "guid"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "file"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/messages/folders": {
+      "get": {
+        "tags": [
+          "MessageController"
+        ],
+        "operationId": "Message_GetFolderInformation",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/FolderInformation"
+            },
+            "x-nullable": true
+          }
+        }
+      }
+    },
+    "/api/messages": {
+      "post": {
+        "tags": [
+          "MessageController"
+        ],
+        "operationId": "Message_PostSend",
+        "parameters": [
+          {
+            "name": "message",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/SendMessage"
+            },
+            "x-nullable": true
           }
         ],
         "responses": {
@@ -1218,7 +1216,7 @@
         }
       }
     },
-    "/api/games/{gameId:long:min(1)}/play/place": {
+    "/api/games/{gameId}/play/place": {
       "post": {
         "tags": [
           "PlayController"
@@ -1259,7 +1257,7 @@
         }
       }
     },
-    "/api/games/{gameId:long:min(1)}/play/exchange": {
+    "/api/games/{gameId}/play/exchange": {
       "post": {
         "tags": [
           "PlayController"
@@ -1288,7 +1286,7 @@
         }
       }
     },
-    "/api/games/{gameId:long:min(1)}/play/attack": {
+    "/api/games/{gameId}/play/attack": {
       "post": {
         "tags": [
           "PlayController"
@@ -1326,7 +1324,7 @@
         }
       }
     },
-    "/api/games/{gameId:long:min(1)}/play/endattack": {
+    "/api/games/{gameId}/play/endattack": {
       "post": {
         "tags": [
           "PlayController"
@@ -1355,7 +1353,7 @@
         }
       }
     },
-    "/api/games/{gameId:long:min(1)}/play/move": {
+    "/api/games/{gameId}/play/move": {
       "post": {
         "tags": [
           "PlayController"
@@ -1393,7 +1391,7 @@
         }
       }
     },
-    "/api/games/{gameId:long:min(1)}/play/endturn": {
+    "/api/games/{gameId}/play/endturn": {
       "post": {
         "tags": [
           "PlayController"
@@ -1444,7 +1442,7 @@
         }
       }
     },
-    "/api/tournaments/{tournamentId:guid}": {
+    "/api/tournaments/{tournamentId}": {
       "get": {
         "tags": [
           "TournamentController"
@@ -1500,7 +1498,7 @@
         }
       }
     },
-    "/api/tournaments/{tournamentId:guid}/teams": {
+    "/api/tournaments/{tournamentId}/teams": {
       "get": {
         "tags": [
           "TournamentController"
@@ -1574,7 +1572,7 @@
         }
       }
     },
-    "/api/tournaments/{tournamentId:guid}/teams/{teamId:guid}": {
+    "/api/tournaments/{tournamentId}/teams/{teamId}": {
       "post": {
         "tags": [
           "TournamentController"
@@ -1655,7 +1653,7 @@
         }
       }
     },
-    "/api/tournaments/{tournamentId:guid}/teams/me": {
+    "/api/tournaments/{tournamentId}/teams/me": {
       "post": {
         "tags": [
           "TournamentController"
@@ -1684,7 +1682,7 @@
         }
       }
     },
-    "/api/users/find/{query:minlength(3):maxlength(50)}": {
+    "/api/users/find/{query}": {
       "get": {
         "tags": [
           "UserController"

@@ -3,7 +3,7 @@ namespace ImperaPlus.DataAccess.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class InitialV96 : DbMigration
+    public partial class ImperaV97 : DbMigration
     {
         public override void Up()
         {
@@ -305,58 +305,15 @@ namespace ImperaPlus.DataAccess.Migrations
                 .Index(t => t.CreatedById);
             
             CreateTable(
-                "dbo.MapTemplates",
+                "dbo.MapTemplateDescriptors",
                 c => new
                     {
-                        Id = c.Long(nullable: false, identity: true),
-                        Name = c.String(nullable: false),
+                        Name = c.String(nullable: false, maxLength: 128),
                         CreatedAt = c.DateTime(nullable: false),
                         CreatedBy = c.String(),
                         LastModifiedAt = c.DateTime(nullable: false),
-                        Image = c.String(),
                     })
-                .PrimaryKey(t => t.Id);
-            
-            CreateTable(
-                "dbo.Connections",
-                c => new
-                    {
-                        Id = c.Long(nullable: false, identity: true),
-                        Origin = c.String(),
-                        Destination = c.String(),
-                        MapTemplate_Id = c.Long(),
-                    })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.MapTemplates", t => t.MapTemplate_Id)
-                .Index(t => t.MapTemplate_Id);
-            
-            CreateTable(
-                "dbo.Continents",
-                c => new
-                    {
-                        Id = c.Long(nullable: false, identity: true),
-                        Name = c.String(),
-                        Bonus = c.Int(nullable: false),
-                        MapTemplate_Id = c.Long(),
-                    })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.MapTemplates", t => t.MapTemplate_Id)
-                .Index(t => t.MapTemplate_Id);
-            
-            CreateTable(
-                "dbo.CountryTemplates",
-                c => new
-                    {
-                        Id = c.Long(nullable: false, identity: true),
-                        Identifier = c.String(),
-                        Name = c.String(),
-                        X = c.Int(nullable: false),
-                        Y = c.Int(nullable: false),
-                        MapTemplate_Id = c.Long(),
-                    })
-                .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.MapTemplates", t => t.MapTemplate_Id)
-                .Index(t => t.MapTemplate_Id);
+                .PrimaryKey(t => t.Name);
             
             CreateTable(
                 "dbo.NewsEntries",
@@ -524,19 +481,6 @@ namespace ImperaPlus.DataAccess.Migrations
                 .Index(t => t.FromId)
                 .Index(t => t.RecipientId);
             
-            CreateTable(
-                "dbo.ContinentCountryTemplates",
-                c => new
-                    {
-                        Continent_Id = c.Long(nullable: false),
-                        CountryTemplate_Id = c.Long(nullable: false),
-                    })
-                .PrimaryKey(t => new { t.Continent_Id, t.CountryTemplate_Id })
-                .ForeignKey("dbo.Continents", t => t.Continent_Id, cascadeDelete: true)
-                .ForeignKey("dbo.CountryTemplates", t => t.CountryTemplate_Id, cascadeDelete: true)
-                .Index(t => t.Continent_Id)
-                .Index(t => t.CountryTemplate_Id);
-            
         }
         
         public override void Down()
@@ -562,11 +506,6 @@ namespace ImperaPlus.DataAccess.Migrations
             DropForeignKey("dbo.AspNetUserRoles", "RoleId", "dbo.AspNetRoles");
             DropForeignKey("dbo.NewsEntries", "CreatedById", "dbo.AspNetUsers");
             DropForeignKey("dbo.NewsContents", "NewsEntry_Id", "dbo.NewsEntries");
-            DropForeignKey("dbo.CountryTemplates", "MapTemplate_Id", "dbo.MapTemplates");
-            DropForeignKey("dbo.Continents", "MapTemplate_Id", "dbo.MapTemplates");
-            DropForeignKey("dbo.ContinentCountryTemplates", "CountryTemplate_Id", "dbo.CountryTemplates");
-            DropForeignKey("dbo.ContinentCountryTemplates", "Continent_Id", "dbo.Continents");
-            DropForeignKey("dbo.Connections", "MapTemplate_Id", "dbo.MapTemplates");
             DropForeignKey("dbo.ChatMessages", "ChannelId", "dbo.Channels");
             DropForeignKey("dbo.ChatMessages", "CreatedById", "dbo.AspNetUsers");
             DropForeignKey("dbo.Channels", "GameId", "dbo.Games");
@@ -593,8 +532,6 @@ namespace ImperaPlus.DataAccess.Migrations
             DropForeignKey("dbo.Players", "TeamId", "dbo.Teams");
             DropForeignKey("dbo.Players", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
-            DropIndex("dbo.ContinentCountryTemplates", new[] { "CountryTemplate_Id" });
-            DropIndex("dbo.ContinentCountryTemplates", new[] { "Continent_Id" });
             DropIndex("dbo.Messages", new[] { "RecipientId" });
             DropIndex("dbo.Messages", new[] { "FromId" });
             DropIndex("dbo.Messages", new[] { "OwnerId" });
@@ -615,9 +552,6 @@ namespace ImperaPlus.DataAccess.Migrations
             DropIndex("dbo.AspNetRoles", "RoleNameIndex");
             DropIndex("dbo.NewsContents", new[] { "NewsEntry_Id" });
             DropIndex("dbo.NewsEntries", new[] { "CreatedById" });
-            DropIndex("dbo.CountryTemplates", new[] { "MapTemplate_Id" });
-            DropIndex("dbo.Continents", new[] { "MapTemplate_Id" });
-            DropIndex("dbo.Connections", new[] { "MapTemplate_Id" });
             DropIndex("dbo.ChatMessages", new[] { "CreatedById" });
             DropIndex("dbo.ChatMessages", new[] { "ChannelId" });
             DropIndex("dbo.AspNetUserRoles", new[] { "RoleId" });
@@ -647,7 +581,6 @@ namespace ImperaPlus.DataAccess.Migrations
             DropIndex("dbo.Alliances", new[] { "Id" });
             DropIndex("dbo.Channels", new[] { "GameId" });
             DropIndex("dbo.Channels", new[] { "CreatedById" });
-            DropTable("dbo.ContinentCountryTemplates");
             DropTable("dbo.Messages");
             DropTable("dbo.TournamentParticipants");
             DropTable("dbo.TournamentTeams");
@@ -657,10 +590,7 @@ namespace ImperaPlus.DataAccess.Migrations
             DropTable("dbo.AspNetRoles");
             DropTable("dbo.NewsContents");
             DropTable("dbo.NewsEntries");
-            DropTable("dbo.CountryTemplates");
-            DropTable("dbo.Continents");
-            DropTable("dbo.Connections");
-            DropTable("dbo.MapTemplates");
+            DropTable("dbo.MapTemplateDescriptors");
             DropTable("dbo.ChatMessages");
             DropTable("dbo.AspNetUserRoles");
             DropTable("dbo.AspNetUserLogins");

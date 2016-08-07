@@ -71,7 +71,7 @@ namespace ImperaPlus.DataAccess
         {
             get
             {
-                return this.mapTemplates ?? (this.mapTemplates = new MapTemplateRepository(this.context));
+                return this.mapTemplates ?? (this.mapTemplates = new MapTemplateDescriptorRepository(this.context));
             }
         }
 

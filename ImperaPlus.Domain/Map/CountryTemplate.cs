@@ -1,6 +1,6 @@
 ﻿namespace ImperaPlus.Domain.Map
 {
-    public class CountryTemplate : IIdentifiableEntity
+    public class CountryTemplate
     {
         private CountryTemplate()
         {            

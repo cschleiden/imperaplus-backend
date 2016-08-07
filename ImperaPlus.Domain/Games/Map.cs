@@ -5,37 +5,34 @@ using ImperaPlus.Domain.Exceptions;
 using ImperaPlus.Domain.Games.Distribution;
 using ImperaPlus.Domain.Map;
 using ImperaPlus.Domain.Services;
-using System.ComponentModel.DataAnnotations.Schema;
-using ImperaPlus.Domain.Utilities;
 using System;
 
 namespace ImperaPlus.Domain.Games
 {
     public class Map
     {
+        private Game game;
+        private CountryCollection countryCollection;
+
         private Dictionary<string, Country> countryDict;
         private Dictionary<Guid, List<Country>> playerToCountry = null;
 
-        internal Map(Game game)
+        internal Map(Game game, CountryCollection countryCollection)
         {
-            this.Game = game;
+            this.game = game;
+            this.countryCollection = countryCollection;
 
             this.ResetChanges();
         }
-
-        public long Id { get; set; }
-
-        public virtual Game Game { get; set; }
 
         public CountryCollection Countries 
         { 
             get
             {
-                return this.Game.Countries;
+                return this.countryCollection;
             }
         }
-
-        [NotMapped]
+        
         public IEnumerable<Country> ChangedCountries
         {
             get
@@ -59,7 +56,8 @@ namespace ImperaPlus.Domain.Games
 
         public Map Clone()
         {
-            var clone = new Map(this.Game);
+            var clone = new Map(this.game, new CountryCollection());
+
             foreach(var country in this.Countries)
             {
                 clone.Countries.Add(new Country(country.CountryIdentifier, country.Units)
@@ -91,7 +89,7 @@ namespace ImperaPlus.Domain.Games
 
         public static Map CreateFromTemplate(Game game, IMapTemplateProvider templateProvider, string templateName)
         {
-            var map = new Map(game);
+            var map = new Map(game, game.Countries);
 
             var mapTemplate = templateProvider.GetTemplate(templateName);
 
@@ -124,7 +122,9 @@ namespace ImperaPlus.Domain.Games
 
         public IEnumerable<Country> GetCountriesForTeam(Guid teamId)
         {
-            var playerIds = this.Game.Teams.Single(x => x.Id == teamId).Players.Select(p => p.Id);
+            var playerIds = this.game
+                .Teams.Single(x => x.Id == teamId)
+                .Players.Select(p => p.Id);
 
             return this.Countries.Where(c => playerIds.Contains(c.PlayerId));
         }
