@@ -30,6 +30,7 @@ namespace ImperaPlus.Domain.Games
         protected Game()
         {
             this.ChatMessages = new HashSet<GameChatMessage>();
+
             this.HistoryEntries = new List<HistoryEntry>();
 
             this.GameHistory = new GameHistory(this);
