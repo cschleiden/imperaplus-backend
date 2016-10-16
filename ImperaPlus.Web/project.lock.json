@@ -66,7 +66,7 @@
           }
         }
       },
-      "Microsoft.AspNet.SignalR.Core/2.2.0": {
+      "Microsoft.AspNet.SignalR.Core/2.2.1": {
         "type": "package",
         "dependencies": {
           "Microsoft.Owin": "2.1.0",
@@ -2606,12 +2606,12 @@
         "runtimes/win7-x86/native/libuv.dll"
       ]
     },
-    "Microsoft.AspNet.SignalR.Core/2.2.0": {
-      "sha512": "y+gx2iv3Da2YIkh/m8BSitF63PAs7sDJY9td9blvgrXzCvKAb664sc/2D7kNSwEiFDLDGCoax6pqe3pRRDSDHQ==",
+    "Microsoft.AspNet.SignalR.Core/2.2.1": {
+      "sha512": "EUZlRTmUZ3di6hxCiyyhnUld/8AKTOuX1DAGhNLv+ocTfmnOJyS42AEzgxdIk1jRAlEpUEuoicVBBI07A2FU2g==",
       "type": "package",
-      "path": "Microsoft.AspNet.SignalR.Core/2.2.0",
+      "path": "Microsoft.AspNet.SignalR.Core/2.2.1",
       "files": [
-        "Microsoft.AspNet.SignalR.Core.2.2.0.nupkg.sha512",
+        "Microsoft.AspNet.SignalR.Core.2.2.1.nupkg.sha512",
         "Microsoft.AspNet.SignalR.Core.nuspec",
         "lib/net45/Microsoft.AspNet.SignalR.Core.dll",
         "lib/net45/Microsoft.AspNet.SignalR.Core.xml"
@@ -7579,7 +7579,7 @@
     "": [
       "Autofac >= 4.1.1",
       "Autofac.Extensions.DependencyInjection >= 4.0.0",
-      "Microsoft.AspNet.SignalR.Core >= 2.2.0",
+      "Microsoft.AspNet.SignalR.Core >= 2.2.1",
       "Microsoft.AspNet.SignalR.Owin >= 1.2.2",
       "Microsoft.AspNetCore.Authentication.Facebook >= 1.0.0",
       "Microsoft.AspNetCore.Diagnostics >= 1.0.0",

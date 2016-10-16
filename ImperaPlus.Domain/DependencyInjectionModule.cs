@@ -15,7 +15,7 @@ namespace ImperaPlus.Domain
             builder.RegisterType<GameService>().As<IGameService>();
             builder.RegisterType<ScoringService>().As<IScoringService>();
 
-            builder.RegisterType<EventAggregator>().As<IEventAggregator>().InstancePerRequest();
+            builder.RegisterType<EventAggregator>().As<IEventAggregator>().InstancePerLifetimeScope();
         }
     }
 }

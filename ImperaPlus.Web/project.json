@@ -28,9 +28,9 @@
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
     "mnailgun": "1.0.0",
     "Swashbuckle": "6.0.0-beta902",
-    "Microsoft.AspNet.SignalR.Core": "2.2.0",
     "Microsoft.AspNet.SignalR.Owin": "1.2.2",
-    "Microsoft.AspNetCore.Owin": "1.0.0"
+    "Microsoft.AspNetCore.Owin": "1.0.0",
+    "Microsoft.AspNet.SignalR.Core": "2.2.1"
   },
 
   "tools": {

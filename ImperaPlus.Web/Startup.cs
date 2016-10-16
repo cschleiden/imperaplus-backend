@@ -129,8 +129,8 @@ namespace ImperaPlus.Web
 
             //builder.RegisterType<OopsExceptionHandler>().As<IExceptionHandler>();
 
-            builder.RegisterType<ImperaContext>().As<DbContext>().AsSelf().InstancePerRequest();
-            builder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerRequest();
+            builder.RegisterType<ImperaContext>().As<DbContext>().AsSelf().InstancePerLifetimeScope();
+            builder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerLifetimeScope();
 
             // Register repositories
             //builder.RegisterAssemblyTypes(Assembly.GetAssembly(typeof(GameRepository)))
