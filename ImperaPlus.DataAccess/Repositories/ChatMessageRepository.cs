@@ -1,4 +1,4 @@
-﻿using System.Data.Entity;
+﻿using Microsoft.EntityFrameworkCore;
 using ImperaPlus.Domain.Chat;
 using ImperaPlus.Domain.Repositories;
 

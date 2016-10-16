@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using ImperaPlus.Domain.News;
 using ImperaPlus.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace ImperaPlus.DataAccess.Repositories
 {
@@ -11,6 +11,11 @@ namespace ImperaPlus.DataAccess.Repositories
         public NewsRepository(DbContext context)
             : base(context)
         {
+        }
+
+        public NewsEntry FindById(long id)
+        {
+            return this.DbSet.FirstOrDefault(x => x.Id == id);
         }
 
         public IEnumerable<NewsEntry> GetOrdered(int count)

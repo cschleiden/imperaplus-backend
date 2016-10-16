@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using ImperaPlus.Domain.Enums;
 using ImperaPlus.Domain.Games;
@@ -77,7 +77,7 @@ namespace ImperaPlus.DataAccess.Repositories
         {            
             return this.FullGameSet.Where(x =>
                 x.State == GameState.Active
-                && x.LastModifiedAt <= DbFunctions.AddSeconds(DateTime.UtcNow, -x.Options.TimeoutInSeconds));
+                && x.LastModifiedAt <= DateTime.UtcNow.AddSeconds(-x.Options.TimeoutInSeconds));
         }
         
         protected IQueryable<Game> FullGameSet

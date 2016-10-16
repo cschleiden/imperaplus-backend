@@ -33,7 +33,7 @@ namespace ImperaPlus.Application.Notifications
                         return;
                     }
                     
-                    Domain.Ladders.Ladder ladder = this.unitOfWork.Ladders.FindById(game.LadderId);
+                    Domain.Ladders.Ladder ladder = this.unitOfWork.Ladders.GetById(game.LadderId.Value);
 
                     // Score game
                     this.scoringService.Score(ladder, game);

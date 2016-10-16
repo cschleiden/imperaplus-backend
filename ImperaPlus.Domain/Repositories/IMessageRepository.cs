@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ImperaPlus.Domain.Messages;
 
 namespace ImperaPlus.Domain.Repositories
 {
     public interface IMessageRepository : IGenericRepository<Message>
     {
+        Message FindById(Guid messageId);
+
         /// <summary>
         /// Get unread messages for given user in Inbox
         /// </summary>

@@ -1,9 +1,9 @@
-using System.Collections.Generic;
-using System.Data.Entity;
+using System;
 using System.Linq;
 using ImperaPlus.Domain.Chat;
 using ImperaPlus.Domain.Enums;
 using ImperaPlus.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace ImperaPlus.DataAccess.Repositories
 {
@@ -12,6 +12,11 @@ namespace ImperaPlus.DataAccess.Repositories
         public ChannelRepository(DbContext context)
             : base(context)
         {
+        }
+
+        public Channel FindById(Guid id)
+        {
+            return this.DbSet.FirstOrDefault(x => x.Id == id);
         }
 
         public Channel GetByType(ChannelType channelType)

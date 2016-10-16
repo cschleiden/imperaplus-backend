@@ -3,9 +3,8 @@ using Hangfire;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Services;
 using ImperaPlus.Utils;
+using Microsoft.EntityFrameworkCore;
 using NLog.Fluent;
-using System.Data.Entity.Core;
-using System.Data.Entity.Infrastructure;
 
 namespace ImperaPlus.Application.Jobs
 {
@@ -31,10 +30,6 @@ namespace ImperaPlus.Application.Jobs
                 try
                 {
                     this.ladderService.CheckAndCreateMatches();
-                }
-                catch (OptimisticConcurrencyException)
-                {
-                    Log.Warn().Message("OptimisticConcurrencyException while processing ladders").Write();
                 }
                 catch (DbUpdateConcurrencyException)
                 {

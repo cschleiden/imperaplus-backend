@@ -1,4 +1,6 @@
-﻿using Autofac;
+﻿using System;
+using System.Linq;
+using Autofac;
 using ImperaPlus.Domain;
 using ImperaPlus.Domain.Chat;
 using ImperaPlus.Domain.Events;
@@ -9,13 +11,9 @@ using ImperaPlus.Domain.Map;
 using ImperaPlus.Domain.News;
 using ImperaPlus.Domain.Tournaments;
 using ImperaPlus.Domain.Utilities;
-using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using StackExchange.Profiling;
-using System;
-using System.Data.Entity;
-using System.Data.Entity.Core.Objects;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
 
 namespace ImperaPlus.DataAccess
 {
@@ -39,13 +37,13 @@ namespace ImperaPlus.DataAccess
             this.componentContext = componentContext;
             this.eventAggregator = eventAggregator;
 
-            ((IObjectContextAdapter)this).ObjectContext.ObjectMaterialized += ObjectContextOnObjectMaterialized;
+            //((IObjectContextAdapter)this).ObjectContext.ObjectMaterialized += ObjectContextOnObjectMaterialized;
         }
 
         /// <summary>
         /// Inject dependencies into domain objects
         /// </summary>
-        private void ObjectContextOnObjectMaterialized(object sender, ObjectMaterializedEventArgs objectMaterializedEventArgs)
+        /*private void ObjectContextOnObjectMaterialized(object sender, ObjectMaterializedEventArgs objectMaterializedEventArgs)
         {
             var entity = objectMaterializedEventArgs.Entity;
 
@@ -54,22 +52,22 @@ namespace ImperaPlus.DataAccess
                 // Satisfy required properties in 
                 this.componentContext.InjectProperties(entity);
             }
-        }
+        }*/
 
-        public virtual IDbSet<Game> Games { get; set; }
+        public virtual DbSet<Game> Games { get; set; }
 
-        public virtual IDbSet<MapTemplateDescriptor> MapTemplates { get; set; }
+        public virtual DbSet<MapTemplateDescriptor> MapTemplates { get; set; }
 
-        public virtual IDbSet<Channel> Channels { get; set; }
+        public virtual DbSet<Channel> Channels { get; set; }
 
-        public virtual IDbSet<ChatMessage> ChatMessages { get; set; }
+        public virtual DbSet<ChatMessage> ChatMessages { get; set; }
 
-        public virtual IDbSet<NewsEntry> NewsEntries { get; set; }
+        public virtual DbSet<NewsEntry> NewsEntries { get; set; }
 
-        public virtual IDbSet<Ladder> Ladders { get; set; }
+        public virtual DbSet<Ladder> Ladders { get; set; }
 
-        public virtual IDbSet<GameOptions> GameOptions { get; set; }
-
+        public virtual DbSet<GameOptions> GameOptions { get; set; }
+        
         public override int SaveChanges()
         {
             using (MiniProfiler.Current.Step("Context: Update change tracked entitites"))
@@ -114,10 +112,9 @@ namespace ImperaPlus.DataAccess
             return result;
         }
 
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            this.Configuration.LazyLoadingEnabled = true;
-            this.Configuration.ProxyCreationEnabled = true;
+            base.OnModelCreating(modelBuilder);        
 
             // Games
             modelBuilder.Entity<Game>().Ignore(x => x.MapTemplateProvider);
@@ -126,17 +123,17 @@ namespace ImperaPlus.DataAccess
             modelBuilder.Entity<Game>().Ignore(x => x.Map);
             modelBuilder.Entity<Game>().Ignore(x => x.CurrentPlayer);
 
-            modelBuilder.Entity<Game>().HasMany(x => x.HistoryEntries).WithRequired().HasForeignKey(x => x.GameId).WillCascadeOnDelete();
-            modelBuilder.Entity<Game>().HasMany(x => x.Teams).WithRequired(x => x.Game).HasForeignKey(x => x.GameId).WillCascadeOnDelete();
-            modelBuilder.Entity<Team>().HasMany(x => x.Players).WithRequired(x => x.Team).HasForeignKey(x => x.TeamId).WillCascadeOnDelete();
+            modelBuilder.Entity<Game>().HasMany(x => x.HistoryEntries).WithOne(x => x.Game).IsRequired().HasForeignKey(x => x.GameId).OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Cascade);
+            modelBuilder.Entity<Game>().HasMany(x => x.Teams).WithOne(x => x.Game).IsRequired().HasForeignKey(x => x.GameId).OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Cascade);
+            modelBuilder.Entity<Team>().HasMany(x => x.Players).WithOne(x => x.Team).IsRequired().HasForeignKey(x => x.TeamId).OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<HistoryEntry>().HasOptional(x => x.Actor).WithMany().WillCascadeOnDelete(false);
-            modelBuilder.Entity<HistoryEntry>().HasOptional(x => x.OtherPlayer).WithMany().WillCascadeOnDelete(false);          
+            modelBuilder.Entity<HistoryEntry>().HasOne(x => x.Actor).WithMany().IsRequired(false);
+            modelBuilder.Entity<HistoryEntry>().HasOne(x => x.OtherPlayer).WithMany().IsRequired(false);
             
             // Chat
-            modelBuilder.Entity<Channel>().HasOptional(x => x.Game);
-            modelBuilder.Entity<Channel>().HasOptional(x => x.Alliance).WithRequired(x => x.Channel);
-            modelBuilder.Entity<Channel>().HasMany(x => x.Messages).WithRequired(x => x.Channel).WillCascadeOnDelete();
+            modelBuilder.Entity<Channel>().HasOne(x => x.Game).WithOne().IsRequired(false);
+            modelBuilder.Entity<Channel>().HasOne(x => x.Alliance).WithOne(x => x.Channel).IsRequired(false);
+            modelBuilder.Entity<Channel>().HasMany(x => x.Messages).WithOne(x => x.Channel).IsRequired().OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Cascade);
 
             // Country is serialized manually
             modelBuilder.Ignore<Continent>();
@@ -150,26 +147,26 @@ namespace ImperaPlus.DataAccess
             modelBuilder.Entity<LadderQueueEntry>().HasKey(x => new { x.LadderId, x.UserId });
 
 
-            modelBuilder.Entity<NewsEntry>().HasMany(x => x.Content).WithRequired().WillCascadeOnDelete();
+            modelBuilder.Entity<NewsEntry>().HasMany(x => x.Content).WithOne().IsRequired(true);
 
             // Aliiance mapping
-            modelBuilder.Entity<Alliance>().HasMany(x => x.Members).WithOptional(x => x.Alliance).HasForeignKey(x => x.AllianceId);
-            modelBuilder.Entity<Alliance>().HasRequired(x => x.Channel).WithOptional().WillCascadeOnDelete();
+            modelBuilder.Entity<Alliance>().HasMany(x => x.Members).WithOne(x => x.Alliance).HasForeignKey(x => x.AllianceId);
+            modelBuilder.Entity<Alliance>().HasOne(x => x.Channel).WithOne(x => x.Alliance).IsRequired(false).OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Cascade);
 
             // Tournaments
-            modelBuilder.Entity<Tournament>().HasMany(x => x.Teams).WithRequired(x => x.Tournament).HasForeignKey(x => x.TournamentId);
-            modelBuilder.Entity<Tournament>().HasMany(x => x.Groups).WithRequired(x => x.Tournament).HasForeignKey(x => x.TournamentId);
-            modelBuilder.Entity<Tournament>().HasMany(x => x.Pairings).WithRequired(x => x.Tournament).HasForeignKey(x => x.TournamentId);
+            modelBuilder.Entity<Tournament>().HasMany(x => x.Teams).WithOne(x => x.Tournament).HasForeignKey(x => x.TournamentId).IsRequired();
+            modelBuilder.Entity<Tournament>().HasMany(x => x.Groups).WithOne(x => x.Tournament).HasForeignKey(x => x.TournamentId).IsRequired();
+            modelBuilder.Entity<Tournament>().HasMany(x => x.Pairings).WithOne(x => x.Tournament).HasForeignKey(x => x.TournamentId).IsRequired();
 
-            modelBuilder.Entity<TournamentTeam>().HasMany(x => x.Participants).WithRequired(x => x.Team).HasForeignKey(x => x.TeamId).WillCascadeOnDelete(false);
+            modelBuilder.Entity<TournamentTeam>().HasMany(x => x.Participants).WithOne(x => x.Team).HasForeignKey(x => x.TeamId);
 
-            modelBuilder.Entity<TournamentPairing>().HasMany(x => x.Games).WithOptional().HasForeignKey(x => x.TournamentPairingId);
+            modelBuilder.Entity<TournamentPairing>().HasMany(x => x.Games).WithOne().HasForeignKey(x => x.TournamentPairingId);
 
-            modelBuilder.Entity<TournamentPairing>().HasRequired(x => x.TeamA).WithMany().HasForeignKey(x => x.TeamAId).WillCascadeOnDelete(false);
-            modelBuilder.Entity<TournamentPairing>().HasRequired(x => x.TeamB).WithMany().HasForeignKey(x => x.TeamBId).WillCascadeOnDelete(false);
+            modelBuilder.Entity<TournamentPairing>().HasOne(x => x.TeamA).WithMany().IsRequired(true).HasForeignKey(x => x.TeamAId).OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.SetNull);
+            modelBuilder.Entity<TournamentPairing>().HasOne(x => x.TeamB).WithMany().HasForeignKey(x => x.TeamBId).OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.SetNull);
 
             // General
-            modelBuilder.ComplexType<CountryCollection>()
+            /*modelBuilder.ComplexType<CountryCollection>()
                 .Ignore(x => x.Capacity);
             modelBuilder.ComplexType<CountryCollection>()
                 .Property(x => x.Serialized).HasColumnName("CountriesJson");
@@ -187,11 +184,11 @@ namespace ImperaPlus.DataAccess
             modelBuilder.ComplexType<VictoryConditionCollection>()
                 .Ignore(x => x.Capacity);
             modelBuilder.ComplexType<VictoryConditionCollection>()
-                .Property(x => x.Serialized).HasColumnName("VictoryConditions");
+                .Property(x => x.Serialized).HasColumnName("VictoryConditions");*/
            
-            modelBuilder.Entity<Domain.Messages.Message>().HasRequired(x => x.Owner).WithMany().WillCascadeOnDelete();
-            modelBuilder.Entity<Domain.Messages.Message>().HasRequired(x => x.From).WithMany().WillCascadeOnDelete(false);
-            modelBuilder.Entity<Domain.Messages.Message>().HasRequired(x => x.Recipient).WithMany().WillCascadeOnDelete(false);
+            modelBuilder.Entity<Domain.Messages.Message>().HasOne(x => x.Owner).WithMany().IsRequired(true);
+            modelBuilder.Entity<Domain.Messages.Message>().HasOne(x => x.From).WithMany();
+            modelBuilder.Entity<Domain.Messages.Message>().HasOne(x => x.Recipient).WithMany();
 
             base.OnModelCreating(modelBuilder);
         }

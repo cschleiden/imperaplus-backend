@@ -1,9 +1,9 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
+using Autofac;
+using ImperaPlus.Backend.App_Start;
 using ImperaPlus.DataAccess;
 using Microsoft.Owin.Testing;
-using ImperaPlus.Backend.App_Start;
-using System;
-using Autofac;
 
 namespace ImperaPlus.Backend
 {

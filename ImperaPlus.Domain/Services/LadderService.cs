@@ -89,7 +89,7 @@ namespace ImperaPlus.Domain.Services
         /// </summary>        
         public void Queue(Guid ladderId, User user)
         {
-            Ladder ladder = this.unitOfWork.Ladders.FindById(ladderId);
+            Ladder ladder = this.unitOfWork.Ladders.Query().First(l => l.Id == ladderId);
 
             ladder.QueueUser(user);
         }

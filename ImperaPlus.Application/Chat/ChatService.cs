@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using ImperaPlus.DataAccess;
 using ImperaPlus.Domain.Enums;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.DTO.Chat;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using ApplicationException = ImperaPlus.Application.Exceptions.ApplicationException;
 
 namespace ImperaPlus.Application.Chat
@@ -19,7 +20,7 @@ namespace ImperaPlus.Application.Chat
         /// </summary>
         /// <param name="getUserId">Id of user</param>
         /// <returns></returns>
-        IEnumerable<ChannelInformation> GetChannelInformationForUser(string getUserId);
+        Task<IEnumerable<ChannelInformation>> GetChannelInformationForUser(string getUserId);
 
         void SendMessage(Guid channelId, string userId, string message);
     }
@@ -34,7 +35,7 @@ namespace ImperaPlus.Application.Chat
             this.roleManager = roleManager;
         }
 
-        public IEnumerable<ChannelInformation> GetChannelInformationForUser(string userId)
+        public async Task<IEnumerable<ChannelInformation>> GetChannelInformationForUser(string userId)
         {
             var user = this.UnitOfWork.Users.FindById(userId);
 
@@ -50,12 +51,14 @@ namespace ImperaPlus.Application.Chat
                     this.UnitOfWork.Channels.GetByType(ChannelType.General))
             };
 
+            // Alliance channel if user is a member
             if (user.Alliance != null)
             {
                 channels.Add(Mapper.Map<ChannelInformation>(user.Alliance.Channel));
             }            
 
-            var adminRole = this.roleManager.FindByName("admin");
+            // Admin
+            var adminRole = await this.roleManager.FindByNameAsync("admin");
             if (user.IsInRole(adminRole))
             {
                 channels.Add(
@@ -68,9 +71,7 @@ namespace ImperaPlus.Application.Chat
 
         public void SendMessage(Guid channelId, string userId, string message)
         {
-            // TODO: CS: Move to Repository
             var channel = this.UnitOfWork.Channels.Query().FirstOrDefault(x => x.Id == channelId);
-
             if (null == channel)
             {
                 // Channel does not exist in database.. might be transient, do not save anything

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ImperaPlus.Domain.Games;
-using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace ImperaPlus.Domain
 {

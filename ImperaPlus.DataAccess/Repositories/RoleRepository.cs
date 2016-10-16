@@ -1,6 +1,6 @@
-using System.Data.Entity;
 using ImperaPlus.Domain.Repositories;
-using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace ImperaPlus.DataAccess.Repositories
 {

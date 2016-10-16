@@ -1,4 +1,4 @@
-﻿using System.Data.Entity;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using ImperaPlus.Domain.Ladders;
 using ImperaPlus.Domain.Repositories;

@@ -1,13 +1,12 @@
-﻿using Autofac;
+﻿using System.Linq;
+using Autofac;
 using Hangfire;
 using ImperaPlus.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 using NLog.Fluent;
-using System.Data.Entity.Core;
-using System.Data.Entity.Infrastructure;
-using System.Linq;
 
 namespace ImperaPlus.Application.Jobs
-{    
+{
     [Queue(JobQueues.Critical)]
     [DisableConcurrentExecution(60)]
     [AutomaticRetry(Attempts = 0)]
@@ -36,10 +35,6 @@ namespace ImperaPlus.Application.Jobs
                 try
                 {
                     this.unitOfWork.Commit();
-                }
-                catch (OptimisticConcurrencyException)
-                {
-                    Log.Warn().Message("OptimisticConcurrencyException for game {0}", game.Id);
                 }
                 catch (DbUpdateConcurrencyException)
                 {

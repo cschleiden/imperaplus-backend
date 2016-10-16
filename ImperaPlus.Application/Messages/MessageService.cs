@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using AutoMapper;
 using ImperaPlus.DataAccess;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Utilities;
+using Microsoft.EntityFrameworkCore;
 
 namespace ImperaPlus.Application.Messages
 {

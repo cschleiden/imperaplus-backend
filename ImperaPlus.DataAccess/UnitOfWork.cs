@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using ImperaPlus.DataAccess.Repositories;
 using ImperaPlus.Domain.Repositories;
 using System.Collections.Generic;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace ImperaPlus.DataAccess
 {

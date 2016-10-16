@@ -1,6 +1,6 @@
-﻿using System.Data.Entity;
-using System.Linq;
+﻿using System.Linq;
 using ImperaPlus.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace ImperaPlus.DataAccess.Repositories
 {
@@ -32,11 +32,6 @@ namespace ImperaPlus.DataAccess.Repositories
         public void Add(TEntity item)
         {
             this.DbSet.Add(item);
-        }
-
-        public TEntity FindById(params object[] keyValues)
-        {
-            return this.DbSet.Find(keyValues);
         }
 
         public void Remove(TEntity item)

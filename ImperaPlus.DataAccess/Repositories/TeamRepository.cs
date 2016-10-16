@@ -1,6 +1,6 @@
 ﻿using ImperaPlus.Domain.Games;
 using ImperaPlus.Domain.Repositories;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace ImperaPlus.DataAccess.Repositories
 {

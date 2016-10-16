@@ -100,6 +100,7 @@ namespace ImperaPlus.DTO.Account
         /// Email address of user to request password for
         /// </summary>
         [Required]
+        [EmailAddress]
         public string Email { get; set; }
 
         /// <summary>
@@ -157,6 +158,10 @@ namespace ImperaPlus.DTO.Account
     {
         [Required]
         public string UserName { get; set; }
+
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
     }
 
     public class RemoveLoginBindingModel

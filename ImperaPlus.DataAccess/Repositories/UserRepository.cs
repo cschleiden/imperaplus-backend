@@ -1,8 +1,7 @@
-using System;
-using System.Data.Entity;
 using System.Linq;
 using ImperaPlus.Domain;
 using ImperaPlus.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace ImperaPlus.DataAccess.Repositories
 {
@@ -10,6 +9,11 @@ namespace ImperaPlus.DataAccess.Repositories
     {
         public UserRepository(DbContext context) : base(context)
         {
+        }
+
+        public User FindById(string id)
+        {
+            return this.DbSet.FirstOrDefault(x => x.Id == id);
         }
 
         public User FindByName(string name)

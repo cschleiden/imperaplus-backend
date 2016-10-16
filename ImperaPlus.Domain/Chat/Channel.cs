@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.Entity;
 using System.Linq;
 using ImperaPlus.Domain.Enums;
 using ImperaPlus.Domain.Games;
 using ImperaPlus.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace ImperaPlus.Domain.Chat
 {
@@ -42,7 +42,13 @@ namespace ImperaPlus.Domain.Chat
         {
             get
             {
-                return this.MessageRepository.Query().Where(x => x.ChannelId == this.Id).Include(x => x.CreatedBy).OrderByDescending(x => x.CreatedAt).Take(20).OrderBy(x => x.CreatedAt);
+                return this.MessageRepository
+                    .Query()
+                    .Where(x => x.ChannelId == this.Id)
+                    .Include(x => x.CreatedBy)
+                    .OrderByDescending(x => x.CreatedAt)
+                    .Take(20)
+                    .OrderBy(x => x.CreatedAt);
             }
         }
 
