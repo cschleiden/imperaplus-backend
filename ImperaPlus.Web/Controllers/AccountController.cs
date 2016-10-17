@@ -50,9 +50,9 @@ namespace ImperaPlus.Backend.Controllers
         [AllowAnonymous]
         [Route("UserNameAvailable")]
         [HttpGet]
-        public async Task<IActionResult> GetUserNameAvailable(string userName)
+        public async Task<IActionResult> GetUserNameAvailable([FromQuery] string userName)
         {
-            if (userName.Length < 4)
+            if (string.IsNullOrEmpty(userName) || userName.Length < 4)
             {
                 return this.BadRequest();
             }

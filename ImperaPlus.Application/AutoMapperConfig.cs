@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using AutoMapper;
 using ImperaPlus.DTO.Games;
 using ImperaPlus.Domain.Games;
+using ImperaPlus.Domain.Utilities;
 
 namespace ImperaPlus.Application
 {
@@ -15,9 +16,9 @@ namespace ImperaPlus.Application
         }
     }
 
-    public class VictoryConditionsResolver : ValueResolver<VictoryConditionCollection, IEnumerable<DTO.Games.VictoryConditionType>>
+    public class VictoryConditionsResolver : ValueResolver<SerializedCollection<Domain.Enums.VictoryConditionType>, IEnumerable<DTO.Games.VictoryConditionType>>
     {
-        protected override IEnumerable<VictoryConditionType> ResolveCore(VictoryConditionCollection source)
+        protected override IEnumerable<VictoryConditionType> ResolveCore(SerializedCollection<Domain.Enums.VictoryConditionType> source)
         {
             foreach(var victoryCondition in source)
             {
@@ -26,9 +27,9 @@ namespace ImperaPlus.Application
         }
     }
 
-    public class VisibilityModifierResolver : ValueResolver<VisibilityModifierCollection, IEnumerable<DTO.Games.VisibilityModifierType>>
+    public class VisibilityModifierResolver : ValueResolver<SerializedCollection<Domain.Enums.VisibilityModifierType>, IEnumerable<DTO.Games.VisibilityModifierType>>
     {
-        protected override IEnumerable<VisibilityModifierType> ResolveCore(VisibilityModifierCollection source)
+        protected override IEnumerable<VisibilityModifierType> ResolveCore(SerializedCollection<Domain.Enums.VisibilityModifierType> source)
         {
             foreach (var visibilityModifier in source)
             {
@@ -37,31 +38,29 @@ namespace ImperaPlus.Application
         }
     }
 
-    public class DomainVictoryConditionsResolver : ValueResolver<IEnumerable<DTO.Games.VictoryConditionType>, VictoryConditionCollection>
+    public class DomainVictoryConditionsResolver : ValueResolver<IEnumerable<DTO.Games.VictoryConditionType>, SerializedCollection<Domain.Enums.VictoryConditionType>>
     {
-        protected override VictoryConditionCollection ResolveCore(IEnumerable<VictoryConditionType> source)
+        protected override SerializedCollection<Domain.Enums.VictoryConditionType> ResolveCore(IEnumerable<VictoryConditionType> source)
         {
-            var result = new VictoryConditionCollection();
-            foreach (var victoryCondition in source)
-            {
-                result.Add(Mapper.Map<Domain.Enums.VictoryConditionType>(victoryCondition));
-            }
-
-            return result;
+            return new SerializedCollection<Domain.Enums.VictoryConditionType>(
+                source.Select(victoryCondition => Mapper.Map<Domain.Enums.VictoryConditionType>(victoryCondition)));
         }
     }
 
-    public class DomainVisibilityModifierResolver : ValueResolver<IEnumerable<DTO.Games.VisibilityModifierType>, VisibilityModifierCollection>
+    public class DomainVisibilityModifierResolver : ValueResolver<IEnumerable<DTO.Games.VisibilityModifierType>, SerializedCollection<Domain.Enums.VisibilityModifierType>>
     {
-        protected override VisibilityModifierCollection ResolveCore(IEnumerable<VisibilityModifierType> source)
+        protected override SerializedCollection<Domain.Enums.VisibilityModifierType> ResolveCore(IEnumerable<VisibilityModifierType> source)
         {
-            var result = new VisibilityModifierCollection();
-            foreach (var visibilityModifier in source)
-            {
-                result.Add(Mapper.Map<Domain.Enums.VisibilityModifierType>(visibilityModifier));
-            }
+            return new SerializedCollection<Domain.Enums.VisibilityModifierType>(
+                source.Select(victoryCondition => Mapper.Map<Domain.Enums.VisibilityModifierType>(victoryCondition)));
+        }
+    }
 
-            return result;
+    public class SerializedConverter<T> : ValueResolver<SerializedCollection<T>, IEnumerable<T>>
+    {
+        protected override IEnumerable<T> ResolveCore(SerializedCollection<T> source)
+        {
+            return source;
         }
     }
 
@@ -69,6 +68,8 @@ namespace ImperaPlus.Application
     {
         public static void Configure()
         {
+            Mapper.CreateMap(typeof(SerializedCollection<>), typeof(IEnumerable<>)); //.ConvertUsing(typeof(SerializedConverter<>));
+
             Mapper.CreateMap<Domain.Games.Game, DTO.Games.GameSummary>()
                 .ForMember(x => x.Name, c => c.MapFrom(x => x.Name))
                 .ForMember(x => x.Type, c => c.MapFrom(x => (GameType)x.Type))

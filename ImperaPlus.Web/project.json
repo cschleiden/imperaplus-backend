@@ -43,6 +43,9 @@
       "dependencies": {
         "ImperaPlus.Application": {
           "target": "project"
+        },
+        "ImperaPlus.DataAccess": {
+          "target": "project"
         }
       }
     }
@@ -51,7 +54,8 @@
   "buildOptions": {
     "emitEntryPoint": true,
     "preserveCompilationContext": true,
-    "xmlDoc": true
+    "xmlDoc": true,
+    "nowarn": [ "1591" ]
   },
 
   "publishOptions": {

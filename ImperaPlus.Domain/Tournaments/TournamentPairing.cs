@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.Linq;
 using ImperaPlus.Domain.Games;
@@ -77,6 +78,7 @@ namespace ImperaPlus.Domain.Tournaments
         /// <summary>
         /// Gets the current winner of this pairing (according to number of games won)
         /// </summary>
+        [NotMapped]
         public TournamentTeam Winner
         {
             get
@@ -90,6 +92,7 @@ namespace ImperaPlus.Domain.Tournaments
         /// <summary>
         /// Gets the current loser of this pairing (according to number of games won/lost)
         /// </summary>
+        [NotMapped]
         public TournamentTeam Loser
         {
             get
@@ -103,6 +106,7 @@ namespace ImperaPlus.Domain.Tournaments
         /// <summary>
         /// Gets a value indicating whether the winner can be determined from the current state
         /// </summary>
+        [NotMapped]
         public bool CanWinnerBeDetermined
         {
             get

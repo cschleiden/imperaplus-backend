@@ -6,16 +6,19 @@ using ImperaPlus.Domain.Games;
 using ImperaPlus.Domain.Utilities;
 using ImperaPlus.Domain.Exceptions;
 using ImperaPlus.Domain.Annotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ImperaPlus.Domain.Ladders
 {
-    public class Ladder
+    public class Ladder : ISerializedEntity
     {
+        private string mapTemplates;
+
         protected Ladder()
         {
-            this.Id = Guid.NewGuid();           
-            
-            this.MapTemplates = new MapTemplateList();
+            this.Id = Guid.NewGuid();
+
+            this.MapTemplates = new SerializedCollection<string>(this.mapTemplates);
 
             this.Standings = new HashSet<LadderStanding>();
             this.Queue = new HashSet<LadderQueueEntry>();
@@ -32,6 +35,11 @@ namespace ImperaPlus.Domain.Ladders
             this.Options.NumberOfPlayersPerTeam = playersPerTeam;
         }
 
+        public void Serialize()
+        {
+            this.mapTemplates = this.MapTemplates.Serialize();
+        }
+
         public Guid Id { get; private set; }
 
         public string Name { get; set; }
@@ -46,7 +54,8 @@ namespace ImperaPlus.Domain.Ladders
 
         public Games.GameOptions Options { get; private set; }
 
-        public MapTemplateList MapTemplates { get; private set; }
+        [NotMapped]
+        public SerializedCollection<string> MapTemplates { get; private set; }
 
         public virtual ICollection<LadderStanding> Standings { get; private set; }
 
@@ -92,7 +101,7 @@ namespace ImperaPlus.Domain.Ladders
             }
 
             this.IsActive = isActive;
-        }
+        }        
     }
 
     public class LadderQueueEntry : IChangeTrackedEntity

@@ -19,13 +19,11 @@ using ImperaPlus.Utils;
 using NLog.Fluent;
 
 namespace ImperaPlus.Domain.Games
-{
-    public class CountryCollection : SerializedCollection<Country>
+{    
+    public class Game : Entity, IIdentifiableEntity, IChangeTrackedEntity, IOwnedEntity, ISerializedEntity
     {
-    }
+        private string countries;
 
-    public class Game : Entity, IIdentifiableEntity, IChangeTrackedEntity, IOwnedEntity
-    {
         [UsedImplicitly]
         protected Game()
         {
@@ -35,7 +33,7 @@ namespace ImperaPlus.Domain.Games
 
             this.GameHistory = new GameHistory(this);
 
-            this.Countries = new CountryCollection();
+            this.Countries = new SerializedCollection<Country>(this.countries);
 
             this.Teams = new HashSet<Team>();
         }
@@ -83,14 +81,21 @@ namespace ImperaPlus.Domain.Games
             this.PlayState = PlayState.None;
         }
 
+        public void Serialize()
+        {
+            this.countries = this.Countries.Serialize();
+        }
+
         [NotMapped]
         public IMapTemplateProvider MapTemplateProvider { get; set; }
 
         [NotMapped]
         public IAttackService AttackService { get; set; }
 
+        [NotMapped]
         public IRandomGen RandomGen { get; set; }
 
+        [NotMapped]
         public Func<IUnitOfWork> UnitOfWorkGen { get; set; }
 
         public long Id { get; set; }
@@ -134,7 +139,8 @@ namespace ImperaPlus.Domain.Games
             }
         }
 
-        public CountryCollection Countries { get; set; }
+        [NotMapped]
+        public SerializedCollection<Country> Countries { get; private set; }
 
         public virtual ICollection<Team> Teams { get; private set; }
 

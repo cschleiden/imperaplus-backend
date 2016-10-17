@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.Linq;
 using ImperaPlus.Domain.Exceptions;
@@ -13,6 +14,8 @@ namespace ImperaPlus.Domain.Tournaments
         public const int GroupSize = 4;
 
         public static readonly TournamentState[] ActiveStates = { TournamentState.Groups, TournamentState.Knockout };
+
+        private string mapTemplates;
 
         /// <summary>
         /// Only use to support automatic form generation
@@ -30,7 +33,7 @@ namespace ImperaPlus.Domain.Tournaments
         {
             this.Id = Guid.NewGuid();
 
-            this.MapTemplates = new MapTemplateList();
+            this.MapTemplates = new SerializedCollection<string>(this.mapTemplates);
 
             this.Groups = new HashSet<TournamentGroup>();
             this.Teams = new HashSet<TournamentTeam>();
@@ -96,6 +99,11 @@ namespace ImperaPlus.Domain.Tournaments
             this.StartOfTournament = startOfTournament;
         }
 
+        public void Serialize()
+        {
+            this.mapTemplates = this.MapTemplates.Serialize();
+        }
+
         public Guid Id { get; private set; }
 
         public string Name { get; private set; }
@@ -151,6 +159,8 @@ namespace ImperaPlus.Domain.Tournaments
 
         public TournamentTeam Winner { get; protected set; }
 
+        public Guid? WinnerId { get; protected set; }
+
         /// <summary>
         /// Current phase of knockout games
         /// </summary>
@@ -158,7 +168,8 @@ namespace ImperaPlus.Domain.Tournaments
 
         public TournamentState State { get; set; }
 
-        public MapTemplateList MapTemplates { get; private set; }
+        [NotMapped]
+        public SerializedCollection<string> MapTemplates { get; private set; }
 
         /// <summary>
         /// Completion of tournament in percent

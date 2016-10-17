@@ -1,37 +1,30 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ImperaPlus.Domain.Enums;
 using ImperaPlus.Domain.Exceptions;
 using ImperaPlus.Domain.Games.Distribution;
 using ImperaPlus.Domain.Map;
 using ImperaPlus.Domain.Services;
-using System;
 
 namespace ImperaPlus.Domain.Games
 {
     public class Map
     {
         private Game game;
-        private CountryCollection countryCollection;
 
         private Dictionary<string, Country> countryDict;
         private Dictionary<Guid, List<Country>> playerToCountry = null;
 
-        internal Map(Game game, CountryCollection countryCollection)
+        internal Map(Game game, IList<Country> countryCollection)
         {
             this.game = game;
-            this.countryCollection = countryCollection;
+            this.Countries = countryCollection;
 
             this.ResetChanges();
         }
 
-        public CountryCollection Countries 
-        { 
-            get
-            {
-                return this.countryCollection;
-            }
-        }
+        public IList<Country> Countries { get; private set; }
         
         public IEnumerable<Country> ChangedCountries
         {
@@ -56,19 +49,14 @@ namespace ImperaPlus.Domain.Games
 
         public Map Clone()
         {
-            var clone = new Map(this.game, new CountryCollection());
-
-            foreach(var country in this.Countries)
-            {
-                clone.Countries.Add(new Country(country.CountryIdentifier, country.Units)
-                    {
-                        PlayerId = country.PlayerId,
-                        TeamId = country.TeamId,
-                        IsUpdated = country.IsUpdated
-                    });
-            }
-
-            return clone;
+            return new Map(
+                this.game,
+                this.Countries.Select(country => new Country(country.CountryIdentifier, country.Units)
+                {
+                    PlayerId = country.PlayerId,
+                    TeamId = country.TeamId,
+                    IsUpdated = country.IsUpdated
+                }).ToList());
         }
 
         public Country GetCountry(string identifier)

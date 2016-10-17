@@ -15,18 +15,12 @@ namespace ImperaPlus.Domain.Tournaments
             this.TeamId = team.Id;
             this.Team = team;
 
-            this.TournamentId = team.TournamentId;
-            this.Tournament = team.Tournament;
-
             this.UserId = user.Id;
             this.User = user;
         }
 
         public Guid Id { get; set; }
-
-        public Guid TournamentId { get; protected set; }
-        public Tournament Tournament { get; protected set; }
-
+        
         public string UserId { get; protected set; }
         public User User { get; protected set; }
 

@@ -1,34 +1,22 @@
 ﻿using System.Collections.Generic;
-using ImperaPlus.Utils;
 
 namespace ImperaPlus.Domain.Utilities
 {
     public class SerializedCollection<T> : List<T>
-    {        
-        public string Serialized
+    {
+        public SerializedCollection(string input)
+            : base(Jil.JSON.Deserialize<IEnumerable<T>>(input))
+        { 
+        }
+
+        public SerializedCollection(IEnumerable<T> data)
+            : base(data)
         {
-            get
-            {
-                using (TraceContext.Trace("Serialize collection"))
-                {
-                    return Jil.JSON.Serialize<List<T>>(this);
-                }
-            }
+        }
 
-            set
-            {
-                if (string.IsNullOrEmpty(value))
-                {
-                    return;
-                }
-
-                this.Clear();
-                using (TraceContext.Trace("Deserialize collection"))
-                {
-                    var items = Jil.JSON.Deserialize<List<T>>(value);
-                    this.AddRange(items);
-                }
-            }
+        public string Serialize()
+        {
+            return Jil.JSON.Serialize<IEnumerable<T>>(this);
         }
     }
 }

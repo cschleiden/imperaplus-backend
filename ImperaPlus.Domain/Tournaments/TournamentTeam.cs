@@ -12,7 +12,6 @@ namespace ImperaPlus.Domain.Tournaments
             this.Id = Guid.NewGuid();
 
             this.Participants = new HashSet<TournamentParticipant>();
-            this.Pairings = new HashSet<TournamentPairing>();
         }
 
         public TournamentTeam(Tournament tournament)
@@ -28,8 +27,6 @@ namespace ImperaPlus.Domain.Tournaments
         public Tournament Tournament { get; set; }
 
         public virtual ICollection<TournamentParticipant> Participants { get; private set; }
-
-        public virtual ICollection<TournamentPairing> Pairings { get; private set; }
 
         public string Name { get; set; }
 

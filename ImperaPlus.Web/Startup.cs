@@ -57,8 +57,8 @@ namespace ImperaPlus.Web
 
             services.AddDbContext<ImperaContext>(options =>
             {
-                string connection = "";
-                options.UseSqlServer(connection);
+                string connection = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=ImperaPlus;Integrated Security=SSPI;MultipleActiveResultSets=true";
+                options.UseSqlServer(connection, b=> b.MigrationsAssembly("ImperaPlus.Web"));
             });
 
             // Auth

@@ -279,8 +279,8 @@
     <Compile Include="Configuration.cs" />
     <Compile Include="Enums\GameType.cs" />
     <Compile Include="Enums\MapDistribution.cs" />
+    <Compile Include="ISerializedEntity.cs" />
     <Compile Include="Map\MapTemplateDescriptor.cs" />
-    <Compile Include="Utilities\MapTemplateList.cs" />
     <Compile Include="Messages\MessageFolder.cs" />
     <Compile Include="Enums\PlayerOutcome.cs" />
     <Compile Include="Enums\PlayerState.cs" />

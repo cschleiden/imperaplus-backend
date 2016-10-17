@@ -1,18 +1,16 @@
-﻿using ImperaPlus.Domain.Enums;
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
+using ImperaPlus.Domain.Enums;
 using ImperaPlus.Domain.Utilities;
 
 namespace ImperaPlus.Domain.Games
 {
-    public class VictoryConditionCollection : SerializedCollection<VictoryConditionType>
+    public class GameOptions : IIdentifiableEntity, ISerializedEntity
     {
-    }
+        private string victoryConditions;
 
-    public class VisibilityModifierCollection : SerializedCollection<VisibilityModifierType>
-    {
-    }
+        private string visibilityModifier;
 
-    public class GameOptions : IIdentifiableEntity
-    {
         public GameOptions()
         {
             // Minimum for a game
@@ -34,8 +32,14 @@ namespace ImperaPlus.Domain.Games
 
             this.MaximumNumberOfCards = 5;
 
-            this.VictoryConditions = new VictoryConditionCollection();
-            this.VisibilityModifier = new VisibilityModifierCollection();
+            this.VictoryConditions = new SerializedCollection<VictoryConditionType>(this.victoryConditions);
+            this.VisibilityModifier = new SerializedCollection<VisibilityModifierType>(this.visibilityModifier);            
+        }
+
+        public void Serialize()
+        {
+            this.victoryConditions = this.VictoryConditions.Serialize();
+            this.visibilityModifier = this.VisibilityModifier.Serialize();
         }
 
         public long Id { get; set; }
@@ -79,9 +83,11 @@ namespace ImperaPlus.Domain.Games
         /// </summary>
         public MapDistribution MapDistribution { get; set; }
 
-        public VictoryConditionCollection VictoryConditions { get; private set; }
+        [NotMapped]
+        public SerializedCollection<VictoryConditionType> VictoryConditions { get; private set; }
 
-        public VisibilityModifierCollection VisibilityModifier { get; private set; }
+        [NotMapped]
+        public SerializedCollection<VisibilityModifierType> VisibilityModifier { get; private set; }
 
         /// <summary>
         /// Maximum number of cards a player can hold at any given time. Defaults to 5
@@ -98,6 +104,6 @@ namespace ImperaPlus.Domain.Games
         public int PlayerCount
         {
             get { return this.NumberOfTeams * this.NumberOfPlayersPerTeam; }
-        }
+        }        
     }
 }

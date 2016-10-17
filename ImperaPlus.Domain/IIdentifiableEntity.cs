@@ -10,6 +10,6 @@
     }
 
     public interface IIdentifiableEntity : IIdentifiableEntity<long>
-    {        
+    {
     }
 }

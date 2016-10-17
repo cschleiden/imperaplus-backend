@@ -7607,7 +7607,8 @@
       "mnailgun >= 1.0.0"
     ],
     ".NETFramework,Version=v4.6.1": [
-      "ImperaPlus.Application"
+      "ImperaPlus.Application",
+      "ImperaPlus.DataAccess"
     ]
   },
   "tools": {
