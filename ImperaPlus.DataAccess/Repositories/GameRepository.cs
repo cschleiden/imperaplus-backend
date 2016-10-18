@@ -39,8 +39,7 @@ namespace ImperaPlus.DataAccess.Repositories
         {
             return
                 this.GameSet.Where(
-                g => g.Teams.SelectMany(t => t.Players)
-                    .Any(p => !p.IsHidden && p.UserId == userId));
+                    g => g.Teams.Any(t => t.Players.Any(p => !p.IsHidden && p.UserId == userId)));
         }
 
         public IEnumerable<Game> FindForUserAtTurn(string userId)
@@ -56,8 +55,7 @@ namespace ImperaPlus.DataAccess.Repositories
 
         public IQueryable<Game> FindNotHiddenNotOutcomeForUser(string userId, PlayerOutcome outcome)
         {
-            return this.DbSet
-                .Include(x => x.Teams.Select(t => t.Players.Select(p => p.User)))
+            return this.GameSet
                 .Where(g => 
                     g.Teams.Any(t => 
                         t.Players.Any(p => 
@@ -85,7 +83,6 @@ namespace ImperaPlus.DataAccess.Repositories
             get
             {
                 return this.GameSet
-                    .Include(x => x.Teams.Select(t => t.Players.Select(p => p.User)))
                     .Include(x => x.HistoryEntries)
                     .Include(x => x.Options);
             }
@@ -97,7 +94,9 @@ namespace ImperaPlus.DataAccess.Repositories
             {
                 return base.DbSet
                     .Include(x => x.CreatedBy)
-                    .Include(x => x.Teams.Select(t => t.Players.Select(p => p.User)))
+                    .Include(x => x.Teams)
+                        .ThenInclude(t => t.Players)
+                        .ThenInclude(p => p.User)
                     .Include(x => x.Options);
             }
         }        

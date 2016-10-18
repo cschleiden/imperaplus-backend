@@ -26,6 +26,43 @@
           "lib/netstandard1.1/Autofac.Extensions.DependencyInjection.dll": {}
         }
       },
+      "Hangfire.AspNetCore/1.6.6": {
+        "type": "package",
+        "dependencies": {
+          "Hangfire.Core": "[1.6.6]",
+          "Microsoft.AspNetCore.Hosting.Abstractions": "1.0.0",
+          "Microsoft.AspNetCore.Http.Abstractions": "1.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "1.0.0"
+        },
+        "compile": {
+          "lib/net451/Hangfire.AspNetCore.dll": {}
+        },
+        "runtime": {
+          "lib/net451/Hangfire.AspNetCore.dll": {}
+        }
+      },
+      "Hangfire.Core/1.6.6": {
+        "type": "package",
+        "dependencies": {
+          "Newtonsoft.Json": "5.0.0",
+          "Owin": "1.0.0"
+        },
+        "compile": {
+          "lib/net45/Hangfire.Core.dll": {}
+        },
+        "runtime": {
+          "lib/net45/Hangfire.Core.dll": {}
+        },
+        "resource": {
+          "lib/net45/es/Hangfire.Core.resources.dll": {
+            "locale": "es"
+          },
+          "lib/net45/zh/Hangfire.Core.resources.dll": {
+            "locale": "zh"
+          }
+        }
+      },
       "Libuv/1.9.0": {
         "type": "package",
         "dependencies": {
@@ -931,40 +968,17 @@
           "lib/net451/Microsoft.EntityFrameworkCore.dll": {}
         }
       },
-      "Microsoft.EntityFrameworkCore.Design/1.0.0-preview2-final": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.EntityFrameworkCore.Design.Core": "1.0.0-preview2-final",
-          "Microsoft.Extensions.CommandLineUtils": "1.0.0"
-        },
-        "compile": {
-          "lib/net451/_._": {}
-        },
-        "runtime": {
-          "lib/net451/_._": {}
-        },
-        "runtimeTargets": {
-          "runtimes/win7-x64/lib/net451/Microsoft.EntityFrameworkCore.Design.exe": {
-            "assetType": "runtime",
-            "rid": "win7-x64"
-          },
-          "runtimes/win7-x86/lib/net451/Microsoft.EntityFrameworkCore.Design.exe": {
-            "assetType": "runtime",
-            "rid": "win7-x86"
-          }
-        }
-      },
-      "Microsoft.EntityFrameworkCore.Design.Core/1.0.0-preview2-final": {
+      "Microsoft.EntityFrameworkCore.Design/1.0.1": {
         "type": "package",
         "dependencies": {
           "Microsoft.AspNetCore.Hosting.Abstractions": "1.0.0",
-          "Microsoft.EntityFrameworkCore.Relational.Design": "1.0.0"
+          "Microsoft.EntityFrameworkCore.Relational.Design": "1.0.1"
         },
         "compile": {
-          "lib/net451/Microsoft.EntityFrameworkCore.Design.Core.dll": {}
+          "lib/net451/Microsoft.EntityFrameworkCore.Design.dll": {}
         },
         "runtime": {
-          "lib/net451/Microsoft.EntityFrameworkCore.Design.Core.dll": {}
+          "lib/net451/Microsoft.EntityFrameworkCore.Design.dll": {}
         }
       },
       "Microsoft.EntityFrameworkCore.Relational/1.0.1": {
@@ -984,10 +998,10 @@
           "lib/net451/Microsoft.EntityFrameworkCore.Relational.dll": {}
         }
       },
-      "Microsoft.EntityFrameworkCore.Relational.Design/1.0.0": {
+      "Microsoft.EntityFrameworkCore.Relational.Design/1.0.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.EntityFrameworkCore.Relational": "1.0.0"
+          "Microsoft.EntityFrameworkCore.Relational": "1.0.1"
         },
         "compile": {
           "lib/net451/Microsoft.EntityFrameworkCore.Relational.Design.dll": {}
@@ -1035,15 +1049,6 @@
         },
         "runtime": {
           "lib/net451/Microsoft.Extensions.Caching.Memory.dll": {}
-        }
-      },
-      "Microsoft.Extensions.CommandLineUtils/1.0.0": {
-        "type": "package",
-        "compile": {
-          "lib/net451/Microsoft.Extensions.CommandLineUtils.dll": {}
-        },
-        "runtime": {
-          "lib/net451/Microsoft.Extensions.CommandLineUtils.dll": {}
         }
       },
       "Microsoft.Extensions.Configuration/1.0.0": {
@@ -2588,6 +2593,36 @@
         "lib/netstandard1.1/Autofac.Extensions.DependencyInjection.xml"
       ]
     },
+    "Hangfire.AspNetCore/1.6.6": {
+      "sha512": "RhLQW5DYBznKuAfVPumwooNy96B9BBmVTukiY6uB526NHtCJNlPrzFwV+Ee+USHmuyaZdF0hrdqjwYzRnPs5Cg==",
+      "type": "package",
+      "path": "Hangfire.AspNetCore/1.6.6",
+      "files": [
+        "Hangfire.AspNetCore.1.6.6.nupkg.sha512",
+        "Hangfire.AspNetCore.nuspec",
+        "lib/net451/Hangfire.AspNetCore.dll",
+        "lib/net451/Hangfire.AspNetCore.xml",
+        "lib/netstandard1.3/Hangfire.AspNetCore.dll",
+        "lib/netstandard1.3/Hangfire.AspNetCore.xml"
+      ]
+    },
+    "Hangfire.Core/1.6.6": {
+      "sha512": "x8dU1pSGo8UsGDKvs/I8f7UqhKvaNOHbui/cbxLcwtB9RekgUUeURxoAhbo/hgMar9jU9YpM9rwy9HB6Ersc6Q==",
+      "type": "package",
+      "path": "Hangfire.Core/1.6.6",
+      "files": [
+        "Hangfire.Core.1.6.6.nupkg.sha512",
+        "Hangfire.Core.nuspec",
+        "lib/net45/Hangfire.Core.dll",
+        "lib/net45/Hangfire.Core.xml",
+        "lib/net45/es/Hangfire.Core.resources.dll",
+        "lib/net45/zh/Hangfire.Core.resources.dll",
+        "lib/netstandard1.3/Hangfire.Core.dll",
+        "lib/netstandard1.3/Hangfire.Core.xml",
+        "lib/netstandard1.3/es/Hangfire.Core.resources.dll",
+        "lib/netstandard1.3/zh/Hangfire.Core.resources.dll"
+      ]
+    },
     "Libuv/1.9.0": {
       "sha512": "5rb9Hl9QYjZVKZZjxuPWPfTdc49sKwoFL3LaGnflG0KKyJgaTrBkVWbO7ZIlQuJ3c4rg3++ZpmG15hW/oME+ng==",
       "type": "package",
@@ -3377,33 +3412,17 @@
         "lib/netstandard1.3/Microsoft.EntityFrameworkCore.xml"
       ]
     },
-    "Microsoft.EntityFrameworkCore.Design/1.0.0-preview2-final": {
-      "sha512": "RhyjntECuOVsrKjgFog9rv+V7oBsxBNxz5NviF7uHvDDQXLyHH3os/CewQxRNsve114AQH5RX/Bww6qAXlSORQ==",
+    "Microsoft.EntityFrameworkCore.Design/1.0.1": {
+      "sha512": "a2vn4bl3C6hJqK4Mm7mz4iuHaE2KdBSav3EKyVlgE2qofxLnw03Hf2nB3LvIQgMw40RodV3tp3o3E+x6jZKTSA==",
       "type": "package",
-      "path": "Microsoft.EntityFrameworkCore.Design/1.0.0-preview2-final",
+      "path": "Microsoft.EntityFrameworkCore.Design/1.0.1",
       "files": [
-        "Microsoft.EntityFrameworkCore.Design.1.0.0-preview2-final.nupkg.sha512",
+        "Microsoft.EntityFrameworkCore.Design.1.0.1.nupkg.sha512",
         "Microsoft.EntityFrameworkCore.Design.nuspec",
-        "lib/net451/_._",
-        "lib/netcore50/_._",
-        "lib/netcoreapp1.0/Microsoft.EntityFrameworkCore.Design.dll",
-        "lib/netcoreapp1.0/Microsoft.EntityFrameworkCore.Design.runtimeconfig.json",
-        "lib/netcoreapp1.0/Microsoft.EntityFrameworkCore.Design.xml",
-        "runtimes/win7-x64/lib/net451/Microsoft.EntityFrameworkCore.Design.exe",
-        "runtimes/win7-x86/lib/net451/Microsoft.EntityFrameworkCore.Design.exe"
-      ]
-    },
-    "Microsoft.EntityFrameworkCore.Design.Core/1.0.0-preview2-final": {
-      "sha512": "H3pHksGErQSEwWyvISlDYMslIXftS4XB2m0AvqBS08ECGHagh27mqm/oIyUetzzRad+C2V0zpguJmR14eMiRaA==",
-      "type": "package",
-      "path": "Microsoft.EntityFrameworkCore.Design.Core/1.0.0-preview2-final",
-      "files": [
-        "Microsoft.EntityFrameworkCore.Design.Core.1.0.0-preview2-final.nupkg.sha512",
-        "Microsoft.EntityFrameworkCore.Design.Core.nuspec",
-        "lib/net451/Microsoft.EntityFrameworkCore.Design.Core.dll",
-        "lib/net451/Microsoft.EntityFrameworkCore.Design.Core.xml",
-        "lib/netstandard1.3/Microsoft.EntityFrameworkCore.Design.Core.dll",
-        "lib/netstandard1.3/Microsoft.EntityFrameworkCore.Design.Core.xml"
+        "lib/net451/Microsoft.EntityFrameworkCore.Design.dll",
+        "lib/net451/Microsoft.EntityFrameworkCore.Design.xml",
+        "lib/netstandard1.3/Microsoft.EntityFrameworkCore.Design.dll",
+        "lib/netstandard1.3/Microsoft.EntityFrameworkCore.Design.xml"
       ]
     },
     "Microsoft.EntityFrameworkCore.Relational/1.0.1": {
@@ -3419,12 +3438,12 @@
         "lib/netstandard1.3/Microsoft.EntityFrameworkCore.Relational.xml"
       ]
     },
-    "Microsoft.EntityFrameworkCore.Relational.Design/1.0.0": {
-      "sha512": "pw4EmGTp5U645is0Lyf0C6yU1uQGHVIZiRyxlDNNrRllL0ZjSFKTShv9qbE+fBpvvvArNp2HhDmP7d6vJAt0Dw==",
+    "Microsoft.EntityFrameworkCore.Relational.Design/1.0.1": {
+      "sha512": "GBN8QmrqcQo4WB4rKsPfzVaVKeHN6GSRF+eOTZWqK1vJ7T5kpG4PtxOkqOw8aZDRJbehAleD+dHYBOkngFzafA==",
       "type": "package",
-      "path": "Microsoft.EntityFrameworkCore.Relational.Design/1.0.0",
+      "path": "Microsoft.EntityFrameworkCore.Relational.Design/1.0.1",
       "files": [
-        "Microsoft.EntityFrameworkCore.Relational.Design.1.0.0.nupkg.sha512",
+        "Microsoft.EntityFrameworkCore.Relational.Design.1.0.1.nupkg.sha512",
         "Microsoft.EntityFrameworkCore.Relational.Design.nuspec",
         "lib/net451/Microsoft.EntityFrameworkCore.Relational.Design.dll",
         "lib/net451/Microsoft.EntityFrameworkCore.Relational.Design.xml",
@@ -3467,19 +3486,6 @@
         "lib/net451/Microsoft.Extensions.Caching.Memory.xml",
         "lib/netstandard1.3/Microsoft.Extensions.Caching.Memory.dll",
         "lib/netstandard1.3/Microsoft.Extensions.Caching.Memory.xml"
-      ]
-    },
-    "Microsoft.Extensions.CommandLineUtils/1.0.0": {
-      "sha512": "kXJ8+YvEjp1j7ezJ7yvQMLYbRL6QlpBUjRoBfqghoe80yqZ5azYB90lL4iNeyRCznWF+cGm41aaIoFU0aOq7TQ==",
-      "type": "package",
-      "path": "Microsoft.Extensions.CommandLineUtils/1.0.0",
-      "files": [
-        "Microsoft.Extensions.CommandLineUtils.1.0.0.nupkg.sha512",
-        "Microsoft.Extensions.CommandLineUtils.nuspec",
-        "lib/net451/Microsoft.Extensions.CommandLineUtils.dll",
-        "lib/net451/Microsoft.Extensions.CommandLineUtils.xml",
-        "lib/netstandard1.3/Microsoft.Extensions.CommandLineUtils.dll",
-        "lib/netstandard1.3/Microsoft.Extensions.CommandLineUtils.xml"
       ]
     },
     "Microsoft.Extensions.Configuration/1.0.0": {
@@ -7579,6 +7585,7 @@
     "": [
       "Autofac >= 4.1.1",
       "Autofac.Extensions.DependencyInjection >= 4.0.0",
+      "Hangfire.AspNetCore >= 1.6.6",
       "Microsoft.AspNet.SignalR.Core >= 2.2.1",
       "Microsoft.AspNet.SignalR.Owin >= 1.2.2",
       "Microsoft.AspNetCore.Authentication.Facebook >= 1.0.0",
@@ -7592,7 +7599,7 @@
       "Microsoft.AspNetCore.Server.IISIntegration >= 1.0.0",
       "Microsoft.AspNetCore.Server.Kestrel >= 1.0.1",
       "Microsoft.EntityFrameworkCore >= 1.0.1",
-      "Microsoft.EntityFrameworkCore.Design >= 1.0.0-preview2-final",
+      "Microsoft.EntityFrameworkCore.Design >= 1.0.1",
       "Microsoft.EntityFrameworkCore.SqlServer >= 1.0.1",
       "Microsoft.Extensions.Configuration.EnvironmentVariables >= 1.0.0",
       "Microsoft.Extensions.Configuration.FileExtensions >= 1.0.0",

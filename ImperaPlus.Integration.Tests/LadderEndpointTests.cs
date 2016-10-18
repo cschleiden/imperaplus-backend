@@ -14,7 +14,6 @@ namespace ImperaPlus.Integration.Tests
         }
 
         [TestMethod]
-        [Integration]
         // TODO: Admin controller referenced doesn't exist anymore!
         [Ignore]
         public void NewLadderQueueAndCreate()

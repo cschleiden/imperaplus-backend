@@ -1,11 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Autofac;
 using ImperaPlus.Application.Games;
-using ImperaPlus.DataAccess;
 using ImperaPlus.DTO.Games;
 using ImperaPlus.TestSupport;
-using ImperaPlus.TestSupport.Testdata;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ImperaPlus.Application.Tests.GameService
@@ -22,7 +19,6 @@ namespace ImperaPlus.Application.Tests.GameService
         }
 
         [TestMethod]
-        [LayerApplication]
         public void CreateGameShouldSucceed()
         {
             // Arrange
@@ -46,14 +42,13 @@ namespace ImperaPlus.Application.Tests.GameService
             // Assert
             Assert.IsNotNull(game);
             Assert.IsNotNull(openGames);
-            var dbGame = this.UnitOfWork.Games.FindById(game.Id);
+            var dbGame = this.UnitOfWork.Games.Find(game.Id);
             Assert.IsNotNull(dbGame);
             Assert.AreEqual(dbGame.Id, game.Id);
             Assert.IsTrue(dbGame.Teams.SelectMany(x => x.Players).Any(x => x.UserId == this.TestUser.Id));
         }
 
         [TestMethod]
-        [LayerApplication]
         public void CreateGameWithBotShouldSucceed()
         {
             // Arrange
@@ -81,7 +76,6 @@ namespace ImperaPlus.Application.Tests.GameService
         }
 
         [TestMethod]
-        [LayerApplication]
         public void GetHistoryTurn()
         {
             // Act
@@ -92,7 +86,6 @@ namespace ImperaPlus.Application.Tests.GameService
         }
 
         [TestMethod]
-        [LayerApplication]
         [ExpectedException(typeof(Domain.Exceptions.DomainException))]
         public void GetHistoryTurnInvalidTurnId()
         {
@@ -100,7 +93,6 @@ namespace ImperaPlus.Application.Tests.GameService
         }
         
         [TestMethod]
-        [LayerApplication]
         public void HideAllGamesSucceed()
         {
             // Arrange

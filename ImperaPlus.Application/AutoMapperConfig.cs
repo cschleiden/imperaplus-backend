@@ -68,6 +68,8 @@ namespace ImperaPlus.Application
     {
         public static void Configure()
         {
+            Mapper.Reset();
+
             Mapper.CreateMap(typeof(SerializedCollection<>), typeof(IEnumerable<>)); //.ConvertUsing(typeof(SerializedConverter<>));
 
             Mapper.CreateMap<Domain.Games.Game, DTO.Games.GameSummary>()

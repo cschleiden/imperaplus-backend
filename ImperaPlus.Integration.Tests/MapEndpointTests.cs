@@ -10,7 +10,6 @@ namespace ImperaPlus.Integration.Tests
     public class MapEndpointTests : BaseIntegrationTest
     {
         [TestMethod]
-        [Integration]
         [TestProperty("Controller", "Map")]
         public async Task MapTemplate_GetAllSummary()
         {
@@ -22,7 +21,6 @@ namespace ImperaPlus.Integration.Tests
         }
 
         [TestMethod]
-        [Integration]
         [TestProperty("Controller", "Map")]
         public async Task MapTemplate_GetSingle()
         {

@@ -16,7 +16,7 @@ namespace ImperaPlus.Integration.Tests
     {
         public static Task<TClientType> GetClient<TClientType>() where TClientType : ImperaHttpClient
         {
-            var client = ImperaClientFactory.GetClient<TClientType>(ConfigurationManager.AppSettings["BaseUri"], null, TestSetup.TestServer.Handler);
+            var client = ImperaClientFactory.GetClient<TClientType>(ConfigurationManager.AppSettings["BaseUri"], null, TestSetup.TestServer.CreateHandler());
             return Task.FromResult(client);
         }
 

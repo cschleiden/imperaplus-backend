@@ -10,7 +10,6 @@ namespace ImperaPlus.Integration.Tests
     public class NewsTests : BaseIntegrationTest
     {
         [TestMethod]
-        [Integration]
         [TestProperty("Controller", "News")]
         public async Task News_GetAll()
         {

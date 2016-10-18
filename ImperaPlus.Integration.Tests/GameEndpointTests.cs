@@ -1,14 +1,11 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
-using ImperaPlus.TestSupport;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using ImperaPlus.Integration.Tests.Support;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using System.Threading.Tasks;
 using ImperaPlus.DataAccess.ConvertedMaps;
 using ImperaPlus.GeneratedClient;
-using System.Configuration;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ImperaPlus.Integration.Tests
 {
@@ -33,7 +30,6 @@ namespace ImperaPlus.Integration.Tests
         }
 
         [TestMethod]
-        [Integration]
         public async Task CreateAndDeleteGame()
         {
             this.Log("Create game");
@@ -51,14 +47,12 @@ namespace ImperaPlus.Integration.Tests
         }
 
         [TestMethod]
-        [Integration]
         public async Task StartJoinAndCompleteGame()
         {
             await CreateAndPlayGameToEnd(this.GetCreationOptions(this.GetGameName(), 2, 1));
         }
         
         [TestMethod]
-        [Integration]
         public async Task StartJoinAndCompleteGameWithBot()
         {
             this.Log("Create game");

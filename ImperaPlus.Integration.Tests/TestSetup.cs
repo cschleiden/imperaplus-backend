@@ -1,10 +1,11 @@
 ﻿using System.Configuration;
-using ImperaPlus.Backend;
-using Microsoft.Owin.Testing;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Autofac;
-using ImperaPlus.TestSupport;
 using ImperaPlus.GeneratedClient;
+using ImperaPlus.TestSupport;
+using ImperaPlus.Web;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ImperaPlus.Integration.Tests
 {
@@ -16,7 +17,7 @@ namespace ImperaPlus.Integration.Tests
         [AssemblyInitialize]
         public static void Init(TestContext testContext)
         {
-            TestServer = IntegrationTestServer.Create(new TestDbInitializer(), RegisterTypes);
+            TestSetup.TestServer = new TestServer(new WebHostBuilder().UseStartup<Startup>());
 
             var client = ApiClient.GetClient<AccountClient>().Result;
             for (int i = 0; i < 4; ++i)
