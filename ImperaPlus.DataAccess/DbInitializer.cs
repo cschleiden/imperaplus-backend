@@ -14,8 +14,8 @@ namespace ImperaPlus.DataAccess
 {
     public class DbSeed
     {
-        private UserManager<User> userManager;
-        private RoleManager<IdentityRole> roleManager;        
+        protected UserManager<User> userManager;
+        protected RoleManager<IdentityRole> roleManager;        
 
         public DbSeed(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
@@ -23,7 +23,7 @@ namespace ImperaPlus.DataAccess
             this.roleManager = roleManager;
         }
 
-        public async Task Seed(ImperaContext context)
+        public virtual async Task Seed(ImperaContext context)
         {
             // Enable if seed should be debugged locally
             // if (System.Diagnostics.Debugger.IsAttached == false)

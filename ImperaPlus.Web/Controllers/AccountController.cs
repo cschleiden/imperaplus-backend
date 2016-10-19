@@ -6,16 +6,22 @@ using System.Net;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+using AspNet.Security.OpenIdConnect.Extensions;
+using AspNet.Security.OpenIdConnect.Server;
 using ImperaPlus.Application;
 using ImperaPlus.Domain;
 using ImperaPlus.DTO;
 using ImperaPlus.DTO.Account;
 using ImperaPlus.Web;
 using ImperaPlus.Web.Resources;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using OpenIddict;
 
 namespace ImperaPlus.Backend.Controllers
 {
@@ -25,12 +31,16 @@ namespace ImperaPlus.Backend.Controllers
     {
         public const string LocalLoginProvider = "Local";
 
+        private readonly OpenIddictApplicationManager<OpenIddictApplication> _applicationManager;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        
+
         private readonly IEmailService _emailSender;
         private readonly ILogger _logger;
 
         public AccountController(
+            OpenIddictApplicationManager<OpenIddictApplication> applicationManager,
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             IEmailService emailSender,
@@ -41,6 +51,147 @@ namespace ImperaPlus.Backend.Controllers
             _emailSender = emailSender;
             _logger = loggerFactory.CreateLogger<AccountController>();
         }
+
+        [AllowAnonymous]
+        [HttpPost("token")]
+        [Produces("application/json")]
+        public async Task<IActionResult> Exchange()
+        {
+            var request = HttpContext.GetOpenIdConnectRequest();
+
+            if (request.IsPasswordGrantType())
+            {
+                var user = await _userManager.FindByNameAsync(request.Username);
+                if (user == null)
+                {
+                    return BadRequest(new OpenIdConnectResponse
+                    {
+                        Error = OpenIdConnectConstants.Errors.InvalidGrant,
+                        ErrorDescription = "The username/password couple is invalid."
+                    });
+                }
+
+                // Ensure the user is allowed to sign in.
+                if (!await _signInManager.CanSignInAsync(user))
+                {
+                    return BadRequest(new OpenIdConnectResponse
+                    {
+                        Error = OpenIdConnectConstants.Errors.InvalidGrant,
+                        ErrorDescription = "The specified user is not allowed to sign in."
+                    });
+                }
+
+                // Reject the token request if two-factor authentication has been enabled by the user.
+                if (_userManager.SupportsUserTwoFactor && await _userManager.GetTwoFactorEnabledAsync(user))
+                {
+                    return BadRequest(new OpenIdConnectResponse
+                    {
+                        Error = OpenIdConnectConstants.Errors.InvalidGrant,
+                        ErrorDescription = "The specified user is not allowed to sign in."
+                    });
+                }
+
+                // Ensure the user is not already locked out.
+                if (_userManager.SupportsUserLockout && await _userManager.IsLockedOutAsync(user))
+                {
+                    return BadRequest(new OpenIdConnectResponse
+                    {
+                        Error = OpenIdConnectConstants.Errors.InvalidGrant,
+                        ErrorDescription = "The username/password couple is invalid."
+                    });
+                }
+
+                // Ensure the password is valid.
+                if (!await _userManager.CheckPasswordAsync(user, request.Password))
+                {
+                    if (_userManager.SupportsUserLockout)
+                    {
+                        await _userManager.AccessFailedAsync(user);
+                    }
+
+                    return BadRequest(new OpenIdConnectResponse
+                    {
+                        Error = OpenIdConnectConstants.Errors.InvalidGrant,
+                        ErrorDescription = "The username/password couple is invalid."
+                    });
+                }
+
+                if (_userManager.SupportsUserLockout)
+                {
+                    await _userManager.ResetAccessFailedCountAsync(user);
+                }
+
+                // Create a new authentication ticket.
+                var ticket = await CreateTicketAsync(request, user);
+
+                return SignIn(ticket.Principal, ticket.Properties, ticket.AuthenticationScheme);
+            }
+
+            return BadRequest(new OpenIdConnectResponse
+            {
+                Error = OpenIdConnectConstants.Errors.UnsupportedGrantType,
+                ErrorDescription = "The specified grant type is not supported."
+            });
+        }
+
+        private async Task<AuthenticationTicket> CreateTicketAsync(OpenIdConnectRequest request, User user)
+        {
+            // Set the list of scopes granted to the client application.
+            // Note: the offline_access scope must be granted
+            // to allow OpenIddict to return a refresh token.
+            var scopes = new[] {
+                OpenIdConnectConstants.Scopes.OpenId,
+                OpenIdConnectConstants.Scopes.Email,
+                OpenIdConnectConstants.Scopes.Profile,
+                OpenIdConnectConstants.Scopes.OfflineAccess,
+                OpenIddictConstants.Scopes.Roles
+            }.Intersect(request.GetScopes());
+
+            // Create a new ClaimsPrincipal containing the claims that
+            // will be used to create an id_token, a token or a code.
+            var principal = await _signInManager.CreateUserPrincipalAsync(user);
+
+            // Note: by default, claims are NOT automatically included in the access and identity tokens.
+            // To allow OpenIddict to serialize them, you must attach them a destination, that specifies
+            // whether they should be included in access tokens, in identity tokens or in both.
+
+            foreach (var claim in principal.Claims)
+            {
+                // Always include the user identifier in the
+                // access token and the identity token.
+                if (claim.Type == ClaimTypes.NameIdentifier)
+                {
+                    claim.SetDestinations(OpenIdConnectConstants.Destinations.AccessToken,
+                                          OpenIdConnectConstants.Destinations.IdentityToken);
+                }
+
+                // Include the name claim, but only if the "profile" scope was requested.
+                else if (claim.Type == ClaimTypes.Name && scopes.Contains(OpenIdConnectConstants.Scopes.Profile))
+                {
+                    claim.SetDestinations(OpenIdConnectConstants.Destinations.IdentityToken);
+                }
+
+                // Include the role claims, but only if the "roles" scope was requested.
+                else if (claim.Type == ClaimTypes.Role && scopes.Contains(OpenIddictConstants.Scopes.Roles))
+                {
+                    claim.SetDestinations(OpenIdConnectConstants.Destinations.AccessToken,
+                                          OpenIdConnectConstants.Destinations.IdentityToken);
+                }
+
+                // The other claims won't be added to the access
+                // and identity tokens and will be kept private.
+            }
+
+            // Create a new authentication ticket holding the user identity.
+            var ticket = new AuthenticationTicket(
+                principal, 
+                new AuthenticationProperties(),
+                OpenIdConnectServerDefaults.AuthenticationScheme);
+
+            ticket.SetScopes(scopes);
+
+            return ticket;
+        }    
 
         /// <summary>
         /// Checks if a username is available

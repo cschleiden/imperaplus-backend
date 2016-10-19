@@ -46,6 +46,11 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ImperaPlus.Web", "ImperaPlu
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ImperaPlus.IntegrationTests", "ImperaPlus.IntegrationTests\ImperaPlus.IntegrationTests.xproj", "{398100BE-A825-44F1-9011-5FCB6DE14A08}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{BDE8469A-0BDA-480E-9280-2F61423C3F43}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

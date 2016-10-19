@@ -8,8 +8,8 @@ using ImperaPlus.DataAccess;
 namespace ImperaPlus.Web.Migrations
 {
     [DbContext(typeof(ImperaContext))]
-    [Migration("20161017041157_initial")]
-    partial class initial
+    [Migration("20161019060916_Serialization2")]
+    partial class Serialization2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -122,6 +122,9 @@ namespace ImperaPlus.Web.Migrations
 
                     b.Property<bool>("CardDistributed");
 
+                    b.Property<string>("CountriesSerialized")
+                        .HasAnnotation("BackingField", "countries");
+
                     b.Property<DateTime>("CreatedAt");
 
                     b.Property<string>("CreatedById");
@@ -145,6 +148,8 @@ namespace ImperaPlus.Web.Migrations
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
+
+                    b.Property<string>("SerializedCountries");
 
                     b.Property<DateTime?>("StartedAt");
 
@@ -193,6 +198,10 @@ namespace ImperaPlus.Web.Migrations
                     b.Property<int>("NumberOfPlayersPerTeam");
 
                     b.Property<int>("NumberOfTeams");
+
+                    b.Property<string>("SerializedVictoryConditions");
+
+                    b.Property<string>("SerializedVisibilityModifier");
 
                     b.Property<int>("TimeoutInSeconds");
 
@@ -305,6 +314,8 @@ namespace ImperaPlus.Web.Migrations
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
+
+                    b.Property<string>("SerializedMapTemplates");
 
                     b.HasKey("Id");
 
@@ -776,6 +787,79 @@ namespace ImperaPlus.Web.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("OpenIddict.OpenIddictApplication", b =>
+                {
+                    b.Property<string>("Id");
+
+                    b.Property<string>("ClientId");
+
+                    b.Property<string>("ClientSecret");
+
+                    b.Property<string>("DisplayName");
+
+                    b.Property<string>("LogoutRedirectUri");
+
+                    b.Property<string>("RedirectUri");
+
+                    b.Property<string>("Type");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId")
+                        .IsUnique();
+
+                    b.ToTable("OpenIddictApplications");
+                });
+
+            modelBuilder.Entity("OpenIddict.OpenIddictAuthorization", b =>
+                {
+                    b.Property<string>("Id");
+
+                    b.Property<string>("Scope");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("OpenIddictAuthorizations");
+                });
+
+            modelBuilder.Entity("OpenIddict.OpenIddictScope", b =>
+                {
+                    b.Property<string>("Id");
+
+                    b.Property<string>("Description");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OpenIddictScopes");
+                });
+
+            modelBuilder.Entity("OpenIddict.OpenIddictToken", b =>
+                {
+                    b.Property<string>("Id");
+
+                    b.Property<string>("ApplicationId");
+
+                    b.Property<string>("AuthorizationId");
+
+                    b.Property<string>("Type");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationId");
+
+                    b.HasIndex("AuthorizationId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("OpenIddictTokens");
+                });
+
             modelBuilder.Entity("ImperaPlus.Domain.Alliance", b =>
                 {
                     b.HasOne("ImperaPlus.Domain.Chat.Channel", "Channel")
@@ -1065,6 +1149,28 @@ namespace ImperaPlus.Web.Migrations
                         .WithMany("Roles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("OpenIddict.OpenIddictAuthorization", b =>
+                {
+                    b.HasOne("ImperaPlus.Domain.User")
+                        .WithMany("Authorizations")
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("OpenIddict.OpenIddictToken", b =>
+                {
+                    b.HasOne("OpenIddict.OpenIddictApplication")
+                        .WithMany("Tokens")
+                        .HasForeignKey("ApplicationId");
+
+                    b.HasOne("OpenIddict.OpenIddictAuthorization")
+                        .WithMany("Tokens")
+                        .HasForeignKey("AuthorizationId");
+
+                    b.HasOne("ImperaPlus.Domain.User")
+                        .WithMany("Tokens")
+                        .HasForeignKey("UserId");
                 });
         }
     }

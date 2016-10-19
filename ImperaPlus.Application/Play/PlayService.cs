@@ -1,13 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-
-using ImperaPlus.DataAccess;
-using ImperaPlus.Domain.Repositories;
-using ImperaPlus.DTO.Games.Play;
-using System;
 using AutoMapper;
-using Game = ImperaPlus.Domain.Games.Game;
 using ImperaPlus.Application.Visibility;
+using ImperaPlus.DataAccess;
+using ImperaPlus.Domain.Events;
+using ImperaPlus.Domain.Repositories;
+using ImperaPlus.Domain.Services;
+using ImperaPlus.DTO.Games.Play;
+using Game = ImperaPlus.Domain.Games.Game;
 
 namespace ImperaPlus.Application.Play
 {
@@ -28,8 +29,8 @@ namespace ImperaPlus.Application.Play
 
     public class PlayService : BaseGameService, IPlayService
     {
-        public PlayService(IUnitOfWork unitOfWork, IUserProvider userProvider, IVisibilityModifierFactory visibilityModifierFactory)
-            : base(unitOfWork, userProvider, visibilityModifierFactory)
+        public PlayService(IUnitOfWork unitOfWork, IUserProvider userProvider, IVisibilityModifierFactory visibilityModifierFactory, IMapTemplateProvider mapTemplateProvider, IEventAggregator eventAggregator)
+            : base(unitOfWork, userProvider, visibilityModifierFactory, mapTemplateProvider, eventAggregator)
         {
         }
 

@@ -22,8 +22,6 @@ namespace ImperaPlus.Domain.Games
 {    
     public class Game : Entity, IIdentifiableEntity, IChangeTrackedEntity, IOwnedEntity, ISerializedEntity
     {
-        private string countries;
-
         [UsedImplicitly]
         protected Game()
         {
@@ -33,7 +31,7 @@ namespace ImperaPlus.Domain.Games
 
             this.GameHistory = new GameHistory(this);
 
-            this.Countries = new SerializedCollection<Country>(this.countries);
+            this.Countries = new SerializedCollection<Country>(this.SerializedCountries);
 
             this.Teams = new HashSet<Team>();
         }
@@ -83,8 +81,10 @@ namespace ImperaPlus.Domain.Games
 
         public void Serialize()
         {
-            this.countries = this.Countries.Serialize();
+            this.SerializedCountries = this.Countries.Serialize();
         }
+
+        public string SerializedCountries { get; set; }
 
         [NotMapped]
         public IMapTemplateProvider MapTemplateProvider { get; set; }

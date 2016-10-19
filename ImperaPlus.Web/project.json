@@ -12,7 +12,10 @@
     "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0",
     "Microsoft.AspNetCore.Server.Kestrel": "1.0.1",
     "Microsoft.EntityFrameworkCore": "1.0.1",
-    "Microsoft.EntityFrameworkCore.Design": "1.0.1",
+    "Microsoft.EntityFrameworkCore.Design": {
+      "type": "build",
+      "version": "1.0.0-preview2-final"
+    },
     "Microsoft.EntityFrameworkCore.SqlServer": "1.0.1",
     "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0",
     "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0",
@@ -28,7 +31,10 @@
     "Microsoft.AspNet.SignalR.Owin": "1.2.2",
     "Microsoft.AspNetCore.Owin": "1.0.0",
     "Microsoft.AspNet.SignalR.Core": "2.2.1",
-    "Hangfire.AspNetCore": "1.6.6"
+    "Hangfire.AspNetCore": "1.6.6",
+    "Hangfire.SqlServer": "1.6.6",
+    "OpenIddict": "1.0.0-beta1-0456",
+    "AspNet.Security.OAuth.Validation": "1.0.0-*"
   },
 
   "tools": {

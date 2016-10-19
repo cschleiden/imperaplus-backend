@@ -135,6 +135,8 @@ namespace ImperaPlus.Application
 
             Mapper.CreateMap<DTO.Games.GameOptions, Domain.Games.GameOptions>()
                 .ForMember(x => x.Id, c => c.Ignore())
+                .ForMember(x => x.SerializedVictoryConditions, c => c.Ignore())
+                .ForMember(x => x.SerializedVisibilityModifier, c => c.Ignore())
                 .ForMember(x => x.MapDistribution, c => c.MapFrom(x => (Domain.Enums.MapDistribution)x.MapDistribution))
                 .ForMember(x => x.VictoryConditions, c => c.ResolveUsing<DomainVictoryConditionsResolver>().FromMember(x => x.VictoryConditions))
                 .ForMember(x => x.VisibilityModifier, c => c.ResolveUsing<DomainVisibilityModifierResolver>().FromMember(x => x.VisibilityModifier));

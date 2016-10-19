@@ -9,6 +9,7 @@ using ImperaPlus.DTO.Games.History;
 using ImperaPlus.Utils;
 using System.Collections.Generic;
 using System.Linq;
+using ImperaPlus.Domain.Events;
 
 namespace ImperaPlus.Application.Games
 {
@@ -66,7 +67,6 @@ namespace ImperaPlus.Application.Games
     {
         private readonly IComponentContext componentContext;
         private readonly Domain.Services.IGameService gameService;
-        private readonly IMapTemplateProvider mapTemplateProvider;
 
         public GameService(
             IUnitOfWork unitOfWork, 
@@ -74,12 +74,12 @@ namespace ImperaPlus.Application.Games
             IComponentContext componentContext, 
             Domain.Services.IGameService gameService, 
             IMapTemplateProvider mapTemplateProvider,
-            IVisibilityModifierFactory visibilityModifierFactory)
-            : base(unitOfWork, userProvider, visibilityModifierFactory)
+            IVisibilityModifierFactory visibilityModifierFactory,
+            IEventAggregator eventAggregator)
+            : base(unitOfWork, userProvider, visibilityModifierFactory, mapTemplateProvider, eventAggregator)
         {
             this.componentContext = componentContext;
             this.gameService = gameService;
-            this.mapTemplateProvider = mapTemplateProvider;
         }
 
         public GameSummary Create(GameCreationOptions creationOptions)

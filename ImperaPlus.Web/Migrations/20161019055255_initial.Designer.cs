@@ -8,9 +8,10 @@ using ImperaPlus.DataAccess;
 namespace ImperaPlus.Web.Migrations
 {
     [DbContext(typeof(ImperaContext))]
-    partial class ImperaContextModelSnapshot : ModelSnapshot
+    [Migration("20161019055255_initial")]
+    partial class initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.1")
@@ -148,8 +149,6 @@ namespace ImperaPlus.Web.Migrations
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
 
-                    b.Property<string>("SerializedCountries");
-
                     b.Property<DateTime?>("StartedAt");
 
                     b.Property<int>("State");
@@ -197,10 +196,6 @@ namespace ImperaPlus.Web.Migrations
                     b.Property<int>("NumberOfPlayersPerTeam");
 
                     b.Property<int>("NumberOfTeams");
-
-                    b.Property<string>("SerializedVictoryConditions");
-
-                    b.Property<string>("SerializedVisibilityModifier");
 
                     b.Property<int>("TimeoutInSeconds");
 
@@ -313,8 +308,6 @@ namespace ImperaPlus.Web.Migrations
                     b.Property<byte[]>("RowVersion")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
-
-                    b.Property<string>("SerializedMapTemplates");
 
                     b.HasKey("Id");
 

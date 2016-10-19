@@ -61,7 +61,7 @@ namespace ImperaPlus.Backend.Controllers
         /// <returns>Summary of newly created game</returns>
         [HttpPost("")]
         [Produces(typeof(GameSummary))]
-        public IActionResult Post(GameCreationOptions creationOptions)
+        public IActionResult Post([FromBody] GameCreationOptions creationOptions)
         {
             var game = this.gameService.Create(creationOptions);
 

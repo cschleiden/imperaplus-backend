@@ -1,12 +1,14 @@
 ﻿using System.IO;
 using System.Reflection;
 using Autofac;
+using ImperaPlus.DataAccess;
 using ImperaPlus.GeneratedClient;
 using ImperaPlus.TestSupport;
 using ImperaPlus.Web;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.PlatformAbstractions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ImperaPlus.Integration.Tests
@@ -25,6 +27,7 @@ namespace ImperaPlus.Integration.Tests
             TestSetup.TestServer = new TestServer(new WebHostBuilder()
                 .UseEnvironment(EnvironmentName.Development)
                 .UseContentRoot(contentRoot)
+                .ConfigureServices(services => services.AddScoped<DbSeed, TestDbSeed>())
                 .UseStartup<Startup>());
             TestSetup.TestServer.BaseAddress = new System.Uri("http://localhost", System.UriKind.Absolute);
 

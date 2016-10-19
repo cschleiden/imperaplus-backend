@@ -7,10 +7,6 @@ namespace ImperaPlus.Domain.Games
 {
     public class GameOptions : IIdentifiableEntity, ISerializedEntity
     {
-        private string victoryConditions;
-
-        private string visibilityModifier;
-
         public GameOptions()
         {
             // Minimum for a game
@@ -32,15 +28,19 @@ namespace ImperaPlus.Domain.Games
 
             this.MaximumNumberOfCards = 5;
 
-            this.VictoryConditions = new SerializedCollection<VictoryConditionType>(this.victoryConditions);
-            this.VisibilityModifier = new SerializedCollection<VisibilityModifierType>(this.visibilityModifier);            
+            this.VictoryConditions = new SerializedCollection<VictoryConditionType>(this.SerializedVictoryConditions);
+            this.VisibilityModifier = new SerializedCollection<VisibilityModifierType>(this.SerializedVisibilityModifier);            
         }
 
         public void Serialize()
         {
-            this.victoryConditions = this.VictoryConditions.Serialize();
-            this.visibilityModifier = this.VisibilityModifier.Serialize();
+            this.SerializedVictoryConditions = this.VictoryConditions.Serialize();
+            this.SerializedVisibilityModifier = this.VisibilityModifier.Serialize();
         }
+
+        public string SerializedVictoryConditions { get; set; }
+
+        public string SerializedVisibilityModifier { get; set; }
 
         public long Id { get; set; }
 

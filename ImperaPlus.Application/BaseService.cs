@@ -18,40 +18,7 @@ namespace ImperaPlus.Application
         {
             this.UnitOfWork = unitOfWork;
             this.userProvider = userProvider;
-        }
-
-        protected Game GetGame(long gameId)
-        {
-            var game = this.UnitOfWork.Games.Find(gameId);
-            if (game == null)
-            {
-                throw new ApplicationException("Cannot find game", ErrorCode.CannotFindGame);
-            }
-
-            return game;
-        }
-
-        protected Game GetGameWithHistory(long gameId)
-        {
-            var game = this.UnitOfWork.Games.FindWithHistory(gameId);
-            if (game == null)
-            {
-                throw new ApplicationException("Cannot find game", ErrorCode.CannotFindGame);
-            }
-
-            return game;
-        }
-
-        protected Game GetGameMessages(long gameId)
-        {
-            var game = this.UnitOfWork.Games.FindWithMessages(gameId);
-            if (game == null)
-            {
-                throw new ApplicationException("Cannot find game", ErrorCode.CannotFindGame);
-            }
-
-            return game;
-        }
+        }       
 
         protected Domain.User CurrentUser
         {

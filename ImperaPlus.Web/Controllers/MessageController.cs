@@ -40,7 +40,7 @@ namespace ImperaPlus.Backend.Controllers
         }
         
         [HttpPost("")]
-        public IActionResult PostSend(DTO.Messages.SendMessage message)
+        public IActionResult PostSend([FromBody] DTO.Messages.SendMessage message)
         {
             var subject = Regex.Replace(message.Subject, @"<[^>]*>", string.Empty); 
             var text = Regex.Replace(message.Text, @"<[^>]*>", string.Empty);

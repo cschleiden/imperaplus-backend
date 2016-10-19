@@ -10,7 +10,7 @@ namespace ImperaPlus.GeneratedClient
     {
         public async Task<string> LoginAsync(string userName, string password)
         {
-            var url_ = string.Format("{0}/{1}", BaseUrl, "Token");
+            var url_ = string.Format("{0}/{1}", BaseUrl, "api/Account/Token");
 
 
             var client_ = await CreateHttpClientAsync(CancellationToken.None).ConfigureAwait(false);

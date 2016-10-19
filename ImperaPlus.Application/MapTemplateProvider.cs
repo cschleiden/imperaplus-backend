@@ -25,6 +25,8 @@ namespace ImperaPlus.Application
 
         public MapTemplate GetTemplate(string name)
         {
+            Domain.Utilities.Require.NotNullOrEmpty(name, nameof(name));
+
             return this.mapTemplates.GetOrAdd(name, this.GetTemplateFromStore);
         }
 

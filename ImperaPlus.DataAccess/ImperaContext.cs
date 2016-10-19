@@ -10,14 +10,12 @@ using ImperaPlus.Domain.Ladders;
 using ImperaPlus.Domain.Map;
 using ImperaPlus.Domain.News;
 using ImperaPlus.Domain.Tournaments;
-using ImperaPlus.Domain.Utilities;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Profiling;
 
 namespace ImperaPlus.DataAccess
 {
-    public class ImperaContext : IdentityDbContext<User>, IImperaContext
+    public class ImperaContext : OpenIddict.OpenIddictDbContext<User>, IImperaContext
     {
         private readonly IUserProvider userProvider;
         private readonly IComponentContext componentContext;

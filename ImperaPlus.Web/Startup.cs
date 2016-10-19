@@ -2,6 +2,9 @@
 using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Hangfire;
+using ImperaPlus.Application;
+using ImperaPlus.Application.Jobs;
 using ImperaPlus.DataAccess;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Web.Providers;
@@ -44,18 +47,16 @@ namespace ImperaPlus.Web
                 builder.AddUserSecrets();
             }
 
-            Configuration = builder.Build();
+            this.Configuration = builder.Build();
+            this.Environment = env;
         }
 
         public IConfigurationRoot Configuration { get; }
+        public IHostingEnvironment Environment { get; private set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
-            services.AddMvc();
-            services.AddCors();
-
             services.AddDbContext<ImperaContext>(options =>
             {
                 string connection = Configuration["DBConnection"];
@@ -70,38 +71,60 @@ namespace ImperaPlus.Web
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequireUppercase = false;
                     options.Password.RequireDigit = false;
-
+                    
                     options.SignIn.RequireConfirmedEmail = true;
                     options.SignIn.RequireConfirmedPhoneNumber = false;
+
+                    if (this.Environment.IsDevelopment())
+                    {
+                        options.SignIn.RequireConfirmedEmail = false;
+                    }
                 })
                 .AddEntityFrameworkStores<ImperaContext>()
                 .AddDefaultTokenProviders();
 
+            var openIddict = services.AddOpenIddict<ImperaContext>()
+                .EnableTokenEndpoint("/api/Account/Token")
+                .AllowPasswordFlow()
+                .AllowRefreshTokenFlow();
+
+            if (this.Environment.IsDevelopment())
+            {
+                openIddict
+                    // During development, you can disable the HTTPS requirement.
+                    .DisableHttpsRequirement()
+                    .AddEphemeralSigningKey();
+            }
+
+            // Swagger
             services.AddSwaggerGen(options =>
             {
                 options.DescribeAllEnumsAsStrings();
                 options.IncludeXmlComments(AppDomain.CurrentDomain.BaseDirectory + "ImperaPlus.Web.xml");
-            });            
-            
+            });
+
+            services.AddMvc();
+            services.AddCors();
+
+            // Hangire
+            services.AddHangfire(x =>
+                x.UseNLogLogProvider()
+                 .UseFilter(new JobExpirationTimeAttribute())
+                 .UseSqlServerStorage(Configuration["DBConnection"]));
+
             return this.RegisterDependencies(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(
+            IApplicationBuilder app, 
+            IHostingEnvironment env, 
+            ILoggerFactory loggerFactory, 
+            ImperaContext dbContext,
+            DbSeed dbSeed)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-
-            app.UseMvc();
-
-            app.UseCors(b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-
-            //app.UseFacebookAuthentication(new FacebookOptions
-            //{
-            //   ClientId = Configuration["Authentication:Facebook:ClientId"],
-            //    AppId = Configuration["Authentication:Facebook:AppId"],
-            //    AppSecret = Configuration["Authentication:Facebook:AppSecret"]                
-            //});
 
             if (env.IsDevelopment())
             {
@@ -109,7 +132,19 @@ namespace ImperaPlus.Web
                 app.UseDatabaseErrorPage();
             }
 
+            // Auth
             app.UseIdentity();
+            //app.UseFacebookAuthentication(new FacebookOptions
+            //{
+            //   ClientId = Configuration["Authentication:Facebook:ClientId"],
+            //    AppId = Configuration["Authentication:Facebook:AppId"],
+            //    AppSecret = Configuration["Authentication:Facebook:AppSecret"]                
+            //});            
+            app.UseOAuthValidation();
+            app.UseOpenIddict();
+
+            app.UseMvc();
+            app.UseCors(b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             app.UseSignalR2();
 
@@ -117,25 +152,32 @@ namespace ImperaPlus.Web
             app.UseSwaggerUi();
 
             // Initialize database
-            var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
-            using (var serviceScope = serviceScopeFactory.CreateScope())
+            if (env.IsDevelopment())
             {
-                var dbContext = serviceScope.ServiceProvider.GetService<ImperaContext>();
-
-                if (env.IsDevelopment())
-                {
-                    // Always recreate in development
-                    dbContext.Database.EnsureDeleted();
-                    dbContext.Database.EnsureCreated();
-                }
-                else
-                {
-                    dbContext.Database.Migrate();
-                }
-
-                var dbSeed = serviceScope.ServiceProvider.GetService<DbSeed>();
-                dbSeed.Seed(dbContext).Wait();
+                // Always recreate in development
+                dbContext.Database.EnsureDeleted();
+                dbContext.Database.EnsureCreated();
             }
+            else
+            {
+                dbContext.Database.Migrate();
+            }
+                
+            dbSeed.Seed(dbContext).Wait();
+
+            AutoMapperConfig.Configure();
+
+            // Hangfire
+            app.UseHangfireServer(new BackgroundJobServerOptions
+            {
+                Queues = new[] { JobQueues.Critical, JobQueues.Normal }
+            });
+            app.UseHangfireDashboard();
+
+            Hangfire.Common.JobHelper.SetSerializerSettings(new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
+
+            // Configure Impera background jobs
+            JobConfig.Configure();
         }
 
         private IServiceProvider RegisterDependencies(IServiceCollection services)
@@ -151,13 +193,6 @@ namespace ImperaPlus.Web
             {
                 builder.RegisterType<MailGunEmailService>().AsImplementedInterfaces();
             }
-
-            // Identity
-            //builder.RegisterType<ApplicationUserManager>().As<UserManager<User>>().AsSelf().InstancePerRequest();
-            //builder.RegisterType<UserStore<User>>().AsImplementedInterfaces();
-
-            //builder.RegisterType<RoleStore<IdentityRole>>().As<IRoleStore<IdentityRole, string>>();
-            //builder.RegisterType<RoleManager<IdentityRole>>();
 
             //builder.RegisterType<OopsExceptionHandler>().As<IExceptionHandler>();
 
@@ -200,7 +235,7 @@ namespace ImperaPlus.Web
             builder.RegisterModule<Application.DependencyInjectionModule>();
             builder.RegisterModule<Domain.DependencyInjectionModule>();
 
-            //builder.RegisterType<BackgroundJobClient>().AsImplementedInterfaces();
+            builder.RegisterType<Hangfire.BackgroundJobClient>().AsImplementedInterfaces();
 
             //if (RegisterAction != null)
             //{

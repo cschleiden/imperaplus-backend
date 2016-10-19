@@ -9,20 +9,16 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace ImperaPlus.Integration.Tests
 {
-    public class TestDbInitializer
+    public class TestDbSeed : DbSeed
     {
-        private RoleManager<IdentityRole> roleManager;
-        private UserManager<User> userManager;
-
-        public TestDbInitializer(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        public TestDbSeed(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+            : base(userManager, roleManager)
         {
-            this.userManager = userManager;
-            this.roleManager = roleManager;
         }
 
-        protected async Task Seed(ImperaContext context)
+        public override async Task Seed(ImperaContext context)
         {
-            await new DbSeed(this.userManager, this.roleManager).Seed(context);
+            await base.Seed(context);
 
             if (context.MapTemplates.FirstOrDefault(x => x.Name == "TestMap") == null)
             {
@@ -42,24 +38,6 @@ namespace ImperaPlus.Integration.Tests
             context.NewsEntries.Add(newsEntry);
 
             context.SaveChanges();
-
-            // Add admin user
-
-            // Insert technical user
-            User testAdminUser = context.Users.FirstOrDefault(x => x.UserName == "TestAdmin");
-            if (testAdminUser == null)
-            {
-                testAdminUser = new User
-                {
-                    UserName = "TestAdmin",
-                    GameSlots = int.MaxValue - 1,
-                    LockoutEnabled = false
-                };
-
-                await this.userManager.CreateAsync(testAdminUser, "TestAdmin");
-            }
-
-            await this.userManager.AddToRoleAsync(testAdminUser, "admin");
 
             context.SaveChanges();
         }

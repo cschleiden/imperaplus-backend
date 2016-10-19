@@ -16,10 +16,7 @@ namespace ImperaPlus.DataAccess.Repositories
         
         public Ladder GetById(Guid id)
         {
-            return this.DbSet
-                .Include(x => x.Options)
-                .Include(x => x.Queue)
-                .Include(x => x.Queue.Select(qe => qe.User))
+            return this.GetAll()
                 .FirstOrDefault(x => x.Id == id);
         }
 
@@ -33,15 +30,12 @@ namespace ImperaPlus.DataAccess.Repositories
 
         public IEnumerable<Ladder> GetAll()
         {
-            return this.DbSet
-                .Include(x => x.Options)
-                .Include(x => x.Queue)
-                .Include(x => x.Queue.Select(qe => qe.User));
+            return this.Set;
         }
 
         public IEnumerable<Ladder> GetActive()
         {
-            return this.GetAll()
+            return this.Set
                 .Where(x => x.IsActive);
         }
 
@@ -57,6 +51,18 @@ namespace ImperaPlus.DataAccess.Repositories
             return this.Context.Set<LadderStanding>()
                 .OrderByDescending(x => x.Rating)
                 .FirstOrDefault(x => x.LadderId == ladderId && x.UserId == userId);
+        }
+
+        private IQueryable<Ladder> Set
+        {
+            get
+            {
+                return this.DbSet
+                    .Include(x => x.Options)
+                    .Include(x => x.Queue)
+                    .Include(x => x.Queue)
+                        .ThenInclude(qe => qe.User);
+            }
         }
     }
 }

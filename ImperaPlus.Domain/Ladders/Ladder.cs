@@ -12,13 +12,11 @@ namespace ImperaPlus.Domain.Ladders
 {
     public class Ladder : ISerializedEntity
     {
-        private string mapTemplates;
-
         protected Ladder()
         {
             this.Id = Guid.NewGuid();
 
-            this.MapTemplates = new SerializedCollection<string>(this.mapTemplates);
+            this.MapTemplates = new SerializedCollection<string>(this.SerializedMapTemplates);
 
             this.Standings = new HashSet<LadderStanding>();
             this.Queue = new HashSet<LadderQueueEntry>();
@@ -37,8 +35,10 @@ namespace ImperaPlus.Domain.Ladders
 
         public void Serialize()
         {
-            this.mapTemplates = this.MapTemplates.Serialize();
+            this.SerializedMapTemplates = this.MapTemplates.Serialize();
         }
+
+        public string SerializedMapTemplates { get; set; }
 
         public Guid Id { get; private set; }
 
