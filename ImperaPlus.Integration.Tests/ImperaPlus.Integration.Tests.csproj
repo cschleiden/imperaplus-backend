@@ -50,9 +50,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\AutoMapper.3.3.1\lib\net40\AutoMapper.Net4.dll</HintPath>
     </Reference>
-    <Reference Include="ImperaPlus.Web">
-      <HintPath>..\ImperaPlus.Web\bin\Debug\net461\ImperaPlus.Web.exe</HintPath>
-    </Reference>
     <Reference Include="Microsoft.AspNetCore.Authentication, Version=1.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNetCore.Authentication.1.0.0\lib\net451\Microsoft.AspNetCore.Authentication.dll</HintPath>
       <Private>True</Private>

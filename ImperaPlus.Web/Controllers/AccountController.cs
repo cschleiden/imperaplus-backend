@@ -126,7 +126,7 @@ namespace ImperaPlus.Backend.Controllers
         [Route("ManageInfo")]
         [HttpGet]
         [Produces(typeof(ManageInfoViewModel))]
-        public async Task<IActionResult> GetManageInfo(string returnUrl, bool generateState = false)
+        public async Task<IActionResult> GetManageInfo([FromQuery] string returnUrl, [FromQuery] bool generateState = false)
         {
             User user = await this.GetCurrentUserAsync();
             if (user == null)
@@ -165,7 +165,7 @@ namespace ImperaPlus.Backend.Controllers
 
         [Route("ChangePassword")]
         [HttpPost]
-        public async Task<IActionResult> ChangePassword(ChangePasswordBindingModel model)
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordBindingModel model)
         {
             var user = await GetCurrentUserAsync();
             if (user == null)
@@ -184,7 +184,7 @@ namespace ImperaPlus.Backend.Controllers
        
         [Route("SetPassword")]
         [HttpPost]       
-        public async Task<IActionResult> SetPassword(SetPasswordBindingModel model)
+        public async Task<IActionResult> SetPassword([FromBody] SetPasswordBindingModel model)
         {
             var user = await GetCurrentUserAsync();
             if (user == null)
@@ -244,7 +244,7 @@ namespace ImperaPlus.Backend.Controllers
         // POST api/Account/RemoveLogin
         [Route("RemoveLogin")]
         [HttpPost]       
-        public async Task<IActionResult> RemoveLogin(RemoveLoginBindingModel model)
+        public async Task<IActionResult> RemoveLogin([FromBody] RemoveLoginBindingModel model)
         {
             var user = await this.GetCurrentUserAsync();
             if (user == null)
@@ -330,7 +330,7 @@ namespace ImperaPlus.Backend.Controllers
         [Route("ExternalLogins")]
         [HttpGet]
         [Produces(typeof(IEnumerable<ExternalLoginViewModel>))]
-        public IActionResult GetExternalLogins(string returnUrl, bool generateState = false)
+        public IActionResult GetExternalLogins([FromQuery] string returnUrl, [FromQuery] bool generateState = false)
         {
             var descriptions = this._signInManager.GetExternalAuthenticationSchemes();
 
@@ -348,7 +348,7 @@ namespace ImperaPlus.Backend.Controllers
         [AllowAnonymous]
         [Route("Register")]
         [HttpPost]        
-        public async Task<IActionResult> Register(RegisterBindingModel model)
+        public async Task<IActionResult> Register([FromBody] RegisterBindingModel model)
         {
             var user = new User
             {
@@ -375,7 +375,7 @@ namespace ImperaPlus.Backend.Controllers
         [AllowAnonymous]
         [Route("ResendConfirmation")]
         [HttpPost]
-        public async Task<IActionResult> ResendConfirmationCode(ResendConfirmationModel model)
+        public async Task<IActionResult> ResendConfirmationCode([FromBody] ResendConfirmationModel model)
         {
             var user = await this._userManager.FindByNameAsync(model.UserName);
             if (user == null)
@@ -412,7 +412,7 @@ namespace ImperaPlus.Backend.Controllers
         [AllowAnonymous]
         [Route("ConfirmEmail")]
         [HttpPost]
-        public async Task<IActionResult> ConfirmEmail(ConfirmationModel model)
+        public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmationModel model)
         {
             var user = await _userManager.FindByIdAsync(model.UserId);
             if (user == null)
@@ -433,7 +433,7 @@ namespace ImperaPlus.Backend.Controllers
         [AllowAnonymous]
         [Route("ForgotPassword")]
         [HttpPost]        
-        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordViewModel model)
         {
             var user = await _userManager.FindByNameAsync(model.Email);
             if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
@@ -462,7 +462,7 @@ namespace ImperaPlus.Backend.Controllers
         [HttpPost]
         [Route("ResetPassword")]
         [AllowAnonymous]        
-        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordViewModel model)
         {
             var user = await _userManager.FindByIdAsync(model.UserId);
             if (user == null)
@@ -485,7 +485,7 @@ namespace ImperaPlus.Backend.Controllers
         //[HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
         [Route("RegisterExternal")]
         [HttpPost]        
-        public async Task<IActionResult> RegisterExternal(RegisterExternalBindingModel model)
+        public async Task<IActionResult> RegisterExternal([FromBody] RegisterExternalBindingModel model)
         {
             var externalLoginInfo = await this._signInManager.GetExternalLoginInfoAsync();
             if (externalLoginInfo == null)
@@ -565,6 +565,7 @@ namespace ImperaPlus.Backend.Controllers
             //else if (error == "Lockout is not enabled for this user.") return Tuple.Create( "Lockout is niet geactiveerd voor deze gebruiker.";
             //else if (error == "Store does not implement IUserTwoFactorStore&lt;TUser&gt;.") return Tuple.Create( "";
             else if (error.StartsWith("Passwords must be at least ")) return Tuple.Create("Password", Application.ErrorCode.PasswordInvalid);
+            else if (error.Contains("alphanumerics")) return Tuple.Create("Password", Application.ErrorCode.PasswordInvalid);
             else if (error == "Passwords must have at least one non letter or digit character.") return Tuple.Create("Password", Application.ErrorCode.PasswordInvalid);
             else if (error == "Passwords must have at least one uppercase ('A'-'Z').") return Tuple.Create("Password", Application.ErrorCode.PasswordInvalid);
             else if (error == "Passwords must have at least one digit ('0'-'9').") return Tuple.Create("Password", Application.ErrorCode.PasswordInvalid);

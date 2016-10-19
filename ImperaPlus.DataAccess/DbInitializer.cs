@@ -15,10 +15,12 @@ namespace ImperaPlus.DataAccess
     public class DbSeed
     {
         private UserManager<User> userManager;
+        private RoleManager<IdentityRole> roleManager;        
 
-        public DbSeed(UserManager<User> userManager)
+        public DbSeed(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
             this.userManager = userManager;
+            this.roleManager = roleManager;
         }
 
         public async Task Seed(ImperaContext context)
@@ -27,43 +29,49 @@ namespace ImperaPlus.DataAccess
             // if (System.Diagnostics.Debugger.IsAttached == false)
             //     System.Diagnostics.Debugger.Launch();
 
-            // Insert roles
-            var systemRole = new IdentityRole("system");
-            if (context.Roles.FirstOrDefault(x => x.Name == systemRole.Name) == null)
+            // Insert roles            
+            if (await this.roleManager.FindByNameAsync("admin") == null)
             {
-                context.Roles.Add(systemRole);
+                await this.roleManager.CreateAsync(new IdentityRole("admin"));
             }
 
-            var adminRole = new IdentityRole("admin");
-            if (context.Roles.FirstOrDefault(x => x.Name == adminRole.Name) == null)
+            if (await this.roleManager.FindByNameAsync("system") == null)
             {
-                context.Roles.Add(adminRole);
+                await this.roleManager.CreateAsync(new IdentityRole("system"));
             }
-
 
             // Insert technical user
-            User systemUser = context.Users.FirstOrDefault(x => x.UserName == "System");
+            User systemUser = await this.userManager.FindByNameAsync("System");
             if (systemUser == null)
             {
                 systemUser = new User
-                {
+                {                    
                     UserName = "System",
+                    Email = "system@imperaonline.de",
+                    EmailConfirmed = true,
                     GameSlots = int.MaxValue
                 };
-                await this.userManager.CreateAsync(systemUser, Guid.NewGuid().ToString());
+                var result = await this.userManager.CreateAsync(systemUser, Guid.NewGuid().ToString());
+                if (!result.Succeeded)
+                {
+                    throw new Exception();
+                }
             }
 
             await userManager.AddToRolesAsync(systemUser, new[] { "admin", "system" });
 
             // Insert bot user
-            User botUser = context.Users.FirstOrDefault(x => x.UserName == "Bot");
+            User botUser = await this.userManager.FindByNameAsync("Bot");
             if (botUser == null)
             {
                 botUser = new User
                 {
-                    UserName = "Bot"
+                    UserName = "Bot",
+                    Email = "bot@imperaonline.de",
+                    EmailConfirmed = true,
+                    GameSlots = int.MaxValue
                 };
-                await this.userManager.CreateAsync(botUser);
+                await this.userManager.CreateAsync(botUser, Guid.NewGuid().ToString());
             }
 
             await this.userManager.AddToRoleAsync(botUser, "system");
@@ -76,6 +84,7 @@ namespace ImperaPlus.DataAccess
                 testUser = new User
                 {
                     UserName = "digitald",
+                    Email = "digitald@imperaonline.de",
                     EmailConfirmed = true
                 };
                 await this.userManager.CreateAsync(testUser, "impera1234");
@@ -89,6 +98,7 @@ namespace ImperaPlus.DataAccess
                 testUser2 = new User
                 {
                     UserName = "ddtest",
+                    Email = "ddtest@imperaonline.de",
                     EmailConfirmed = true
                 };
                 await this.userManager.CreateAsync(testUser2, "impera1234");

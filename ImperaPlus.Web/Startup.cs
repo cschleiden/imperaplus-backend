@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.PlatformAbstractions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -57,14 +58,24 @@ namespace ImperaPlus.Web
 
             services.AddDbContext<ImperaContext>(options =>
             {
-                string connection = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=ImperaPlus;Integrated Security=SSPI;MultipleActiveResultSets=true";
+                string connection = Configuration["DBConnection"];
                 options.UseSqlServer(connection, b=> b.MigrationsAssembly("ImperaPlus.Web"));
             });
 
             // Auth
-            services.AddIdentity<Domain.User, IdentityRole>()
-                    .AddEntityFrameworkStores<ImperaContext>()
-                    .AddDefaultTokenProviders();
+            services.AddIdentity<Domain.User, IdentityRole>(options =>
+                {
+                    options.User.RequireUniqueEmail = true;
+
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequireDigit = false;
+
+                    options.SignIn.RequireConfirmedEmail = true;
+                    options.SignIn.RequireConfirmedPhoneNumber = false;
+                })
+                .AddEntityFrameworkStores<ImperaContext>()
+                .AddDefaultTokenProviders();
 
             services.AddSwaggerGen(options =>
             {
@@ -104,6 +115,27 @@ namespace ImperaPlus.Web
 
             app.UseSwagger();
             app.UseSwaggerUi();
+
+            // Initialize database
+            var serviceScopeFactory = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>();
+            using (var serviceScope = serviceScopeFactory.CreateScope())
+            {
+                var dbContext = serviceScope.ServiceProvider.GetService<ImperaContext>();
+
+                if (env.IsDevelopment())
+                {
+                    // Always recreate in development
+                    dbContext.Database.EnsureDeleted();
+                    dbContext.Database.EnsureCreated();
+                }
+                else
+                {
+                    dbContext.Database.Migrate();
+                }
+
+                var dbSeed = serviceScope.ServiceProvider.GetService<DbSeed>();
+                dbSeed.Seed(dbContext).Wait();
+            }
         }
 
         private IServiceProvider RegisterDependencies(IServiceCollection services)
@@ -131,6 +163,8 @@ namespace ImperaPlus.Web
 
             builder.RegisterType<ImperaContext>().As<DbContext>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerLifetimeScope();
+
+            builder.RegisterType<DbSeed>().AsSelf();
 
             // Register repositories
             //builder.RegisterAssemblyTypes(Assembly.GetAssembly(typeof(GameRepository)))
