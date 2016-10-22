@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac;
 
 namespace ImperaPlus.Domain.Tests.Games
 {
@@ -26,12 +27,12 @@ namespace ImperaPlus.Domain.Tests.Games
             game.HistoryEntries.Clear();
 
             // Act
-            game.PlaceUnits(new List<Tuple<string, int>>
+            game.PlaceUnits(mapTemplate, new List<Tuple<string, int>>
             {
-                Tuple.Create(origin.CountryIdentifier, game.GetUnitsToPlace(game.CurrentPlayer))
+                Tuple.Create(origin.CountryIdentifier, game.GetUnitsToPlace(mapTemplate, game.CurrentPlayer))
             });
-            game.AttackService = new AttackService(new AttackerWinsRandomGen());
-            game.Attack(origin.CountryIdentifier, destination.CountryIdentifier, origin.Units - game.Options.MinUnitsPerCountry);
+
+            game.Attack(new AttackService(new AttackerWinsRandomGen()), new RandomGen(), mapTemplate, origin.CountryIdentifier, destination.CountryIdentifier, origin.Units - game.Options.MinUnitsPerCountry);
             game.EndTurn();
 
             // Assert
@@ -56,20 +57,18 @@ namespace ImperaPlus.Domain.Tests.Games
         public void PlaceTurnCanBeRetrievedFromHistory()
         {
             // Arrange
-            var attackService = new AttackService(new AttackerWinsRandomGen());
             var game = TestUtils.CreateStartedGameWithMapAndPlayers();
             var mapTemplate = TestUtils.GetMapTemplate();
             var origin = TestHelper.GetCountryWithEnemyConnection(game, game.CurrentPlayer, mapTemplate);
             var destination = TestHelper.GetConnectedEnemyCountry(game, game.CurrentPlayer, origin, mapTemplate);
-            var player = game.CurrentPlayer;
-            game.AttackService = attackService;
+            var player = game.CurrentPlayer;            
 
             // Act 
             var originalUnitCount = origin.Units;
 
-            game.PlaceUnits(new List<Tuple<string, int>>
+            game.PlaceUnits(mapTemplate, new List<Tuple<string, int>>
             {
-                Tuple.Create(origin.CountryIdentifier, game.GetUnitsToPlace(game.CurrentPlayer))
+                Tuple.Create(origin.CountryIdentifier, game.GetUnitsToPlace(mapTemplate, game.CurrentPlayer))
             });
             game.EndTurn();
 
@@ -109,7 +108,7 @@ namespace ImperaPlus.Domain.Tests.Games
             var originOwnerId = origin.PlayerId;
             var destinationOwnerId = destination.PlayerId;
 
-            game.Move(origin.CountryIdentifier, destination.CountryIdentifier, origin.Units - game.Options.MinUnitsPerCountry);
+            game.Move(mapTemplate, origin.CountryIdentifier, destination.CountryIdentifier, origin.Units - game.Options.MinUnitsPerCountry);
             game.EndTurn();
 
             var historicTurn = game.GameHistory.GetTurn(game.TurnCounter - 2);
@@ -142,8 +141,7 @@ namespace ImperaPlus.Domain.Tests.Games
             var originOwnerId = origin.PlayerId;
             var destinationOwnerId = destination.PlayerId;
 
-            game.AttackService = new AttackService(new DefenderWinsRandomGen());
-            game.Attack(origin.CountryIdentifier, destination.CountryIdentifier, origin.Units - game.Options.MinUnitsPerCountry);
+            game.Attack(new AttackService(randomGen), new RandomGen(), mapTemplate, origin.CountryIdentifier, destination.CountryIdentifier, origin.Units - game.Options.MinUnitsPerCountry);
             game.EndTurn();
 
             var historicTurnBefore = game.GameHistory.GetTurn(game.TurnCounter - 2);

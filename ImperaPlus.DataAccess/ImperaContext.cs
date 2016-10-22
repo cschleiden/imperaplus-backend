@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Autofac;
 using ImperaPlus.Domain;
@@ -37,6 +38,7 @@ namespace ImperaPlus.DataAccess
             this.componentContext = componentContext;
             this.eventAggregator = eventAggregator;
 
+            
             //((IObjectContextAdapter)this).ObjectContext.ObjectMaterialized += ObjectContextOnObjectMaterialized;
         }
 
@@ -70,6 +72,8 @@ namespace ImperaPlus.DataAccess
         
         public override int SaveChanges()
         {
+            var aggregatedEventQueue = new List<IDomainEvent>();
+
             using (MiniProfiler.Current.Step("Context: Update change tracked entitites"))
             {
                 var changeTrackedEntities = this.ChangeTracker.Entries<IChangeTrackedEntity>().ToArray();
@@ -99,6 +103,20 @@ namespace ImperaPlus.DataAccess
                 {
                     entry.Entity.Serialize();
                 }
+
+                // Aggregate events                
+                foreach (var entry in this.ChangeTracker.Entries<Entity>())
+                {
+                    aggregatedEventQueue.AddRange(entry.Entity.EventQueue.Events);
+                }                
+            }
+
+            if (this.eventAggregator != null)
+            {
+                foreach (var ev in aggregatedEventQueue)
+                {
+                    this.eventAggregator.Raise(ev);
+                }
             }
 
             int result;
@@ -122,13 +140,7 @@ namespace ImperaPlus.DataAccess
         {
             base.OnModelCreating(modelBuilder);        
 
-            // Games
-            modelBuilder.Entity<Game>().Ignore(x => x.MapTemplateProvider);
-            modelBuilder.Entity<Game>().Ignore(x => x.AttackService);
-            modelBuilder.Entity<Game>().Ignore(x => x.RandomGen);
-            modelBuilder.Entity<Game>().Ignore(x => x.Map);
-            modelBuilder.Entity<Game>().Ignore(x => x.CurrentPlayer);
-
+            // Games            
             modelBuilder.Entity<Game>().HasMany(x => x.HistoryEntries).WithOne(x => x.Game).IsRequired().HasForeignKey(x => x.GameId).OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Cascade);
             modelBuilder.Entity<Game>().HasMany(x => x.Teams).WithOne(x => x.Game).IsRequired().HasForeignKey(x => x.GameId).OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Cascade);
 
@@ -152,8 +164,7 @@ namespace ImperaPlus.DataAccess
             // Ladder
             modelBuilder.Entity<LadderStanding>().HasKey(x => new { x.LadderId, x.UserId });
             modelBuilder.Entity<LadderQueueEntry>().HasKey(x => new { x.LadderId, x.UserId });
-
-
+        
             modelBuilder.Entity<NewsEntry>().HasMany(x => x.Content).WithOne().IsRequired(true);
 
             // Aliiance mapping

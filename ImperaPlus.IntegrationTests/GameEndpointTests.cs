@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using ImperaPlus.DataAccess.ConvertedMaps;
 using ImperaPlus.GeneratedClient;
@@ -56,19 +57,24 @@ namespace ImperaPlus.Integration.Tests
         public async Task StartJoinAndCompleteGameWithBot()
         {
             this.Log("Create game");
-            var gameCreationOptions = this.GetCreationOptions("BotGame", 2, 1);
+            var gameCreationOptions = this.GetCreationOptions("BotGame" + Guid.NewGuid().ToString(), 2, 1);
             gameCreationOptions.AddBot = true;
             var gameSummary = await this.clientDefault.PostAsync(gameCreationOptions);
             Assert.AreEqual(GameState.Active, gameSummary.State);
 
-            var game = await this.clientDefault.GetAsync(gameSummary.Id);
+            Thread.Sleep(4000);
 
+            var game = await this.clientDefault.GetAsync(gameSummary.Id);
             var turnCount = game.TurnCounter;
+
             if (gameSummary.CurrentPlayer.Name != "Bot")
             {
                 this.Log("End turn to trigger bot");
                 var playClient = await ApiClient.GetAuthenticatedClientDefaultUser<PlayClient>();
                 var result = await playClient.PostEndTurnAsync(gameSummary.Id);
+
+                Thread.Sleep(4000);
+
                 var game2 = await this.clientDefault.GetAsync(gameSummary.Id);
                 Assert.IsTrue(turnCount + 2 <= game2.TurnCounter);
             }
@@ -111,7 +117,7 @@ namespace ImperaPlus.Integration.Tests
             {
                 var gameClient = await ApiClient.GetAuthenticatedClient<GameClient>(i + 1);
                 var playClient = await ApiClient.GetAuthenticatedClient<PlayClient>(i + 1);
-                gameClients.Add(Tuple.Create(gameClient, playClient, ConfigurationManager.AppSettings["TestUser" + (i + 1)]));
+                gameClients.Add(Tuple.Create(gameClient, playClient, "TestUser" + (i + 1)));
             }
 
             this.Log("Create game");

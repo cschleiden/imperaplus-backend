@@ -44,7 +44,9 @@ namespace ImperaPlus.DataAccess.Repositories
             get
             {
                 return this.DbSet
-                    .Include(x => x.Teams.Select(t => t.Participants.Select(p => p.User)))
+                    .Include(x => x.Teams)
+                        .ThenInclude(t => t.Participants)
+                        .ThenInclude(p => p.User)
                     .Include(x => x.Pairings)
                     .Include(x => x.Groups)
                     .Include(x => x.Options);

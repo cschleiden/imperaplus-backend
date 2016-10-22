@@ -10,13 +10,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ImperaPlus.Domain.Ladders
 {
-    public class Ladder : ISerializedEntity
+    public class Ladder
     {
         protected Ladder()
         {
             this.Id = Guid.NewGuid();
 
-            this.MapTemplates = new SerializedCollection<string>(this.SerializedMapTemplates);
+            this.MapTemplates = new SerializedCollection<string>();
 
             this.Standings = new HashSet<LadderStanding>();
             this.Queue = new HashSet<LadderQueueEntry>();
@@ -33,12 +33,18 @@ namespace ImperaPlus.Domain.Ladders
             this.Options.NumberOfPlayersPerTeam = playersPerTeam;
         }
 
-        public void Serialize()
+        public string SerializedMapTemplates
         {
-            this.SerializedMapTemplates = this.MapTemplates.Serialize();
-        }
+            get
+            {
+                return this.MapTemplates.Serialize();
+            }
 
-        public string SerializedMapTemplates { get; set; }
+            set
+            {
+                this.MapTemplates = new SerializedCollection<string>(value);
+            }
+        }
 
         public Guid Id { get; private set; }
 

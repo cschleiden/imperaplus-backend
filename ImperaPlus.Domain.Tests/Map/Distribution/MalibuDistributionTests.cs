@@ -16,7 +16,7 @@ namespace ImperaPlus.Domain.Tests.Map.Distribution
             game.Options.MapDistribution = Enums.MapDistribution.Malibu;
 
             // Act
-            game.Start();
+            game.Start(TestUtils.GetMapTemplate());
 
             // Assert
             Assert.AreEqual(MalibuMapDistribution.START_UNITS, game.Map.Countries.First(x => !x.IsNeutral).Units, "Units do not match");

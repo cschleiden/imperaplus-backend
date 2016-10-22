@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Builder;
 
 namespace ImperaPlus.Web
 {
+    using Microsoft.AspNet.SignalR;
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
     public static class BuilderExtensions
@@ -31,9 +32,9 @@ namespace ImperaPlus.Web
             return app;
         }
 
-        public static void UseSignalR2(this IApplicationBuilder app)
+        public static void UseSignalR2(this IApplicationBuilder app, HubConfiguration hubConfiguration)
         {
-            app.UseAppBuilder(appBuilder => appBuilder.MapSignalR());
+            app.UseAppBuilder(appBuilder => appBuilder.MapSignalR(hubConfiguration));
         }
     }
 }

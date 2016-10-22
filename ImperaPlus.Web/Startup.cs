@@ -2,21 +2,25 @@
 using System.Reflection;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Autofac.Integration.SignalR;
 using Hangfire;
 using ImperaPlus.Application;
 using ImperaPlus.Application.Jobs;
 using ImperaPlus.DataAccess;
 using ImperaPlus.Domain.Repositories;
+using ImperaPlus.Web.Hubs;
 using ImperaPlus.Web.Providers;
 using ImperaPlus.Web.Services;
+using Microsoft.AspNet.SignalR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.PlatformAbstractions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -33,6 +37,8 @@ namespace ImperaPlus.Web
         /// Test support: Require user confirmation
         /// </summary>
         internal static bool RequireUserConfirmation = true;
+
+        public HubConfiguration HubConfiguration { get; set; } = new HubConfiguration();
 
         public Startup(IHostingEnvironment env)
         {
@@ -146,7 +152,7 @@ namespace ImperaPlus.Web
             app.UseMvc();
             app.UseCors(b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
-            app.UseSignalR2();
+            app.UseSignalR2(HubConfiguration);
 
             app.UseSwagger();
             app.UseSwaggerUi();
@@ -170,7 +176,7 @@ namespace ImperaPlus.Web
             // Hangfire
             app.UseHangfireServer(new BackgroundJobServerOptions
             {
-                Queues = new[] { JobQueues.Critical, JobQueues.Normal }
+                Queues = new[] { JobQueues.Critical, JobQueues.Normal },                
             });
             app.UseHangfireDashboard();
 
@@ -182,10 +188,12 @@ namespace ImperaPlus.Web
 
         private IServiceProvider RegisterDependencies(IServiceCollection services)
         {
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
             var builder = new ContainerBuilder();
 
             // Messaging
-            if (Configuration["Environment"] == "Local")
+            if (Environment.IsDevelopment())
             {
                 builder.RegisterType<LocalEmailService>().AsImplementedInterfaces();
             }
@@ -196,8 +204,8 @@ namespace ImperaPlus.Web
 
             //builder.RegisterType<OopsExceptionHandler>().As<IExceptionHandler>();
 
-            builder.RegisterType<ImperaContext>().As<DbContext>().AsSelf().InstancePerLifetimeScope();
-            builder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerLifetimeScope();
+            builder.RegisterType<ImperaContext>().As<DbContext>().AsSelf(); //.InstancePerLifetimeScope();
+            builder.RegisterType<UnitOfWork>().As<IUnitOfWork>();
 
             builder.RegisterType<DbSeed>().AsSelf();
 
@@ -208,7 +216,7 @@ namespace ImperaPlus.Web
             builder.RegisterType<UserProvider>().As<IUserProvider>();
 
             // Register SignalR hubs
-            //builder.RegisterHubs(Assembly.GetExecutingAssembly());
+            builder.RegisterHubs(Assembly.GetExecutingAssembly());
 
             // Register Domain services
             builder.RegisterAssemblyTypes(Assembly.GetAssembly(typeof(IGameRepository)))
@@ -229,7 +237,7 @@ namespace ImperaPlus.Web
                 CamelCaseText = false,
                 AllowIntegerValues = false
             });
-            //Startup.JsonSerializerSettings;
+
             builder.RegisterInstance(JsonSerializer.Create(jsonSettings)).As<JsonSerializer>();
 
             builder.RegisterModule<Application.DependencyInjectionModule>();
@@ -242,14 +250,24 @@ namespace ImperaPlus.Web
             //    RegisterAction(builder);
             //}
 
-            //builder.Register(context => hubConfiguration.Resolver
-            //    .Resolve<Microsoft.AspNet.SignalR.Infrastructure.IConnectionManager>()
-            //    .GetHubContext<INotificationHubContext>("notification"))
-            //    .As<IHubContext<INotificationHubContext>>();
+            IContainer container = null;
+
+            builder.Register(context => this.HubConfiguration.Resolver
+               .Resolve<Microsoft.AspNet.SignalR.Infrastructure.IConnectionManager>()
+               .GetHubContext<INotificationHubContext>("notification"))
+               .As<IHubContext<INotificationHubContext>>();
 
             builder.Populate(services);
 
-            var container = builder.Build();
+            container = builder.Build();
+
+            Domain.DomainDepsResolver.ScopeGen = () =>
+            {
+                var activator = container.Resolve<IHttpContextAccessor>();
+                return activator.HttpContext.RequestServices.GetService<ILifetimeScope>();
+            };
+            this.HubConfiguration.Resolver = new AutofacDependencyResolver(container);
+
             return container.Resolve<IServiceProvider>();
         }
     }

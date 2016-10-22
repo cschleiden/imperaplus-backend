@@ -5,10 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using ImperaPlus.Domain.Events;
 
 namespace ImperaPlus.Domain.Games
 {
-    public class Player
+    public class Player : Entity
     {
         private Player()
         {
@@ -195,8 +196,7 @@ namespace ImperaPlus.Domain.Games
             // TODO: CS: Record in history?
             this.Team.Game.CheckForVictory(this.Team.Game.CurrentPlayer);
 
-            // TODO: Inject? Static? 
-            this.Team.Game.EventAggregator.Raise(new PlayerSurrenderedEvent(this.Team.Game, this));
+            this.EventQueue.Raise(new PlayerSurrenderedEvent(this.Team.Game, this));
         }        
     }
 }

@@ -32,7 +32,5 @@ namespace ImperaPlus.Domain.Repositories
         IGenericRepository<T> GetGenericRepository<T>() where T : class;
 
         void Commit();
-
-        IEnumerable<T> GetChangedEntities<T>() where T : class;
     }
 }

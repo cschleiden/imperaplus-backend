@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac;
 using ImperaPlus.Domain.Enums;
 using ImperaPlus.Domain.Exceptions;
-using ImperaPlus.Domain.Map;
+using ImperaPlus.Domain.Services;
+using ImperaPlus.Domain.Tests.Helper;
 using ImperaPlus.Domain.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ImperaPlus.Domain.Services;
-using System.Diagnostics;
-using ImperaPlus.Domain.Tests.Helper;
 
 namespace ImperaPlus.Domain.Tests.Games
 {
@@ -21,7 +20,7 @@ namespace ImperaPlus.Domain.Tests.Games
             var game = TestUtils.CreateGameWithMapAndPlayers();
 
             // Act
-            game.Start();
+            game.Start(TestUtils.GetMapTemplate());
 
             // Assert
             Assert.IsNotNull(game.Map);
@@ -90,7 +89,7 @@ namespace ImperaPlus.Domain.Tests.Games
 
             // Act
             var currentPlayer = game.CurrentPlayer;
-            var unitsToPlace = game.GetUnitsToPlace(currentPlayer);
+            var unitsToPlace = game.GetUnitsToPlace(TestUtils.GetMapTemplate(), currentPlayer);
 
             var countries = new List<Tuple<string, int>>
             {
@@ -98,7 +97,7 @@ namespace ImperaPlus.Domain.Tests.Games
                     unitsToPlace)
             };
 
-            game.PlaceUnits(countries);
+            game.PlaceUnits(TestUtils.GetMapTemplate(), countries);
 
             // Assert
             Assert.AreEqual(1 + unitsToPlace, currentPlayer.Countries.First().Units);
@@ -115,7 +114,7 @@ namespace ImperaPlus.Domain.Tests.Games
 
             // Act
             var currentPlayer = game.CurrentPlayer;
-            var unitsToPlace = game.GetUnitsToPlace(currentPlayer);
+            var unitsToPlace = game.GetUnitsToPlace(TestUtils.GetMapTemplate(), currentPlayer);
 
             var country = currentPlayer.Countries.First();
             var originalUnits = country.Units;
@@ -126,7 +125,7 @@ namespace ImperaPlus.Domain.Tests.Games
                     unitsToPlace)
             };
 
-            game.PlaceUnits(countries);
+            game.PlaceUnits(TestUtils.GetMapTemplate(), countries);
 
             // Assert
             Assert.AreEqual(originalUnits + unitsToPlace, currentPlayer.Countries.First().Units);
@@ -147,10 +146,10 @@ namespace ImperaPlus.Domain.Tests.Games
             var countries = new List<Tuple<string, int>>
             {
                 Tuple.Create(currentPlayer.Countries.First().CountryIdentifier, 
-                game.GetUnitsToPlace(currentPlayer) - 1)
+                game.GetUnitsToPlace(TestUtils.GetMapTemplate(), currentPlayer) - 1)
             };
 
-            game.PlaceUnits(countries);
+            game.PlaceUnits(TestUtils.GetMapTemplate(), countries);
         }
 
         [TestMethod]
@@ -166,10 +165,10 @@ namespace ImperaPlus.Domain.Tests.Games
 
             var countries = new List<Tuple<string, int>>
             {
-                Tuple.Create(currentPlayer.Countries.First().CountryIdentifier, game.GetUnitsToPlace(currentPlayer) + 1)
+                Tuple.Create(currentPlayer.Countries.First().CountryIdentifier, game.GetUnitsToPlace(TestUtils.GetMapTemplate(), currentPlayer) + 1)
             };
 
-            game.PlaceUnits(countries);
+            game.PlaceUnits(TestUtils.GetMapTemplate(), countries);
         }
 
         [TestMethod]
@@ -190,7 +189,7 @@ namespace ImperaPlus.Domain.Tests.Games
                 Tuple.Create(currentPlayer.Countries.First().CountryIdentifier, 1)
             };
 
-            game.PlaceUnits(countries);
+            game.PlaceUnits(TestUtils.GetMapTemplate(), countries);
 
             // Assert
         }
@@ -199,20 +198,18 @@ namespace ImperaPlus.Domain.Tests.Games
         public void AttackSuccess()
         {
             // Arrange
-            var attackService = new AttackService(new AttackerWinsRandomGen());
             var mapTemplate = TestUtils.GetMapTemplate();
-            var game = TestUtils.CreateStartedGameWithMapAndPlayersUnitsPlaced();
-            game.AttackService = attackService;
+            var game = TestUtils.CreateStartedGameWithMapAndPlayersUnitsPlaced();            
 
             var currentPlayer = game.CurrentPlayer;
 
             var source = TestHelper.GetCountryWithEnemyConnection(game, currentPlayer, mapTemplate);
-            game.PlaceUnits(new[] { Tuple.Create(source.CountryIdentifier, game.GetUnitsToPlace(currentPlayer)) });
+            game.PlaceUnits(TestUtils.GetMapTemplate(), new[] { Tuple.Create(source.CountryIdentifier, game.GetUnitsToPlace(TestUtils.GetMapTemplate(), currentPlayer)) });
 
             var destination = TestHelper.GetConnectedEnemyCountry(game, currentPlayer, source, mapTemplate);
 
             // Act
-            game.Attack(source.CountryIdentifier, destination.CountryIdentifier, 1);
+            game.Attack(new AttackService(new AttackerWinsRandomGen()), new RandomGen(), TestUtils.GetMapTemplate(), source.CountryIdentifier, destination.CountryIdentifier, 1);
 
             // Assert
             Assert.AreEqual(source.PlayerId, destination.PlayerId);
@@ -222,21 +219,19 @@ namespace ImperaPlus.Domain.Tests.Games
         public void AttackNeutralSuccess()
         {
             // Arrange
-            var attackService = new AttackService(new AttackerWinsRandomGen());
             var mapTemplate = TestUtils.GetMapTemplate();
             var game = TestUtils.CreateStartedGameWithMapAndPlayersUnitsPlaced();
-            game.AttackService = attackService;
 
             var currentPlayer = game.CurrentPlayer;
 
             var source = TestHelper.GetCountryWithEnemyConnection(game, currentPlayer, mapTemplate);
-            game.PlaceUnits(new[] { Tuple.Create(source.CountryIdentifier, game.GetUnitsToPlace(currentPlayer)) });
+            game.PlaceUnits(TestUtils.GetMapTemplate(),  new[] { Tuple.Create(source.CountryIdentifier, game.GetUnitsToPlace(TestUtils.GetMapTemplate(), currentPlayer)) });
 
             var destination = TestHelper.GetConnectedEnemyCountry(game, currentPlayer, source, mapTemplate);
             destination.PlayerId = Guid.Empty;
 
             // Act
-            game.Attack(source.CountryIdentifier, destination.CountryIdentifier, 1);
+            game.Attack(new AttackService(new AttackerWinsRandomGen()), new RandomGen(), TestUtils.GetMapTemplate(), source.CountryIdentifier, destination.CountryIdentifier, 1);
 
             // Assert
             Assert.AreEqual(source.PlayerId, destination.PlayerId);
@@ -246,20 +241,18 @@ namespace ImperaPlus.Domain.Tests.Games
         public void AttackWillDistributeBonusCardSuccess()
         {
             // Arrange
-            var attackService = new AttackService(new AttackerWinsRandomGen());
             var mapTemplate = TestUtils.GetMapTemplate();
             var game = TestUtils.CreateStartedGameWithMapAndPlayersUnitsPlaced();
-            game.AttackService = attackService;
 
             var currentPlayer = game.CurrentPlayer;
 
             var source = TestHelper.GetCountryWithEnemyConnection(game, currentPlayer, mapTemplate);
-            source.PlaceUnits(game.GetUnitsToPlace(currentPlayer));
+            source.PlaceUnits(game.GetUnitsToPlace(TestUtils.GetMapTemplate(), currentPlayer));
             var destination = TestHelper.GetConnectedEnemyCountry(game, currentPlayer, source, mapTemplate);
             game.PlayState = PlayState.Attack;
 
             // Act
-            game.Attack(source.CountryIdentifier, destination.CountryIdentifier, 1);
+            game.Attack(new AttackService(new AttackerWinsRandomGen()), new RandomGen(), TestUtils.GetMapTemplate(), source.CountryIdentifier, destination.CountryIdentifier, 1);
 
 
 
@@ -271,10 +264,8 @@ namespace ImperaPlus.Domain.Tests.Games
         public void AttackWillDistributeOnlyOneBonusCardSuccess()
         {
             // Arrange
-            var attackService = new AttackService(new AttackerWinsRandomGen());
             var mapTemplate = TestUtils.GetMapTemplate();
             var game = TestUtils.CreateStartedGameWithMapAndPlayersUnitsPlaced();
-            game.AttackService = attackService;
 
             game.PlayState = PlayState.Attack;
 
@@ -283,11 +274,11 @@ namespace ImperaPlus.Domain.Tests.Games
             for (int i = 0; i < 2; ++i)
             {
                 var source = TestHelper.GetCountryWithEnemyConnection(game, currentPlayer, mapTemplate);
-                source.PlaceUnits(game.GetUnitsToPlace(currentPlayer));
+                source.PlaceUnits(game.GetUnitsToPlace(TestUtils.GetMapTemplate(), currentPlayer));
                 var destination = TestHelper.GetConnectedEnemyCountry(game, currentPlayer, source, mapTemplate);
 
                 // Act
-                game.Attack(source.CountryIdentifier, destination.CountryIdentifier, 1);
+                game.Attack(new AttackService(new AttackerWinsRandomGen()), new RandomGen(), TestUtils.GetMapTemplate(), source.CountryIdentifier, destination.CountryIdentifier, 1);
             }
 
             // Assert
@@ -301,7 +292,6 @@ namespace ImperaPlus.Domain.Tests.Games
             // Arrange
             var game = TestUtils.CreateStartedGameWithMapAndPlayers();
 
-
             // Act
             var currentPlayer = game.CurrentPlayer;
 
@@ -310,7 +300,7 @@ namespace ImperaPlus.Domain.Tests.Games
             var destination =
                 game.Teams.First(x => !x.Players.Contains(currentPlayer)).Players.First().Countries.First();
 
-            game.Attack(source.CountryIdentifier, destination.CountryIdentifier, 1);
+            game.Attack(new AttackService(new AttackerWinsRandomGen()), new RandomGen(), TestUtils.GetMapTemplate(), source.CountryIdentifier, destination.CountryIdentifier, 1);
         }
 
         [TestMethod]
@@ -320,7 +310,6 @@ namespace ImperaPlus.Domain.Tests.Games
             // Arrange
             var game = TestUtils.CreateStartedGameWithMapAndPlayers();
 
-
             // Act
             var currentPlayer = game.CurrentPlayer;
 
@@ -329,7 +318,7 @@ namespace ImperaPlus.Domain.Tests.Games
             var destination =
                 game.Teams.First(x => !x.Players.Contains(currentPlayer)).Players.First().Countries.First();
 
-            game.Attack(destination.CountryIdentifier, source.CountryIdentifier, 1);
+            game.Attack(new AttackService(new AttackerWinsRandomGen()), new RandomGen(), TestUtils.GetMapTemplate(), destination.CountryIdentifier, source.CountryIdentifier, 1);
         }
 
         [TestMethod]
@@ -339,14 +328,13 @@ namespace ImperaPlus.Domain.Tests.Games
             // Arrange
             var game = TestUtils.CreateStartedGameWithMapAndPlayers();
 
-
             // Act
             var currentPlayer = game.CurrentPlayer;
 
             var source = currentPlayer.Countries.First();
             var destination = currentPlayer.Countries.Skip(1).First();
 
-            game.Attack(destination.CountryIdentifier, source.CountryIdentifier, 1);
+            game.Attack(new AttackService(new AttackerWinsRandomGen()), new RandomGen(), TestUtils.GetMapTemplate(), destination.CountryIdentifier, source.CountryIdentifier, 1);
         }
 
         [TestMethod]
@@ -360,7 +348,7 @@ namespace ImperaPlus.Domain.Tests.Games
 
             var source = game.Map.Countries.First();
             game.Map.UpdateOwnership(currentPlayer, source);
-            source.PlaceUnits(game.GetUnitsToPlace(currentPlayer));
+            source.PlaceUnits(game.GetUnitsToPlace(TestUtils.GetMapTemplate(), currentPlayer));
             var destination =
                 game.Map.Countries.First(
                     d =>
@@ -371,7 +359,7 @@ namespace ImperaPlus.Domain.Tests.Games
             game.PlayState = PlayState.Move;
 
             // Act           
-            game.Move(source.CountryIdentifier, destination.CountryIdentifier, 1);
+            game.Move(mapTemplate, source.CountryIdentifier, destination.CountryIdentifier, 1);
 
             // Assert
             Assert.AreEqual(source.PlayerId, destination.PlayerId);
@@ -391,7 +379,7 @@ namespace ImperaPlus.Domain.Tests.Games
             var destination =
                 game.Teams.First(x => !x.Players.Contains(currentPlayer)).Players.First().Countries.First();
 
-            game.Move(source.CountryIdentifier, destination.CountryIdentifier, 1);
+            game.Move(TestUtils.GetMapTemplate(), source.CountryIdentifier, destination.CountryIdentifier, 1);
         }
 
         [TestMethod]
@@ -414,7 +402,7 @@ namespace ImperaPlus.Domain.Tests.Games
                 destination = currentPlayer.Countries.RandomElement().CountryIdentifier;
             }
 
-            game.Move(source, destination, 1);
+            game.Move(TestUtils.GetMapTemplate(), source, destination, 1);
         }
     }
 }

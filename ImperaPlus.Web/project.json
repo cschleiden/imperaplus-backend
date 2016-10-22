@@ -34,7 +34,8 @@
     "Hangfire.AspNetCore": "1.6.6",
     "Hangfire.SqlServer": "1.6.6",
     "OpenIddict": "1.0.0-beta1-0456",
-    "AspNet.Security.OAuth.Validation": "1.0.0-*"
+    "AspNet.Security.OAuth.Validation": "1.0.0-*",
+    "Autofac.SignalR": "3.0.2"
   },
 
   "tools": {

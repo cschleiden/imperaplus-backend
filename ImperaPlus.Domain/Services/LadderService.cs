@@ -22,12 +22,14 @@ namespace ImperaPlus.Domain.Services
     {
         private IGameService gameService;
         private IUnitOfWork unitOfWork;
-        private IEventAggregator eventAggregator;
+        private IMapTemplateProvider mapTemplateProvider;
+        private IEventAggregator eventAggregator;        
 
-        public LadderService(IUnitOfWork unitOfWork, IGameService gameService, IEventAggregator eventAggregator)
+        public LadderService(IUnitOfWork unitOfWork, IGameService gameService, IMapTemplateProvider mapTemplateProvider, IEventAggregator eventAggregator)
         {
             this.unitOfWork = unitOfWork;
             this.gameService = gameService;
+            this.mapTemplateProvider = mapTemplateProvider;
             this.eventAggregator = eventAggregator;
         }
 
@@ -63,7 +65,7 @@ namespace ImperaPlus.Domain.Services
                         this.unitOfWork.GetGenericRepository<LadderQueueEntry>().Remove(queueEntry);
                     }
 
-                    game.Start();
+                    game.Start(this.mapTemplateProvider.GetTemplate(game.MapTemplateName));
 
                     this.eventAggregator.Raise(new LadderGameStartedEvent(ladder, game));
 

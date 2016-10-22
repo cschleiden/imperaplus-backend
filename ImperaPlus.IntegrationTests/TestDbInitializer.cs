@@ -36,9 +36,6 @@ namespace ImperaPlus.Integration.Tests
             newsEntry.CreatedAt = DateTime.UtcNow;
             newsEntry.AddContent("en", "DB initialized", "DB has been updated");
             context.NewsEntries.Add(newsEntry);
-
-            context.SaveChanges();
-
             context.SaveChanges();
         }
     }

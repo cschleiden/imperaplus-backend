@@ -329,12 +329,14 @@
     <Compile Include="Bots\Bot.cs" />
     <Compile Include="Chat\Channel.cs" />
     <Compile Include="DependencyInjectionModule.cs" />
+    <Compile Include="DomainDepsResolver.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="Enums\Channel.cs" />
     <Compile Include="Chat\Message.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Enums\GameType.cs" />
     <Compile Include="Enums\MapDistribution.cs" />
+    <Compile Include="Events\EventQueue.cs" />
     <Compile Include="ISerializedEntity.cs" />
     <Compile Include="Map\MapTemplateDescriptor.cs" />
     <Compile Include="Messages\MessageFolder.cs" />

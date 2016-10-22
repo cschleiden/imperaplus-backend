@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Autofac;
 using ImperaPlus.Domain.Enums;
 using ImperaPlus.Domain.Events;
 using ImperaPlus.Domain.Games;
@@ -73,6 +74,8 @@ namespace ImperaPlus.Domain.Tests
             return GetUnitOfWorkMock().Object;
         }
 
+        public static IContainer Container;
+
         public static Game CreateGame(int teams = 2, int playerPerTeam = 1, Enums.GameType type = GameType.Fun)
         {
             var mapTemplate = new MapTemplate("blah");
@@ -87,11 +90,6 @@ namespace ImperaPlus.Domain.Tests
                 playerPerTeam, 
                 new[] { VictoryConditionType.Survival },
                 new[] { VisibilityModifierType.None });
-
-            game.MapTemplateProvider = MockMapTemplateProvider();
-            game.EventAggregator = GetEventAggregator();
-            game.RandomGen = new RandomGen();
-            game.UnitOfWorkGen = () => GetUnitOfWork();
 
             return game;
         }
@@ -119,7 +117,7 @@ namespace ImperaPlus.Domain.Tests
         {
             var game = CreateGameWithMapAndPlayers(teams, playerPerTeam);
 
-            game.Start();
+            game.Start(TestUtils.GetMapTemplate());
 
             return game;
         }
@@ -135,10 +133,10 @@ namespace ImperaPlus.Domain.Tests
 
                 var countries = new List<Tuple<string, int>>
                 {
-                    Tuple.Create(currentPlayer.Countries.First().CountryIdentifier, game.GetUnitsToPlace(currentPlayer))
+                    Tuple.Create(currentPlayer.Countries.First().CountryIdentifier, game.GetUnitsToPlace(TestUtils.GetMapTemplate(), currentPlayer))
                 };
 
-                game.PlaceUnits(countries);
+                game.PlaceUnits(TestUtils.GetMapTemplate(), countries);
             }
 
             return game;

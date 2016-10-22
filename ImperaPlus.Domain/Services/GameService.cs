@@ -30,12 +30,12 @@ namespace ImperaPlus.Domain.Services
 
     public class GameService : IGameService
     {
-        private readonly IComponentContext componentContext;
+        private readonly ILifetimeScope scope;
         private readonly IGameRepository gameRepository;
 
-        public GameService(IComponentContext componentContext, IUnitOfWork unitOfWork)
+        public GameService(ILifetimeScope scope, IUnitOfWork unitOfWork)
         {
-            this.componentContext = componentContext;
+            this.scope = scope;
             this.gameRepository = unitOfWork.Games;
         }
 
@@ -63,10 +63,7 @@ namespace ImperaPlus.Domain.Services
             }
 
             // Create game
-            var game = new Game(user, type, name, mapTemplate, timeoutInSeconds, numberOfTeams, numberOfPlayersPerTeam, victoryConditions, visibilityModifier);
-            this.componentContext.InjectProperties(game);
-
-            return game;
+            return new Game(user, type, name, mapTemplate, timeoutInSeconds, numberOfTeams, numberOfPlayersPerTeam, victoryConditions, visibilityModifier);
         }
 
         public Game Create(
@@ -89,10 +86,7 @@ namespace ImperaPlus.Domain.Services
             }
 
             // Create game
-            var game = new Game(user, type, name, mapTemplate, options);
-            this.componentContext.InjectProperties(game);
-
-            return game;
+            return new Game(user, type, name, mapTemplate, options);
         }
     }
 }

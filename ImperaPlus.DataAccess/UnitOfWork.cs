@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Linq;
 using ImperaPlus.DataAccess.Repositories;
 using ImperaPlus.Domain.Repositories;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
 namespace ImperaPlus.DataAccess
@@ -22,7 +20,7 @@ namespace ImperaPlus.DataAccess
         private ITeamRepository teamRepository;
         private ILadderRepository ladderRepository;
         private IMessageRepository messageRepository;
-        private ITournamentRepository tournamentRepository;
+        private ITournamentRepository tournamentRepository;        
 
         public UnitOfWork(ImperaContext context)
         {
@@ -35,11 +33,6 @@ namespace ImperaPlus.DataAccess
             {
                 return this.context;
             }
-        }
-
-        public IEnumerable<T> GetChangedEntities<T>() where T : class
-        {
-            return this.context.ChangeTracker.Entries<T>().Where(x => x.State == EntityState.Modified).Select(x => x.Entity);
         }
 
         public IGameRepository Games

@@ -5,7 +5,7 @@ using ImperaPlus.Domain.Utilities;
 
 namespace ImperaPlus.Domain.Games
 {
-    public class GameOptions : IIdentifiableEntity, ISerializedEntity
+    public class GameOptions : IIdentifiableEntity
     {
         public GameOptions()
         {
@@ -28,19 +28,35 @@ namespace ImperaPlus.Domain.Games
 
             this.MaximumNumberOfCards = 5;
 
-            this.VictoryConditions = new SerializedCollection<VictoryConditionType>(this.SerializedVictoryConditions);
-            this.VisibilityModifier = new SerializedCollection<VisibilityModifierType>(this.SerializedVisibilityModifier);            
+            this.VictoryConditions = new SerializedCollection<VictoryConditionType>();
+            this.VisibilityModifier = new SerializedCollection<VisibilityModifierType>();
         }
 
-        public void Serialize()
+        public string SerializedVictoryConditions
         {
-            this.SerializedVictoryConditions = this.VictoryConditions.Serialize();
-            this.SerializedVisibilityModifier = this.VisibilityModifier.Serialize();
+            get
+            {
+                return this.VictoryConditions.Serialize();
+            }
+
+            set
+            {
+                this.VictoryConditions = new SerializedCollection<VictoryConditionType>(value);
+            }
         }
 
-        public string SerializedVictoryConditions { get; set; }
+        public string SerializedVisibilityModifier
+        {
+            get
+            {
+                return this.VisibilityModifier.Serialize();
+            }
 
-        public string SerializedVisibilityModifier { get; set; }
+            set
+            {
+                this.VisibilityModifier = new SerializedCollection<VisibilityModifierType>(value);
+            }
+        }
 
         public long Id { get; set; }
 

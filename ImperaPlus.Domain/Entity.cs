@@ -1,11 +1,12 @@
-﻿using ImperaPlus.Domain.Events;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Autofac;
+using ImperaPlus.Domain.Events;
 
 namespace ImperaPlus.Domain
 {
     public class Entity
     {
         [NotMapped]
-        public IEventAggregator EventAggregator { get; set; }
+        public EventQueue EventQueue = new EventQueue();
     }
 }

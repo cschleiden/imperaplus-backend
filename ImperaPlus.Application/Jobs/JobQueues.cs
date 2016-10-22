@@ -4,6 +4,6 @@
     {
         public const string Critical = "critical";
 
-        public const string Normal = "normal";
+        public const string Normal = "default";
     }
 }

@@ -1,8 +1,8 @@
-﻿using ImperaPlus.Domain.Bots;
+﻿using System.Linq;
+using ImperaPlus.Domain.Bots;
 using ImperaPlus.Domain.Services;
-using ImperaPlus.Domain.Tests.Games;
+using ImperaPlus.Domain.Tests.Helper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
 
 namespace ImperaPlus.Domain.Tests.Bots
 {
@@ -12,16 +12,13 @@ namespace ImperaPlus.Domain.Tests.Bots
         [TestMethod]
         public void PlayTurnSuccess()
         {
-            // Arrange
-            var attackService = new AttackService(new AttackerRandomGen(new RandomGen()));
+            // Arrange            
             var game = TestUtils.CreateStartedGameWithMapAndPlayers();
 
             var currentPlayer = game.CurrentPlayer;
 
-            game.AttackService = attackService;
-
             // Act
-            var bot = new Bot(game);
+            var bot = new Bot(game, TestUtils.GetMapTemplate(), new AttackService(new AttackerWinsRandomGen()), new RandomGen());
             bot.PlayTurn();
 
             // Assert

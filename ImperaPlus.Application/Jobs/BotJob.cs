@@ -2,6 +2,7 @@
 using Hangfire;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Bots;
+using ImperaPlus.Domain.Services;
 
 namespace ImperaPlus.Application.Jobs
 {
@@ -25,7 +26,12 @@ namespace ImperaPlus.Application.Jobs
                 return;
             }
 
-            var bot = new Bot(game);
+            var mapTemplateProvider = this.LifetimeScope.Resolve<IMapTemplateProvider>();
+            var mapTemplate = mapTemplateProvider.GetTemplate(game.MapTemplateName);
+            var attackService = this.LifetimeScope.Resolve<IAttackService>();
+            var randomGen = this.LifetimeScope.Resolve<IRandomGen>();
+
+            var bot = new Bot(game, mapTemplate, attackService, randomGen);
 
             bot.PlayTurn();
 
@@ -33,3 +39,4 @@ namespace ImperaPlus.Application.Jobs
         }
     }
 }
+

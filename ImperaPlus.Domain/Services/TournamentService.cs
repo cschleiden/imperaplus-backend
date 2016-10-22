@@ -24,14 +24,18 @@ namespace ImperaPlus.Domain.Services
     public class TournamentService : ITournamentService
     {
         private IGameService gameService;
+        private IMapTemplateProvider mapTemplateProvider;
         private IUnitOfWork unitOfWork;
-        private IEventAggregator eventAggregator;
+        
 
-        public TournamentService(IUnitOfWork unitOfWork, IGameService gameService, IEventAggregator eventAggregator)
+        public TournamentService(
+            IUnitOfWork unitOfWork, 
+            IGameService gameService, 
+            IMapTemplateProvider mapTemplateProvider)
         {
             this.unitOfWork = unitOfWork;
             this.gameService = gameService;
-            this.eventAggregator = eventAggregator;
+            this.mapTemplateProvider = mapTemplateProvider;
         }
 
         public bool CheckOpenTournaments()
@@ -144,7 +148,7 @@ namespace ImperaPlus.Domain.Services
                     teamB.AddPlayer(participant.User);
                 }
 
-                game.Start();
+                game.Start(this.mapTemplateProvider.GetTemplate(game.MapTemplateName));
             }
 
             pairing.State = PairingState.Active;

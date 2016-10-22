@@ -1,4 +1,6 @@
-﻿using Autofac;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Autofac;
 using AutoMapper;
 using ImperaPlus.Application.Visibility;
 using ImperaPlus.Domain.Repositories;
@@ -7,9 +9,6 @@ using ImperaPlus.DTO.Games;
 using ImperaPlus.DTO.Games.Chat;
 using ImperaPlus.DTO.Games.History;
 using ImperaPlus.Utils;
-using System.Collections.Generic;
-using System.Linq;
-using ImperaPlus.Domain.Events;
 
 namespace ImperaPlus.Application.Games
 {
@@ -65,20 +64,16 @@ namespace ImperaPlus.Application.Games
 
     public class GameService : BaseGameService, IGameService
     {
-        private readonly IComponentContext componentContext;
         private readonly Domain.Services.IGameService gameService;
 
         public GameService(
             IUnitOfWork unitOfWork, 
             ImperaPlus.DataAccess.IUserProvider userProvider, 
-            IComponentContext componentContext, 
             Domain.Services.IGameService gameService, 
             IMapTemplateProvider mapTemplateProvider,
-            IVisibilityModifierFactory visibilityModifierFactory,
-            IEventAggregator eventAggregator)
-            : base(unitOfWork, userProvider, visibilityModifierFactory, mapTemplateProvider, eventAggregator)
+            IVisibilityModifierFactory visibilityModifierFactory)
+            : base(unitOfWork, userProvider, mapTemplateProvider, visibilityModifierFactory)
         {
-            this.componentContext = componentContext;
             this.gameService = gameService;
         }
 
@@ -145,7 +140,7 @@ namespace ImperaPlus.Application.Games
             {
                 using (TraceContext.Trace("Start Game"))
                 {
-                    game.Start();
+                    game.Start(mapTemplate);
                 }
             }
 
@@ -186,9 +181,11 @@ namespace ImperaPlus.Application.Games
             // Ensure all Ids are generated
             this.UnitOfWork.Commit();
 
+            var mapTemplate = this.mapTemplateProvider.GetTemplate(game.MapTemplateName);
+
             if (game.CanStart)
             {
-                game.Start();
+                game.Start(mapTemplate);
             } 
 
             this.UnitOfWork.Commit();

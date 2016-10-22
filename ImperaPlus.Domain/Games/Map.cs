@@ -75,11 +75,9 @@ namespace ImperaPlus.Domain.Games
             return country;
         }
 
-        public static Map CreateFromTemplate(Game game, IMapTemplateProvider templateProvider, string templateName)
+        public static Map CreateFromTemplate(Game game, MapTemplate mapTemplate)
         {
             var map = new Map(game, game.Countries);
-
-            var mapTemplate = templateProvider.GetTemplate(templateName);
 
             foreach (var countryTemplate in mapTemplate.Countries)
             {
@@ -94,7 +92,6 @@ namespace ImperaPlus.Domain.Games
         public void Distribute(ICollection<Team> teams, MapTemplate mapTemplate, MapDistribution mapDistribution)
         {
             var distribution = MapDistributionFactory.Create(mapDistribution);
-
             distribution.Distribute(teams, mapTemplate, this);
         }
 

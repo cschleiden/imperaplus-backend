@@ -47,6 +47,8 @@ namespace ImperaPlus.TestSupport
             this.Context.SaveChanges();
 
             TestUserProvider.User = this.TestUser;
+
+            DomainDepsResolver.ScopeGen = () => this.Container;
         }
 
         [TestCleanup]

@@ -2,8 +2,6 @@
 using ImperaPlus.Application.Exceptions;
 using ImperaPlus.Application.Visibility;
 using ImperaPlus.DataAccess;
-using ImperaPlus.Domain;
-using ImperaPlus.Domain.Events;
 using ImperaPlus.Domain.Games;
 using ImperaPlus.Domain.Games.History;
 using ImperaPlus.Domain.Repositories;
@@ -15,19 +13,16 @@ namespace ImperaPlus.Application
     {
         protected readonly IVisibilityModifierFactory visibilityModifierFactory;
         protected readonly IMapTemplateProvider mapTemplateProvider;
-        protected readonly IEventAggregator eventAggregator;
 
         public BaseGameService(
             IUnitOfWork unitOfWork, 
-            IUserProvider userProvider, 
-            IVisibilityModifierFactory visibilityModifierFactory, 
+            IUserProvider userProvider,
             IMapTemplateProvider mapTemplateProvider,
-            IEventAggregator eventAggregator)
+            IVisibilityModifierFactory visibilityModifierFactory)
             : base(unitOfWork, userProvider)
         {
-            this.visibilityModifierFactory = visibilityModifierFactory;
             this.mapTemplateProvider = mapTemplateProvider;
-            this.eventAggregator = eventAggregator;
+            this.visibilityModifierFactory = visibilityModifierFactory;
         }
 
         protected Game GetGame(long gameId)
@@ -35,11 +30,8 @@ namespace ImperaPlus.Application
             var game = this.UnitOfWork.Games.Find(gameId);
             if (game == null)
             {
-                throw new ApplicationException("Cannot find game", ErrorCode.CannotFindGame);
-            }
-
-            game.EventAggregator = this.eventAggregator;
-            game.MapTemplateProvider = this.mapTemplateProvider;
+                throw new Exceptions.ApplicationException("Cannot find game", ErrorCode.CannotFindGame);
+            }        
 
             return game;
         }
@@ -52,9 +44,6 @@ namespace ImperaPlus.Application
                 throw new ApplicationException("Cannot find game", ErrorCode.CannotFindGame);
             }
 
-            game.EventAggregator = this.eventAggregator;
-            game.MapTemplateProvider = this.mapTemplateProvider;
-
             return game;
         }
 
@@ -65,9 +54,6 @@ namespace ImperaPlus.Application
             {
                 throw new ApplicationException("Cannot find game", ErrorCode.CannotFindGame);
             }
-
-            game.EventAggregator = this.eventAggregator;
-            game.MapTemplateProvider = this.mapTemplateProvider;
 
             return game;
         }
@@ -96,6 +82,8 @@ namespace ImperaPlus.Application
                     mappedGame.CurrentPlayer = Mapper.Map<DTO.Games.PlayerSummary>(game.CurrentPlayer);
                 }
             }
+
+            mappedGame.UnitsToPlace = game.GetUnitsToPlace(this.mapTemplateProvider.GetTemplate(game.MapTemplateName), game.CurrentPlayer);
 
             return mappedGame;
         }

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace ImperaPlus.Integration.Tests
 {
@@ -43,7 +44,24 @@ namespace ImperaPlus.Integration.Tests
                 model.Password = "TestPassword" + i;
                 model.ConfirmPassword = "TestPassword" + i;
 
-                client.RegisterAsync(model).Wait();
+                try
+                {
+                    client.RegisterAsync(model).Wait();
+                }
+                catch(AggregateException e)
+                {
+                    if (e.InnerExceptions != null && e.InnerExceptions.Count > 0 && e.InnerExceptions[0].GetType() == typeof(SwaggerException))
+                    {
+                        if ((e.InnerExceptions[0] as SwaggerException).StatusCode == "400")
+                        {
+                            // ignore
+                        }
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
             }
         }
 

@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using ImperaPlus.Domain.Annotations;
 using ImperaPlus.Domain.Enums;
+using ImperaPlus.Domain.Events;
 using ImperaPlus.Domain.Exceptions;
 using ImperaPlus.Domain.Games.Chat;
 using ImperaPlus.Domain.Games.Events;
@@ -26,13 +27,9 @@ namespace ImperaPlus.Domain.Games
         protected Game()
         {
             this.ChatMessages = new HashSet<GameChatMessage>();
-
-            this.HistoryEntries = new List<HistoryEntry>();
-
+            this.HistoryEntries = new List<HistoryEntry>();        
             this.GameHistory = new GameHistory(this);
-
-            this.Countries = new SerializedCollection<Country>(this.SerializedCountries);
-
+            this.Countries = new SerializedCollection<Country>();
             this.Teams = new HashSet<Team>();
         }
 
@@ -81,22 +78,25 @@ namespace ImperaPlus.Domain.Games
 
         public void Serialize()
         {
-            this.SerializedCountries = this.Countries.Serialize();
+            this.countriesSerialized = this.Countries.Serialize();
         }
 
-        public string SerializedCountries { get; set; }
+        /// <summary>
+        /// Has to have a different name than the property, want to force EF to use the property
+        /// </summary>
+        private string countriesSerialized;
+        public string SerializedCountries {
+            get
+            {
+                return this.countriesSerialized;
+            }
 
-        [NotMapped]
-        public IMapTemplateProvider MapTemplateProvider { get; set; }
-
-        [NotMapped]
-        public IAttackService AttackService { get; set; }
-
-        [NotMapped]
-        public IRandomGen RandomGen { get; set; }
-
-        [NotMapped]
-        public Func<IUnitOfWork> UnitOfWorkGen { get; set; }
+            set
+            {
+                this.countriesSerialized = value;
+                this.Countries = new SerializedCollection<Country>(this.countriesSerialized);
+            }
+        }
 
         public long Id { get; set; }
 
@@ -126,6 +126,7 @@ namespace ImperaPlus.Domain.Games
 
         private Map map;
 
+        [NotMapped]
         public Map Map
         {
             get
@@ -159,6 +160,7 @@ namespace ImperaPlus.Domain.Games
 
         public Guid? CurrentPlayerId { get; set; }
 
+        [NotMapped]
         public Player CurrentPlayer
         {
             get
@@ -320,20 +322,19 @@ namespace ImperaPlus.Domain.Games
             var player = this.GetPlayerForUser(user.Id);
             var team = player.Team;
 
-            team.RemovePlayer(player);
-            this.UnitOfWorkGen().Players.Remove(player);
+            team.RemovePlayer(player);            
 
             if (!team.Players.Any())
             {
-                // Empty team
-                this.UnitOfWorkGen().Teams.Remove(team);
+                // Remove empty team
+                this.Teams.Remove(team);
             }
         }
 
         /// <summary>
         /// Start the game
         /// </summary>
-        public void Start()
+        public void Start(MapTemplate mapTemplate)
         {
             if (!this.CanStart)
             {
@@ -343,8 +344,8 @@ namespace ImperaPlus.Domain.Games
             this.StartedAt = DateTime.UtcNow;
             this.State = GameState.Active;
 
-            TraceContext.Trace("Create Map from Template", () => Map.CreateFromTemplate(this, this.MapTemplateProvider, this.MapTemplateName));
-            TraceContext.Trace("Distribute countries to teams", () => this.Map.Distribute(this.Teams, this.MapTemplateProvider.GetTemplate(this.MapTemplateName), this.Options.MapDistribution));
+            TraceContext.Trace("Create Map from Template", () => Map.CreateFromTemplate(this, mapTemplate));
+            TraceContext.Trace("Distribute countries to teams", () => this.Map.Distribute(this.Teams, mapTemplate, this.Options.MapDistribution));
 
             // Determine player order
             this.DeterminePlayOrder();
@@ -362,7 +363,7 @@ namespace ImperaPlus.Domain.Games
 
             this.ResetTurn();
 
-            this.EventAggregator.Raise(new GameStartedEvent(this));
+            this.EventQueue.Raise(new GameStartedEvent(this));
         }
 
         /// <summary>
@@ -397,8 +398,7 @@ namespace ImperaPlus.Domain.Games
 
             this.ResetTurn();
             
-            // TODO: CS: 
-            this.EventAggregator.Raise(new TurnEndedEvent(this));
+            this.EventQueue.Raise(new TurnEndedEvent(this));
         }
 
         private void ResetTurn()
@@ -413,7 +413,7 @@ namespace ImperaPlus.Domain.Games
             this.PlayState = PlayState.PlaceUnits;
         }
 
-        public int GetUnitsToPlace(Player player)
+        public int GetUnitsToPlace(MapTemplate mapTemplate, Player player)
         {
             // Base units as configured
             var unitsToPlace = this.Options.NewUnitsPerTurn;
@@ -424,7 +424,7 @@ namespace ImperaPlus.Domain.Games
                 unitsToPlace += player.Countries.Count() / 3;
 
                 // Bonus from continents
-                unitsToPlace += this.MapTemplate.CalculateBonus(player.Countries.Select(x => x.CountryIdentifier));
+                unitsToPlace += mapTemplate.CalculateBonus(player.Countries.Select(x => x.CountryIdentifier));
 
                 // Add any previous bonus
                 unitsToPlace += player.Bonus;
@@ -449,7 +449,7 @@ namespace ImperaPlus.Domain.Games
             }
         }
 
-        public void PlaceUnits(IEnumerable<Tuple<string, int>> countries)
+        public void PlaceUnits(MapTemplate mapTemplate, IEnumerable<Tuple<string, int>> countries)
         {
             this.RequireGameActive();
 
@@ -459,7 +459,7 @@ namespace ImperaPlus.Domain.Games
             }
 
             var unitsToPlace = countries.Sum(x => x.Item2);
-            var unitsAvailable = this.GetUnitsToPlace(this.CurrentPlayer);
+            var unitsAvailable = this.GetUnitsToPlace(mapTemplate, this.CurrentPlayer);
             if (unitsToPlace > unitsAvailable)
             {
                 throw new DomainException(ErrorCode.PlacingMoreUnitsThanAvailable, "Cannot place more units than available");
@@ -498,7 +498,13 @@ namespace ImperaPlus.Domain.Games
             }
         }
 
-        public void Attack(string sourceCountryIdentifier, string destCountryIdentifier, int numberOfUnits)
+        public void Attack(
+            IAttackService attackService,
+            IRandomGen randomGen,
+            MapTemplate mapTemplate,
+            string sourceCountryIdentifier, 
+            string destCountryIdentifier, 
+            int numberOfUnits)
         {
             this.RequireGameActive();
 
@@ -511,7 +517,7 @@ namespace ImperaPlus.Domain.Games
             var destCountry = this.Map.GetCountry(destCountryIdentifier);
 
             // Check connection
-            if (!this.MapTemplate.AreConnected(sourceCountryIdentifier, destCountryIdentifier))
+            if (!mapTemplate.AreConnected(sourceCountryIdentifier, destCountryIdentifier))
             {
                 throw new DomainException(ErrorCode.CountriesNotConnected, "There is no connection between those countries");
             }
@@ -536,7 +542,7 @@ namespace ImperaPlus.Domain.Games
 
             int attackerUnitsLost = 0;
             int defenderUnitsLost = 0;            
-            var result = this.AttackService.Attack(numberOfUnits, destCountry.Units, out attackerUnitsLost, out defenderUnitsLost);
+            var result = attackService.Attack(numberOfUnits, destCountry.Units, out attackerUnitsLost, out defenderUnitsLost);
 
             if (result)
             {
@@ -545,7 +551,7 @@ namespace ImperaPlus.Domain.Games
 
                 this.Map.UpdateOwnership(otherPlayer, this.CurrentPlayer, destCountry);
 
-                this.DistributeCard();
+                this.DistributeCard(randomGen);
             }
             else
             {
@@ -579,7 +585,7 @@ namespace ImperaPlus.Domain.Games
             this.PlayState = PlayState.Move;
         }
 
-        private void DistributeCard()
+        private void DistributeCard(IRandomGen randomGen)
         {
             if (!this.CardDistributed)
             {
@@ -589,7 +595,7 @@ namespace ImperaPlus.Domain.Games
                 {                   
                     var existingCards = new List<BonusCard>(this.CurrentPlayer.Cards);
                     
-                    var cardToDistribute = this.RandomGen.GetNext(0, 2);
+                    var cardToDistribute = randomGen.GetNext(0, 2);
                     existingCards.Add((BonusCard) cardToDistribute);
 
                     this.CurrentPlayer.Cards = existingCards.ToArray();
@@ -654,7 +660,7 @@ namespace ImperaPlus.Domain.Games
             
             this.GameHistory.RecordEnd();
             
-            EventAggregator.Raise(new GameEndedEvent(this));
+            this.EventQueue.Raise(new GameEndedEvent(this));
         }
 
         public Player GetPlayerForUser(string userId)
@@ -712,11 +718,6 @@ namespace ImperaPlus.Domain.Games
             }
         }
 
-        private MapTemplate MapTemplate
-        {
-            get { return this.MapTemplateProvider.GetTemplate(this.MapTemplateName); }
-        }
-
         /// <summary>
         /// Gets the number of slots this game occupies for each player
         /// </summary>
@@ -725,12 +726,16 @@ namespace ImperaPlus.Domain.Games
             get { return 1 /* + MapSlots*/; }
         }
 
-        public void Move(string sourceCountryIdentifier, string destCountryIdentifier, int numberOfUnits)
+        public void Move(
+            MapTemplate mapTemplate,
+            string sourceCountryIdentifier, 
+            string destCountryIdentifier, 
+            int numberOfUnits)
         {
             this.RequireGameActive();
 
             // Check connection
-            if (!this.MapTemplate.AreConnected(sourceCountryIdentifier, destCountryIdentifier))
+            if (!mapTemplate.AreConnected(sourceCountryIdentifier, destCountryIdentifier))
             {
                 throw new DomainException(ErrorCode.CountriesNotConnected, "Countries are not connected");
             }

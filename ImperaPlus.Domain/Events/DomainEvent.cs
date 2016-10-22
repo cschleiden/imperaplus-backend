@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using System.Collections.Generic;
 using ImperaPlus.Utils;
+using System;
 
 namespace ImperaPlus.Domain.Events
 {
@@ -25,12 +26,13 @@ namespace ImperaPlus.Domain.Events
         public void Raise<TEvent>(TEvent args) where TEvent : IDomainEvent
         {
             TraceContext.Trace(
-                "EventAggregator: Raise event " + typeof(TEvent).Name,
+                "EventAggregator: Raise event " + args.GetType().Name,
                 () =>
                 {
                     this.RaiseInternal<TEvent>(args);
 
-                    if (this.context.IsRegistered<ICompletedEventHandler<TEvent>>())
+                    var completedHandlerType = typeof(ICompletedEventHandler<>).MakeGenericType(args.GetType());
+                    if (this.context.IsRegistered(completedHandlerType))
                     {
                         // Queue for later
                         this.queuedEvents.Add(args);
@@ -45,8 +47,6 @@ namespace ImperaPlus.Domain.Events
 
             foreach (var queuedEvent in events)
             {
-                // this.RaiseInternal(queuedEvent, true);
-                // TODO: CS: Fix this hack somehow..
                 var type = queuedEvent.GetType();
 
                 TraceContext.Trace(

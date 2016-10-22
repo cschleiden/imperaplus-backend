@@ -102,7 +102,7 @@ namespace ImperaPlus.TestSupport.Testdata
         {
             var game = this.CreateGameWithMapAndPlayers(teams, playerPerTeam);
 
-            game.Start();
+            game.Start(this.CreateAndSaveMapTemplate());
 
             this.SaveChanges();
 
@@ -120,10 +120,10 @@ namespace ImperaPlus.TestSupport.Testdata
 
                 var countries = new List<Tuple<string, int>>
                 {
-                    Tuple.Create(currentPlayer.Countries.First().CountryIdentifier, game.GetUnitsToPlace(currentPlayer))
+                    Tuple.Create(currentPlayer.Countries.First().CountryIdentifier, game.GetUnitsToPlace(this.CreateAndSaveMapTemplate(), currentPlayer))
                 };
 
-                game.PlaceUnits(countries);
+                game.PlaceUnits(this.CreateAndSaveMapTemplate(), countries);
             }
 
             this.SaveChanges();

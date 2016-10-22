@@ -4,6 +4,7 @@ using NLog.Fluent;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ImperaPlus.Domain.Services;
 
 namespace ImperaPlus.Domain.Bots
 {
@@ -13,18 +14,25 @@ namespace ImperaPlus.Domain.Bots
         private Team ownTeam;
         private Player ownPlayer;
         private MapTemplate mapTemplate;
+        private IAttackService attackService;
+        private IRandomGen randomGen;
 
-        public Bot(Game game)
+        public Bot(
+            Game game, 
+            MapTemplate mapTemplate,
+            IAttackService attackService,
+            IRandomGen randomGen)
         {
             this.game = game;
+            this.mapTemplate = mapTemplate;
+            this.attackService = attackService;
+            this.randomGen = randomGen;
         }
 
         public void PlayTurn()
         {
             this.ownTeam = game.CurrentPlayer.Team;
-            this.ownPlayer = game.CurrentPlayer;
-
-            this.mapTemplate = game.MapTemplateProvider.GetTemplate(game.MapTemplateName);
+            this.ownPlayer = game.CurrentPlayer;;
 
             if (this.Place())
             {
@@ -37,7 +45,7 @@ namespace ImperaPlus.Domain.Bots
 
         private bool Place()
         {
-            var unitsToPlace = this.game.GetUnitsToPlace(this.ownPlayer);
+            var unitsToPlace = this.game.GetUnitsToPlace(this.mapTemplate, this.ownPlayer);
 
             Log.Debug().Message("[Bot] Placing {0} units", unitsToPlace).Write();
             var ownCountries = this.game.Map.GetCountriesForTeam(this.ownTeam.Id);
@@ -65,7 +73,7 @@ namespace ImperaPlus.Domain.Bots
                 }
             }
 
-            this.game.PlaceUnits(new List<Tuple<string, int>> { Tuple.Create(ownCountry.CountryIdentifier, unitsToPlace) });
+            this.game.PlaceUnits(this.mapTemplate, new List<Tuple<string, int>> { Tuple.Create(ownCountry.CountryIdentifier, unitsToPlace) });
 
             return this.game.PlayState == Enums.PlayState.Attack;
         }
@@ -107,7 +115,7 @@ namespace ImperaPlus.Domain.Bots
                     enemyCountry.CountryIdentifier,
                     numberOfUnits).Write();
 
-                this.game.Attack(ownCountry.CountryIdentifier, enemyCountry.CountryIdentifier, numberOfUnits);
+                this.game.Attack(this.attackService, this.randomGen, this.mapTemplate, ownCountry.CountryIdentifier, enemyCountry.CountryIdentifier, numberOfUnits);
             }
         }
 

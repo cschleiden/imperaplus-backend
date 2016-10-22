@@ -96,7 +96,7 @@ namespace ImperaPlus.Application
                 .ForMember(x => x.AttacksInCurrentTurn, c => c.MapFrom(x => x.AttacksInCurrentTurn))
                 .ForMember(x => x.MovesInCurrentTurn, c => c.MapFrom(x => x.MovesInCurrentTurn))
                 .ForMember(x => x.CurrentPlayer, c => c.MapFrom(x => x.CurrentPlayer));
-
+           
             Mapper.CreateMap<Domain.Games.Game, DTO.Games.Game>()
                 .ForMember(x => x.Id, c => c.MapFrom(x => x.Id))
                 .ForMember(x => x.Name, c => c.MapFrom(x => x.Name))
@@ -107,7 +107,7 @@ namespace ImperaPlus.Application
                 .ForMember(x => x.Teams, c => c.MapFrom(x => x.Teams))
                 .ForMember(x => x.CurrentPlayer, c => c.Ignore()) // Manually mapped
                 .ForMember(x => x.TurnCounter, c => c.MapFrom(x => x.TurnCounter))
-                .ForMember(x => x.UnitsToPlace, c => c.MapFrom(x => x.GetUnitsToPlace(x.CurrentPlayer)))
+                .ForMember(x => x.UnitsToPlace, c => c.Ignore()) // Manually mapped
                 .ForMember(x => x.AttacksInCurrentTurn, c => c.MapFrom(x => x.AttacksInCurrentTurn))
                 .ForMember(x => x.MovesInCurrentTurn, c => c.MapFrom(x => x.MovesInCurrentTurn))
                 .ForMember(x => x.LastModifiedAt, c => c.MapFrom(x => x.LastModifiedAt))

@@ -5,6 +5,7 @@ using AutoMapper;
 using ImperaPlus.Application.Visibility;
 using ImperaPlus.DataAccess;
 using ImperaPlus.Domain.Events;
+using ImperaPlus.Domain.Map;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Services;
 using ImperaPlus.DTO.Games.Play;
@@ -29,9 +30,17 @@ namespace ImperaPlus.Application.Play
 
     public class PlayService : BaseGameService, IPlayService
     {
-        public PlayService(IUnitOfWork unitOfWork, IUserProvider userProvider, IVisibilityModifierFactory visibilityModifierFactory, IMapTemplateProvider mapTemplateProvider, IEventAggregator eventAggregator)
-            : base(unitOfWork, userProvider, visibilityModifierFactory, mapTemplateProvider, eventAggregator)
+        private IRandomGen randomGen;
+        private IAttackService attackService;
+
+        public PlayService(IUnitOfWork unitOfWork, IUserProvider userProvider, IVisibilityModifierFactory visibilityModifierFactory, 
+            IAttackService attackService,
+            IMapTemplateProvider mapTemplateProvider, 
+            IRandomGen randomGen)
+            : base(unitOfWork, userProvider, mapTemplateProvider, visibilityModifierFactory)
         {
+            this.attackService = attackService;
+            this.randomGen = randomGen;
         }
 
         public DTO.Games.GameActionResult Place(long gameId, IEnumerable<PlaceUnitsOptions> places)
@@ -39,7 +48,8 @@ namespace ImperaPlus.Application.Play
             var game = this.GetGame(gameId);
             this.CheckPermission(game);
 
-            game.PlaceUnits(places.Select(x => Tuple.Create(x.CountryIdentifier, x.NumberOfUnits)).ToList());
+            game.PlaceUnits(
+                this.GetMapTemplate(game), places.Select(x => Tuple.Create(x.CountryIdentifier, x.NumberOfUnits)).ToList());
 
             return this.CommitAndGetGameActionResult(game);
         }
@@ -49,7 +59,7 @@ namespace ImperaPlus.Application.Play
             var game = this.GetGame(gameId);
             this.CheckPermission(game);
 
-            game.Attack(originCountryIdentifier, destinationCountryIdentifier, numberOfUnits);
+            game.Attack(this.attackService, this.randomGen, this.GetMapTemplate(game), originCountryIdentifier, destinationCountryIdentifier, numberOfUnits);
 
             var actionResult = this.CommitAndGetGameActionResult(game);
 
@@ -67,7 +77,7 @@ namespace ImperaPlus.Application.Play
             var game = this.GetGame(gameId);
             this.CheckPermission(game);
 
-            game.Move(originCountryIdentifier, destinationCountryIdentifier, numberOfUnits);
+            game.Move(this.GetMapTemplate(game), originCountryIdentifier, destinationCountryIdentifier, numberOfUnits);
 
             return this.CommitAndGetGameActionResult(game);
         }
@@ -130,6 +140,11 @@ namespace ImperaPlus.Application.Play
             this.UnitOfWork.Commit();
 
             return gameActionResult;
-        }        
+        }   
+        
+        private MapTemplate GetMapTemplate(Game game)
+        {
+            return this.mapTemplateProvider.GetTemplate(game.MapTemplateName);
+        }
     }
 }

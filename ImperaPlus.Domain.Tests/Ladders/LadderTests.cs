@@ -115,7 +115,7 @@ namespace ImperaPlus.Domain.Tests.Ladders
                     It.IsAny<Domain.Games.GameOptions>()))
                     .Returns(TestUtils.CreateGame(2, 1, Enums.GameType.Ranking));
 
-                var ladderService = new LadderService(unitOfWork, gameServiceMock.Object, new Mock<IEventAggregator>().Object);
+                var ladderService = new LadderService(unitOfWork, gameServiceMock.Object, TestUtils.MockMapTemplateProvider(), new Mock<IEventAggregator>().Object);
 
                 var mapTemplate = TestUtils.GetMapTemplate();
 
