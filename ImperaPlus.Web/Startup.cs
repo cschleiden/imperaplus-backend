@@ -109,7 +109,15 @@ namespace ImperaPlus.Web
                 options.IncludeXmlComments(AppDomain.CurrentDomain.BaseDirectory + "ImperaPlus.Web.xml");
             });
 
-            services.AddMvc();
+            services.AddMvc()
+                .AddJsonOptions(opt =>
+                {
+                    opt.SerializerSettings.Converters.Add(new StringEnumConverter
+                    {
+                        CamelCaseText = false,
+                        AllowIntegerValues = false
+                    });
+                });
             services.AddCors();
 
             // Hangire
@@ -137,6 +145,9 @@ namespace ImperaPlus.Web
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
             }
+            
+            // Enable Cors
+            app.UseCors(b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             // Auth
             app.UseIdentity();
@@ -150,7 +161,7 @@ namespace ImperaPlus.Web
             app.UseOpenIddict();
 
             app.UseMvc();
-            app.UseCors(b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            
 
             app.UseSignalR2(HubConfiguration);
 
