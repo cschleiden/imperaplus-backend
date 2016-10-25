@@ -30,7 +30,7 @@ namespace ImperaPlus.Backend.Controllers
         /// <param name="placeUnitsOptions">List of country/unit count pairs</param>
         /// <returns>GameActionResult of action</returns>
         [HttpPost("place")]
-        [Produces(typeof(DTO.Games.GameActionResult))]
+        [ProducesResponseType(typeof(DTO.Games.GameActionResult), 200)]
         public IActionResult PostPlace(long gameId, [FromBody] IEnumerable<PlaceUnitsOptions> placeUnitsOptions)
         {
             var gameActionResult = this.playService.Place(gameId, placeUnitsOptions);
@@ -44,7 +44,7 @@ namespace ImperaPlus.Backend.Controllers
         /// <param name="gameId">Id of the game</param>
         /// <returns>GameActionResult of action</returns>
         [HttpPost("exchange")]
-        [Produces(typeof(DTO.Games.GameActionResult))]
+        [ProducesResponseType(typeof(DTO.Games.GameActionResult), 200)]
         public IActionResult PostExchange(long gameId)
         {
             var gameResult = this.playService.Exchange(gameId);
@@ -59,7 +59,7 @@ namespace ImperaPlus.Backend.Controllers
         /// <param name="options">Options for the command</param>
         /// <returns>GameActionResult of action</returns>
         [HttpPost("attack")]
-        [Produces(typeof(DTO.Games.GameActionResult))]
+        [ProducesResponseType(typeof(DTO.Games.GameActionResult), 200)]
         public IActionResult PostAttack(long gameId, [FromBody] AttackOptions options)
         {
             var gameActionResult = this.playService.Attack(gameId, options.OriginCountryIdentifier, options.DestinationCountryIdentifier, options.NumberOfUnits);
@@ -73,7 +73,7 @@ namespace ImperaPlus.Backend.Controllers
         /// <param name="gameId">Id of the game</param>
         /// <returns>GameActionResult of action</returns>
         [HttpPost("endattack")]
-        [Produces(typeof(DTO.Games.GameActionResult))]
+        [ProducesResponseType(typeof(DTO.Games.GameActionResult), 200)]
         public IActionResult PostEndAttack(long gameId)
         {
             var gameActionResult = this.playService.EndAttack(gameId);
@@ -89,7 +89,7 @@ namespace ImperaPlus.Backend.Controllers
         /// <param name="options">Options for the command</param>
         /// <returns>GameActionResult of action</returns>        
         [HttpPost("move")]
-        [Produces(typeof(DTO.Games.GameActionResult))]
+        [ProducesResponseType(typeof(DTO.Games.GameActionResult), 200)]
         public IActionResult PostMove(long gameId, [FromBody] MoveOptions options)
         {
             var gameActionResult = this.playService.Move(gameId, options.OriginCountryIdentifier, options.DestinationCountryIdentifier, options.NumberOfUnits);
@@ -103,7 +103,7 @@ namespace ImperaPlus.Backend.Controllers
         /// <param name="gameId">Id of the game</param>
         /// <returns>GameActionResult of action</returns>
         [HttpPost("endturn")]
-        [Produces(typeof(DTO.Games.Game))]
+        [ProducesResponseType(typeof(DTO.Games.Game), 200)]
         public IActionResult PostEndTurn(long gameId)
         {
             var gameResult = this.playService.EndTurn(gameId);

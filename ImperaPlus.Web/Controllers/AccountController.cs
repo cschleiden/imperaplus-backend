@@ -31,7 +31,6 @@ namespace ImperaPlus.Backend.Controllers
     {
         public const string LocalLoginProvider = "Local";
 
-        private readonly OpenIddictApplicationManager<OpenIddictApplication> _applicationManager;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         
@@ -53,9 +52,11 @@ namespace ImperaPlus.Backend.Controllers
         }
 
         [AllowAnonymous]
+        [Consumes("application/x-www-form-urlencoded")]
         [HttpPost("token")]
-        [Produces("application/json")]
-        public async Task<IActionResult> Exchange()
+        [Swashbuckle.SwaggerGen.Annotations.SwaggerOperationFilter(typeof(FormFilter))]
+        [ProducesResponseType(typeof(LoginResponseModel), 200)]
+        public async Task<IActionResult> Exchange([FromForm] LoginRequest loginRequest)
         {
             var request = HttpContext.GetOpenIdConnectRequest();
 
@@ -219,7 +220,7 @@ namespace ImperaPlus.Backend.Controllers
         /// <returns></returns>
         [Route("UserInfo")]
         [HttpGet]
-        [Produces(typeof(DTO.Account.UserInfo))]
+        [ProducesResponseType(typeof(DTO.Account.UserInfo), 200)]
         public async Task<IActionResult> GetUserInfo()
         {
             var user = await this._userManager.GetUserAsync(this.User);
@@ -249,7 +250,7 @@ namespace ImperaPlus.Backend.Controllers
         /// <returns></returns>
         [Route("ExternalUserInfo")]
         [HttpGet]
-        [Produces(typeof(DTO.Account.UserInfo))]
+        [ProducesResponseType(typeof(DTO.Account.UserInfo), 200)]
         public async Task<IActionResult> GetExternalUserInfo()
         {
             var user = await this.GetCurrentUserAsync();
@@ -276,7 +277,7 @@ namespace ImperaPlus.Backend.Controllers
         // GET api/Account/ManageInfo?returnUrl=%2F&generateState=true
         [Route("ManageInfo")]
         [HttpGet]
-        [Produces(typeof(ManageInfoViewModel))]
+        [ProducesResponseType(typeof(ManageInfoViewModel), 200)]
         public async Task<IActionResult> GetManageInfo([FromQuery] string returnUrl, [FromQuery] bool generateState = false)
         {
             User user = await this.GetCurrentUserAsync();
@@ -480,7 +481,7 @@ namespace ImperaPlus.Backend.Controllers
         [AllowAnonymous]
         [Route("ExternalLogins")]
         [HttpGet]
-        [Produces(typeof(IEnumerable<ExternalLoginViewModel>))]
+        [ProducesResponseType(typeof(IEnumerable<ExternalLoginViewModel>), 200)]
         public IActionResult GetExternalLogins([FromQuery] string returnUrl, [FromQuery] bool generateState = false)
         {
             var descriptions = this._signInManager.GetExternalAuthenticationSchemes();

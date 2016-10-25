@@ -8,14 +8,17 @@ using ImperaPlus.Application;
 using ImperaPlus.Application.Jobs;
 using ImperaPlus.DataAccess;
 using ImperaPlus.Domain.Repositories;
+using ImperaPlus.Web.Filters;
 using ImperaPlus.Web.Hubs;
 using ImperaPlus.Web.Providers;
 using ImperaPlus.Web.Services;
 using Microsoft.AspNet.SignalR;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,9 +26,32 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Swashbuckle.Swagger.Model;
+using Swashbuckle.SwaggerGen.Generator;
 
 namespace ImperaPlus.Web
 {
+    public class FormFilter : Swashbuckle.SwaggerGen.Generator.IOperationFilter
+    {
+        public void Apply(Operation operation, OperationFilterContext context)
+        {
+            if (operation.OperationId.Contains("Token"))
+            {
+                operation.Consumes.Add("application/x-www-form-urlencoded");
+
+                foreach(var parameter in operation.Parameters)
+                {
+                    parameter.In = "formData";
+                }
+            };
+
+
+
+            string actionName = ((ControllerActionDescriptor)context.ApiDescription.ActionDescriptor).ActionName;
+            operation.OperationId = $"{context.ApiDescription.GroupName}_{actionName}";
+        }
+    }
+
     public class Startup
     {
         /// <summary>
@@ -69,6 +95,13 @@ namespace ImperaPlus.Web
                 options.UseSqlServer(connection, b=> b.MigrationsAssembly("ImperaPlus.Web"));
             });
 
+            services.AddCors(opts => opts.AddPolicy(
+                opts.DefaultPolicyName,
+                new CorsPolicy
+                {
+                    SupportsCredentials = true
+                }));
+
             // Auth
             services.AddIdentity<Domain.User, IdentityRole>(options =>
                 {
@@ -105,11 +138,15 @@ namespace ImperaPlus.Web
             // Swagger
             services.AddSwaggerGen(options =>
             {
-                options.DescribeAllEnumsAsStrings();
+                options.OperationFilter<FormFilter>();
+                options.DescribeStringEnumsInCamelCase();
                 options.IncludeXmlComments(AppDomain.CurrentDomain.BaseDirectory + "ImperaPlus.Web.xml");
             });
 
-            services.AddMvc()
+            services.AddMvc(config =>
+                {
+                    config.Filters.Add(new CheckModelForNull());
+                })
                 .AddJsonOptions(opt =>
                 {
                     opt.SerializerSettings.Converters.Add(new StringEnumConverter
@@ -117,8 +154,7 @@ namespace ImperaPlus.Web
                         CamelCaseText = false,
                         AllowIntegerValues = false
                     });
-                });
-            services.AddCors();
+                });            
 
             // Hangire
             services.AddHangfire(x =>

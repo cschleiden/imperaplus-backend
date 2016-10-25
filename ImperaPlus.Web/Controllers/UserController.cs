@@ -22,7 +22,7 @@ namespace ImperaPlus.Backend.Controllers
         /// </summary>
         /// <param name="query">Query to search for</param>
         [HttpGet("find/{query:minlength(3):maxlength(50)}")]
-        [Produces(typeof(IEnumerable<DTO.Users.UserReference>))]
+        [ProducesResponseType(typeof(IEnumerable<DTO.Users.UserReference>), 200)]
         public IActionResult FindUsers(string query)
         {
             Require.NotNullOrEmpty(query, nameof(query));

@@ -26,7 +26,7 @@ namespace ImperaPlus.Backend.Controllers
         /// <param name="turnId"></param>
         /// <returns></returns>
         [HttpGet("{turnId:long:min(1)}")]
-        [Produces(typeof(DTO.Games.History.HistoryTurn))]
+        [ProducesResponseType(typeof(DTO.Games.History.HistoryTurn), 200)]
         public IActionResult GetTurn(long gameId, long turnId)
         {
             var historyTurn = this.gameService.Get(gameId, turnId);

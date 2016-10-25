@@ -22,7 +22,7 @@ namespace ImperaPlus.Backend.Controllers
         /// </summary>
         /// <returns>List of tournaments</returns>
         [HttpGet("")]
-        [Produces(typeof(IEnumerable<DTO.Tournaments.Tournament>))]
+        [ProducesResponseType(typeof(IEnumerable<DTO.Tournaments.Tournament>), 200)]
         public IActionResult GetAll()
         {
             return this.Ok(this.tournamentService.GetAll());
@@ -33,7 +33,7 @@ namespace ImperaPlus.Backend.Controllers
         /// </summary>
         /// <param name="tournamentId">Id of tournament</param>
         [HttpGet("{tournamentId:guid}")]
-        [Produces(typeof(DTO.Tournaments.Tournament))]
+        [ProducesResponseType(typeof(DTO.Tournaments.Tournament), 200)]
         public IActionResult GetById(Guid tournamentId)
         {
             return this.Ok(this.tournamentService.Get(tournamentId));
@@ -44,7 +44,7 @@ namespace ImperaPlus.Backend.Controllers
         /// </summary>
         /// <param name="tournamentId">Id of tournament</param>
         [HttpPost("{tournamentId:guid}")]
-        [Produces(typeof(DTO.Tournaments.TournamentTeam))]
+        [ProducesResponseType(typeof(DTO.Tournaments.TournamentTeam), 200)]
         public IActionResult PostJoin(Guid tournamentId)
         {
             return this.Ok(this.tournamentService.Join(tournamentId));
@@ -55,7 +55,7 @@ namespace ImperaPlus.Backend.Controllers
         /// </summary>
         /// <param name="tournamentId">Id of tournament</param>
         [HttpGet("{tournamentId:guid}/teams")]
-        [Produces(typeof(IEnumerable<DTO.Tournaments.TournamentTeam>))]
+        [ProducesResponseType(typeof(IEnumerable<DTO.Tournaments.TournamentTeam>), 200)]
         public IActionResult GetTeams(Guid tournamentId)
         {
             return this.Ok(this.tournamentService.GetTeams(tournamentId));
@@ -69,7 +69,7 @@ namespace ImperaPlus.Backend.Controllers
         /// /// <param name="password">Optional password for team</param>
         /// <returns>Summary of newly created team</returns>
         [HttpPost("{tournamentId:guid}/teams")]
-        [Produces(typeof(DTO.Tournaments.TournamentTeamSummary))]
+        [ProducesResponseType(typeof(DTO.Tournaments.TournamentTeamSummary), 200)]
         public IActionResult PostCreateTeam(Guid tournamentId, string name, string password = null)
         {
             return this.Ok(this.tournamentService.CreateTeam(tournamentId, name, password));

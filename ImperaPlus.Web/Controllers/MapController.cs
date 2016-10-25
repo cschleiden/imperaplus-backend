@@ -26,7 +26,7 @@ namespace ImperaPlus.Backend.Controllers
         /// Get map template identified by name
         /// </summary>
         [HttpGet("{name:minlength(1)}")]
-        [Produces(typeof(MapTemplate))]
+        [ProducesResponseType(typeof(MapTemplate), 200)]
         public IActionResult GetMapTemplate(string name)
         {
             try

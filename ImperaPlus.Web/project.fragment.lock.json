@@ -280,7 +280,7 @@
     },
     "ImperaPlus.DTO/1.0.0": {
       "type": "project",
-      "framework": ".NETStandard,Version=v1.3",
+      "framework": ".NETFramework,Version=v4.6.1",
       "compile": {
         "bin/Debug/ImperaPlus.DTO.dll": {}
       },

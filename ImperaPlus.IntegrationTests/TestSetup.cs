@@ -11,6 +11,10 @@ using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using ImperaPlus.DTO.Account;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json.Converters;
 
 namespace ImperaPlus.Integration.Tests
 {
@@ -24,6 +28,14 @@ namespace ImperaPlus.Integration.Tests
         {
             var startupAssembly = typeof(Startup).GetTypeInfo().Assembly;
             var contentRoot = GetProjectPath(string.Empty, startupAssembly);
+
+            JsonConvert.DefaultSettings = () =>
+            {
+                var settings = new JsonSerializerSettings();
+                settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                settings.Converters.Add(new StringEnumConverter(false));
+                return settings;
+            };
 
             TestSetup.TestServer = new TestServer(new WebHostBuilder()
                 .UseEnvironment(EnvironmentName.Development)
@@ -50,9 +62,9 @@ namespace ImperaPlus.Integration.Tests
                 }
                 catch(AggregateException e)
                 {
-                    if (e.InnerExceptions != null && e.InnerExceptions.Count > 0 && e.InnerExceptions[0].GetType() == typeof(SwaggerException))
+                    if (e.InnerExceptions != null && e.InnerExceptions.Count > 0 && e.InnerExceptions[0].GetType() == typeof(ImperaPlusException))
                     {
-                        if ((e.InnerExceptions[0] as SwaggerException).StatusCode == "400")
+                        if ((e.InnerExceptions[0] as ImperaPlusException).StatusCode == "400")
                         {
                             // ignore
                         }

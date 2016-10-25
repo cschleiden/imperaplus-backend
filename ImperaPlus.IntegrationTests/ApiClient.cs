@@ -27,11 +27,11 @@ namespace ImperaPlus.Integration.Tests
         {
             // Login
             var accountClient = await GetClient<AccountClient>();
-            var token = await accountClient.LoginAsync(username, password);
+            var signinResult = await accountClient.ExchangeAsync("password", username, password);
 
             // Create requested client
             var client = await ApiClient.GetClient<TClientType>();
-            client.AuthToken = token;
+            client.AuthToken = signinResult.Access_token;
             return client;
         }
 

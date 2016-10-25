@@ -19,21 +19,21 @@ namespace ImperaPlus.Backend.Controllers
         }
 
         [HttpGet("folder/{folder}")]
-        [Produces(typeof(IEnumerable<DTO.Messages.Message>))]
-        public IActionResult Get(DTO.Messages.MessageFolder folder = DTO.Messages.MessageFolder.Inbox)
+        [ProducesResponseType(typeof(IEnumerable<DTO.Messages.Message>), 200)]
+        public IActionResult Get(DTO.Messages.MessageFolder messageFolder = DTO.Messages.MessageFolder.Inbox)
         {
-            return this.Ok(this.messageService.Get(folder));
+            return this.Ok(this.messageService.Get(messageFolder));
         }
 
         [HttpGet("{messageId}")]
-        [Produces(typeof(DTO.Messages.Message))]
+        [ProducesResponseType(typeof(DTO.Messages.Message), 200)]
         public IActionResult Get(Guid messageId)
         {
             return this.Ok(this.messageService.Get(messageId));
         }
 
         [HttpGet("folders")]
-        [Produces(typeof(DTO.Messages.FolderInformation))]
+        [ProducesResponseType(typeof(DTO.Messages.FolderInformation), 200)]
         public IActionResult GetFolderInformation()
         {
             return this.Ok(this.messageService.GetFolderInformation());

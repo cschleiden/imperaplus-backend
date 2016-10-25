@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ImperaPlus.DataAccess.ConvertedMaps;
+using ImperaPlus.DTO.Games;
+using ImperaPlus.DTO.Games.Map;
+using ImperaPlus.DTO.Games.Play;
 using ImperaPlus.GeneratedClient;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

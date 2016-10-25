@@ -60,7 +60,7 @@ namespace ImperaPlus.Backend.Controllers
         /// <param name="creationOptions">Creation options</param>
         /// <returns>Summary of newly created game</returns>
         [HttpPost("")]
-        [Produces(typeof(GameSummary))]
+        [ProducesResponseType(typeof(GameSummary), 200)]
         public IActionResult Post([FromBody] GameCreationOptions creationOptions)
         {
             var game = this.gameService.Create(creationOptions);
@@ -74,7 +74,7 @@ namespace ImperaPlus.Backend.Controllers
         /// <param name="gameId">Id of the requested game</param>
         /// <returns>Information about the requested game</returns>
         [HttpGet("{gameId:long:min(1)}")]
-        [Produces(typeof(Game))]
+        [ProducesResponseType(typeof(Game), 200)]
         public IActionResult Get(long gameId)
         {
             var game = this.gameService.Get(gameId);
@@ -89,7 +89,7 @@ namespace ImperaPlus.Backend.Controllers
         /// <param name="isPublic">Value indicating whether to return only public messages, default is true</param>
         /// <returns>Messages posted in the requested game</returns>
         [HttpGet("{gameId:long:min(1)}/messages")]
-        [Produces(typeof(Game))]
+        [ProducesResponseType(typeof(Game), 200)]
         public IActionResult GetMessages(long gameId, bool isPublic = true)
         {
             var messages = this.gameService.GetMessages(gameId, isPublic);
@@ -145,7 +145,7 @@ namespace ImperaPlus.Backend.Controllers
         /// </summary>
         /// <param name="gameId">Id of game to surrender in</param>
         [HttpPost("{gameId:long:min(1)}/surrender")]
-        [Produces(typeof(GameSummary))]
+        [ProducesResponseType(typeof(GameSummary), 200)]
         public IActionResult PostSurrender(long gameId)
         {
             var gameSummary = this.gameService.Surrender(gameId);

@@ -36,7 +36,7 @@ namespace ImperaPlus.Backend.Controllers
         /// </summary>
         /// <param name="ladderId">Id of ladder</param>        
         [HttpGet("{ladderId:guid}")]
-        [Produces(typeof(DTO.Ladder.Ladder))]
+        [ProducesResponseType(typeof(DTO.Ladder.Ladder), 200)]
         public IActionResult Get(Guid ladderId)
         {
             return this.Ok(this.ladderService.Get(ladderId));

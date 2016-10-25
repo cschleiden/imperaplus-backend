@@ -1685,6 +1685,15 @@
           "lib/net46/Microsoft.Win32.Primitives.dll": {}
         }
       },
+      "MiniProfiler/3.2.0.157": {
+        "type": "package",
+        "compile": {
+          "lib/net40/MiniProfiler.dll": {}
+        },
+        "runtime": {
+          "lib/net40/MiniProfiler.dll": {}
+        }
+      },
       "mnailgun/1.0.0": {
         "type": "package",
         "dependencies": {
@@ -1753,6 +1762,15 @@
         },
         "runtime": {
           "lib/net45/Newtonsoft.Json.dll": {}
+        }
+      },
+      "NLog/4.3.10": {
+        "type": "package",
+        "compile": {
+          "lib/net45/NLog.dll": {}
+        },
+        "runtime": {
+          "lib/net45/NLog.dll": {}
         }
       },
       "OpenIddict/1.0.0-beta1-0456": {
@@ -4384,6 +4402,18 @@
         "ref/xamarinwatchos10/_._"
       ]
     },
+    "MiniProfiler/3.2.0.157": {
+      "sha512": "oF44Erqo3kocAljh884cbwh7TnJz86kBLYMNh7cRHdzpB/A3ekq+HnBOd+v939GsneyUVqKtCIFXrMLbFOIVFQ==",
+      "type": "package",
+      "path": "MiniProfiler/3.2.0.157",
+      "files": [
+        "MiniProfiler.3.2.0.157.nupkg.sha512",
+        "MiniProfiler.nuspec",
+        "lib/net40/MiniProfiler.dll",
+        "lib/net40/MiniProfiler.pdb",
+        "lib/net40/MiniProfiler.xml"
+      ]
+    },
     "mnailgun/1.0.0": {
       "sha512": "cyQqm3KmkCjk2uAVIL1cDuxNkhFVosBmKu3EmQTXNCQ6lFcTu8Q2ejw6QdiKtmXxqXYRJjHEw6pura9aGEoaLg==",
       "type": "package",
@@ -4428,6 +4458,31 @@
         "lib/portable-net45+wp80+win8+wpa81/Newtonsoft.Json.dll",
         "lib/portable-net45+wp80+win8+wpa81/Newtonsoft.Json.xml",
         "tools/install.ps1"
+      ]
+    },
+    "NLog/4.3.10": {
+      "sha512": "rnLCGfoo5Q0H5CQiwZN+hCaze+2FnLbL61X927Ps4Xyqu6SvWPLR8Mp03C8EcVTj7J2EOtYLfxN1hJ0Jr6vEOw==",
+      "type": "package",
+      "path": "NLog/4.3.10",
+      "files": [
+        "NLog.4.3.10.nupkg.sha512",
+        "NLog.nuspec",
+        "lib/MonoAndroid10/NLog.dll",
+        "lib/MonoAndroid10/NLog.xml",
+        "lib/Xamarin.iOS10/NLog.dll",
+        "lib/Xamarin.iOS10/NLog.xml",
+        "lib/net35/NLog.dll",
+        "lib/net35/NLog.xml",
+        "lib/net40/NLog.dll",
+        "lib/net40/NLog.xml",
+        "lib/net45/NLog.dll",
+        "lib/net45/NLog.xml",
+        "lib/sl4/NLog.dll",
+        "lib/sl4/NLog.xml",
+        "lib/sl5/NLog.dll",
+        "lib/sl5/NLog.xml",
+        "lib/wp8/NLog.dll",
+        "lib/wp8/NLog.xml"
       ]
     },
     "OpenIddict/1.0.0-beta1-0456": {
@@ -8065,6 +8120,8 @@
       "Microsoft.Extensions.Logging.Console >= 1.0.0",
       "Microsoft.Extensions.Logging.Debug >= 1.0.0",
       "Microsoft.Extensions.Options.ConfigurationExtensions >= 1.0.0",
+      "MiniProfiler >= 3.2.0.157",
+      "NLog >= 4.3.10",
       "OpenIddict >= 1.0.0-beta1-0456",
       "Swashbuckle >= 6.0.0-beta902",
       "mnailgun >= 1.0.0"

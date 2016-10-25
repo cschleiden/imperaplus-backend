@@ -394,7 +394,7 @@
       <Name>ImperaPlus.Domain</Name>
     </ProjectReference>
     <ProjectReference Include="..\ImperaPlus.DTO\ImperaPlus.DTO.csproj">
-      <Project>{21e0c9dd-ad85-42dd-aacb-9e36d96baaaf}</Project>
+      <Project>{c1fe2446-7358-4458-9b22-7f0297aa2323}</Project>
       <Name>ImperaPlus.DTO</Name>
     </ProjectReference>
     <ProjectReference Include="..\ImperaPlus.Utils\ImperaPlus.Utils.csproj">
