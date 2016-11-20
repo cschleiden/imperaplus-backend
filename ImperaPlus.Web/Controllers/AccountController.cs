@@ -515,6 +515,8 @@ namespace ImperaPlus.Backend.Controllers
                 if (Startup.RequireUserConfirmation)
                 {
                     var code = await this._userManager.GenerateEmailConfirmationTokenAsync(user);
+
+                    // TODO: CS: Send email
                 }
             }
 
@@ -691,42 +693,34 @@ namespace ImperaPlus.Backend.Controllers
 
         private Tuple<string, Application.ErrorCode> TransformError(string error, User user)
         {
-            if (error == "User already in role.") return Tuple.Create("User", Application.ErrorCode.UserAlreadyInRole);
-            else if (error == "User is not in role.") return Tuple.Create("User", Application.ErrorCode.UserNotInRole);
-            //else if (error == "Role {0} does not exist.") return Tuple.Create( "De rol bestaat nog niet";
-            //else if (error == "Store does not implement IUserClaimStore&lt;TUser&gt;.") return Tuple.Create( "";
-            //else if (error == "No IUserTwoFactorProvider for '{0}' is registered.") return Tuple.Create( "";
-            //else if (error == "Store does not implement IUserEmailStore&lt;TUser&gt;.") return Tuple.Create( "";
-            else if (error == "Incorrect password.") return Tuple.Create("Password", Application.ErrorCode.UsernameOrPasswordNotCorrect);
-            //else if (error == "Store does not implement IUserLockoutStore&lt;TUser&gt;.") return Tuple.Create( "";
-            //else if (error == "No IUserTokenProvider is registered.") return Tuple.Create( "";
-            //else if (error == "Store does not implement IUserRoleStore&lt;TUser&gt;.") return Tuple.Create( "";
-            //else if (error == "Store does not implement IUserLoginStore&lt;TUser&gt;.") return Tuple.Create( "";
-            else if (error == string.Format("User name {0} is invalid, can only contain letters or digits.", user.UserName)) return Tuple.Create("Username", Application.ErrorCode.UsernameInvalid);
-            //else if (error == "Store does not implement IUserPhoneNumberStore&lt;TUser&gt;.") return Tuple.Create( "";
-            //else if (error == "Store does not implement IUserConfirmationStore&lt;TUser&gt;.") return Tuple.Create( "";            
-            //else if (error == "{0} cannot be null or empty.") return Tuple.Create( "";
-            else if (user != null && error == "Name " + user.UserName + " is already taken.") return Tuple.Create("Username", Application.ErrorCode.UsernameAlreadyInUse);
-            //else if (error == "User already has a password set.") return Tuple.Create( "Deze gebruiker heeft reeds een wachtwoord ingesteld.";
-            //else if (error == "Store does not implement IUserPasswordStore&lt;TUser&gt;.") return Tuple.Create( "";            
-            else if (error == "UserId not found.") return Tuple.Create("User", Application.ErrorCode.UserDoesNotExist);
-            else if (error == "Invalid token.") return Tuple.Create("Token", Application.ErrorCode.InvalidToken);
-            else if (user != null && error == "Email '" + user.Email + "' is invalid.") return Tuple.Create("Email", Application.ErrorCode.EmailInvalid);
-            else if (user != null && error == "User " + user.UserName + " does not exist.") return Tuple.Create("Username", Application.ErrorCode.UserDoesNotExist);
-            //else if (error == "Store does not implement IQueryableRoleStore&lt;TRole&gt;.") return Tuple.Create( "";
-            //else if (error == "Lockout is not enabled for this user.") return Tuple.Create( "Lockout is niet geactiveerd voor deze gebruiker.";
-            //else if (error == "Store does not implement IUserTwoFactorStore&lt;TUser&gt;.") return Tuple.Create( "";
-            else if (error.StartsWith("Passwords must be at least ")) return Tuple.Create("Password", Application.ErrorCode.PasswordInvalid);
-            else if (error.Contains("alphanumerics")) return Tuple.Create("Password", Application.ErrorCode.PasswordInvalid);
-            else if (error == "Passwords must have at least one non letter or digit character.") return Tuple.Create("Password", Application.ErrorCode.PasswordInvalid);
-            else if (error == "Passwords must have at least one uppercase ('A'-'Z').") return Tuple.Create("Password", Application.ErrorCode.PasswordInvalid);
-            else if (error == "Passwords must have at least one digit ('0'-'9').") return Tuple.Create("Password", Application.ErrorCode.PasswordInvalid);
-            else if (error == "Passwords must have at least one lowercase ('a'-'z').") return Tuple.Create("Password", Application.ErrorCode.PasswordInvalid);
-            //else if (error == "Store does not implement IQueryableUserStore&lt;TUser&gt;.") return Tuple.Create( "";
-            else if (user != null && error == "Email '" + user.Email + "' is already taken.") return Tuple.Create("Email", Application.ErrorCode.EmailAlreadyInUse);
-            //else if (error == "Store does not implement IUserSecurityStampStore&lt;TUser&gt;.") return Tuple.Create( "";
-            else if (error == "A user with that external login already exists.") return Tuple.Create("Login", Application.ErrorCode.UserWithExternalLoginExists);
-            
+            switch (error)
+            {
+                case nameof(IdentityErrorDescriber.DuplicateEmail):
+                    return Tuple.Create("Email", Application.ErrorCode.EmailAlreadyInUse);
+
+                case nameof(IdentityErrorDescriber.InvalidEmail):
+                    return Tuple.Create("Email", Application.ErrorCode.EmailInvalid);
+
+                case nameof(IdentityErrorDescriber.DuplicateUserName):
+                    return Tuple.Create("Username", Application.ErrorCode.UsernameAlreadyInUse);
+
+                case nameof(IdentityErrorDescriber.LoginAlreadyAssociated):
+                    return Tuple.Create("Login", Application.ErrorCode.UserWithExternalLoginExists);
+
+                case nameof(IdentityErrorDescriber.PasswordMismatch):
+                    return Tuple.Create("Password", Application.ErrorCode.PasswordsDoNotMatch);
+
+                case nameof(IdentityErrorDescriber.PasswordRequiresDigit):
+                case nameof(IdentityErrorDescriber.PasswordRequiresLower):
+                case nameof(IdentityErrorDescriber.PasswordRequiresNonAlphanumeric):
+                case nameof(IdentityErrorDescriber.PasswordRequiresUpper):
+                case nameof(IdentityErrorDescriber.PasswordTooShort):
+                    return Tuple.Create("Password", Application.ErrorCode.PasswordInvalid);
+
+                case nameof(IdentityErrorDescriber.InvalidUserName):
+                    return Tuple.Create("Username", Application.ErrorCode.UsernameInvalid);
+            }
+
             // Default
             return Tuple.Create("General", Application.ErrorCode.GenericApplicationError);
         }
