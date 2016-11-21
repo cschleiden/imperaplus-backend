@@ -27,6 +27,8 @@ namespace ImperaPlus.Backend.Controllers
 {
     [Authorize]
     [Route("api/Account")]
+    [ProducesResponseType(typeof(ErrorResponse), 400)]
+    [ProducesResponseType(typeof(void), 200)]
     public class AccountController : Controller
     {
         public const string LocalLoginProvider = "Local";
@@ -59,47 +61,31 @@ namespace ImperaPlus.Backend.Controllers
         public async Task<IActionResult> Exchange([FromForm] LoginRequest loginRequest)
         {
             var request = HttpContext.GetOpenIdConnectRequest();
-
+            
             if (request.IsPasswordGrantType())
             {
                 var user = await _userManager.FindByNameAsync(request.Username);
                 if (user == null)
                 {
-                    return BadRequest(new OpenIdConnectResponse
-                    {
-                        Error = OpenIdConnectConstants.Errors.InvalidGrant,
-                        ErrorDescription = "The username/password couple is invalid."
-                    });
+                    return BadRequest(new ErrorResponse(Application.ErrorCode.UsernameOrPasswordNotCorrect, "The username/password is invalid."));
                 }
 
                 // Ensure the user is allowed to sign in.
                 if (!await _signInManager.CanSignInAsync(user))
                 {
-                    return BadRequest(new OpenIdConnectResponse
-                    {
-                        Error = OpenIdConnectConstants.Errors.InvalidGrant,
-                        ErrorDescription = "The specified user is not allowed to sign in."
-                    });
+                    return BadRequest(new ErrorResponse(Application.ErrorCode.UsernameOrPasswordNotCorrect, "User cannot sign in."));
                 }
 
                 // Reject the token request if two-factor authentication has been enabled by the user.
                 if (_userManager.SupportsUserTwoFactor && await _userManager.GetTwoFactorEnabledAsync(user))
                 {
-                    return BadRequest(new OpenIdConnectResponse
-                    {
-                        Error = OpenIdConnectConstants.Errors.InvalidGrant,
-                        ErrorDescription = "The specified user is not allowed to sign in."
-                    });
+                    return BadRequest(new ErrorResponse(Application.ErrorCode.UsernameOrPasswordNotCorrect, "The username/password is invalid."));
                 }
 
                 // Ensure the user is not already locked out.
                 if (_userManager.SupportsUserLockout && await _userManager.IsLockedOutAsync(user))
                 {
-                    return BadRequest(new OpenIdConnectResponse
-                    {
-                        Error = OpenIdConnectConstants.Errors.InvalidGrant,
-                        ErrorDescription = "The username/password couple is invalid."
-                    });
+                    return BadRequest(new ErrorResponse(Application.ErrorCode.AccountIsLocked, "This account is locked."));
                 }
 
                 // Ensure the password is valid.
@@ -110,11 +96,7 @@ namespace ImperaPlus.Backend.Controllers
                         await _userManager.AccessFailedAsync(user);
                     }
 
-                    return BadRequest(new OpenIdConnectResponse
-                    {
-                        Error = OpenIdConnectConstants.Errors.InvalidGrant,
-                        ErrorDescription = "The username/password couple is invalid."
-                    });
+                    return BadRequest(new ErrorResponse(Application.ErrorCode.UsernameOrPasswordNotCorrect, "The username/password is invalid."));
                 }
 
                 if (_userManager.SupportsUserLockout)
@@ -128,11 +110,7 @@ namespace ImperaPlus.Backend.Controllers
                 return SignIn(ticket.Principal, ticket.Properties, ticket.AuthenticationScheme);
             }
 
-            return BadRequest(new OpenIdConnectResponse
-            {
-                Error = OpenIdConnectConstants.Errors.UnsupportedGrantType,
-                ErrorDescription = "The specified grant type is not supported."
-            });
+            return BadRequest(new ErrorResponse(Application.ErrorCode.GenericApplicationError, "Grant type is not supported."));
         }
 
         private async Task<AuthenticationTicket> CreateTicketAsync(OpenIdConnectRequest request, User user)
@@ -145,6 +123,7 @@ namespace ImperaPlus.Backend.Controllers
                 OpenIdConnectConstants.Scopes.Email,
                 OpenIdConnectConstants.Scopes.Profile,
                 OpenIdConnectConstants.Scopes.OfflineAccess,
+                OpenIdConnectConstants.Scopes.Profile,
                 OpenIddictConstants.Scopes.Roles
             }.Intersect(request.GetScopes());
 
@@ -152,10 +131,14 @@ namespace ImperaPlus.Backend.Controllers
             // will be used to create an id_token, a token or a code.
             var principal = await _signInManager.CreateUserPrincipalAsync(user);
 
+            principal.AddIdentity(new ClaimsIdentity(new[]
+            {
+                new Claim(ClaimTypes.Name, user.UserName)
+            }));
+            
             // Note: by default, claims are NOT automatically included in the access and identity tokens.
             // To allow OpenIddict to serialize them, you must attach them a destination, that specifies
             // whether they should be included in access tokens, in identity tokens or in both.
-
             foreach (var claim in principal.Claims)
             {
                 // Always include the user identifier in the
@@ -181,7 +164,7 @@ namespace ImperaPlus.Backend.Controllers
 
                 // The other claims won't be added to the access
                 // and identity tokens and will be kept private.
-            }
+            }            
 
             // Create a new authentication ticket holding the user identity.
             var ticket = new AuthenticationTicket(
@@ -190,7 +173,7 @@ namespace ImperaPlus.Backend.Controllers
                 OpenIdConnectServerDefaults.AuthenticationScheme);
 
             ticket.SetScopes(scopes);
-
+            
             return ticket;
         }    
 
@@ -201,7 +184,7 @@ namespace ImperaPlus.Backend.Controllers
         /// <returns>True if username is available</returns>
         [AllowAnonymous]
         [Route("UserNameAvailable")]
-        [HttpGet]
+        [HttpGet]        
         public async Task<IActionResult> GetUserNameAvailable([FromQuery] string userName)
         {
             if (string.IsNullOrEmpty(userName) || userName.Length < 4)
@@ -331,7 +314,7 @@ namespace ImperaPlus.Backend.Controllers
                 await _signInManager.SignInAsync(user, isPersistent: false);
             }
 
-            return this.CheckResult(result, user);
+            return this.CheckResult(result);
         }
        
         [Route("SetPassword")]
@@ -350,7 +333,7 @@ namespace ImperaPlus.Backend.Controllers
                 await _signInManager.SignInAsync(user, isPersistent: false);
             }
 
-            return this.CheckResult(result, null);
+            return this.CheckResult(result);
         }
 
         /*[Route("Language")]
@@ -422,7 +405,7 @@ namespace ImperaPlus.Backend.Controllers
                 return this.Ok();
             }
 
-            return this.CheckResult(result, null);
+            return this.CheckResult(result);
         }
 
         // GET api/Account/ExternalLogin
@@ -499,7 +482,9 @@ namespace ImperaPlus.Backend.Controllers
         // POST api/Account/Register
         [AllowAnonymous]
         [Route("Register")]
-        [HttpPost]        
+        [HttpPost]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> Register([FromBody] RegisterBindingModel model)
         {
             var user = new User
@@ -520,7 +505,7 @@ namespace ImperaPlus.Backend.Controllers
                 }
             }
 
-            return this.CheckResult(result, user);
+            return this.CheckResult(result);
         }
         
         /// <summary>
@@ -576,7 +561,7 @@ namespace ImperaPlus.Backend.Controllers
 
             var result = await _userManager.ConfirmEmailAsync(user, model.Code);
 
-            return this.CheckResult(result, null);
+            return this.CheckResult(result);
         }
         
         /// <summary>
@@ -626,7 +611,7 @@ namespace ImperaPlus.Backend.Controllers
 
             var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
             
-            return this.CheckResult(result, user);
+            return this.CheckResult(result);
         }
 
         // POST api/Account/RegisterExternal
@@ -665,25 +650,29 @@ namespace ImperaPlus.Backend.Controllers
                 }
             }
 
-            return this.CheckResult(result, user);
+            return this.CheckResult(result);
         }
 
         #region Helpers        
 
-        private IActionResult CheckResult(IdentityResult result, User user)
+        private IActionResult CheckResult(IdentityResult result)
         {
             if (result == null)
             {
+                // No error code
                 return BadRequest();
             }            
             
             if (!result.Succeeded)
             {                
-                var errors = result.Errors.Select(x => this.TransformError(x.Code, user));
+                var errors = result.Errors.Select(x => this.TransformError(x.Code));
 
-                var error = new ErrorResponse(errors.First().Item1.ToString(), "An error occured");
+                var error = new ErrorResponse(errors.First().Item1, errors.First().Item2.ToString());
 
-                error.Parameter_Errors = errors.GroupBy(x => x.Item1, x => x.Item2).ToDictionary(x => x.Key, x => x.Select(y => y.ToString()).ToArray());
+                error.Parameter_Errors = errors
+                    .GroupBy(x => x.Item1, x => x.Item2)
+                    .ToDictionary(x => x.Key, x => x.Select(y => y.ToString())
+                    .ToArray());
 
                 return this.BadRequest(error);
             }
@@ -691,7 +680,7 @@ namespace ImperaPlus.Backend.Controllers
             return this.Ok();
         }
 
-        private Tuple<string, Application.ErrorCode> TransformError(string error, User user)
+        private Tuple<string, Application.ErrorCode> TransformError(string error)
         {
             switch (error)
             {

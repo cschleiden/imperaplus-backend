@@ -208,7 +208,7 @@ namespace ImperaPlus.Web
             if (env.IsDevelopment())
             {
                 // Always recreate in development
-                dbContext.Database.EnsureDeleted();
+                //dbContext.Database.EnsureDeleted();
                 dbContext.Database.EnsureCreated();
             }
             else
