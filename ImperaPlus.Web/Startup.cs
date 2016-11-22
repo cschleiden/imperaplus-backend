@@ -149,6 +149,8 @@ namespace ImperaPlus.Web
                 })
                 .AddJsonOptions(opt =>
                 {
+                    opt.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
+                    opt.SerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
                     opt.SerializerSettings.Converters.Add(new StringEnumConverter
                     {
                         CamelCaseText = false,

@@ -103,6 +103,13 @@ namespace ImperaPlus.DataAccess
                 };
                 await this.userManager.CreateAsync(testUser2, "impera1234");
             }
+
+            // News
+            var newsEntry = Domain.News.NewsEntry.Create();
+            newsEntry.CreatedBy = newsEntry.CreatedBy = testUser;
+            newsEntry.LastModifiedAt =newsEntry.CreatedAt = newsEntry.CreatedAt = DateTime.UtcNow;
+            newsEntry.AddContent("en", "Title", "This is a news entry.");            
+            context.NewsEntries.Add(newsEntry);
 #endif
 
             context.SaveChanges();
