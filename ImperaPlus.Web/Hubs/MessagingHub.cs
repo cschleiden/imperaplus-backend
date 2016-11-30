@@ -33,7 +33,7 @@ namespace ImperaPlus.Web.Hubs
         public override Task OnConnected()
         {
             // Track connection            
-            string userName = this.userManager.GetUserName(ClaimsPrincipal.Current);
+            string userName = this.GetUser().UserName;
             Connections.Add(userName, this.Context.ConnectionId);
 
             return base.OnConnected();
@@ -61,8 +61,7 @@ namespace ImperaPlus.Web.Hubs
 
         public override Task OnReconnected()
         {
-            string userName = this.userManager.GetUserName(ClaimsPrincipal.Current);
-
+            string userName = this.GetUser().UserName;
             if (!Connections.GetConnections(userName).Contains(Context.ConnectionId))
             {
                 Connections.Add(userName, Context.ConnectionId);
@@ -77,9 +76,8 @@ namespace ImperaPlus.Web.Hubs
         /// <returns></returns>
         public ChatInformation Init()
         {
-            string userId = this.userManager.GetUserId(this.Context.User as ClaimsPrincipal);
-            var user = this.userManager.GetUserAsync(this.Context.User as ClaimsPrincipal).Result;
-            string userName = user.UserName;
+            string userId = this.GetUserId();
+            string userName = this.GetUser().UserName;
 
             // Add users to appropriate groups
             var channels = this.chatService.GetChannelInformationForUser(userId).Result;
@@ -114,10 +112,11 @@ namespace ImperaPlus.Web.Hubs
         public void SendMessage(Guid channelId, string message)
         {
             // Send to service for persistence
-            string userId = this.userManager.GetUserId(this.Context.User as ClaimsPrincipal);
+            string userId = this.GetUserId();
             this.chatService.SendMessage(channelId, userId, message);
 
             // Send message to currently online players
+            var user = this.GetUserId();
             this.Clients.Group(channelId.ToString()).broadcastMessage(new Message
             {
                 ChannelIdentifier = channelId.ToString(),
@@ -125,6 +124,16 @@ namespace ImperaPlus.Web.Hubs
                 DateTime = DateTime.UtcNow,
                 Text = message
             });
+        }
+
+        private string GetUserId()
+        { 
+            return this.userManager.GetUserId(this.Context.User as ClaimsPrincipal);
+        }
+
+        private Domain.User GetUser()
+        {
+            return this.userManager.GetUserAsync(this.Context.User as ClaimsPrincipal).Result;
         }
     }
 }
