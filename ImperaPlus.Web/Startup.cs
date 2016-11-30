@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Autofac.Integration.SignalR;
@@ -64,7 +65,10 @@ namespace ImperaPlus.Web
         /// </summary>
         internal static bool RequireUserConfirmation = true;
 
-        public HubConfiguration HubConfiguration { get; set; } = new HubConfiguration();
+        public HubConfiguration HubConfiguration { get; set; } = new HubConfiguration()
+        {
+            EnableDetailedErrors = true
+        };
 
         public Startup(IHostingEnvironment env)
         {
@@ -99,7 +103,7 @@ namespace ImperaPlus.Web
                 opts.DefaultPolicyName,
                 new CorsPolicy
                 {
-                    SupportsCredentials = true
+                    SupportsCredentials = false
                 }));
 
             // Auth
@@ -110,7 +114,7 @@ namespace ImperaPlus.Web
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequireUppercase = false;
                     options.Password.RequireDigit = false;
-                    
+
                     options.SignIn.RequireConfirmedEmail = true;
                     options.SignIn.RequireConfirmedPhoneNumber = false;
 
@@ -125,7 +129,7 @@ namespace ImperaPlus.Web
             var openIddict = services.AddOpenIddict<ImperaContext>()
                 .EnableTokenEndpoint("/api/Account/Token")
                 .AllowPasswordFlow()
-                .AllowRefreshTokenFlow();
+                .AllowRefreshTokenFlow();           
 
             if (this.Environment.IsDevelopment())
             {
@@ -185,7 +189,7 @@ namespace ImperaPlus.Web
             }
             
             // Enable Cors
-            app.UseCors(b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseCors(b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().DisallowCredentials().Build());
 
             // Auth
             app.UseIdentity();
@@ -195,7 +199,19 @@ namespace ImperaPlus.Web
             //    AppId = Configuration["Authentication:Facebook:AppId"],
             //    AppSecret = Configuration["Authentication:Facebook:AppSecret"]                
             //});            
-            app.UseOAuthValidation();
+            app.UseOAuthValidation(options => {
+                options.Events = new AspNet.Security.OAuth.Validation.OAuthValidationEvents
+                {
+                    // Note: for SignalR connections, the default Authorization header does not work,
+                    // because the WebSockets JS API doesn't allow setting custom parameters.
+                    // To work around this limitation, the access token is retrieved from the query string.
+                    OnRetrieveToken = context => {
+                        context.Token = context.Request.Query["bearer_token"];
+
+                        return Task.FromResult(0);
+                    }
+                };
+            });
             app.UseOpenIddict();
 
             app.UseMvc();
@@ -279,7 +295,7 @@ namespace ImperaPlus.Web
             {
                 DateTimeZoneHandling = Newtonsoft.Json.DateTimeZoneHandling.Utc,
                 DateFormatHandling = Newtonsoft.Json.DateFormatHandling.IsoDateFormat,
-                //ContractResolver = new SignalRContractResolver(),
+                ContractResolver = new SignalRContractResolver()
             };
             jsonSettings.Converters.Add(new StringEnumConverter
             {
@@ -292,14 +308,7 @@ namespace ImperaPlus.Web
             builder.RegisterModule<Application.DependencyInjectionModule>();
             builder.RegisterModule<Domain.DependencyInjectionModule>();
 
-            builder.RegisterType<Hangfire.BackgroundJobClient>().AsImplementedInterfaces();
-
-            //if (RegisterAction != null)
-            //{
-            //    RegisterAction(builder);
-            //}
-
-            IContainer container = null;
+            builder.RegisterType<BackgroundJobClient>().AsImplementedInterfaces();
 
             builder.Register(context => this.HubConfiguration.Resolver
                .Resolve<Microsoft.AspNet.SignalR.Infrastructure.IConnectionManager>()
@@ -308,13 +317,10 @@ namespace ImperaPlus.Web
 
             builder.Populate(services);
 
+            IContainer container = null;
             container = builder.Build();
 
-            Domain.DomainDepsResolver.ScopeGen = () =>
-            {
-                var activator = container.Resolve<IHttpContextAccessor>();
-                return activator.HttpContext.RequestServices.GetService<ILifetimeScope>();
-            };
+            this.HubConfiguration.EnableDetailedErrors = true;
             this.HubConfiguration.Resolver = new AutofacDependencyResolver(container);
 
             return container.Resolve<IServiceProvider>();

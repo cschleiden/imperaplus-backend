@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
 using ImperaPlus.Domain.Enums;
 using ImperaPlus.Domain.Games;
-using ImperaPlus.Domain.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 namespace ImperaPlus.Domain.Chat
 {
@@ -14,12 +10,8 @@ namespace ImperaPlus.Domain.Chat
         public Channel()
         {
             this.Id = Guid.NewGuid();
-
             this.Messages = new List<ChatMessage>();
         }
-
-        [NotMapped]
-        public IChatMessageRepository MessageRepository { get; set; }
 
         public Guid Id { get; set; }
 
@@ -38,19 +30,7 @@ namespace ImperaPlus.Domain.Chat
 
         public virtual ICollection<ChatMessage> Messages { get; private set; }
 
-        public IEnumerable<ChatMessage> RecentMessages
-        {
-            get
-            {
-                return this.MessageRepository
-                    .Query()
-                    .Where(x => x.ChannelId == this.Id)
-                    .Include(x => x.CreatedBy)
-                    .OrderByDescending(x => x.CreatedAt)
-                    .Take(20)
-                    .OrderBy(x => x.CreatedAt);
-            }
-        }
+        public IEnumerable<ChatMessage> RecentMessages { get; set; }
 
         public ChatMessage CreateMessage(User user, string message)
         {

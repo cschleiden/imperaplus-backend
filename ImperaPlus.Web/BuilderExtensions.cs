@@ -4,10 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNet.SignalR;
+using Microsoft.Owin.Cors;
 
 namespace ImperaPlus.Web
 {
-    using Microsoft.AspNet.SignalR;
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
     public static class BuilderExtensions
@@ -34,7 +35,12 @@ namespace ImperaPlus.Web
 
         public static void UseSignalR2(this IApplicationBuilder app, HubConfiguration hubConfiguration)
         {
-            app.UseAppBuilder(appBuilder => appBuilder.MapSignalR(hubConfiguration));
+            app.UseAppBuilder(appBuilder => appBuilder.Map("/signalr", map =>
+            {
+                //map.UseWebSockets();
+                map.UseCors(CorsOptions.AllowAll);
+                map.RunSignalR(hubConfiguration);
+            }));
         }
     }
 }

@@ -21,7 +21,13 @@ namespace ImperaPlus.DataAccess.Repositories
 
         public Channel GetByType(ChannelType channelType)
         {
-            return this.DbSet.Include(x => x.CreatedBy).Single(x => x.Type == channelType);
+            var channel = this.DbSet
+                .Include(x => x.CreatedBy)
+                .First(x => x.Type == channelType);
+
+            //this.Context.Entry(channel).Collection
+
+            return channel;
         }
     }
 }

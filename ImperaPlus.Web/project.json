@@ -37,7 +37,8 @@
     "AspNet.Security.OAuth.Validation": "1.0.0-*",
     "Autofac.SignalR": "3.0.2",
     "MiniProfiler": "3.2.0.157",
-    "NLog": "4.3.10"
+    "NLog": "4.3.10",
+    "Microsoft.Owin.Cors": "3.0.1"
   },
 
   "tools": {

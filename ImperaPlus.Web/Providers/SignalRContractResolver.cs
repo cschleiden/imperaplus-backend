@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Web;
-using Microsoft.AspNet.SignalR.Infrastructure;
 using Newtonsoft.Json.Serialization;
 
-namespace ImperaPlus.Backend.Providers
+namespace ImperaPlus.Web.Providers
 {
     public class SignalRContractResolver : IContractResolver
     {
@@ -18,7 +14,7 @@ namespace ImperaPlus.Backend.Providers
         {
             _defaultContractSerializer = new DefaultContractResolver();
             _camelCaseContractResolver = new CamelCasePropertyNamesContractResolver();
-            _assembly = typeof(Connection).Assembly;
+            _assembly = typeof(Microsoft.AspNet.SignalR.Infrastructure.Connection).Assembly;
         }
 
         public JsonContract ResolveContract(Type type)

@@ -20,9 +20,9 @@ namespace ImperaPlus.Web.Hubs
 
         private readonly static ConnectionMapping<string> Connections =
             new ConnectionMapping<string>();
-        private UserManager<User> userManager;
+        private UserManager<Domain.User> userManager;
 
-        public MessagingHub(ILifetimeScope scope, UserManager<User> userManager)
+        public MessagingHub(ILifetimeScope scope, UserManager<Domain.User> userManager)
             : base()
         {
             var lifetimeScope = scope.BeginLifetimeScope("AutofacWebRequest");
@@ -77,8 +77,8 @@ namespace ImperaPlus.Web.Hubs
         /// <returns></returns>
         public ChatInformation Init()
         {
-            string userId = this.userManager.GetUserId(ClaimsPrincipal.Current);
-            string userName = this.userManager.GetUserName(ClaimsPrincipal.Current);
+            string userId = this.userManager.GetUserId(this.Context.User as ClaimsPrincipal);
+            string userName = this.userManager.GetUserName(this.Context.User as ClaimsPrincipal);
 
             // Add users to appropriate groups
             var channels = this.chatService.GetChannelInformationForUser(userId).Result;
@@ -113,7 +113,7 @@ namespace ImperaPlus.Web.Hubs
         public void SendMessage(Guid channelId, string message)
         {
             // Send to service for persistence
-            string userId = this.userManager.GetUserId(ClaimsPrincipal.Current);
+            string userId = this.userManager.GetUserId(this.Context.User as ClaimsPrincipal);
             this.chatService.SendMessage(channelId, userId, message);
 
             // Send message to currently online players

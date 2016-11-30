@@ -10,6 +10,7 @@ namespace ImperaPlus.Domain
     {
         public static Func<ILifetimeScope> ScopeGen { get; set; }
 
+        // TODO: CS: Remove
         public static T Resolve<T>()
         {
             return ScopeGen().Resolve<T>();

@@ -2072,7 +2072,7 @@ namespace ImperaPlus.GeneratedClient
     
         /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public Task<List<Message>> GetAllAsync(MessageFolder? messageFolder, string folder)
+        public Task<List<DTO.Messages.Message>> GetAllAsync(MessageFolder? messageFolder, string folder)
         {
             return GetAllAsync(messageFolder, folder, CancellationToken.None);
         }
@@ -2080,7 +2080,7 @@ namespace ImperaPlus.GeneratedClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async Task<List<Message>> GetAllAsync(MessageFolder? messageFolder, string folder, CancellationToken cancellationToken)
+        public async Task<List<DTO.Messages.Message>> GetAllAsync(MessageFolder? messageFolder, string folder, CancellationToken cancellationToken)
         {
             var url_ = string.Format("{0}/{1}?", BaseUrl, "api/messages/folder/{folder}");
     
@@ -2104,11 +2104,11 @@ namespace ImperaPlus.GeneratedClient
     
             if (status_ == "200") 
             {
-                var result_ = default(List<Message>); 
+                var result_ = default(List<DTO.Messages.Message>); 
                 try
                 {
                     if (responseData_.Length > 0)
-                        result_ = JsonConvert.DeserializeObject<List<Message>>(Encoding.UTF8.GetString(responseData_, 0, responseData_.Length));                                
+                        result_ = JsonConvert.DeserializeObject<List<DTO.Messages.Message>>(Encoding.UTF8.GetString(responseData_, 0, responseData_.Length));                                
                     return result_; 
                 } 
                 catch (Exception exception) 
@@ -2125,7 +2125,7 @@ namespace ImperaPlus.GeneratedClient
     
         /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public Task<Message> GetAsync(Guid messageId)
+        public Task<DTO.Messages.Message> GetAsync(Guid messageId)
         {
             return GetAsync(messageId, CancellationToken.None);
         }
@@ -2133,7 +2133,7 @@ namespace ImperaPlus.GeneratedClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async Task<Message> GetAsync(Guid messageId, CancellationToken cancellationToken)
+        public async Task<DTO.Messages.Message> GetAsync(Guid messageId, CancellationToken cancellationToken)
         {
             var url_ = string.Format("{0}/{1}", BaseUrl, "api/messages/{messageId}");
     
@@ -2154,11 +2154,11 @@ namespace ImperaPlus.GeneratedClient
     
             if (status_ == "200") 
             {
-                var result_ = default(Message); 
+                var result_ = default(DTO.Messages.Message); 
                 try
                 {
                     if (responseData_.Length > 0)
-                        result_ = JsonConvert.DeserializeObject<Message>(Encoding.UTF8.GetString(responseData_, 0, responseData_.Length));                                
+                        result_ = JsonConvert.DeserializeObject<DTO.Messages.Message>(Encoding.UTF8.GetString(responseData_, 0, responseData_.Length));                                
                     return result_; 
                 } 
                 catch (Exception exception) 
