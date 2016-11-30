@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace ImperaPlus.Domain
 {
-    public class User : OpenIddict.OpenIddictUser
+    public class User : IdentityUser
     {
         public User()
         {

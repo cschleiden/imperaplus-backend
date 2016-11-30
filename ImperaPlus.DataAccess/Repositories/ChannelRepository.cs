@@ -25,7 +25,13 @@ namespace ImperaPlus.DataAccess.Repositories
                 .Include(x => x.CreatedBy)
                 .First(x => x.Type == channelType);
 
-            //this.Context.Entry(channel).Collection
+            channel.RecentMessages = this.Context.Entry(channel).Collection(c => c.Messages)
+                    .Query()
+                    .Include(x => x.CreatedBy)
+                    .OrderByDescending(x => x.CreatedAt)
+                    .Take(20)
+                    .OrderBy(x => x.CreatedAt)
+                    .ToList();
 
             return channel;
         }

@@ -3,15 +3,15 @@
 
   "dependencies": {
     "ImperaPlus.Web": "1.0.0-*",
-    "Microsoft.AspNetCore.TestHost": "1.0.0",
     "MSTest.TestFramework": "1.0.4-preview",
     "dotnet-test-mstest": "1.1.1-preview",
     "Microsoft.Owin": "3.0.1",
-    "Microsoft.Extensions.Configuration": "1.0.0",
-    "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0",
-    "Microsoft.Extensions.Configuration.Json": "1.0.0",
-    "OpenIddict": "1.0.0-beta1-0456",
-    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0"
+    "Microsoft.AspNetCore.TestHost": "1.1.0",
+    "Microsoft.Extensions.Configuration": "1.1.0",
+    "Microsoft.Extensions.Configuration.FileExtensions": "1.1.0",
+    "Microsoft.Extensions.Configuration.Json": "1.1.0",
+    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.1.0",
+    "OpenIddict": "1.0.0-beta1-0497"
   },
 
   "testRunner": "mstest",

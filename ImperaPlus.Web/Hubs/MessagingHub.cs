@@ -78,7 +78,8 @@ namespace ImperaPlus.Web.Hubs
         public ChatInformation Init()
         {
             string userId = this.userManager.GetUserId(this.Context.User as ClaimsPrincipal);
-            string userName = this.userManager.GetUserName(this.Context.User as ClaimsPrincipal);
+            var user = this.userManager.GetUserAsync(this.Context.User as ClaimsPrincipal).Result;
+            string userName = user.UserName;
 
             // Add users to appropriate groups
             var channels = this.chatService.GetChannelInformationForUser(userId).Result;

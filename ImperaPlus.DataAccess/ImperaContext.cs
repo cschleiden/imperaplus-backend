@@ -153,6 +153,7 @@ namespace ImperaPlus.DataAccess
             modelBuilder.Entity<Channel>().HasOne(x => x.Game).WithOne().IsRequired(false);
             modelBuilder.Entity<Channel>().HasOne(x => x.Alliance).WithOne(x => x.Channel).IsRequired(false);
             modelBuilder.Entity<Channel>().HasMany(x => x.Messages).WithOne(x => x.Channel).IsRequired().OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Cascade);
+            modelBuilder.Entity<Channel>().Ignore(x => x.RecentMessages);
 
             // Country is serialized manually
             modelBuilder.Ignore<Continent>();

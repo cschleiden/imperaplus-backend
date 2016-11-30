@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -140,6 +141,7 @@ namespace ImperaPlus.Web
             }
 
             // Swagger
+            //services.AddTransient<IApiDescriptionGroupCollectionProvider, ApiDescriptionGroupCollectionProvider>();
             services.AddSwaggerGen(options =>
             {
                 options.OperationFilter<FormFilter>();
