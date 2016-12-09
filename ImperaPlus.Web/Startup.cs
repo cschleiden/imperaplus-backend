@@ -3,23 +3,19 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using Autofac.Integration.SignalR;
 using Hangfire;
 using ImperaPlus.Application;
 using ImperaPlus.Application.Jobs;
 using ImperaPlus.DataAccess;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Web.Filters;
-using ImperaPlus.Web.Hubs;
 using ImperaPlus.Web.Providers;
 using ImperaPlus.Web.Services;
-using Microsoft.AspNet.SignalR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -64,12 +60,7 @@ namespace ImperaPlus.Web
         /// <summary>
         /// Test support: Require user confirmation
         /// </summary>
-        internal static bool RequireUserConfirmation = true;
-
-        public HubConfiguration HubConfiguration { get; set; } = new HubConfiguration()
-        {
-            EnableDetailedErrors = true
-        };
+        internal static bool RequireUserConfirmation = true;        
 
         public Startup(IHostingEnvironment env)
         {
@@ -160,8 +151,9 @@ namespace ImperaPlus.Web
                     opt.SerializerSettings.Converters.Add(new StringEnumConverter
                     {
                         CamelCaseText = false,
-                        AllowIntegerValues = false
+                        AllowIntegerValues = true
                     });
+                    opt.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 });            
 
             // Hangire
@@ -169,6 +161,15 @@ namespace ImperaPlus.Web
                 x.UseNLogLogProvider()
                  .UseFilter(new JobExpirationTimeAttribute())
                  .UseSqlServerStorage(Configuration["DBConnection"]));
+
+            services.AddSingleton(_ => new JsonSerializer
+            {
+                DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+                DateFormatHandling = DateFormatHandling.IsoDateFormat,
+                ContractResolver = new SignalRContractResolver()
+            });
+
+            services.AddSignalR(options => options.Hubs.EnableDetailedErrors = true);     
 
             return this.RegisterDependencies(services);
         }
@@ -217,9 +218,9 @@ namespace ImperaPlus.Web
             app.UseOpenIddict();
 
             app.UseMvc();
-            
 
-            app.UseSignalR2(HubConfiguration);
+            app.UseWebSockets();
+            app.UseSignalR();
 
             app.UseSwagger();
             app.UseSwaggerUi();
@@ -283,7 +284,7 @@ namespace ImperaPlus.Web
             builder.RegisterType<UserProvider>().As<IUserProvider>();
 
             // Register SignalR hubs
-            builder.RegisterHubs(Assembly.GetExecutingAssembly());
+            //builder.RegisterHubs(Assembly.GetExecutingAssembly());
 
             // Register Domain services
             builder.RegisterAssemblyTypes(Assembly.GetAssembly(typeof(IGameRepository)))
@@ -312,18 +313,17 @@ namespace ImperaPlus.Web
 
             builder.RegisterType<BackgroundJobClient>().AsImplementedInterfaces();
 
+            /*
             builder.Register(context => this.HubConfiguration.Resolver
                .Resolve<Microsoft.AspNet.SignalR.Infrastructure.IConnectionManager>()
                .GetHubContext<INotificationHubContext>("notification"))
                .As<IHubContext<INotificationHubContext>>();
+            */
 
             builder.Populate(services);
 
             IContainer container = null;
-            container = builder.Build();
-
-            this.HubConfiguration.EnableDetailedErrors = true;
-            this.HubConfiguration.Resolver = new AutofacDependencyResolver(container);
+            container = builder.Build();            
 
             return container.Resolve<IServiceProvider>();
         }

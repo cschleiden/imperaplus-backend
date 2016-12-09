@@ -214,15 +214,15 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="OpenIddict, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OpenIddict.1.0.0-beta1-0497\lib\net451\OpenIddict.dll</HintPath>
+      <HintPath>..\packages\OpenIddict.1.0.0-beta1-0500\lib\net451\OpenIddict.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OpenIddict.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OpenIddict.Core.1.0.0-beta1-0497\lib\net451\OpenIddict.Core.dll</HintPath>
+      <HintPath>..\packages\OpenIddict.Core.1.0.0-beta1-0500\lib\net451\OpenIddict.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="OpenIddict.EntityFramework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OpenIddict.EntityFramework.1.0.0-beta1-0497\lib\net451\OpenIddict.EntityFramework.dll</HintPath>
+      <HintPath>..\packages\OpenIddict.EntityFramework.1.0.0-beta1-0500\lib\net451\OpenIddict.EntityFramework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Remotion.Linq, Version=2.1.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">

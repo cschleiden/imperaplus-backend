@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using ImperaPlus.Application.Games;
+using ImperaPlus.Domain.Utilities;
+using ImperaPlus.DTO;
 using ImperaPlus.DTO.Games;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +13,8 @@ namespace ImperaPlus.Backend.Controllers
     /// </summary>
     [Authorize]
     [Route("api/games")]
+    [ProducesResponseType(typeof(ErrorResponse), 400)]
+    [ProducesResponseType(typeof(void), 200)]
     public class GameController : Controller
     {
         private readonly IGameService gameService;
@@ -63,6 +67,8 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(GameSummary), 200)]
         public IActionResult Post([FromBody] GameCreationOptions creationOptions)
         {
+            Require.NotNull(creationOptions, nameof(creationOptions));
+
             var game = this.gameService.Create(creationOptions);
 
             return this.Ok(game);

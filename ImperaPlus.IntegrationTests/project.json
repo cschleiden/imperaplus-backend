@@ -11,7 +11,7 @@
     "Microsoft.Extensions.Configuration.FileExtensions": "1.1.0",
     "Microsoft.Extensions.Configuration.Json": "1.1.0",
     "Microsoft.Extensions.DependencyInjection.Abstractions": "1.1.0",
-    "OpenIddict": "1.0.0-beta1-0497"
+    "OpenIddict": "1.0.0-beta1-0500"
   },
 
   "testRunner": "mstest",

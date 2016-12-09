@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using Autofac;
 using ImperaPlus.Application.Chat;
 using ImperaPlus.DTO.Chat;
-using Microsoft.AspNet.SignalR;
-using Microsoft.AspNet.SignalR.Hubs;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.SignalR.Hubs;
 
 namespace ImperaPlus.Web.Hubs
 {
@@ -22,11 +22,10 @@ namespace ImperaPlus.Web.Hubs
             new ConnectionMapping<string>();
         private UserManager<Domain.User> userManager;
 
-        public MessagingHub(ILifetimeScope scope, UserManager<Domain.User> userManager)
+        public MessagingHub(IChatService chatService, UserManager<Domain.User> userManager)
             : base()
         {
-            var lifetimeScope = scope.BeginLifetimeScope("AutofacWebRequest");
-            this.chatService = lifetimeScope.Resolve<IChatService>();
+            this.chatService = chatService;
             this.userManager = userManager;
         }
 
@@ -120,7 +119,7 @@ namespace ImperaPlus.Web.Hubs
             this.Clients.Group(channelId.ToString()).broadcastMessage(new Message
             {
                 ChannelIdentifier = channelId.ToString(),
-                UserName = this.Context.User.Identity.Name,
+                UserName = this.GetUser().UserName,
                 DateTime = DateTime.UtcNow,
                 Text = message
             });
