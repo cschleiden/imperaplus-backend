@@ -43,8 +43,6 @@ namespace ImperaPlus.Web
                 }
             };
 
-
-
             string actionName = ((ControllerActionDescriptor)context.ApiDescription.ActionDescriptor).ActionName;
             operation.OperationId = $"{context.ApiDescription.GroupName}_{actionName}";
         }
@@ -121,7 +119,7 @@ namespace ImperaPlus.Web
             var openIddict = services.AddOpenIddict<ImperaContext>()
                 .EnableTokenEndpoint("/api/Account/Token")
                 .AllowPasswordFlow()
-                .AllowRefreshTokenFlow();           
+                .AllowRefreshTokenFlow();
 
             if (this.Environment.IsDevelopment())
             {
@@ -312,13 +310,7 @@ namespace ImperaPlus.Web
             builder.RegisterModule<Domain.DependencyInjectionModule>();
 
             builder.RegisterType<BackgroundJobClient>().AsImplementedInterfaces();
-
-            /*
-            builder.Register(context => this.HubConfiguration.Resolver
-               .Resolve<Microsoft.AspNet.SignalR.Infrastructure.IConnectionManager>()
-               .GetHubContext<INotificationHubContext>("notification"))
-               .As<IHubContext<INotificationHubContext>>();
-            */
+            
 
             builder.Populate(services);
 

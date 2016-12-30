@@ -188,21 +188,6 @@
           "lib/net45/System.Web.Cors.dll": {}
         }
       },
-      "Microsoft.AspNet.SignalR.Core/2.2.1": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Owin": "2.1.0",
-          "Microsoft.Owin.Security": "2.1.0",
-          "Newtonsoft.Json": "6.0.4",
-          "Owin": "1.0.0"
-        },
-        "compile": {
-          "lib/net45/Microsoft.AspNet.SignalR.Core.dll": {}
-        },
-        "runtime": {
-          "lib/net45/Microsoft.AspNet.SignalR.Core.dll": {}
-        }
-      },
       "Microsoft.AspNetCore.Antiforgery/1.1.0": {
         "type": "package",
         "dependencies": {
@@ -1664,19 +1649,6 @@
           "lib/net45/Microsoft.Owin.Cors.dll": {}
         }
       },
-      "Microsoft.Owin.Security/2.1.0": {
-        "type": "package",
-        "dependencies": {
-          "Microsoft.Owin": "2.1.0",
-          "Owin": "1.0.0"
-        },
-        "compile": {
-          "lib/net45/Microsoft.Owin.Security.dll": {}
-        },
-        "runtime": {
-          "lib/net45/Microsoft.Owin.Security.dll": {}
-        }
-      },
       "Microsoft.Win32.Primitives/4.3.0": {
         "type": "package",
         "frameworkAssemblies": [
@@ -2952,17 +2924,6 @@
         "lib/net45/System.Web.Cors.dll"
       ]
     },
-    "Microsoft.AspNet.SignalR.Core/2.2.1": {
-      "sha512": "EUZlRTmUZ3di6hxCiyyhnUld/8AKTOuX1DAGhNLv+ocTfmnOJyS42AEzgxdIk1jRAlEpUEuoicVBBI07A2FU2g==",
-      "type": "package",
-      "path": "Microsoft.AspNet.SignalR.Core/2.2.1",
-      "files": [
-        "Microsoft.AspNet.SignalR.Core.2.2.1.nupkg.sha512",
-        "Microsoft.AspNet.SignalR.Core.nuspec",
-        "lib/net45/Microsoft.AspNet.SignalR.Core.dll",
-        "lib/net45/Microsoft.AspNet.SignalR.Core.xml"
-      ]
-    },
     "Microsoft.AspNetCore.Antiforgery/1.1.0": {
       "sha512": "6HM8/rsSGAQybSZ9sNP2f0Xqh507OJu3kvqRksXeHUXV72yuwFpnauGkfIMSt+gwPSvyk8qGqZB2m4sKCUomhA==",
       "type": "package",
@@ -4225,17 +4186,6 @@
         "Microsoft.Owin.Cors.nuspec",
         "lib/net45/Microsoft.Owin.Cors.XML",
         "lib/net45/Microsoft.Owin.Cors.dll"
-      ]
-    },
-    "Microsoft.Owin.Security/2.1.0": {
-      "sha512": "4n1V0p+O6W1L0xHUM8Cjp2Y+MmmUkiCZv6PvRNIDCJD9zlerBJa2HECo9lUiWC+KuasQJ3QxB1FmipNBxdXXIQ==",
-      "type": "package",
-      "path": "Microsoft.Owin.Security/2.1.0",
-      "files": [
-        "Microsoft.Owin.Security.2.1.0.nupkg.sha512",
-        "Microsoft.Owin.Security.nuspec",
-        "lib/net45/Microsoft.Owin.Security.XML",
-        "lib/net45/Microsoft.Owin.Security.dll"
       ]
     },
     "Microsoft.Win32.Primitives/4.3.0": {
@@ -7840,7 +7790,6 @@
       "Autofac.Extensions.DependencyInjection >= 4.0.0",
       "Hangfire.AspNetCore >= 1.6.6",
       "Hangfire.SqlServer >= 1.6.6",
-      "Microsoft.AspNet.SignalR.Core >= 2.2.1",
       "Microsoft.AspNetCore.Authentication >= 1.1.0",
       "Microsoft.AspNetCore.Authentication.Cookies >= 1.1.0",
       "Microsoft.AspNetCore.Cors >= 1.1.0",

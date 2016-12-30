@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ImperaPlus.DTO.Account
+﻿namespace ImperaPlus.DTO.Account
 {
     public class LoginRequest
     {
@@ -13,5 +7,9 @@ namespace ImperaPlus.DTO.Account
         public string username { get; set; }
 
         public string password { get; set; }
+        
+        public string scope { get; set; }
+
+        public string refresh_token { get; set; }
     }
 }

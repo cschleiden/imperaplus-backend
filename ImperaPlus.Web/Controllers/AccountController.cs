@@ -111,11 +111,35 @@ namespace ImperaPlus.Backend.Controllers
 
                 return SignIn(ticket.Principal, ticket.Properties, ticket.AuthenticationScheme);
             }
+            else if (request.IsRefreshTokenGrantType())
+            {
+                // Retrieve the claims principal stored in the refresh token.
+                var info = await HttpContext.Authentication.GetAuthenticateInfoAsync(OpenIdConnectServerDefaults.AuthenticationScheme);
+
+                // Retrieve the user profile corresponding to the refresh token.
+                var user = await _userManager.GetUserAsync(info.Principal);
+                if (user == null)
+                {
+                    return BadRequest(new ErrorResponse(Application.ErrorCode.UsernameOrPasswordNotCorrect, "Refresh token not valid."));
+                }
+
+                // Ensure the user is still allowed to sign in.
+                if (!await _signInManager.CanSignInAsync(user))
+                {
+                    return BadRequest(new ErrorResponse(Application.ErrorCode.UsernameOrPasswordNotCorrect, "User cannot sign in."));
+                }
+
+                // Create a new authentication ticket, but reuse the properties stored
+                // in the refresh token, including the scopes originally granted.
+                var ticket = await CreateTicketAsync(request, user, info.Properties);
+
+                return SignIn(ticket.Principal, ticket.Properties, ticket.AuthenticationScheme);
+            }
 
             return BadRequest(new ErrorResponse(Application.ErrorCode.GenericApplicationError, "Grant type is not supported."));
         }
 
-        private async Task<AuthenticationTicket> CreateTicketAsync(OpenIdConnectRequest request, User user)
+        private async Task<AuthenticationTicket> CreateTicketAsync(OpenIdConnectRequest request, User user, AuthenticationProperties properties = null)
         {
             // Set the list of scopes granted to the client application.
             // Note: the offline_access scope must be granted
@@ -127,7 +151,8 @@ namespace ImperaPlus.Backend.Controllers
                 OpenIdConnectConstants.Scopes.OfflineAccess,
                 OpenIdConnectConstants.Scopes.Profile,
                 OpenIddictConstants.Scopes.Roles
-            }.Intersect(request.GetScopes());
+            }.Intersect(
+                request.GetScopes());
 
             // Create a new ClaimsPrincipal containing the claims that
             // will be used to create an id_token, a token or a code.
@@ -171,10 +196,13 @@ namespace ImperaPlus.Backend.Controllers
             // Create a new authentication ticket holding the user identity.
             var ticket = new AuthenticationTicket(
                 principal, 
-                new AuthenticationProperties(),
+                properties,
                 OpenIdConnectServerDefaults.AuthenticationScheme);
 
-            ticket.SetScopes(scopes);
+            if (!request.IsRefreshTokenGrantType())
+            {
+                ticket.SetScopes(scopes);
+            }
             
             return ticket;
         }    
