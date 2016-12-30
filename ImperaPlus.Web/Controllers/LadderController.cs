@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AspNet.Security.OAuth.Validation;
 using ImperaPlus.Application.Ladder;
 using ImperaPlus.DTO.Ladder;
 using Microsoft.AspNetCore.Authorization;
@@ -10,7 +11,7 @@ namespace ImperaPlus.Backend.Controllers
     /// <summary>
     /// Ladder interaction
     /// </summary>
-    [Authorize]
+    [Authorize(ActiveAuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
     [Route("api/ladder")]
     public class LadderController : Controller
     {

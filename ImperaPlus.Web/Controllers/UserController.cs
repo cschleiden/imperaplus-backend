@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using AspNet.Security.OAuth.Validation;
 using ImperaPlus.Application.Users;
 using ImperaPlus.Domain.Utilities;
 using Microsoft.AspNetCore.Authorization;
@@ -6,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ImperaPlus.Backend.Controllers
 {
-    [Authorize]
+    [Authorize(ActiveAuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
     [Route("api/users")]
     public class UserController : BaseController
     {

@@ -2,15 +2,15 @@
 using ImperaPlus.Application;
 using ImperaPlus.DTO.Notifications;
 using ImperaPlus.Web.Hubs;
-using Microsoft.AspNet.SignalR;
+using Microsoft.AspNetCore.SignalR;
 
 namespace ImperaPlus.Web.Services
 {
     public class GamePushNotificationService : IGameNotificationService
     {
-        private IHubContext<INotificationHubContext> hubContext;
+        private IHubContext<NotificationHub> hubContext;
 
-        public GamePushNotificationService(IHubContext<INotificationHubContext> hubContext)
+        public GamePushNotificationService(IHubContext<NotificationHub> hubContext)
         {
             this.hubContext = hubContext;
         }
@@ -28,9 +28,9 @@ namespace ImperaPlus.Web.Services
 
     public class UserPushNotificationService : IUserNotificationService
     {
-        private IHubContext<INotificationHubContext> hubContext;
+        private IHubContext<NotificationHub> hubContext;
 
-        public UserPushNotificationService(IHubContext<INotificationHubContext> hubContext)
+        public UserPushNotificationService(IHubContext<NotificationHub> hubContext)
         {
             this.hubContext = hubContext;
         }

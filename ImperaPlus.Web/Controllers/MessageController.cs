@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using AspNet.Security.OAuth.Validation;
 using ImperaPlus.Application.Messages;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ImperaPlus.Backend.Controllers
 {
-    [Authorize]
+    [Authorize(ActiveAuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
     [Route("api/messages")]
     public class MessageController : BaseController
     {

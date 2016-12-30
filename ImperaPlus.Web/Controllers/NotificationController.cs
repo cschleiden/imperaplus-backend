@@ -1,10 +1,11 @@
-﻿using ImperaPlus.Application.Notifications;
+﻿using AspNet.Security.OAuth.Validation;
+using ImperaPlus.Application.Notifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ImperaPlus.Backend.Controllers
 {
-    [Authorize]
+    [Authorize(ActiveAuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
     [Route("api/notifications")]
     public class NotificationController : BaseController
     {

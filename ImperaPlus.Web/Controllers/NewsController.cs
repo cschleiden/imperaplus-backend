@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using AspNet.Security.OAuth.Validation;
 using ImperaPlus.Application.News;
 using ImperaPlus.DTO.News;
 using Microsoft.AspNetCore.Authorization;
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ImperaPlus.Backend.Controllers
 {
     [Route("api/news")]
-    [Authorize]
+    [Authorize(ActiveAuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
     public class NewsController : Controller
     {
         private readonly INewsService newsService;

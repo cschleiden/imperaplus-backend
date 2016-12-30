@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using AspNet.Security.OAuth.Validation;
 using ImperaPlus.Application.Games;
 using ImperaPlus.Application.Play;
 using ImperaPlus.DTO.Games.Play;
@@ -10,7 +11,7 @@ namespace ImperaPlus.Backend.Controllers
     /// <summary>
     /// Provides actions to play the game. 
     /// </summary>
-    [Authorize]
+    [Authorize(ActiveAuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
     [Route("api/games/{gameId:long:min(1)}/play")]
     public class PlayController : BaseController
     {

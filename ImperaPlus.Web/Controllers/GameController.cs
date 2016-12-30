@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using AspNet.Security.OAuth.Validation;
 using ImperaPlus.Application.Games;
 using ImperaPlus.Domain.Utilities;
 using ImperaPlus.DTO;
@@ -11,7 +12,7 @@ namespace ImperaPlus.Backend.Controllers
     /// <summary>
     /// General management of games
     /// </summary>
-    [Authorize]
+    [Authorize(ActiveAuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
     [Route("api/games")]
     [ProducesResponseType(typeof(ErrorResponse), 400)]
     [ProducesResponseType(typeof(void), 200)]

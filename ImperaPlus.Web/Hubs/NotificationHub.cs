@@ -8,21 +8,19 @@ using Autofac;
 using ImperaPlus.Application.Games;
 using ImperaPlus.Domain;
 using ImperaPlus.Domain.Repositories;
-using ImperaPlus.DTO.Notifications;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SignalR.Hubs;
 
 namespace ImperaPlus.Web.Hubs
 {
-    public interface INotificationHubContext
+    public interface INotificationHubContext : IHub
     {
-        void Notification(Notification notification);
     }
 
     [HubName("notification")]
     [Authorize]
-    public class NotificationHub : Hub
+    public class NotificationHub : Hub, INotificationHubContext
     {
         public static string GameGroup(long gameId)
         {

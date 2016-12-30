@@ -1,4 +1,5 @@
-﻿using ImperaPlus.Application.Games;
+﻿using AspNet.Security.OAuth.Validation;
+using ImperaPlus.Application.Games;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,7 +8,7 @@ namespace ImperaPlus.Backend.Controllers
     /// <summary>
     /// Provides actions to play the game. 
     /// </summary>
-    [Authorize]
+    [Authorize(ActiveAuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
     [Route("api/games/{gameId:long:min(1)}/history")]
 
     public class HistoryController : BaseController

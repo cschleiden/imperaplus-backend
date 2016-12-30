@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Autofac;
+using AspNet.Security.OAuth.Validation;
 using ImperaPlus.Application.Chat;
 using ImperaPlus.DTO.Chat;
 using Microsoft.AspNetCore.Identity;
