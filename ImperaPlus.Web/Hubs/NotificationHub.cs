@@ -34,24 +34,30 @@ namespace ImperaPlus.Web.Hubs
 
         private readonly static ConnectionMapping<string> Connections = new ConnectionMapping<string>();
 
-        private readonly IGameService gameService;
-        private readonly IUnitOfWork unitOfWork;
-        private UserManager<User> userManager;
+        private ILifetimeScope lifetimeScope;
 
         public NotificationHub(ILifetimeScope scope)
             : base()
         {
-            var lifetimeScope = scope.BeginLifetimeScope("AutofacWebRequest");
+            this.lifetimeScope = scope.BeginLifetimeScope();
+        }
 
-            this.gameService = lifetimeScope.Resolve<IGameService>();
-            this.unitOfWork = lifetimeScope.Resolve<IUnitOfWork>();
-            this.userManager = lifetimeScope.Resolve<UserManager<User>>();
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && this.lifetimeScope != null)
+            {
+                this.lifetimeScope.Dispose();
+                this.lifetimeScope = null;
+            }
+
+            base.Dispose(disposing);
         }
 
         public override async Task OnConnected()
         {
             // Track connection
-            string userId = this.userManager.GetUserId(ClaimsPrincipal.Current);
+            var userManager = this.lifetimeScope.Resolve<UserManager<Domain.User>>();
+            string userId = userManager.GetUserId(ClaimsPrincipal.Current);
             if (!Connections.GetConnections(userId).Contains(Context.ConnectionId))
             {
                 Connections.Add(userId, Context.ConnectionId);
@@ -85,7 +91,8 @@ namespace ImperaPlus.Web.Hubs
 
         public override Task OnReconnected()
         {
-            string userId = this.userManager.GetUserId(ClaimsPrincipal.Current);
+            var userManager = this.lifetimeScope.Resolve<UserManager<Domain.User>>();
+            string userId = userManager.GetUserId(ClaimsPrincipal.Current);
             if (!Connections.GetConnections(userId).Contains(Context.ConnectionId))
             {
                 Connections.Add(userId, Context.ConnectionId);
@@ -100,8 +107,11 @@ namespace ImperaPlus.Web.Hubs
         /// <param name="gameId">Id of game to receive notifications for</param>
         public async Task JoinGame(long gameId)
         {
-            string userId = this.userManager.GetUserId(ClaimsPrincipal.Current);
-            var game = this.gameService.Get(gameId);
+            var userManager = this.lifetimeScope.Resolve<UserManager<Domain.User>>();
+            string userId = userManager.GetUserId(ClaimsPrincipal.Current);
+
+            var gameService = this.lifetimeScope.Resolve<IGameService>();
+            var game = gameService.Get(gameId);
             var userTeam = game.Teams.FirstOrDefault(x => x.Players.Any(p => p.UserId == userId));
             if (userTeam == null)
             {
@@ -123,9 +133,11 @@ namespace ImperaPlus.Web.Hubs
                 return;
             }
 
-            string userId = this.userManager.GetUserId(ClaimsPrincipal.Current);
+            var userManager = this.lifetimeScope.Resolve<UserManager<Domain.User>>();
+            string userId = userManager.GetUserId(ClaimsPrincipal.Current);
 
-            var game = this.gameService.Get(gameId);
+            var gameService = this.lifetimeScope.Resolve<IGameService>();
+            var game = gameService.Get(gameId);
             var userTeam = game.Teams.FirstOrDefault(x => x.Players.Any(p => p.UserId == userId));
             if (userTeam == null)
             {
@@ -161,9 +173,11 @@ namespace ImperaPlus.Web.Hubs
         /// <param name="isPublic">Value indicating whether message is inteded for all players or only team</param>
         public async Task SendGameMessage(long gameId, string text, bool isPublic)
         {
-            string userId = this.userManager.GetUserId(ClaimsPrincipal.Current);
+            var userManager = this.lifetimeScope.Resolve<UserManager<Domain.User>>();
+            string userId = userManager.GetUserId(ClaimsPrincipal.Current);
 
-            var message = this.gameService.SendMessage(gameId, text, isPublic);
+            var gameService = this.lifetimeScope.Resolve<IGameService>();
+            var message = gameService.SendMessage(gameId, text, isPublic);
 
             // Relay to clients
             var groupName = isPublic ? GameGroup(gameId) : GameTeamGroup(gameId, message.TeamId);
@@ -176,7 +190,8 @@ namespace ImperaPlus.Web.Hubs
 
         private async Task AddGroup(string groupName)
         {
-            string userId = this.userManager.GetUserId(ClaimsPrincipal.Current);
+            var userManager = this.lifetimeScope.Resolve<UserManager<Domain.User>>();
+            string userId = userManager.GetUserId(ClaimsPrincipal.Current);
 
             await this.Groups.Add(this.Context.ConnectionId, groupName);
             Connections.JoinGroup(userId, groupName);
@@ -184,7 +199,8 @@ namespace ImperaPlus.Web.Hubs
 
         private async Task LeaveGroup(string groupName)
         {
-            string userId = this.userManager.GetUserId(ClaimsPrincipal.Current);
+            var userManager = this.lifetimeScope.Resolve<UserManager<Domain.User>>();
+            string userId = userManager.GetUserId(ClaimsPrincipal.Current);
 
             await this.Groups.Remove(this.Context.ConnectionId, groupName);
             Connections.LeaveGroup(userId, groupName);

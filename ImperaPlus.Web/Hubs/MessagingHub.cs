@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using AspNet.Security.OAuth.Validation;
+using Autofac;
 using ImperaPlus.Application.Chat;
 using ImperaPlus.DTO.Chat;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SignalR.Hubs;
+using Microsoft.Extensions.Logging;
 
 namespace ImperaPlus.Web.Hubs
 {
@@ -16,22 +17,36 @@ namespace ImperaPlus.Web.Hubs
     [Authorize]
     public class MessagingHub : Hub
     {
-        private readonly IChatService chatService;
-
         private readonly static ConnectionMapping<string> Connections =
             new ConnectionMapping<string>();
-        private UserManager<Domain.User> userManager;
+        
+        private ILogger<MessagingHub> logger;
 
-        public MessagingHub(IChatService chatService, UserManager<Domain.User> userManager)
+        private ILifetimeScope lifetimeScope;
+
+        public MessagingHub(
+            ILifetimeScope lifetimeScope,
+            ILogger<MessagingHub> logger)
             : base()
         {
-            this.chatService = chatService;
-            this.userManager = userManager;
+            this.lifetimeScope = lifetimeScope.BeginLifetimeScope();
+            this.logger = logger;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && this.lifetimeScope != null)
+            {
+                this.lifetimeScope.Dispose();
+                this.lifetimeScope = null;
+            }
+
+            base.Dispose(disposing);
         }
 
         public override Task OnConnected()
         {
-            // Track connection            
+            // Track connection
             string userName = this.GetUser().UserName;
             Connections.Add(userName, this.Context.ConnectionId);
 
@@ -79,7 +94,8 @@ namespace ImperaPlus.Web.Hubs
             string userName = this.GetUser().UserName;
 
             // Add users to appropriate groups
-            var channels = this.chatService.GetChannelInformationForUser(userId).Result;
+            var chatService = this.lifetimeScope.Resolve<IChatService>();
+            var channels = chatService.GetChannelInformationForUser(userId).Result;
             foreach (var channel in channels)
             {
                 this.Groups.Add(this.Context.ConnectionId, channel.Identifier);
@@ -110,9 +126,10 @@ namespace ImperaPlus.Web.Hubs
 
         public void SendMessage(Guid channelId, string message)
         {
-            // Send to service for persistence
+            // Send to service for persistence            
+            var chatService = this.lifetimeScope.Resolve<IChatService>();
             string userId = this.GetUserId();
-            this.chatService.SendMessage(channelId, userId, message);
+            chatService.SendMessage(channelId, userId, message);
 
             // Send message to currently online players
             var user = this.GetUserId();
@@ -126,13 +143,15 @@ namespace ImperaPlus.Web.Hubs
         }
 
         private string GetUserId()
-        { 
-            return this.userManager.GetUserId(this.Context.User as ClaimsPrincipal);
+        {
+            var userManager = this.lifetimeScope.Resolve<UserManager<Domain.User>>();
+            return userManager.GetUserId(this.Context.User as ClaimsPrincipal);
         }
 
         private Domain.User GetUser()
         {
-            return this.userManager.GetUserAsync(this.Context.User as ClaimsPrincipal).Result;
+            var userManager = this.lifetimeScope.Resolve<UserManager<Domain.User>>();
+            return userManager.GetUserAsync(this.Context.User as ClaimsPrincipal).Result;
         }
     }
 }

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ImperaPlus.Backend.Controllers
 {
-    [Authorize(ActiveAuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
+    [Authorize]
     [Route("api/users")]
     public class UserController : BaseController
     {

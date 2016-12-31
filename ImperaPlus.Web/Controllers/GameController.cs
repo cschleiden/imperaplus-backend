@@ -12,7 +12,7 @@ namespace ImperaPlus.Backend.Controllers
     /// <summary>
     /// General management of games
     /// </summary>
-    [Authorize(ActiveAuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
+    [Authorize]
     [Route("api/games")]
     [ProducesResponseType(typeof(ErrorResponse), 400)]
     [ProducesResponseType(typeof(void), 200)]

@@ -11,7 +11,7 @@ namespace ImperaPlus.Backend.Controllers
     /// <summary>
     /// Ladder interaction
     /// </summary>
-    [Authorize(ActiveAuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
+    [Authorize]
     [Route("api/ladder")]
     public class LadderController : Controller
     {

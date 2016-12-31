@@ -11,6 +11,7 @@ using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Web.Filters;
 using ImperaPlus.Web.Providers;
 using ImperaPlus.Web.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
@@ -112,6 +113,18 @@ namespace ImperaPlus.Web
                     {
                         options.SignIn.RequireConfirmedEmail = false;
                     }
+
+                    // Ensure that we never redirect when user is not authorized, but only return 401 response
+                    options.Cookies.ApplicationCookie.AutomaticAuthenticate = false;
+                    options.Cookies.ApplicationCookie.AutomaticChallenge = false;
+                    options.Cookies.ApplicationCookie.Events = new Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationEvents
+                    {
+                        OnRedirectToLogin = ctx =>
+                        {
+                            ctx.Response.StatusCode = (int)System.Net.HttpStatusCode.Unauthorized;
+                            return Task.CompletedTask;
+                        }
+                    };
                 })
                 .AddEntityFrameworkStores<ImperaContext>()
                 .AddDefaultTokenProviders();
@@ -152,7 +165,16 @@ namespace ImperaPlus.Web
                         AllowIntegerValues = true
                     });
                     opt.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
-                });            
+                });
+
+            // Set default authorization policy
+            services.AddAuthorization(o =>
+            {
+                var builder = new AuthorizationPolicyBuilder();
+                builder.AuthenticationSchemes.Add(AspNet.Security.OAuth.Validation.OAuthValidationDefaults.AuthenticationScheme);
+                builder.RequireAuthenticatedUser();
+                o.DefaultPolicy = builder.Build();
+            });
 
             // Hangire
             services.AddHangfire(x =>
@@ -167,7 +189,7 @@ namespace ImperaPlus.Web
                 ContractResolver = new SignalRContractResolver()
             });
 
-            services.AddSignalR(options => options.Hubs.EnableDetailedErrors = true);     
+            services.AddSignalR(options => options.Hubs.EnableDetailedErrors = true);
 
             return this.RegisterDependencies(services);
         }
@@ -210,9 +232,9 @@ namespace ImperaPlus.Web
                         context.Token = context.Request.Query["bearer_token"];
 
                         return Task.FromResult(0);
-                    }
+                    }                    
                 };
-            });
+            });            
             app.UseOpenIddict();
 
             app.UseMvc();
@@ -270,8 +292,8 @@ namespace ImperaPlus.Web
 
             //builder.RegisterType<OopsExceptionHandler>().As<IExceptionHandler>();
 
-            builder.RegisterType<ImperaContext>().As<DbContext>().AsSelf(); //.InstancePerLifetimeScope();
-            builder.RegisterType<UnitOfWork>().As<IUnitOfWork>();
+            builder.RegisterType<ImperaContext>().As<DbContext>().AsSelf().InstancePerLifetimeScope();
+            builder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerLifetimeScope();
 
             builder.RegisterType<DbSeed>().AsSelf();
 

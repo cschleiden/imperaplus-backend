@@ -12,6 +12,7 @@ using ImperaPlus.Domain.Map;
 using ImperaPlus.Domain.News;
 using ImperaPlus.Domain.Tournaments;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using StackExchange.Profiling;
 
 namespace ImperaPlus.DataAccess
@@ -19,7 +20,6 @@ namespace ImperaPlus.DataAccess
     public class ImperaContext : OpenIddict.OpenIddictDbContext<User>, IImperaContext
     {
         private readonly IUserProvider userProvider;
-        private readonly IComponentContext componentContext;
         private readonly IEventAggregator eventAggregator;
 
         public ImperaContext()
@@ -30,31 +30,12 @@ namespace ImperaPlus.DataAccess
         public ImperaContext(
             DbContextOptions<ImperaContext> options,
             IUserProvider userProvider,
-            IComponentContext componentContext,
             IEventAggregator eventAggregator)
             : base(options)
         {
             this.userProvider = userProvider;
-            this.componentContext = componentContext;
             this.eventAggregator = eventAggregator;
-
-            
-            //((IObjectContextAdapter)this).ObjectContext.ObjectMaterialized += ObjectContextOnObjectMaterialized;
         }
-
-        /// <summary>
-        /// Inject dependencies into domain objects
-        /// </summary>
-        /*private void ObjectContextOnObjectMaterialized(object sender, ObjectMaterializedEventArgs objectMaterializedEventArgs)
-        {
-            var entity = objectMaterializedEventArgs.Entity;
-
-            if (this.componentContext != null)
-            {
-                // Satisfy required properties in 
-                this.componentContext.InjectProperties(entity);
-            }
-        }*/
 
         public virtual DbSet<Game> Games { get; set; }
 

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ImperaPlus.Backend.Controllers
 {
     [Route("api/news")]
-    [Authorize(ActiveAuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
+    [Authorize]
     public class NewsController : Controller
     {
         private readonly INewsService newsService;

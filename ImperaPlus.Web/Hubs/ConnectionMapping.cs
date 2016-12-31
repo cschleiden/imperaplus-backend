@@ -18,9 +18,7 @@ namespace ImperaPlus.Web.Hubs
 
     internal class ConnectionMapping<T>
     {
-        private readonly Dictionary<T, ConnectionInfo> connections =
-            new Dictionary<T, ConnectionInfo>();
-        
+        private readonly Dictionary<T, ConnectionInfo> connections = new Dictionary<T, ConnectionInfo>();        
         private readonly Dictionary<string, T> connectionIds = new Dictionary<string, T>();
 
         public void JoinGroup(T key, string groupName)
@@ -81,9 +79,12 @@ namespace ImperaPlus.Web.Hubs
         {
             ConnectionInfo connectionInfo;
 
-            if (this.connections.TryGetValue(key, out connectionInfo))
+            lock (this.connectionIds)
             {
-                return connectionInfo.ConnectionIds;
+                if (this.connections.TryGetValue(key, out connectionInfo))
+                {
+                    return connectionInfo.ConnectionIds;
+                }
             }
 
             return Enumerable.Empty<string>();
