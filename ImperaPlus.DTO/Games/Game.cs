@@ -10,7 +10,7 @@ namespace ImperaPlus.DTO.Games
         /// <summary>
         /// Identifier for game
         /// </summary>
-        public int Id { get; set; }        
+        public long Id { get; set; }        
 
         /// <summary>
         /// Type of the game

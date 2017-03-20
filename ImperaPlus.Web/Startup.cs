@@ -154,6 +154,7 @@ namespace ImperaPlus.Web
             services.AddMvc(config =>
                 {
                     config.Filters.Add(new CheckModelForNull());
+                    config.Filters.Add(typeof(ApiExceptionFilterAttribute));
                 })
                 .AddJsonOptions(opt =>
                 {

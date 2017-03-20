@@ -59,7 +59,6 @@
     </Reference>
     <Reference Include="Jil, Version=2.14.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Jil.2.14.5\lib\net45\Jil.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.AspNetCore.Authentication, Version=1.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNetCore.Authentication.1.1.0\lib\net451\Microsoft.AspNetCore.Authentication.dll</HintPath>

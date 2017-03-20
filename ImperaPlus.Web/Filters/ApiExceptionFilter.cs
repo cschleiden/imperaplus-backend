@@ -8,9 +8,9 @@ using NLog.Fluent;
 
 namespace ImperaPlus.Web.Filters
 {
-    public class ApiExceptionFilterAttribute : IExceptionFilter
+    public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
     {
-        public void OnException(ExceptionContext context)
+        public override void OnException(ExceptionContext context)
         {
             var domainException = context.Exception as DomainException;
             if (domainException != null)
