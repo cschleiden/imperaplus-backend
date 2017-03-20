@@ -343,7 +343,7 @@
     <Compile Include="DomainDepsResolver.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="Enums\Channel.cs" />
-    <Compile Include="Chat\Message.cs" />
+    <Compile Include="Chat\ChatMessage.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="Enums\GameType.cs" />
     <Compile Include="Enums\MapDistribution.cs" />

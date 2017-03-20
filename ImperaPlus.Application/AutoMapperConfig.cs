@@ -182,7 +182,7 @@ namespace ImperaPlus.Application
             Mapper.CreateMap<Domain.Map.Connection, DTO.Games.Map.Connection>();
             Mapper.CreateMap<Domain.Map.Continent, DTO.Games.Map.Continent>();
 
-            Mapper.CreateMap<Domain.Chat.ChatMessage, DTO.Chat.Message>()
+            Mapper.CreateMap<Domain.Chat.ChatMessage, DTO.Chat.ChatMessage>()
                 .ForMember(x => x.ChannelIdentifier, x => x.MapFrom(ci => ci.ChannelId))
                 .ForMember(x => x.DateTime, x => x.MapFrom(ci => ci.CreatedAt))
                 .ForMember(x => x.UserName, x => x.MapFrom(ci => ci.CreatedBy.UserName))

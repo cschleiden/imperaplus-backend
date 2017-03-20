@@ -27,7 +27,7 @@ namespace ImperaPlus.Integration.Tests
         {
             // Login
             var accountClient = await GetClient<AccountClient>();
-            var signinResult = await accountClient.ExchangeAsync("password", username, password);
+            var signinResult = await accountClient.ExchangeAsync("password", username, password, null, null);
 
             // Create requested client
             var client = await ApiClient.GetClient<TClientType>();

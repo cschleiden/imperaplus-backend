@@ -2,7 +2,7 @@
 
 namespace ImperaPlus.DTO.Chat
 {
-    public class Message
+    public class ChatMessage
     {
         public DateTime DateTime { get; set; }
 

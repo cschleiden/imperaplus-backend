@@ -50,7 +50,7 @@
     <Compile Include="Account\UserInfo.cs" />
     <Compile Include="Chat\ChannelInformation.cs" />
     <Compile Include="Chat\ChatInformation.cs" />
-    <Compile Include="Chat\Message.cs" />
+    <Compile Include="Chat\ChatMessage.cs" />
     <Compile Include="Chat\User.cs" />
     <Compile Include="Chat\UserChangeEvent.cs" />
     <Compile Include="Chat\UserType.cs" />

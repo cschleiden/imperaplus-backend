@@ -133,7 +133,7 @@ namespace ImperaPlus.Web.Hubs
 
             // Send message to currently online players
             var user = this.GetUserId();
-            this.Clients.Group(channelId.ToString()).broadcastMessage(new Message
+            this.Clients.Group(channelId.ToString()).broadcastMessage(new ChatMessage
             {
                 ChannelIdentifier = channelId.ToString(),
                 UserName = this.GetUser().UserName,

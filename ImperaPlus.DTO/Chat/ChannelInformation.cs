@@ -17,7 +17,7 @@ namespace ImperaPlus.DTO.Chat
         /// <summary>
         /// Gets or sets the current messages in the channel
         /// </summary>
-        public Message[] Messages { get; set; }
+        public ChatMessage[] Messages { get; set; }
 
         /// <summary>
         /// Gets or sets the current users in the channel
