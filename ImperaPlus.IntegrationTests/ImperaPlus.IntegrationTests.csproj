@@ -3,11 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
     <AssemblyName>ImperaPlus.IntegrationTests</AssemblyName>
-    <PackageId>ImperaPlus.IntegrationTests</PackageId>
-    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <PackageId>ImperaPlus.IntegrationTests</PackageId>    
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -25,9 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0-preview-20170106-08" />
-    <PackageReference Include="MSTest.TestAdapter" Version="1.1.8-rc" />
-    <PackageReference Include="MSTest.TestFramework" Version="1.0.8-rc" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="1.1.13" />
+    <PackageReference Include="MSTest.TestFramework" Version="1.1.13" />
     <PackageReference Include="Microsoft.Owin" Version="3.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.1" />
@@ -37,13 +33,11 @@
     <PackageReference Include="OpenIddict" Version="1.0.0-beta1-0500" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
 </Project>
