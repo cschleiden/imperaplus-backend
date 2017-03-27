@@ -5,6 +5,7 @@ using ImperaPlus.Application.Play;
 using ImperaPlus.DTO.Games.Play;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ImperaPlus.DTO;
 
 namespace ImperaPlus.Backend.Controllers
 {
@@ -13,6 +14,8 @@ namespace ImperaPlus.Backend.Controllers
     /// </summary>
     [Authorize]
     [Route("api/games/{gameId:long:min(1)}/play")]
+    [ProducesResponseType(typeof(ErrorResponse), 400)]
+    [ProducesResponseType(typeof(void), 200)]
     public class PlayController : BaseController
     {
         private readonly IPlayService playService;

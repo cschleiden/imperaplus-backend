@@ -5,11 +5,14 @@ using AspNet.Security.OAuth.Validation;
 using ImperaPlus.Application.Messages;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ImperaPlus.DTO;
 
 namespace ImperaPlus.Backend.Controllers
 {
     [Authorize]
     [Route("api/messages")]
+    [ProducesResponseType(typeof(ErrorResponse), 400)]
+    [ProducesResponseType(typeof(void), 200)]
     public class MessageController : BaseController
     {
         private IMessageService messageService;

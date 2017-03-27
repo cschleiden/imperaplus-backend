@@ -27,6 +27,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Swashbuckle.Swagger.Model;
 using Swashbuckle.SwaggerGen.Generator;
+using System.IO;
+using AspNet.Security.OpenIdConnect.Primitives;
 
 namespace ImperaPlus.Web
 {
@@ -34,7 +36,7 @@ namespace ImperaPlus.Web
     {
         public void Apply(Operation operation, OperationFilterContext context)
         {
-            if (operation.OperationId.Contains("Token"))
+            if (operation.OperationId.Contains("Exchange"))
             {
                 operation.Consumes.Add("application/x-www-form-urlencoded");
 
@@ -71,7 +73,7 @@ namespace ImperaPlus.Web
 
             if (env.IsDevelopment())
             {
-                builder.AddUserSecrets();
+                builder.AddUserSecrets<Startup>();
             }
 
             this.Configuration = builder.Build();
@@ -125,22 +127,35 @@ namespace ImperaPlus.Web
                             return Task.CompletedTask;
                         }
                     };
+
+                    options.ClaimsIdentity.UserNameClaimType = OpenIdConnectConstants.Claims.Name;
+                    options.ClaimsIdentity.UserIdClaimType = OpenIdConnectConstants.Claims.Subject;
+                    options.ClaimsIdentity.RoleClaimType = OpenIdConnectConstants.Claims.Role;
                 })
                 .AddEntityFrameworkStores<ImperaContext>()
                 .AddDefaultTokenProviders();
 
-            var openIddict = services.AddOpenIddict<ImperaContext>()
-                .EnableTokenEndpoint("/api/Account/Token")
-                .AllowPasswordFlow()
-                .AllowRefreshTokenFlow();
+            services
+                .AddOpenIddict(options =>
+                {
+                    options.AddEntityFrameworkCoreStores<ImperaContext>();
 
-            if (this.Environment.IsDevelopment())
-            {
-                openIddict
-                    // During development, you can disable the HTTPS requirement.
-                    .DisableHttpsRequirement()
-                    .AddEphemeralSigningKey();
-            }
+                    options.EnableTokenEndpoint("/api/Account/Token");
+
+                    options.AddMvcBinders();
+
+                    options.AllowPasswordFlow();
+
+                    options.AllowRefreshTokenFlow();
+
+                    if (this.Environment.IsDevelopment())
+                    {
+                        // During development, you can disable the HTTPS requirement.
+                        options.DisableHttpsRequirement();
+
+                        options.AddEphemeralSigningKey();
+                    }
+                });
 
             // Swagger
             //services.AddTransient<IApiDescriptionGroupCollectionProvider, ApiDescriptionGroupCollectionProvider>();
@@ -148,7 +163,7 @@ namespace ImperaPlus.Web
             {
                 options.OperationFilter<FormFilter>();
                 options.DescribeStringEnumsInCamelCase();
-                options.IncludeXmlComments(AppDomain.CurrentDomain.BaseDirectory + "ImperaPlus.Web.xml");
+                options.IncludeXmlComments(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ImperaPlus.Web.xml"));
             });
 
             services.AddMvc(config =>

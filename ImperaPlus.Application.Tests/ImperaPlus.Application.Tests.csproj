@@ -42,17 +42,14 @@
       <HintPath>..\packages\AngleSharp.0.9.7\lib\net45\AngleSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="AspNet.Security.OpenIdConnect.Extensions, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AspNet.Security.OpenIdConnect.Extensions.1.0.0-rc1-1024\lib\net451\AspNet.Security.OpenIdConnect.Extensions.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="AspNet.Security.OpenIdConnect.Extensions, Version=1.0.0.0, Culture=neutral, PublicKeyToken=fa9e7b608b196fab, processorArchitecture=MSIL">
+      <HintPath>..\packages\AspNet.Security.OpenIdConnect.Extensions.1.0.0-rtm-1150\lib\net451\AspNet.Security.OpenIdConnect.Extensions.dll</HintPath>
     </Reference>
-    <Reference Include="AspNet.Security.OpenIdConnect.Primitives, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AspNet.Security.OpenIdConnect.Primitives.1.0.0-rc1-1024\lib\netstandard1.0\AspNet.Security.OpenIdConnect.Primitives.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="AspNet.Security.OpenIdConnect.Primitives, Version=1.0.0.0, Culture=neutral, PublicKeyToken=fa9e7b608b196fab, processorArchitecture=MSIL">
+      <HintPath>..\packages\AspNet.Security.OpenIdConnect.Primitives.1.0.0-rtm-1150\lib\netstandard1.0\AspNet.Security.OpenIdConnect.Primitives.dll</HintPath>
     </Reference>
-    <Reference Include="AspNet.Security.OpenIdConnect.Server, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AspNet.Security.OpenIdConnect.Server.1.0.0-rc1-1024\lib\net451\AspNet.Security.OpenIdConnect.Server.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="AspNet.Security.OpenIdConnect.Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=fa9e7b608b196fab, processorArchitecture=MSIL">
+      <HintPath>..\packages\AspNet.Security.OpenIdConnect.Server.1.0.0-rtm-1150\lib\net451\AspNet.Security.OpenIdConnect.Server.dll</HintPath>
     </Reference>
     <Reference Include="Autofac, Version=4.1.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\packages\Autofac.4.1.1\lib\net45\Autofac.dll</HintPath>
@@ -79,6 +76,9 @@
     </Reference>
     <Reference Include="Microsoft.AspNetCore.Authentication.Cookies, Version=1.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNetCore.Authentication.Cookies.1.1.1\lib\net451\Microsoft.AspNetCore.Authentication.Cookies.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Authorization, Version=1.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Authorization.1.1.1\lib\net451\Microsoft.AspNetCore.Authorization.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNetCore.Cryptography.Internal, Version=1.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNetCore.Cryptography.Internal.1.1.1\lib\net451\Microsoft.AspNetCore.Cryptography.Internal.dll</HintPath>
@@ -119,8 +119,29 @@
     <Reference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore, Version=1.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNetCore.Identity.EntityFrameworkCore.1.1.1\lib\net451\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.AspNetCore.Mvc.Abstractions, Version=1.1.2.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Mvc.Abstractions.1.1.2\lib\net451\Microsoft.AspNetCore.Mvc.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Mvc.Core, Version=1.1.2.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Mvc.Core.1.1.2\lib\net451\Microsoft.AspNetCore.Mvc.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.ResponseCaching.Abstractions, Version=1.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.ResponseCaching.Abstractions.1.1.1\lib\net451\Microsoft.AspNetCore.ResponseCaching.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Routing, Version=1.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Routing.1.1.1\lib\net451\Microsoft.AspNetCore.Routing.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Routing.Abstractions, Version=1.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Routing.Abstractions.1.1.1\lib\net451\Microsoft.AspNetCore.Routing.Abstractions.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AspNetCore.WebUtilities, Version=1.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNetCore.WebUtilities.1.1.1\lib\net451\Microsoft.AspNetCore.WebUtilities.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.DotNet.InternalAbstractions, Version=1.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.DotNet.InternalAbstractions.1.0.0\lib\net451\Microsoft.DotNet.InternalAbstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.DotNet.PlatformAbstractions, Version=1.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.DotNet.PlatformAbstractions.1.1.1\lib\net451\Microsoft.DotNet.PlatformAbstractions.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.EntityFrameworkCore, Version=1.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.EntityFrameworkCore.1.1.1\lib\net451\Microsoft.EntityFrameworkCore.dll</HintPath>
@@ -149,6 +170,9 @@
       <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.1.1.0\lib\netstandard1.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyModel, Version=1.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyModel.1.1.1\lib\net451\Microsoft.Extensions.DependencyModel.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Extensions.FileProviders.Abstractions, Version=1.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.FileProviders.Abstractions.1.1.0\lib\netstandard1.0\Microsoft.Extensions.FileProviders.Abstractions.dll</HintPath>
       <Private>True</Private>
@@ -165,6 +189,9 @@
     </Reference>
     <Reference Include="Microsoft.Extensions.Options, Version=1.1.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Options.1.1.1\lib\netstandard1.0\Microsoft.Extensions.Options.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.PlatformAbstractions, Version=1.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.PlatformAbstractions.1.1.0\lib\net451\Microsoft.Extensions.PlatformAbstractions.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Extensions.Primitives, Version=1.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Primitives.1.1.0\lib\netstandard1.0\Microsoft.Extensions.Primitives.dll</HintPath>
@@ -201,16 +228,16 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="OpenIddict, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OpenIddict.1.0.0-beta1-0500\lib\net451\OpenIddict.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\OpenIddict.1.0.0-beta2-0591\lib\net451\OpenIddict.dll</HintPath>
     </Reference>
     <Reference Include="OpenIddict.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OpenIddict.Core.1.0.0-beta1-0500\lib\net451\OpenIddict.Core.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\OpenIddict.Core.1.0.0-beta2-0591\lib\net451\OpenIddict.Core.dll</HintPath>
     </Reference>
-    <Reference Include="OpenIddict.EntityFramework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OpenIddict.EntityFramework.1.0.0-beta1-0500\lib\net451\OpenIddict.EntityFramework.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="OpenIddict.Models, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OpenIddict.Models.1.0.0-beta2-0591\lib\netstandard1.0\OpenIddict.Models.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenIddict.Mvc, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OpenIddict.Mvc.1.0.0-beta2-0591\lib\net451\OpenIddict.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="Remotion.Linq, Version=2.1.0.0, Culture=neutral, PublicKeyToken=fee00910d6e5f53b, processorArchitecture=MSIL">
       <HintPath>..\packages\Remotion.Linq.2.1.1\lib\net45\Remotion.Linq.dll</HintPath>

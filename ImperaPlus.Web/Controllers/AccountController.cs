@@ -22,7 +22,8 @@ using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using OpenIddict;
+using OpenIddict.Core;
+using OpenIddict.Models;
 
 namespace ImperaPlus.Backend.Controllers
 {
@@ -150,17 +151,11 @@ namespace ImperaPlus.Backend.Controllers
                 OpenIdConnectConstants.Scopes.OfflineAccess,
                 OpenIdConnectConstants.Scopes.Profile,
                 OpenIddictConstants.Scopes.Roles
-            }.Intersect(
-                request.GetScopes());
+            }.Intersect(request.GetScopes());
 
             // Create a new ClaimsPrincipal containing the claims that
             // will be used to create an id_token, a token or a code.
             var principal = await _signInManager.CreateUserPrincipalAsync(user);
-
-            principal.AddIdentity(new ClaimsIdentity(new[]
-            {
-                new Claim(ClaimTypes.Name, user.UserName)
-            }));
             
             // Note: by default, claims are NOT automatically included in the access and identity tokens.
             // To allow OpenIddict to serialize them, you must attach them a destination, that specifies
@@ -169,20 +164,20 @@ namespace ImperaPlus.Backend.Controllers
             {
                 // Always include the user identifier in the
                 // access token and the identity token.
-                if (claim.Type == ClaimTypes.NameIdentifier)
+                if (claim.Type == OpenIdConnectConstants.Claims.Name)
                 {
                     claim.SetDestinations(OpenIdConnectConstants.Destinations.AccessToken,
                                           OpenIdConnectConstants.Destinations.IdentityToken);
                 }
 
                 // Include the name claim, but only if the "profile" scope was requested.
-                else if (claim.Type == ClaimTypes.Name && scopes.Contains(OpenIdConnectConstants.Scopes.Profile))
+                else if (claim.Type == OpenIdConnectConstants.Claims.Name && scopes.Contains(OpenIdConnectConstants.Scopes.Profile))
                 {
                     claim.SetDestinations(OpenIdConnectConstants.Destinations.IdentityToken);
                 }
 
                 // Include the role claims, but only if the "roles" scope was requested.
-                else if (claim.Type == ClaimTypes.Role && scopes.Contains(OpenIddictConstants.Scopes.Roles))
+                else if (claim.Type == OpenIdConnectConstants.Claims.Role && scopes.Contains(OpenIddictConstants.Scopes.Roles))
                 {
                     claim.SetDestinations(OpenIdConnectConstants.Destinations.AccessToken,
                                           OpenIdConnectConstants.Destinations.IdentityToken);
@@ -191,6 +186,8 @@ namespace ImperaPlus.Backend.Controllers
                 // The other claims won't be added to the access
                 // and identity tokens and will be kept private.
             }            
+
+            //principal.AddIdentity()
 
             // Create a new authentication ticket holding the user identity.
             var ticket = new AuthenticationTicket(
@@ -213,7 +210,8 @@ namespace ImperaPlus.Backend.Controllers
         /// <returns>True if username is available</returns>
         [AllowAnonymous]
         [Route("UserNameAvailable")]
-        [HttpGet]        
+        [HttpGet]
+        [ProducesResponseType(typeof(void), 200)]
         public async Task<IActionResult> GetUserNameAvailable([FromQuery] string userName)
         {
             if (string.IsNullOrEmpty(userName) || userName.Length < 4)

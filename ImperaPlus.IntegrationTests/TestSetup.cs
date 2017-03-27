@@ -62,7 +62,7 @@ namespace ImperaPlus.Integration.Tests
                 }
                 catch(AggregateException e)
                 {
-                    if (e.InnerExceptions != null && e.InnerExceptions.Count > 0 && e.InnerExceptions[0].GetType() == typeof(ImperaPlusException))
+                    if (e.InnerExceptions != null && e.InnerExceptions.Count > 0 && e.InnerExceptions[0] is ImperaPlusException)
                     {
                         if ((e.InnerExceptions[0] as ImperaPlusException).StatusCode == "400")
                         {

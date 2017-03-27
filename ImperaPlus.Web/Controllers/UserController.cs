@@ -1,14 +1,16 @@
 ﻿using System.Collections.Generic;
-using AspNet.Security.OAuth.Validation;
 using ImperaPlus.Application.Users;
 using ImperaPlus.Domain.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ImperaPlus.DTO;
 
 namespace ImperaPlus.Backend.Controllers
 {
     [Authorize]
     [Route("api/users")]
+    [ProducesResponseType(typeof(ErrorResponse), 400)]
+    [ProducesResponseType(typeof(void), 200)]
     public class UserController : BaseController
     {
         private IUserService userService;

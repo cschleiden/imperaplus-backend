@@ -7,6 +7,10 @@ namespace ImperaPlus.DTO
     /// </summary>
     public class ErrorResponse
     {
+        private ErrorResponse()
+        {
+        }
+
         /// <summary>
         /// Create new instance of error response
         /// </summary>

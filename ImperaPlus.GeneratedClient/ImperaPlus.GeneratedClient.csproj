@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccountClient.cs" />
     <Compile Include="ImperaClients.cs" />
     <Compile Include="ImperaHttpClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

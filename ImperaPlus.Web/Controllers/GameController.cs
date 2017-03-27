@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using AspNet.Security.OAuth.Validation;
 using ImperaPlus.Application.Games;
 using ImperaPlus.Domain.Utilities;
 using ImperaPlus.DTO;
@@ -34,6 +33,7 @@ namespace ImperaPlus.Backend.Controllers
         /// </summary>
         /// <returns>List of games</returns>
         [HttpGet("open")]
+        [ProducesResponseType(typeof(IEnumerable<GameSummary>), 200)]
         public IEnumerable<GameSummary> GetAll()
         {
             return this.gameService.GetOpen();
@@ -44,6 +44,7 @@ namespace ImperaPlus.Backend.Controllers
         /// </summary>
         /// <returns>List of games for the current user</returns>
         [HttpGet("my")]
+        [ProducesResponseType(typeof(IEnumerable<GameSummary>), 200)]
         public IEnumerable<GameSummary> GetMy()
         {
             return this.gameService.GetForCurrentUser();
@@ -54,6 +55,7 @@ namespace ImperaPlus.Backend.Controllers
         /// </summary>
         /// <returns>List of games where it's the current user's team</returns>
         [HttpGet("myturn")]
+        [ProducesResponseType(typeof(IEnumerable<GameSummary>), 200)]
         public IEnumerable<GameSummary> GetMyTurn()
         {
             return this.gameService.GetForCurrentUserTurn();

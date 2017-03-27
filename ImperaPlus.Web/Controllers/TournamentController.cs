@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using AspNet.Security.OAuth.Validation;
 using ImperaPlus.Application.Tournaments;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using ImperaPlus.DTO;
 
 namespace ImperaPlus.Backend.Controllers
 {
     [Authorize]
     [Route("api/tournaments")]
+    [ProducesResponseType(typeof(ErrorResponse), 400)]
+    [ProducesResponseType(typeof(void), 200)]
     public class TournamentController : Controller
     {
         private ITournamentService tournamentService;

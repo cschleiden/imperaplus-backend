@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using ImperaPlus.DataAccess;
 using Microsoft.AspNetCore.Http;
+using AspNet.Security.OpenIdConnect.Primitives;
 
 namespace ImperaPlus.Web.Providers
 {
@@ -19,7 +20,7 @@ namespace ImperaPlus.Web.Providers
 
         public string GetCurrentUserId()
         {
-            return this.httpContextAccessor.HttpContext.User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
+            return this.httpContextAccessor.HttpContext.User.Claims.First(x => x.Type == OpenIdConnectConstants.Claims.Subject).Value;
         }
     }
 }

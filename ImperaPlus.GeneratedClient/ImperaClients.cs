@@ -44,6 +44,7 @@ namespace ImperaPlus.GeneratedClient
         partial void PrepareRequest(System.Net.Http.HttpClient request, System.Text.StringBuilder urlBuilder);
         partial void ProcessResponse(System.Net.Http.HttpClient request, System.Net.Http.HttpResponseMessage response);
     
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<LoginResponseModel> ExchangeAsync(string grant_type, string username, string password, string scope, string refresh_token)
         {
@@ -51,17 +52,12 @@ namespace ImperaPlus.GeneratedClient
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<LoginResponseModel> ExchangeAsync(string grant_type, string username, string password, string scope, string refresh_token, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl).Append("/api/Account/token?");
-            if (grant_type != null) urlBuilder_.Append("grant_type=").Append(System.Uri.EscapeDataString(grant_type.ToString())).Append("&");
-            if (username != null) urlBuilder_.Append("username=").Append(System.Uri.EscapeDataString(username.ToString())).Append("&");
-            if (password != null) urlBuilder_.Append("password=").Append(System.Uri.EscapeDataString(password.ToString())).Append("&");
-            if (scope != null) urlBuilder_.Append("scope=").Append(System.Uri.EscapeDataString(scope.ToString())).Append("&");
-            if (refresh_token != null) urlBuilder_.Append("refresh_token=").Append(System.Uri.EscapeDataString(refresh_token.ToString())).Append("&");
-            urlBuilder_.Length--;
+            urlBuilder_.Append(BaseUrl).Append("/api/Account/token");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -72,7 +68,17 @@ namespace ImperaPlus.GeneratedClient
                     var url_ = urlBuilder_.ToString();
                     PrepareRequest(client_, url_);
     
-                    var content_ = new System.Net.Http.StringContent(string.Empty);
+                    var content_ = new System.Net.Http.MultipartFormDataContent();
+                    if (grant_type != null)
+                            content_.Add(new System.Net.Http.StringContent(grant_type.ToString()), "grant_type");
+                    if (username != null)
+                            content_.Add(new System.Net.Http.StringContent(username.ToString()), "username");
+                    if (password != null)
+                            content_.Add(new System.Net.Http.StringContent(password.ToString()), "password");
+                    if (scope != null)
+                            content_.Add(new System.Net.Http.StringContent(scope.ToString()), "scope");
+                    if (refresh_token != null)
+                            content_.Add(new System.Net.Http.StringContent(refresh_token.ToString()), "refresh_token");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
                     request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
@@ -87,6 +93,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -126,9 +147,9 @@ namespace ImperaPlus.GeneratedClient
     
         /// <summary>Checks if a username is available</summary>
         /// <param name="userName">Username to check</param>
-        /// <returns>True if username is available</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<FileResponse> GetUserNameAvailableAsync(string userName)
+        public System.Threading.Tasks.Task GetUserNameAvailableAsync(string userName)
         {
             return GetUserNameAvailableAsync(userName, System.Threading.CancellationToken.None);
         }
@@ -136,9 +157,9 @@ namespace ImperaPlus.GeneratedClient
         /// <summary>Checks if a username is available</summary>
         /// <param name="userName">Username to check</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>True if username is available</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<FileResponse> GetUserNameAvailableAsync(string userName, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task GetUserNameAvailableAsync(string userName, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/api/Account/UserNameAvailable?");
@@ -167,12 +188,24 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200" || status_ == "206") 
+                        if (status_ == "400") 
                         {
-                            var responseStream_ = await response_.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                            var fileResponse_ = new FileResponse(status_, headers_, responseStream_, client_, response_); 
-                            client_ = null; response_ = null; // response and client are disposed by FileResponse
-                            return fileResponse_;
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
+                        if (status_ == "200") 
+                        {
+                            return;
                         }
                         else
                         if (status_ != "200" && status_ != "204")
@@ -180,8 +213,6 @@ namespace ImperaPlus.GeneratedClient
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
                             throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
                         }
-            
-                        return default(FileResponse);
                     }
                     finally
                     {
@@ -198,6 +229,7 @@ namespace ImperaPlus.GeneratedClient
         }
     
         /// <summary>Get user information</summary>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<UserInfo> GetUserInfoAsync()
         {
@@ -206,6 +238,7 @@ namespace ImperaPlus.GeneratedClient
     
         /// <summary>Get user information</summary>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<UserInfo> GetUserInfoAsync(System.Threading.CancellationToken cancellationToken)
         {
@@ -234,6 +267,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -272,6 +320,7 @@ namespace ImperaPlus.GeneratedClient
         }
     
         /// <summary>Get user information for an external user (i.e., just logged in using an external provider)</summary>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<UserInfo> GetExternalUserInfoAsync()
         {
@@ -280,6 +329,7 @@ namespace ImperaPlus.GeneratedClient
     
         /// <summary>Get user information for an external user (i.e., just logged in using an external provider)</summary>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<UserInfo> GetExternalUserInfoAsync(System.Threading.CancellationToken cancellationToken)
         {
@@ -308,6 +358,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -345,15 +410,17 @@ namespace ImperaPlus.GeneratedClient
             }
         }
     
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<FileResponse> LogoutAsync()
+        public System.Threading.Tasks.Task LogoutAsync()
         {
             return LogoutAsync(System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<FileResponse> LogoutAsync(System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task LogoutAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/api/Account/Logout");
@@ -382,12 +449,24 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200" || status_ == "206") 
+                        if (status_ == "400") 
                         {
-                            var responseStream_ = await response_.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                            var fileResponse_ = new FileResponse(status_, headers_, responseStream_, client_, response_); 
-                            client_ = null; response_ = null; // response and client are disposed by FileResponse
-                            return fileResponse_;
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
+                        if (status_ == "200") 
+                        {
+                            return;
                         }
                         else
                         if (status_ != "200" && status_ != "204")
@@ -395,8 +474,6 @@ namespace ImperaPlus.GeneratedClient
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
                             throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
                         }
-            
-                        return default(FileResponse);
                     }
                     finally
                     {
@@ -412,6 +489,7 @@ namespace ImperaPlus.GeneratedClient
             }
         }
     
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<ManageInfoViewModel> GetManageInfoAsync(string returnUrl, bool? generateState)
         {
@@ -419,16 +497,14 @@ namespace ImperaPlus.GeneratedClient
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<ManageInfoViewModel> GetManageInfoAsync(string returnUrl, bool? generateState, System.Threading.CancellationToken cancellationToken)
         {
-            if (generateState == null)
-                throw new System.ArgumentNullException("generateState");
-    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/api/Account/ManageInfo?");
             if (returnUrl != null) urlBuilder_.Append("returnUrl=").Append(System.Uri.EscapeDataString(returnUrl.ToString())).Append("&");
-            urlBuilder_.Append("generateState=").Append(System.Uri.EscapeDataString(generateState.Value.ToString())).Append("&");
+            if (generateState != null) urlBuilder_.Append("generateState=").Append(System.Uri.EscapeDataString(generateState.Value.ToString())).Append("&");
             urlBuilder_.Length--;
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
@@ -453,6 +529,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -490,15 +581,17 @@ namespace ImperaPlus.GeneratedClient
             }
         }
     
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<FileResponse> ChangePasswordAsync(ChangePasswordBindingModel model)
+        public System.Threading.Tasks.Task ChangePasswordAsync(ChangePasswordBindingModel model)
         {
             return ChangePasswordAsync(model, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<FileResponse> ChangePasswordAsync(ChangePasswordBindingModel model, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task ChangePasswordAsync(ChangePasswordBindingModel model, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/api/Account/ChangePassword");
@@ -528,12 +621,24 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200" || status_ == "206") 
+                        if (status_ == "400") 
                         {
-                            var responseStream_ = await response_.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                            var fileResponse_ = new FileResponse(status_, headers_, responseStream_, client_, response_); 
-                            client_ = null; response_ = null; // response and client are disposed by FileResponse
-                            return fileResponse_;
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
+                        if (status_ == "200") 
+                        {
+                            return;
                         }
                         else
                         if (status_ != "200" && status_ != "204")
@@ -541,8 +646,6 @@ namespace ImperaPlus.GeneratedClient
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
                             throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
                         }
-            
-                        return default(FileResponse);
                     }
                     finally
                     {
@@ -558,15 +661,17 @@ namespace ImperaPlus.GeneratedClient
             }
         }
     
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<FileResponse> SetPasswordAsync(SetPasswordBindingModel model)
+        public System.Threading.Tasks.Task SetPasswordAsync(SetPasswordBindingModel model)
         {
             return SetPasswordAsync(model, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<FileResponse> SetPasswordAsync(SetPasswordBindingModel model, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task SetPasswordAsync(SetPasswordBindingModel model, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/api/Account/SetPassword");
@@ -596,12 +701,24 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200" || status_ == "206") 
+                        if (status_ == "400") 
                         {
-                            var responseStream_ = await response_.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                            var fileResponse_ = new FileResponse(status_, headers_, responseStream_, client_, response_); 
-                            client_ = null; response_ = null; // response and client are disposed by FileResponse
-                            return fileResponse_;
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
+                        if (status_ == "200") 
+                        {
+                            return;
                         }
                         else
                         if (status_ != "200" && status_ != "204")
@@ -609,8 +726,6 @@ namespace ImperaPlus.GeneratedClient
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
                             throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
                         }
-            
-                        return default(FileResponse);
                     }
                     finally
                     {
@@ -626,15 +741,17 @@ namespace ImperaPlus.GeneratedClient
             }
         }
     
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<FileResponse> RemoveLoginAsync(RemoveLoginBindingModel model)
+        public System.Threading.Tasks.Task RemoveLoginAsync(RemoveLoginBindingModel model)
         {
             return RemoveLoginAsync(model, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<FileResponse> RemoveLoginAsync(RemoveLoginBindingModel model, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task RemoveLoginAsync(RemoveLoginBindingModel model, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/api/Account/RemoveLogin");
@@ -664,12 +781,24 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200" || status_ == "206") 
+                        if (status_ == "400") 
                         {
-                            var responseStream_ = await response_.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                            var fileResponse_ = new FileResponse(status_, headers_, responseStream_, client_, response_); 
-                            client_ = null; response_ = null; // response and client are disposed by FileResponse
-                            return fileResponse_;
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
+                        if (status_ == "200") 
+                        {
+                            return;
                         }
                         else
                         if (status_ != "200" && status_ != "204")
@@ -677,8 +806,6 @@ namespace ImperaPlus.GeneratedClient
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
                             throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
                         }
-            
-                        return default(FileResponse);
                     }
                     finally
                     {
@@ -694,6 +821,7 @@ namespace ImperaPlus.GeneratedClient
             }
         }
     
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<List<ExternalLoginViewModel>> GetExternalLoginsAsync(string returnUrl, bool? generateState)
         {
@@ -701,16 +829,14 @@ namespace ImperaPlus.GeneratedClient
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<List<ExternalLoginViewModel>> GetExternalLoginsAsync(string returnUrl, bool? generateState, System.Threading.CancellationToken cancellationToken)
         {
-            if (generateState == null)
-                throw new System.ArgumentNullException("generateState");
-    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/api/Account/ExternalLogins?");
             if (returnUrl != null) urlBuilder_.Append("returnUrl=").Append(System.Uri.EscapeDataString(returnUrl.ToString())).Append("&");
-            urlBuilder_.Append("generateState=").Append(System.Uri.EscapeDataString(generateState.Value.ToString())).Append("&");
+            if (generateState != null) urlBuilder_.Append("generateState=").Append(System.Uri.EscapeDataString(generateState.Value.ToString())).Append("&");
             urlBuilder_.Length--;
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
@@ -735,6 +861,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -772,6 +913,7 @@ namespace ImperaPlus.GeneratedClient
             }
         }
     
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task RegisterAsync(RegisterBindingModel model)
         {
@@ -779,6 +921,7 @@ namespace ImperaPlus.GeneratedClient
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task RegisterAsync(RegisterBindingModel model, System.Threading.CancellationToken cancellationToken)
         {
@@ -810,11 +953,6 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200") 
-                        {
-                            return;
-                        }
-                        else
                         if (status_ == "400") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -827,7 +965,12 @@ namespace ImperaPlus.GeneratedClient
                             {
                                 throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
                             }
-                            throw new ImperaPlusException<ErrorResponse>("A server side error occurred.", status_, responseData_, headers_, result_, null);
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
+                        if (status_ == "200") 
+                        {
+                            return;
                         }
                         else
                         if (status_ != "200" && status_ != "204")
@@ -851,16 +994,18 @@ namespace ImperaPlus.GeneratedClient
         }
     
         /// <summary>Resend the email confirmation account to the given user account</summary>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<FileResponse> ResendConfirmationCodeAsync(ResendConfirmationModel model)
+        public System.Threading.Tasks.Task ResendConfirmationCodeAsync(ResendConfirmationModel model)
         {
             return ResendConfirmationCodeAsync(model, System.Threading.CancellationToken.None);
         }
     
         /// <summary>Resend the email confirmation account to the given user account</summary>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<FileResponse> ResendConfirmationCodeAsync(ResendConfirmationModel model, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task ResendConfirmationCodeAsync(ResendConfirmationModel model, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/api/Account/ResendConfirmation");
@@ -890,12 +1035,24 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200" || status_ == "206") 
+                        if (status_ == "400") 
                         {
-                            var responseStream_ = await response_.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                            var fileResponse_ = new FileResponse(status_, headers_, responseStream_, client_, response_); 
-                            client_ = null; response_ = null; // response and client are disposed by FileResponse
-                            return fileResponse_;
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
+                        if (status_ == "200") 
+                        {
+                            return;
                         }
                         else
                         if (status_ != "200" && status_ != "204")
@@ -903,8 +1060,6 @@ namespace ImperaPlus.GeneratedClient
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
                             throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
                         }
-            
-                        return default(FileResponse);
                     }
                     finally
                     {
@@ -922,9 +1077,9 @@ namespace ImperaPlus.GeneratedClient
     
         /// <summary>Confirm user account using code provided in mail</summary>
         /// <param name="model">Model containing id and code</param>
-        /// <returns>Success if successfully activated</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<FileResponse> ConfirmEmailAsync(ConfirmationModel model)
+        public System.Threading.Tasks.Task ConfirmEmailAsync(ConfirmationModel model)
         {
             return ConfirmEmailAsync(model, System.Threading.CancellationToken.None);
         }
@@ -932,9 +1087,9 @@ namespace ImperaPlus.GeneratedClient
         /// <summary>Confirm user account using code provided in mail</summary>
         /// <param name="model">Model containing id and code</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Success if successfully activated</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<FileResponse> ConfirmEmailAsync(ConfirmationModel model, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task ConfirmEmailAsync(ConfirmationModel model, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/api/Account/ConfirmEmail");
@@ -964,12 +1119,24 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200" || status_ == "206") 
+                        if (status_ == "400") 
                         {
-                            var responseStream_ = await response_.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                            var fileResponse_ = new FileResponse(status_, headers_, responseStream_, client_, response_); 
-                            client_ = null; response_ = null; // response and client are disposed by FileResponse
-                            return fileResponse_;
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
+                        if (status_ == "200") 
+                        {
+                            return;
                         }
                         else
                         if (status_ != "200" && status_ != "204")
@@ -977,8 +1144,6 @@ namespace ImperaPlus.GeneratedClient
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
                             throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
                         }
-            
-                        return default(FileResponse);
                     }
                     finally
                     {
@@ -995,16 +1160,18 @@ namespace ImperaPlus.GeneratedClient
         }
     
         /// <summary>Request password reset link</summary>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<FileResponse> ForgotPasswordAsync(ForgotPasswordViewModel model)
+        public System.Threading.Tasks.Task ForgotPasswordAsync(ForgotPasswordViewModel model)
         {
             return ForgotPasswordAsync(model, System.Threading.CancellationToken.None);
         }
     
         /// <summary>Request password reset link</summary>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<FileResponse> ForgotPasswordAsync(ForgotPasswordViewModel model, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task ForgotPasswordAsync(ForgotPasswordViewModel model, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/api/Account/ForgotPassword");
@@ -1034,12 +1201,24 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200" || status_ == "206") 
+                        if (status_ == "400") 
                         {
-                            var responseStream_ = await response_.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                            var fileResponse_ = new FileResponse(status_, headers_, responseStream_, client_, response_); 
-                            client_ = null; response_ = null; // response and client are disposed by FileResponse
-                            return fileResponse_;
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
+                        if (status_ == "200") 
+                        {
+                            return;
                         }
                         else
                         if (status_ != "200" && status_ != "204")
@@ -1047,8 +1226,6 @@ namespace ImperaPlus.GeneratedClient
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
                             throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
                         }
-            
-                        return default(FileResponse);
                     }
                     finally
                     {
@@ -1065,16 +1242,18 @@ namespace ImperaPlus.GeneratedClient
         }
     
         /// <summary>Reset password confirmation</summary>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<FileResponse> ResetPasswordAsync(ResetPasswordViewModel model)
+        public System.Threading.Tasks.Task ResetPasswordAsync(ResetPasswordViewModel model)
         {
             return ResetPasswordAsync(model, System.Threading.CancellationToken.None);
         }
     
         /// <summary>Reset password confirmation</summary>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<FileResponse> ResetPasswordAsync(ResetPasswordViewModel model, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task ResetPasswordAsync(ResetPasswordViewModel model, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/api/Account/ResetPassword");
@@ -1104,12 +1283,24 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200" || status_ == "206") 
+                        if (status_ == "400") 
                         {
-                            var responseStream_ = await response_.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                            var fileResponse_ = new FileResponse(status_, headers_, responseStream_, client_, response_); 
-                            client_ = null; response_ = null; // response and client are disposed by FileResponse
-                            return fileResponse_;
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
+                        if (status_ == "200") 
+                        {
+                            return;
                         }
                         else
                         if (status_ != "200" && status_ != "204")
@@ -1117,8 +1308,6 @@ namespace ImperaPlus.GeneratedClient
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
                             throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
                         }
-            
-                        return default(FileResponse);
                     }
                     finally
                     {
@@ -1135,16 +1324,18 @@ namespace ImperaPlus.GeneratedClient
         }
     
         /// <summary>Create user accout for an external login</summary>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<FileResponse> RegisterExternalAsync(RegisterExternalBindingModel model)
+        public System.Threading.Tasks.Task RegisterExternalAsync(RegisterExternalBindingModel model)
         {
             return RegisterExternalAsync(model, System.Threading.CancellationToken.None);
         }
     
         /// <summary>Create user accout for an external login</summary>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<FileResponse> RegisterExternalAsync(RegisterExternalBindingModel model, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task RegisterExternalAsync(RegisterExternalBindingModel model, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/api/Account/RegisterExternal");
@@ -1174,12 +1365,24 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200" || status_ == "206") 
+                        if (status_ == "400") 
                         {
-                            var responseStream_ = await response_.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                            var fileResponse_ = new FileResponse(status_, headers_, responseStream_, client_, response_); 
-                            client_ = null; response_ = null; // response and client are disposed by FileResponse
-                            return fileResponse_;
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
+                        if (status_ == "200") 
+                        {
+                            return;
                         }
                         else
                         if (status_ != "200" && status_ != "204")
@@ -1187,8 +1390,6 @@ namespace ImperaPlus.GeneratedClient
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
                             throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
                         }
-            
-                        return default(FileResponse);
                     }
                     finally
                     {
@@ -1227,7 +1428,7 @@ namespace ImperaPlus.GeneratedClient
         partial void ProcessResponse(System.Net.Http.HttpClient request, System.Net.Http.HttpResponseMessage response);
     
         /// <summary>Get a list of open games, excluding games by the current player</summary>
-        /// <returns>List of games</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<List<GameSummary>> GetAllAsync()
         {
@@ -1236,7 +1437,7 @@ namespace ImperaPlus.GeneratedClient
     
         /// <summary>Get a list of open games, excluding games by the current player</summary>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>List of games</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<List<GameSummary>> GetAllAsync(System.Threading.CancellationToken cancellationToken)
         {
@@ -1265,6 +1466,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -1303,7 +1519,7 @@ namespace ImperaPlus.GeneratedClient
         }
     
         /// <summary>Get a list of the games for the current player</summary>
-        /// <returns>List of games for the current user</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<List<GameSummary>> GetMyAsync()
         {
@@ -1312,7 +1528,7 @@ namespace ImperaPlus.GeneratedClient
     
         /// <summary>Get a list of the games for the current player</summary>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>List of games for the current user</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<List<GameSummary>> GetMyAsync(System.Threading.CancellationToken cancellationToken)
         {
@@ -1341,6 +1557,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -1379,7 +1610,7 @@ namespace ImperaPlus.GeneratedClient
         }
     
         /// <summary>Get list of games where it's the current player's team</summary>
-        /// <returns>List of games where it's the current user's team</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<List<GameSummary>> GetMyTurnAsync()
         {
@@ -1388,7 +1619,7 @@ namespace ImperaPlus.GeneratedClient
     
         /// <summary>Get list of games where it's the current player's team</summary>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>List of games where it's the current user's team</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<List<GameSummary>> GetMyTurnAsync(System.Threading.CancellationToken cancellationToken)
         {
@@ -1417,6 +1648,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -1456,7 +1702,7 @@ namespace ImperaPlus.GeneratedClient
     
         /// <summary>Create a new game</summary>
         /// <param name="creationOptions">Creation options</param>
-        /// <returns>Summary of newly created game</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<GameSummary> PostAsync(GameCreationOptions creationOptions)
         {
@@ -1466,7 +1712,7 @@ namespace ImperaPlus.GeneratedClient
         /// <summary>Create a new game</summary>
         /// <param name="creationOptions">Creation options</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Summary of newly created game</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<GameSummary> PostAsync(GameCreationOptions creationOptions, System.Threading.CancellationToken cancellationToken)
         {
@@ -1498,6 +1744,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -1537,7 +1798,7 @@ namespace ImperaPlus.GeneratedClient
     
         /// <summary>Get detailed information about a single game</summary>
         /// <param name="gameId">Id of the requested game</param>
-        /// <returns>Information about the requested game</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<Game> GetAsync(long gameId)
         {
@@ -1547,7 +1808,7 @@ namespace ImperaPlus.GeneratedClient
         /// <summary>Get detailed information about a single game</summary>
         /// <param name="gameId">Id of the requested game</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Information about the requested game</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<Game> GetAsync(long gameId, System.Threading.CancellationToken cancellationToken)
         {
@@ -1580,6 +1841,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -1619,9 +1895,9 @@ namespace ImperaPlus.GeneratedClient
     
         /// <summary>Cancel/delete the requested game, if possible.</summary>
         /// <param name="gameId">Id of the game to delete</param>
-        /// <returns>Status</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<FileResponse> DeleteAsync(long gameId)
+        public System.Threading.Tasks.Task DeleteAsync(long gameId)
         {
             return DeleteAsync(gameId, System.Threading.CancellationToken.None);
         }
@@ -1629,9 +1905,9 @@ namespace ImperaPlus.GeneratedClient
         /// <summary>Cancel/delete the requested game, if possible.</summary>
         /// <param name="gameId">Id of the game to delete</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Status</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<FileResponse> DeleteAsync(long gameId, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task DeleteAsync(long gameId, System.Threading.CancellationToken cancellationToken)
         {
             if (gameId == null)
                 throw new System.ArgumentNullException("gameId");
@@ -1662,12 +1938,24 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200" || status_ == "206") 
+                        if (status_ == "400") 
                         {
-                            var responseStream_ = await response_.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                            var fileResponse_ = new FileResponse(status_, headers_, responseStream_, client_, response_); 
-                            client_ = null; response_ = null; // response and client are disposed by FileResponse
-                            return fileResponse_;
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
+                        if (status_ == "200") 
+                        {
+                            return;
                         }
                         else
                         if (status_ != "200" && status_ != "204")
@@ -1675,8 +1963,6 @@ namespace ImperaPlus.GeneratedClient
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
                             throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
                         }
-            
-                        return default(FileResponse);
                     }
                     finally
                     {
@@ -1695,7 +1981,7 @@ namespace ImperaPlus.GeneratedClient
         /// <summary>Get messages for a single game</summary>
         /// <param name="gameId">Id of the requested game</param>
         /// <param name="isPublic">Value indicating whether to return only public messages, default is true</param>
-        /// <returns>Messages posted in the requested game</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<Game> GetMessagesAsync(long gameId, bool? isPublic)
         {
@@ -1706,20 +1992,17 @@ namespace ImperaPlus.GeneratedClient
         /// <param name="gameId">Id of the requested game</param>
         /// <param name="isPublic">Value indicating whether to return only public messages, default is true</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Messages posted in the requested game</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<Game> GetMessagesAsync(long gameId, bool? isPublic, System.Threading.CancellationToken cancellationToken)
         {
             if (gameId == null)
                 throw new System.ArgumentNullException("gameId");
     
-            if (isPublic == null)
-                throw new System.ArgumentNullException("isPublic");
-    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/api/games/{gameId}/messages?");
             urlBuilder_.Replace("{gameId}", System.Uri.EscapeDataString(gameId.ToString()));
-            urlBuilder_.Append("isPublic=").Append(System.Uri.EscapeDataString(isPublic.Value.ToString())).Append("&");
+            if (isPublic != null) urlBuilder_.Append("isPublic=").Append(System.Uri.EscapeDataString(isPublic.Value.ToString())).Append("&");
             urlBuilder_.Length--;
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
@@ -1744,6 +2027,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -1783,8 +2081,9 @@ namespace ImperaPlus.GeneratedClient
     
         /// <summary>Join the given game</summary>
         /// <param name="gameId">Id of game to join</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<FileResponse> PostJoinAsync(long gameId)
+        public System.Threading.Tasks.Task PostJoinAsync(long gameId)
         {
             return PostJoinAsync(gameId, System.Threading.CancellationToken.None);
         }
@@ -1792,8 +2091,9 @@ namespace ImperaPlus.GeneratedClient
         /// <summary>Join the given game</summary>
         /// <param name="gameId">Id of game to join</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<FileResponse> PostJoinAsync(long gameId, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task PostJoinAsync(long gameId, System.Threading.CancellationToken cancellationToken)
         {
             if (gameId == null)
                 throw new System.ArgumentNullException("gameId");
@@ -1826,12 +2126,24 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200" || status_ == "206") 
+                        if (status_ == "400") 
                         {
-                            var responseStream_ = await response_.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                            var fileResponse_ = new FileResponse(status_, headers_, responseStream_, client_, response_); 
-                            client_ = null; response_ = null; // response and client are disposed by FileResponse
-                            return fileResponse_;
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
+                        if (status_ == "200") 
+                        {
+                            return;
                         }
                         else
                         if (status_ != "200" && status_ != "204")
@@ -1839,8 +2151,6 @@ namespace ImperaPlus.GeneratedClient
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
                             throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
                         }
-            
-                        return default(FileResponse);
                     }
                     finally
                     {
@@ -1859,8 +2169,9 @@ namespace ImperaPlus.GeneratedClient
         /// <summary>Leave the given game, only possible if game hasn't started yet, and current player
         /// is not the creator.</summary>
         /// <param name="gameId">Id of game to leave</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<FileResponse> PostLeaveAsync(long gameId)
+        public System.Threading.Tasks.Task PostLeaveAsync(long gameId)
         {
             return PostLeaveAsync(gameId, System.Threading.CancellationToken.None);
         }
@@ -1869,8 +2180,9 @@ namespace ImperaPlus.GeneratedClient
         /// is not the creator.</summary>
         /// <param name="gameId">Id of game to leave</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<FileResponse> PostLeaveAsync(long gameId, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task PostLeaveAsync(long gameId, System.Threading.CancellationToken cancellationToken)
         {
             if (gameId == null)
                 throw new System.ArgumentNullException("gameId");
@@ -1903,12 +2215,24 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200" || status_ == "206") 
+                        if (status_ == "400") 
                         {
-                            var responseStream_ = await response_.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                            var fileResponse_ = new FileResponse(status_, headers_, responseStream_, client_, response_); 
-                            client_ = null; response_ = null; // response and client are disposed by FileResponse
-                            return fileResponse_;
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
+                        if (status_ == "200") 
+                        {
+                            return;
                         }
                         else
                         if (status_ != "200" && status_ != "204")
@@ -1916,8 +2240,6 @@ namespace ImperaPlus.GeneratedClient
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
                             throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
                         }
-            
-                        return default(FileResponse);
                     }
                     finally
                     {
@@ -1936,6 +2258,7 @@ namespace ImperaPlus.GeneratedClient
         /// <summary>Surrender in the given game, only possible if current player
         /// and game are still active.</summary>
         /// <param name="gameId">Id of game to surrender in</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<GameSummary> PostSurrenderAsync(long gameId)
         {
@@ -1946,6 +2269,7 @@ namespace ImperaPlus.GeneratedClient
         /// and game are still active.</summary>
         /// <param name="gameId">Id of game to surrender in</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<GameSummary> PostSurrenderAsync(long gameId, System.Threading.CancellationToken cancellationToken)
         {
@@ -1980,6 +2304,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -2019,8 +2358,9 @@ namespace ImperaPlus.GeneratedClient
     
         /// <summary>Hides the given game for the current player</summary>
         /// <param name="gameId">Id of game to hide</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<FileResponse> PatchHideAsync(long gameId)
+        public System.Threading.Tasks.Task PatchHideAsync(long gameId)
         {
             return PatchHideAsync(gameId, System.Threading.CancellationToken.None);
         }
@@ -2028,8 +2368,9 @@ namespace ImperaPlus.GeneratedClient
         /// <summary>Hides the given game for the current player</summary>
         /// <param name="gameId">Id of game to hide</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<FileResponse> PatchHideAsync(long gameId, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task PatchHideAsync(long gameId, System.Threading.CancellationToken cancellationToken)
         {
             if (gameId == null)
                 throw new System.ArgumentNullException("gameId");
@@ -2062,12 +2403,24 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200" || status_ == "206") 
+                        if (status_ == "400") 
                         {
-                            var responseStream_ = await response_.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                            var fileResponse_ = new FileResponse(status_, headers_, responseStream_, client_, response_); 
-                            client_ = null; response_ = null; // response and client are disposed by FileResponse
-                            return fileResponse_;
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
+                        if (status_ == "200") 
+                        {
+                            return;
                         }
                         else
                         if (status_ != "200" && status_ != "204")
@@ -2075,8 +2428,6 @@ namespace ImperaPlus.GeneratedClient
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
                             throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
                         }
-            
-                        return default(FileResponse);
                     }
                     finally
                     {
@@ -2093,16 +2444,18 @@ namespace ImperaPlus.GeneratedClient
         }
     
         /// <summary>Hide all games which can be hidden for the current player</summary>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<FileResponse> PatchHideAllAsync()
+        public System.Threading.Tasks.Task PatchHideAllAsync()
         {
             return PatchHideAllAsync(System.Threading.CancellationToken.None);
         }
     
         /// <summary>Hide all games which can be hidden for the current player</summary>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<FileResponse> PatchHideAllAsync(System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task PatchHideAllAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/api/games/hide");
@@ -2131,12 +2484,24 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200" || status_ == "206") 
+                        if (status_ == "400") 
                         {
-                            var responseStream_ = await response_.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                            var fileResponse_ = new FileResponse(status_, headers_, responseStream_, client_, response_); 
-                            client_ = null; response_ = null; // response and client are disposed by FileResponse
-                            return fileResponse_;
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
+                        if (status_ == "200") 
+                        {
+                            return;
                         }
                         else
                         if (status_ != "200" && status_ != "204")
@@ -2144,8 +2509,6 @@ namespace ImperaPlus.GeneratedClient
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
                             throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
                         }
-            
-                        return default(FileResponse);
                     }
                     finally
                     {
@@ -2184,6 +2547,7 @@ namespace ImperaPlus.GeneratedClient
         partial void ProcessResponse(System.Net.Http.HttpClient request, System.Net.Http.HttpResponseMessage response);
     
         /// <summary>Gets the specified turn including the actions and current state of the map</summary>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<HistoryTurn> GetTurnAsync(long gameId, long turnId)
         {
@@ -2192,6 +2556,7 @@ namespace ImperaPlus.GeneratedClient
     
         /// <summary>Gets the specified turn including the actions and current state of the map</summary>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<HistoryTurn> GetTurnAsync(long gameId, long turnId, System.Threading.CancellationToken cancellationToken)
         {
@@ -2228,6 +2593,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -2288,18 +2668,18 @@ namespace ImperaPlus.GeneratedClient
         partial void ProcessResponse(System.Net.Http.HttpClient request, System.Net.Http.HttpResponseMessage response);
     
         /// <summary>Returns active ladders</summary>
-        /// <returns>List of ladders</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<List<LadderSummary>> GetAllAsync()
+        public System.Threading.Tasks.Task<LadderSummary> GetAsync()
         {
-            return GetAllAsync(System.Threading.CancellationToken.None);
+            return GetAsync(System.Threading.CancellationToken.None);
         }
     
         /// <summary>Returns active ladders</summary>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>List of ladders</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<List<LadderSummary>> GetAllAsync(System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<LadderSummary> GetAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/api/ladder");
@@ -2326,13 +2706,28 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            var result_ = default(List<LadderSummary>); 
+                            var result_ = default(LadderSummary); 
                             try
                             {
-                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<List<LadderSummary>>(responseData_);
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<LadderSummary>(responseData_);
                                 return result_; 
                             } 
                             catch (System.Exception exception) 
@@ -2347,7 +2742,7 @@ namespace ImperaPlus.GeneratedClient
                             throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
                         }
             
-                        return default(List<LadderSummary>);
+                        return default(LadderSummary);
                     }
                     finally
                     {
@@ -2365,17 +2760,19 @@ namespace ImperaPlus.GeneratedClient
     
         /// <summary>Gets ladder identified by given id</summary>
         /// <param name="ladderId">Id of ladder</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<Ladder> GetAsync(System.Guid ladderId)
+        public System.Threading.Tasks.Task<Ladder> Get2Async(System.Guid ladderId)
         {
-            return GetAsync(ladderId, System.Threading.CancellationToken.None);
+            return Get2Async(ladderId, System.Threading.CancellationToken.None);
         }
     
         /// <summary>Gets ladder identified by given id</summary>
         /// <param name="ladderId">Id of ladder</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<Ladder> GetAsync(System.Guid ladderId, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<Ladder> Get2Async(System.Guid ladderId, System.Threading.CancellationToken cancellationToken)
         {
             if (ladderId == null)
                 throw new System.ArgumentNullException("ladderId");
@@ -2406,6 +2803,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -2445,9 +2857,9 @@ namespace ImperaPlus.GeneratedClient
     
         /// <summary>Queue up for a new game in the given ladder</summary>
         /// <param name="ladderId">Ladder id</param>
-        /// <returns>Status</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<FileResponse> PostJoinAsync(System.Guid ladderId)
+        public System.Threading.Tasks.Task PostJoinAsync(System.Guid ladderId)
         {
             return PostJoinAsync(ladderId, System.Threading.CancellationToken.None);
         }
@@ -2455,9 +2867,9 @@ namespace ImperaPlus.GeneratedClient
         /// <summary>Queue up for a new game in the given ladder</summary>
         /// <param name="ladderId">Ladder id</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Status</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<FileResponse> PostJoinAsync(System.Guid ladderId, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task PostJoinAsync(System.Guid ladderId, System.Threading.CancellationToken cancellationToken)
         {
             if (ladderId == null)
                 throw new System.ArgumentNullException("ladderId");
@@ -2490,12 +2902,24 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200" || status_ == "206") 
+                        if (status_ == "400") 
                         {
-                            var responseStream_ = await response_.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                            var fileResponse_ = new FileResponse(status_, headers_, responseStream_, client_, response_); 
-                            client_ = null; response_ = null; // response and client are disposed by FileResponse
-                            return fileResponse_;
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
+                        if (status_ == "200") 
+                        {
+                            return;
                         }
                         else
                         if (status_ != "200" && status_ != "204")
@@ -2503,8 +2927,6 @@ namespace ImperaPlus.GeneratedClient
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
                             throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
                         }
-            
-                        return default(FileResponse);
                     }
                     finally
                     {
@@ -2524,8 +2946,9 @@ namespace ImperaPlus.GeneratedClient
         /// <param name="ladderId">Id of ladder</param>
         /// <param name="start">Items to skip before returning</param>
         /// <param name="count">Count of standings to return</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<List<LadderStanding>> GetStandingsAsync(System.Guid ladderId, int? start, int? count)
+        public System.Threading.Tasks.Task<List<LadderSummary>> GetStandingsAsync(System.Guid ladderId, int? start, int? count)
         {
             return GetStandingsAsync(ladderId, start, count, System.Threading.CancellationToken.None);
         }
@@ -2535,23 +2958,18 @@ namespace ImperaPlus.GeneratedClient
         /// <param name="start">Items to skip before returning</param>
         /// <param name="count">Count of standings to return</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<List<LadderStanding>> GetStandingsAsync(System.Guid ladderId, int? start, int? count, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<List<LadderSummary>> GetStandingsAsync(System.Guid ladderId, int? start, int? count, System.Threading.CancellationToken cancellationToken)
         {
             if (ladderId == null)
                 throw new System.ArgumentNullException("ladderId");
     
-            if (start == null)
-                throw new System.ArgumentNullException("start");
-    
-            if (count == null)
-                throw new System.ArgumentNullException("count");
-    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/api/ladder/{ladderId}/standings?");
             urlBuilder_.Replace("{ladderId}", System.Uri.EscapeDataString(ladderId.ToString()));
-            urlBuilder_.Append("start=").Append(System.Uri.EscapeDataString(start.Value.ToString())).Append("&");
-            urlBuilder_.Append("count=").Append(System.Uri.EscapeDataString(count.Value.ToString())).Append("&");
+            if (start != null) urlBuilder_.Append("start=").Append(System.Uri.EscapeDataString(start.Value.ToString())).Append("&");
+            if (count != null) urlBuilder_.Append("count=").Append(System.Uri.EscapeDataString(count.Value.ToString())).Append("&");
             urlBuilder_.Length--;
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
@@ -2576,13 +2994,28 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            var result_ = default(List<LadderStanding>); 
+                            var result_ = default(List<LadderSummary>); 
                             try
                             {
-                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<List<LadderStanding>>(responseData_);
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<List<LadderSummary>>(responseData_);
                                 return result_; 
                             } 
                             catch (System.Exception exception) 
@@ -2597,7 +3030,7 @@ namespace ImperaPlus.GeneratedClient
                             throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
                         }
             
-                        return default(List<LadderStanding>);
+                        return default(List<LadderSummary>);
                     }
                     finally
                     {
@@ -2635,6 +3068,7 @@ namespace ImperaPlus.GeneratedClient
         partial void PrepareRequest(System.Net.Http.HttpClient request, System.Text.StringBuilder urlBuilder);
         partial void ProcessResponse(System.Net.Http.HttpClient request, System.Net.Http.HttpResponseMessage response);
     
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<List<MapTemplateDescriptor>> GetAllSummaryAsync()
         {
@@ -2642,6 +3076,7 @@ namespace ImperaPlus.GeneratedClient
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<List<MapTemplateDescriptor>> GetAllSummaryAsync(System.Threading.CancellationToken cancellationToken)
         {
@@ -2670,6 +3105,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -2708,6 +3158,7 @@ namespace ImperaPlus.GeneratedClient
         }
     
         /// <summary>Get map template identified by name</summary>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<MapTemplate> GetMapTemplateAsync(string name)
         {
@@ -2716,6 +3167,7 @@ namespace ImperaPlus.GeneratedClient
     
         /// <summary>Get map template identified by name</summary>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<MapTemplate> GetMapTemplateAsync(string name, System.Threading.CancellationToken cancellationToken)
         {
@@ -2748,6 +3200,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -2807,6 +3274,7 @@ namespace ImperaPlus.GeneratedClient
         partial void PrepareRequest(System.Net.Http.HttpClient request, System.Text.StringBuilder urlBuilder);
         partial void ProcessResponse(System.Net.Http.HttpClient request, System.Net.Http.HttpResponseMessage response);
     
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<List<Message>> GetAllAsync(MessageFolder? messageFolder, string folder)
         {
@@ -2814,19 +3282,17 @@ namespace ImperaPlus.GeneratedClient
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<List<Message>> GetAllAsync(MessageFolder? messageFolder, string folder, System.Threading.CancellationToken cancellationToken)
         {
             if (folder == null)
                 throw new System.ArgumentNullException("folder");
     
-            if (messageFolder == null)
-                throw new System.ArgumentNullException("messageFolder");
-    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/api/messages/folder/{folder}?");
             urlBuilder_.Replace("{folder}", System.Uri.EscapeDataString(folder.ToString()));
-            urlBuilder_.Append("messageFolder=").Append(System.Uri.EscapeDataString(messageFolder.Value.ToString())).Append("&");
+            if (messageFolder != null) urlBuilder_.Append("messageFolder=").Append(System.Uri.EscapeDataString(messageFolder.Value.ToString())).Append("&");
             urlBuilder_.Length--;
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
@@ -2851,6 +3317,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -2888,6 +3369,7 @@ namespace ImperaPlus.GeneratedClient
             }
         }
     
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<Message> GetAsync(System.Guid messageId)
         {
@@ -2895,6 +3377,7 @@ namespace ImperaPlus.GeneratedClient
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<Message> GetAsync(System.Guid messageId, System.Threading.CancellationToken cancellationToken)
         {
@@ -2927,6 +3410,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -2964,15 +3462,98 @@ namespace ImperaPlus.GeneratedClient
             }
         }
     
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<FileResponse> PatchMarkReadAsync(System.Guid messageId)
+        public System.Threading.Tasks.Task DeleteAsync(System.Guid messageId)
+        {
+            return DeleteAsync(messageId, System.Threading.CancellationToken.None);
+        }
+    
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
+        /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
+        public async System.Threading.Tasks.Task DeleteAsync(System.Guid messageId, System.Threading.CancellationToken cancellationToken)
+        {
+            if (messageId == null)
+                throw new System.ArgumentNullException("messageId");
+    
+            var urlBuilder_ = new System.Text.StringBuilder();
+            urlBuilder_.Append(BaseUrl).Append("/api/messages/{messageId}");
+            urlBuilder_.Replace("{messageId}", System.Uri.EscapeDataString(messageId.ToString()));
+    
+            var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
+            try
+            {
+                using (var request_ = new System.Net.Http.HttpRequestMessage())
+                {
+                    PrepareRequest(client_, urlBuilder_);
+                    var url_ = urlBuilder_.ToString();
+                    PrepareRequest(client_, url_);
+    
+                    request_.Method = new System.Net.Http.HttpMethod("DELETE");
+                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
+                    request_.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+                    try
+                    {
+                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
+                        foreach (var item_ in response_.Content.Headers)
+                            headers_[item_.Key] = item_.Value;
+    
+                        ProcessResponse(client_, response_);
+    
+                        var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
+                        if (status_ == "200") 
+                        {
+                            return;
+                        }
+                        else
+                        if (status_ != "200" && status_ != "204")
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                        }
+                    }
+                    finally
+                    {
+                        if (response_ != null)
+                            response_.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                if (client_ != null)
+                    client_.Dispose();
+            }
+        }
+    
+        /// <returns>Success</returns>
+        /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
+        public System.Threading.Tasks.Task PatchMarkReadAsync(System.Guid messageId)
         {
             return PatchMarkReadAsync(messageId, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<FileResponse> PatchMarkReadAsync(System.Guid messageId, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task PatchMarkReadAsync(System.Guid messageId, System.Threading.CancellationToken cancellationToken)
         {
             if (messageId == null)
                 throw new System.ArgumentNullException("messageId");
@@ -3005,12 +3586,24 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200" || status_ == "206") 
+                        if (status_ == "400") 
                         {
-                            var responseStream_ = await response_.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                            var fileResponse_ = new FileResponse(status_, headers_, responseStream_, client_, response_); 
-                            client_ = null; response_ = null; // response and client are disposed by FileResponse
-                            return fileResponse_;
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
+                        if (status_ == "200") 
+                        {
+                            return;
                         }
                         else
                         if (status_ != "200" && status_ != "204")
@@ -3018,8 +3611,6 @@ namespace ImperaPlus.GeneratedClient
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
                             throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
                         }
-            
-                        return default(FileResponse);
                     }
                     finally
                     {
@@ -3035,75 +3626,7 @@ namespace ImperaPlus.GeneratedClient
             }
         }
     
-        /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<FileResponse> DeleteAsync(System.Guid messageId)
-        {
-            return DeleteAsync(messageId, System.Threading.CancellationToken.None);
-        }
-    
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<FileResponse> DeleteAsync(System.Guid messageId, System.Threading.CancellationToken cancellationToken)
-        {
-            if (messageId == null)
-                throw new System.ArgumentNullException("messageId");
-    
-            var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl).Append("/api/messages/{messageId}");
-            urlBuilder_.Replace("{messageId}", System.Uri.EscapeDataString(messageId.ToString()));
-    
-            var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    PrepareRequest(client_, urlBuilder_);
-                    var url_ = urlBuilder_.ToString();
-                    PrepareRequest(client_, url_);
-    
-                    request_.Method = new System.Net.Http.HttpMethod("DELETE");
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-                    request_.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    try
-                    {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        foreach (var item_ in response_.Content.Headers)
-                            headers_[item_.Key] = item_.Value;
-    
-                        ProcessResponse(client_, response_);
-    
-                        var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200" || status_ == "206") 
-                        {
-                            var responseStream_ = await response_.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                            var fileResponse_ = new FileResponse(status_, headers_, responseStream_, client_, response_); 
-                            client_ = null; response_ = null; // response and client are disposed by FileResponse
-                            return fileResponse_;
-                        }
-                        else
-                        if (status_ != "200" && status_ != "204")
-                        {
-                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
-                        }
-            
-                        return default(FileResponse);
-                    }
-                    finally
-                    {
-                        if (response_ != null)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (client_ != null)
-                    client_.Dispose();
-            }
-        }
-    
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<FolderInformation> GetFolderInformationAsync()
         {
@@ -3111,6 +3634,7 @@ namespace ImperaPlus.GeneratedClient
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<FolderInformation> GetFolderInformationAsync(System.Threading.CancellationToken cancellationToken)
         {
@@ -3139,6 +3663,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -3176,15 +3715,17 @@ namespace ImperaPlus.GeneratedClient
             }
         }
     
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<FileResponse> PostSendAsync(SendMessage message)
+        public System.Threading.Tasks.Task PostSendAsync(SendMessage message)
         {
             return PostSendAsync(message, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<FileResponse> PostSendAsync(SendMessage message, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task PostSendAsync(SendMessage message, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/api/messages");
@@ -3214,12 +3755,24 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200" || status_ == "206") 
+                        if (status_ == "400") 
                         {
-                            var responseStream_ = await response_.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                            var fileResponse_ = new FileResponse(status_, headers_, responseStream_, client_, response_); 
-                            client_ = null; response_ = null; // response and client are disposed by FileResponse
-                            return fileResponse_;
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
+                        if (status_ == "200") 
+                        {
+                            return;
                         }
                         else
                         if (status_ != "200" && status_ != "204")
@@ -3227,8 +3780,6 @@ namespace ImperaPlus.GeneratedClient
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
                             throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
                         }
-            
-                        return default(FileResponse);
                     }
                     finally
                     {
@@ -3267,7 +3818,7 @@ namespace ImperaPlus.GeneratedClient
         partial void ProcessResponse(System.Net.Http.HttpClient request, System.Net.Http.HttpResponseMessage response);
     
         /// <summary>Returns the last 10 news items for all languages</summary>
-        /// <returns>List of news items</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<List<NewsItem>> GetAllAsync()
         {
@@ -3276,7 +3827,7 @@ namespace ImperaPlus.GeneratedClient
     
         /// <summary>Returns the last 10 news items for all languages</summary>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>List of news items</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<List<NewsItem>> GetAllAsync(System.Threading.CancellationToken cancellationToken)
         {
@@ -3305,6 +3856,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -3365,16 +3931,18 @@ namespace ImperaPlus.GeneratedClient
         partial void ProcessResponse(System.Net.Http.HttpClient request, System.Net.Http.HttpResponseMessage response);
     
         /// <summary>Get notification summary for current user</summary>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<FileResponse> GetSummaryAsync()
+        public System.Threading.Tasks.Task<NotificationSummary> GetSummaryAsync()
         {
             return GetSummaryAsync(System.Threading.CancellationToken.None);
         }
     
         /// <summary>Get notification summary for current user</summary>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<FileResponse> GetSummaryAsync(System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<NotificationSummary> GetSummaryAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/api/notifications/summary");
@@ -3401,12 +3969,34 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200" || status_ == "206") 
+                        if (status_ == "400") 
                         {
-                            var responseStream_ = await response_.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                            var fileResponse_ = new FileResponse(status_, headers_, responseStream_, client_, response_); 
-                            client_ = null; response_ = null; // response and client are disposed by FileResponse
-                            return fileResponse_;
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
+                        if (status_ == "200") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(NotificationSummary); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<NotificationSummary>(responseData_);
+                                return result_; 
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
                         }
                         else
                         if (status_ != "200" && status_ != "204")
@@ -3415,7 +4005,7 @@ namespace ImperaPlus.GeneratedClient
                             throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
                         }
             
-                        return default(FileResponse);
+                        return default(NotificationSummary);
                     }
                     finally
                     {
@@ -3456,7 +4046,7 @@ namespace ImperaPlus.GeneratedClient
         /// <summary>Place units to countries.</summary>
         /// <param name="gameId">Id of the game</param>
         /// <param name="placeUnitsOptions">List of country/unit count pairs</param>
-        /// <returns>GameActionResult of action</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<GameActionResult> PostPlaceAsync(long gameId, System.Collections.Generic.IEnumerable<PlaceUnitsOptions> placeUnitsOptions)
         {
@@ -3467,7 +4057,7 @@ namespace ImperaPlus.GeneratedClient
         /// <param name="gameId">Id of the game</param>
         /// <param name="placeUnitsOptions">List of country/unit count pairs</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>GameActionResult of action</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<GameActionResult> PostPlaceAsync(long gameId, System.Collections.Generic.IEnumerable<PlaceUnitsOptions> placeUnitsOptions, System.Threading.CancellationToken cancellationToken)
         {
@@ -3503,6 +4093,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -3542,7 +4147,7 @@ namespace ImperaPlus.GeneratedClient
     
         /// <summary>Exchange cards for the current player. Which cards to exchange is automatically chosen to gain the most bonus for the player.</summary>
         /// <param name="gameId">Id of the game</param>
-        /// <returns>GameActionResult of action</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<GameActionResult> PostExchangeAsync(long gameId)
         {
@@ -3552,16 +4157,12 @@ namespace ImperaPlus.GeneratedClient
         /// <summary>Exchange cards for the current player. Which cards to exchange is automatically chosen to gain the most bonus for the player.</summary>
         /// <param name="gameId">Id of the game</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>GameActionResult of action</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<GameActionResult> PostExchangeAsync(long gameId, System.Threading.CancellationToken cancellationToken)
         {
-            if (gameId == null)
-                throw new System.ArgumentNullException("gameId");
-    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/api/games/{gameId}/play/exchange");
-            urlBuilder_.Replace("{gameId}", System.Uri.EscapeDataString(gameId.ToString()));
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -3572,7 +4173,11 @@ namespace ImperaPlus.GeneratedClient
                     var url_ = urlBuilder_.ToString();
                     PrepareRequest(client_, url_);
     
-                    var content_ = new System.Net.Http.StringContent(string.Empty);
+                    var content_ = new System.Net.Http.MultipartFormDataContent();
+                    if (gameId == null)
+                        throw new System.ArgumentNullException("gameId");
+                    else
+                            content_.Add(new System.Net.Http.StringContent(gameId.ToString()), "gameId");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
                     request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
@@ -3587,6 +4192,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -3627,7 +4247,7 @@ namespace ImperaPlus.GeneratedClient
         /// <summary>Attack from one to another country.</summary>
         /// <param name="gameId">Id of the game</param>
         /// <param name="options">Options for the command</param>
-        /// <returns>GameActionResult of action</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<GameActionResult> PostAttackAsync(long gameId, AttackOptions options)
         {
@@ -3638,7 +4258,7 @@ namespace ImperaPlus.GeneratedClient
         /// <param name="gameId">Id of the game</param>
         /// <param name="options">Options for the command</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>GameActionResult of action</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<GameActionResult> PostAttackAsync(long gameId, AttackOptions options, System.Threading.CancellationToken cancellationToken)
         {
@@ -3674,6 +4294,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -3713,7 +4348,7 @@ namespace ImperaPlus.GeneratedClient
     
         /// <summary>Switch to moving.</summary>
         /// <param name="gameId">Id of the game</param>
-        /// <returns>GameActionResult of action</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<GameActionResult> PostEndAttackAsync(long gameId)
         {
@@ -3723,7 +4358,7 @@ namespace ImperaPlus.GeneratedClient
         /// <summary>Switch to moving.</summary>
         /// <param name="gameId">Id of the game</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>GameActionResult of action</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<GameActionResult> PostEndAttackAsync(long gameId, System.Threading.CancellationToken cancellationToken)
         {
@@ -3758,6 +4393,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -3799,7 +4449,7 @@ namespace ImperaPlus.GeneratedClient
         /// possible anymore after moving.</summary>
         /// <param name="gameId">Id of the game</param>
         /// <param name="options">Options for the command</param>
-        /// <returns>GameActionResult of action</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<GameActionResult> PostMoveAsync(long gameId, MoveOptions options)
         {
@@ -3811,7 +4461,7 @@ namespace ImperaPlus.GeneratedClient
         /// <param name="gameId">Id of the game</param>
         /// <param name="options">Options for the command</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>GameActionResult of action</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<GameActionResult> PostMoveAsync(long gameId, MoveOptions options, System.Threading.CancellationToken cancellationToken)
         {
@@ -3847,6 +4497,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -3886,7 +4551,7 @@ namespace ImperaPlus.GeneratedClient
     
         /// <summary>End the current turn</summary>
         /// <param name="gameId">Id of the game</param>
-        /// <returns>GameActionResult of action</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<Game> PostEndTurnAsync(long gameId)
         {
@@ -3896,7 +4561,7 @@ namespace ImperaPlus.GeneratedClient
         /// <summary>End the current turn</summary>
         /// <param name="gameId">Id of the game</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>GameActionResult of action</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<Game> PostEndTurnAsync(long gameId, System.Threading.CancellationToken cancellationToken)
         {
@@ -3931,6 +4596,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -3991,7 +4671,7 @@ namespace ImperaPlus.GeneratedClient
         partial void ProcessResponse(System.Net.Http.HttpClient request, System.Net.Http.HttpResponseMessage response);
     
         /// <summary>Returns tournaments</summary>
-        /// <returns>List of tournaments</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<List<Tournament>> GetAllAsync()
         {
@@ -4000,7 +4680,7 @@ namespace ImperaPlus.GeneratedClient
     
         /// <summary>Returns tournaments</summary>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>List of tournaments</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<List<Tournament>> GetAllAsync(System.Threading.CancellationToken cancellationToken)
         {
@@ -4029,6 +4709,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -4068,6 +4763,7 @@ namespace ImperaPlus.GeneratedClient
     
         /// <summary>Get tournament identified by Id</summary>
         /// <param name="tournamentId">Id of tournament</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<Tournament> GetByIdAsync(System.Guid tournamentId)
         {
@@ -4077,6 +4773,7 @@ namespace ImperaPlus.GeneratedClient
         /// <summary>Get tournament identified by Id</summary>
         /// <param name="tournamentId">Id of tournament</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<Tournament> GetByIdAsync(System.Guid tournamentId, System.Threading.CancellationToken cancellationToken)
         {
@@ -4109,6 +4806,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -4148,6 +4860,7 @@ namespace ImperaPlus.GeneratedClient
     
         /// <summary>Join tournament</summary>
         /// <param name="tournamentId">Id of tournament</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<TournamentTeam> PostJoinAsync(System.Guid tournamentId)
         {
@@ -4157,6 +4870,7 @@ namespace ImperaPlus.GeneratedClient
         /// <summary>Join tournament</summary>
         /// <param name="tournamentId">Id of tournament</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<TournamentTeam> PostJoinAsync(System.Guid tournamentId, System.Threading.CancellationToken cancellationToken)
         {
@@ -4191,6 +4905,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -4230,6 +4959,7 @@ namespace ImperaPlus.GeneratedClient
     
         /// <summary>Get teams for tournament</summary>
         /// <param name="tournamentId">Id of tournament</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<List<TournamentTeam>> GetTeamsAsync(System.Guid tournamentId)
         {
@@ -4239,6 +4969,7 @@ namespace ImperaPlus.GeneratedClient
         /// <summary>Get teams for tournament</summary>
         /// <param name="tournamentId">Id of tournament</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<List<TournamentTeam>> GetTeamsAsync(System.Guid tournamentId, System.Threading.CancellationToken cancellationToken)
         {
@@ -4271,6 +5002,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -4312,7 +5058,7 @@ namespace ImperaPlus.GeneratedClient
         /// <param name="tournamentId">Id of tournament</param>
         /// <param name="name">Name of team</param>
         /// <param name="password">Optional password for team</param>
-        /// <returns>Summary of newly created team</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<TournamentTeamSummary> PostCreateTeamAsync(System.Guid tournamentId, string name, string password)
         {
@@ -4324,7 +5070,7 @@ namespace ImperaPlus.GeneratedClient
         /// <param name="name">Name of team</param>
         /// <param name="password">Optional password for team</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <returns>Summary of newly created team</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<TournamentTeamSummary> PostCreateTeamAsync(System.Guid tournamentId, string name, string password, System.Threading.CancellationToken cancellationToken)
         {
@@ -4362,6 +5108,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -4403,8 +5164,9 @@ namespace ImperaPlus.GeneratedClient
         /// <param name="tournamentId">Id of tournament</param>
         /// <param name="teamId">Id of team</param>
         /// <param name="password">Optional password for team to join</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<FileResponse> PostJoinTeamAsync(System.Guid tournamentId, System.Guid teamId, string password)
+        public System.Threading.Tasks.Task PostJoinTeamAsync(System.Guid tournamentId, System.Guid teamId, string password)
         {
             return PostJoinTeamAsync(tournamentId, teamId, password, System.Threading.CancellationToken.None);
         }
@@ -4414,8 +5176,9 @@ namespace ImperaPlus.GeneratedClient
         /// <param name="teamId">Id of team</param>
         /// <param name="password">Optional password for team to join</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<FileResponse> PostJoinTeamAsync(System.Guid tournamentId, System.Guid teamId, string password, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task PostJoinTeamAsync(System.Guid tournamentId, System.Guid teamId, string password, System.Threading.CancellationToken cancellationToken)
         {
             if (tournamentId == null)
                 throw new System.ArgumentNullException("tournamentId");
@@ -4454,12 +5217,24 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200" || status_ == "206") 
+                        if (status_ == "400") 
                         {
-                            var responseStream_ = await response_.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                            var fileResponse_ = new FileResponse(status_, headers_, responseStream_, client_, response_); 
-                            client_ = null; response_ = null; // response and client are disposed by FileResponse
-                            return fileResponse_;
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
+                        if (status_ == "200") 
+                        {
+                            return;
                         }
                         else
                         if (status_ != "200" && status_ != "204")
@@ -4467,8 +5242,6 @@ namespace ImperaPlus.GeneratedClient
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
                             throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
                         }
-            
-                        return default(FileResponse);
                     }
                     finally
                     {
@@ -4487,8 +5260,9 @@ namespace ImperaPlus.GeneratedClient
         /// <summary>Delete a team. Only allowed if user created it</summary>
         /// <param name="tournamentId">Id of tournament</param>
         /// <param name="teamId">Id of team to delete</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<FileResponse> DeleteTeamAsync(System.Guid tournamentId, System.Guid teamId)
+        public System.Threading.Tasks.Task DeleteTeamAsync(System.Guid tournamentId, System.Guid teamId)
         {
             return DeleteTeamAsync(tournamentId, teamId, System.Threading.CancellationToken.None);
         }
@@ -4497,8 +5271,9 @@ namespace ImperaPlus.GeneratedClient
         /// <param name="tournamentId">Id of tournament</param>
         /// <param name="teamId">Id of team to delete</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<FileResponse> DeleteTeamAsync(System.Guid tournamentId, System.Guid teamId, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task DeleteTeamAsync(System.Guid tournamentId, System.Guid teamId, System.Threading.CancellationToken cancellationToken)
         {
             if (tournamentId == null)
                 throw new System.ArgumentNullException("tournamentId");
@@ -4533,12 +5308,24 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200" || status_ == "206") 
+                        if (status_ == "400") 
                         {
-                            var responseStream_ = await response_.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                            var fileResponse_ = new FileResponse(status_, headers_, responseStream_, client_, response_); 
-                            client_ = null; response_ = null; // response and client are disposed by FileResponse
-                            return fileResponse_;
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
+                        if (status_ == "200") 
+                        {
+                            return;
                         }
                         else
                         if (status_ != "200" && status_ != "204")
@@ -4546,8 +5333,6 @@ namespace ImperaPlus.GeneratedClient
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
                             throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
                         }
-            
-                        return default(FileResponse);
                     }
                     finally
                     {
@@ -4565,8 +5350,9 @@ namespace ImperaPlus.GeneratedClient
     
         /// <summary>Leave a team and tournament</summary>
         /// <param name="tournamentId">Id of tournament</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<FileResponse> LeaveTournamentAsync(System.Guid tournamentId)
+        public System.Threading.Tasks.Task LeaveTournamentAsync(System.Guid tournamentId)
         {
             return LeaveTournamentAsync(tournamentId, System.Threading.CancellationToken.None);
         }
@@ -4574,8 +5360,9 @@ namespace ImperaPlus.GeneratedClient
         /// <summary>Leave a team and tournament</summary>
         /// <param name="tournamentId">Id of tournament</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<FileResponse> LeaveTournamentAsync(System.Guid tournamentId, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task LeaveTournamentAsync(System.Guid tournamentId, System.Threading.CancellationToken cancellationToken)
         {
             if (tournamentId == null)
                 throw new System.ArgumentNullException("tournamentId");
@@ -4606,12 +5393,24 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
-                        if (status_ == "200" || status_ == "206") 
+                        if (status_ == "400") 
                         {
-                            var responseStream_ = await response_.Content.ReadAsStreamAsync().ConfigureAwait(false);
-                            var fileResponse_ = new FileResponse(status_, headers_, responseStream_, client_, response_); 
-                            client_ = null; response_ = null; // response and client are disposed by FileResponse
-                            return fileResponse_;
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
+                        if (status_ == "200") 
+                        {
+                            return;
                         }
                         else
                         if (status_ != "200" && status_ != "204")
@@ -4619,8 +5418,6 @@ namespace ImperaPlus.GeneratedClient
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
                             throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
                         }
-            
-                        return default(FileResponse);
                     }
                     finally
                     {
@@ -4660,6 +5457,7 @@ namespace ImperaPlus.GeneratedClient
     
         /// <summary>Find users starting with the given query</summary>
         /// <param name="query">Query to search for</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task<List<UserReference>> FindUsersAsync(string query)
         {
@@ -4669,6 +5467,7 @@ namespace ImperaPlus.GeneratedClient
         /// <summary>Find users starting with the given query</summary>
         /// <param name="query">Query to search for</param>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
+        /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<List<UserReference>> FindUsersAsync(string query, System.Threading.CancellationToken cancellationToken)
         {
@@ -4701,6 +5500,21 @@ namespace ImperaPlus.GeneratedClient
                         ProcessResponse(client_, response_);
     
                         var status_ = ((int)response_.StatusCode).ToString();
+                        if (status_ == "400") 
+                        {
+                            var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
+                            var result_ = default(ErrorResponse); 
+                            try
+                            {
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<ErrorResponse>(responseData_);
+                            } 
+                            catch (System.Exception exception) 
+                            {
+                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                            }
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                        }
+                        else
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
@@ -4744,41 +5558,6 @@ namespace ImperaPlus.GeneratedClient
 
     
 
-    public class FileResponse : System.IDisposable
-    {
-        private System.IDisposable _client; 
-        private System.IDisposable _response; 
-
-        public string StatusCode { get; private set; }
-
-        public System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>> Headers { get; private set; }
-
-        public System.IO.Stream Stream { get; private set; }
-
-        public bool IsPartial
-        {
-            get { return StatusCode == "206"; }
-        }
-
-        public FileResponse(string statusCode, System.Collections.Generic.Dictionary<string, System.Collections.Generic.IEnumerable<string>> headers, System.IO.Stream stream, System.IDisposable client, System.IDisposable response)
-        {
-            StatusCode = statusCode; 
-            Headers = headers; 
-            Stream = stream; 
-            _client = client; 
-            _response = response;
-        }
-
-        public void Dispose() 
-        {
-            if (Stream != null)
-                Stream.Dispose();
-            if (_response != null)
-                _response.Dispose();
-            if (_client != null)
-                _client.Dispose();
-        }
-    }
 
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "9.12.6284.27589")]

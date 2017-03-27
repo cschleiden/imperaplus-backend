@@ -1,14 +1,16 @@
-﻿using System.Collections.Generic;
-using AspNet.Security.OAuth.Validation;
-using ImperaPlus.Application.News;
+﻿using ImperaPlus.Application.News;
+using ImperaPlus.DTO;
 using ImperaPlus.DTO.News;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace ImperaPlus.Backend.Controllers
 {
     [Route("api/news")]
     [Authorize]
+    [ProducesResponseType(typeof(ErrorResponse), 400)]
+    [ProducesResponseType(typeof(void), 200)]
     public class NewsController : Controller
     {
         private readonly INewsService newsService;
@@ -23,6 +25,7 @@ namespace ImperaPlus.Backend.Controllers
         /// </summary>
         /// <returns>List of news items</returns>
         [HttpGet("")]
+        [ProducesResponseType(typeof(IEnumerable<NewsItem>), 200)]
         public IEnumerable<NewsItem> GetAll()
         {
             return this.newsService.GetNews();

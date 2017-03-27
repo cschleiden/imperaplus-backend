@@ -3,10 +3,14 @@ using ImperaPlus.Application;
 using ImperaPlus.Application.Exceptions;
 using ImperaPlus.DTO.Games.Map;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using ImperaPlus.DTO;
 
 namespace ImperaPlus.Backend.Controllers
 {
     [Route("api/map")]
+    [ProducesResponseType(typeof(ErrorResponse), 400)]
+    [ProducesResponseType(typeof(void), 200)]
     public class MapController : Controller
     {
         private readonly IMapTemplateService mapTemplateService;
@@ -17,6 +21,7 @@ namespace ImperaPlus.Backend.Controllers
         }
 
         [HttpGet("")]
+        [ProducesResponseType(typeof(IEnumerable<MapTemplateDescriptor>), 200)]
         public IEnumerable<MapTemplateDescriptor> GetAllSummary()
         {
             return this.mapTemplateService.QuerySummary();

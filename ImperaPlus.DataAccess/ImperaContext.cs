@@ -12,12 +12,12 @@ using ImperaPlus.Domain.Map;
 using ImperaPlus.Domain.News;
 using ImperaPlus.Domain.Tournaments;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using StackExchange.Profiling;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace ImperaPlus.DataAccess
 {
-    public class ImperaContext : OpenIddict.OpenIddictDbContext<User>, IImperaContext
+    public class ImperaContext : IdentityDbContext<User>, IImperaContext
     {
         private readonly IUserProvider userProvider;
         private readonly IEventAggregator eventAggregator;
