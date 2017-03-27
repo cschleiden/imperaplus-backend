@@ -4,6 +4,10 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using ImperaPlus.DataAccess;
+using ImperaPlus.Domain.Enums;
+using ImperaPlus.Domain.Games.History;
+using ImperaPlus.Domain.Messages;
+using ImperaPlus.Domain.Tournaments;
 
 namespace ImperaPlus.Web.Migrations
 {
@@ -13,7 +17,7 @@ namespace ImperaPlus.Web.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
             modelBuilder
-                .HasAnnotation("ProductVersion", "1.0.1")
+                .HasAnnotation("ProductVersion", "1.1.1")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("ImperaPlus.Domain.Alliance", b =>
@@ -332,8 +336,6 @@ namespace ImperaPlus.Web.Migrations
 
                     b.HasKey("LadderId", "UserId");
 
-                    b.HasIndex("LadderId");
-
                     b.HasIndex("UserId");
 
                     b.ToTable("LadderQueueEntry");
@@ -361,8 +363,6 @@ namespace ImperaPlus.Web.Migrations
 
                     b.HasKey("LadderId", "UserId");
 
-                    b.HasIndex("LadderId");
-
                     b.HasIndex("UserId");
 
                     b.ToTable("LadderStanding");
@@ -370,7 +370,8 @@ namespace ImperaPlus.Web.Migrations
 
             modelBuilder.Entity("ImperaPlus.Domain.Map.MapTemplateDescriptor", b =>
                 {
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -600,6 +601,8 @@ namespace ImperaPlus.Web.Migrations
 
                     b.Property<int>("State");
 
+                    b.Property<Guid?>("TournamentGroupId");
+
                     b.Property<Guid>("TournamentId");
 
                     b.Property<Guid?>("TournamentId1");
@@ -610,6 +613,8 @@ namespace ImperaPlus.Web.Migrations
 
                     b.HasIndex("GroupId");
 
+                    b.HasIndex("TournamentGroupId");
+
                     b.HasIndex("TournamentId");
 
                     b.HasIndex("TournamentId1");
@@ -619,7 +624,8 @@ namespace ImperaPlus.Web.Migrations
 
             modelBuilder.Entity("ImperaPlus.Domain.User", b =>
                 {
-                    b.Property<string>("Id");
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int>("AccessFailedCount");
 
@@ -629,7 +635,7 @@ namespace ImperaPlus.Web.Migrations
                         .IsConcurrencyToken();
 
                     b.Property<string>("Email")
-                        .HasAnnotation("MaxLength", 256);
+                        .HasMaxLength(256);
 
                     b.Property<bool>("EmailConfirmed");
 
@@ -646,10 +652,10 @@ namespace ImperaPlus.Web.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd");
 
                     b.Property<string>("NormalizedEmail")
-                        .HasAnnotation("MaxLength", 256);
+                        .HasMaxLength(256);
 
                     b.Property<string>("NormalizedUserName")
-                        .HasAnnotation("MaxLength", 256);
+                        .HasMaxLength(256);
 
                     b.Property<string>("PasswordHash");
 
@@ -662,7 +668,7 @@ namespace ImperaPlus.Web.Migrations
                     b.Property<bool>("TwoFactorEnabled");
 
                     b.Property<string>("UserName")
-                        .HasAnnotation("MaxLength", 256);
+                        .HasMaxLength(256);
 
                     b.HasKey("Id");
 
@@ -680,20 +686,22 @@ namespace ImperaPlus.Web.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole", b =>
                 {
-                    b.Property<string>("Id");
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
                     b.Property<string>("Name")
-                        .HasAnnotation("MaxLength", 256);
+                        .HasMaxLength(256);
 
                     b.Property<string>("NormalizedName")
-                        .HasAnnotation("MaxLength", 256);
+                        .HasMaxLength(256);
 
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedName")
+                        .IsUnique()
                         .HasName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles");
@@ -765,8 +773,6 @@ namespace ImperaPlus.Web.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("AspNetUserRoles");
                 });
 
@@ -785,9 +791,10 @@ namespace ImperaPlus.Web.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("OpenIddict.OpenIddictApplication", b =>
+            modelBuilder.Entity("OpenIddict.Models.OpenIddictApplication", b =>
                 {
-                    b.Property<string>("Id");
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("ClientId");
 
@@ -809,24 +816,28 @@ namespace ImperaPlus.Web.Migrations
                     b.ToTable("OpenIddictApplications");
                 });
 
-            modelBuilder.Entity("OpenIddict.OpenIddictAuthorization", b =>
+            modelBuilder.Entity("OpenIddict.Models.OpenIddictAuthorization", b =>
                 {
-                    b.Property<string>("Id");
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("ApplicationId");
 
                     b.Property<string>("Scope");
 
-                    b.Property<string>("UserId");
+                    b.Property<string>("Subject");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("ApplicationId");
 
                     b.ToTable("OpenIddictAuthorizations");
                 });
 
-            modelBuilder.Entity("OpenIddict.OpenIddictScope", b =>
+            modelBuilder.Entity("OpenIddict.Models.OpenIddictScope", b =>
                 {
-                    b.Property<string>("Id");
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("Description");
 
@@ -835,25 +846,24 @@ namespace ImperaPlus.Web.Migrations
                     b.ToTable("OpenIddictScopes");
                 });
 
-            modelBuilder.Entity("OpenIddict.OpenIddictToken", b =>
+            modelBuilder.Entity("OpenIddict.Models.OpenIddictToken", b =>
                 {
-                    b.Property<string>("Id");
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("ApplicationId");
 
                     b.Property<string>("AuthorizationId");
 
-                    b.Property<string>("Type");
+                    b.Property<string>("Subject");
 
-                    b.Property<string>("UserId");
+                    b.Property<string>("Type");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicationId");
 
                     b.HasIndex("AuthorizationId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("OpenIddictTokens");
                 });
@@ -1095,6 +1105,10 @@ namespace ImperaPlus.Web.Migrations
                         .WithMany("Teams")
                         .HasForeignKey("GroupId");
 
+                    b.HasOne("ImperaPlus.Domain.Tournaments.TournamentGroup")
+                        .WithMany("Winners")
+                        .HasForeignKey("TournamentGroupId");
+
                     b.HasOne("ImperaPlus.Domain.Tournaments.Tournament", "Tournament")
                         .WithMany("Teams")
                         .HasForeignKey("TournamentId")
@@ -1149,26 +1163,22 @@ namespace ImperaPlus.Web.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("OpenIddict.OpenIddictAuthorization", b =>
+            modelBuilder.Entity("OpenIddict.Models.OpenIddictAuthorization", b =>
                 {
-                    b.HasOne("ImperaPlus.Domain.User")
+                    b.HasOne("OpenIddict.Models.OpenIddictApplication", "Application")
                         .WithMany("Authorizations")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("ApplicationId");
                 });
 
-            modelBuilder.Entity("OpenIddict.OpenIddictToken", b =>
+            modelBuilder.Entity("OpenIddict.Models.OpenIddictToken", b =>
                 {
-                    b.HasOne("OpenIddict.OpenIddictApplication")
+                    b.HasOne("OpenIddict.Models.OpenIddictApplication", "Application")
                         .WithMany("Tokens")
                         .HasForeignKey("ApplicationId");
 
-                    b.HasOne("OpenIddict.OpenIddictAuthorization")
+                    b.HasOne("OpenIddict.Models.OpenIddictAuthorization", "Authorization")
                         .WithMany("Tokens")
                         .HasForeignKey("AuthorizationId");
-
-                    b.HasOne("ImperaPlus.Domain.User")
-                        .WithMany("Tokens")
-                        .HasForeignKey("UserId");
                 });
         }
     }

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace ImperaPlus.Web.Migrations
 {
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -25,6 +25,8 @@ namespace ImperaPlus.Web.Migrations
                     NewUnitsPerTurn = table.Column<int>(nullable: false),
                     NumberOfPlayersPerTeam = table.Column<int>(nullable: false),
                     NumberOfTeams = table.Column<int>(nullable: false),
+                    SerializedVictoryConditions = table.Column<string>(nullable: true),
+                    SerializedVisibilityModifier = table.Column<string>(nullable: true),
                     TimeoutInSeconds = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -111,7 +113,8 @@ namespace ImperaPlus.Web.Migrations
                     IsActive = table.Column<bool>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     OptionsId = table.Column<long>(nullable: true),
-                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true)
+                    RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
+                    SerializedMapTemplates = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -143,6 +146,53 @@ namespace ImperaPlus.Web.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OpenIddictAuthorizations",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    ApplicationId = table.Column<string>(nullable: true),
+                    Scope = table.Column<string>(nullable: true),
+                    Subject = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OpenIddictAuthorizations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OpenIddictAuthorizations_OpenIddictApplications_ApplicationId",
+                        column: x => x.ApplicationId,
+                        principalTable: "OpenIddictApplications",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OpenIddictTokens",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    ApplicationId = table.Column<string>(nullable: true),
+                    AuthorizationId = table.Column<string>(nullable: true),
+                    Subject = table.Column<string>(nullable: true),
+                    Type = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OpenIddictTokens", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OpenIddictTokens_OpenIddictApplications_ApplicationId",
+                        column: x => x.ApplicationId,
+                        principalTable: "OpenIddictApplications",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_OpenIddictTokens_OpenIddictAuthorizations_AuthorizationId",
+                        column: x => x.AuthorizationId,
+                        principalTable: "OpenIddictAuthorizations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -357,25 +407,6 @@ namespace ImperaPlus.Web.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OpenIddictAuthorizations",
-                columns: table => new
-                {
-                    Id = table.Column<string>(nullable: false),
-                    Scope = table.Column<string>(nullable: true),
-                    UserId = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OpenIddictAuthorizations", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_OpenIddictAuthorizations_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "NewsContent",
                 columns: table => new
                 {
@@ -395,39 +426,6 @@ namespace ImperaPlus.Web.Migrations
                         principalTable: "NewsEntries",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OpenIddictTokens",
-                columns: table => new
-                {
-                    Id = table.Column<string>(nullable: false),
-                    ApplicationId = table.Column<string>(nullable: true),
-                    AuthorizationId = table.Column<string>(nullable: true),
-                    Type = table.Column<string>(nullable: true),
-                    UserId = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OpenIddictTokens", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_OpenIddictTokens_OpenIddictApplications_ApplicationId",
-                        column: x => x.ApplicationId,
-                        principalTable: "OpenIddictApplications",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_OpenIddictTokens_OpenIddictAuthorizations_AuthorizationId",
-                        column: x => x.AuthorizationId,
-                        principalTable: "OpenIddictAuthorizations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_OpenIddictTokens_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -591,7 +589,6 @@ namespace ImperaPlus.Web.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     AttacksInCurrentTurn = table.Column<int>(nullable: false),
                     CardDistributed = table.Column<bool>(nullable: false),
-                    CountriesSerialized = table.Column<string>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     CreatedById = table.Column<string>(nullable: true),
                     CurrentPlayerId = table.Column<Guid>(nullable: true),
@@ -603,6 +600,7 @@ namespace ImperaPlus.Web.Migrations
                     OptionsId = table.Column<long>(nullable: false),
                     PlayState = table.Column<int>(nullable: false),
                     RowVersion = table.Column<byte[]>(rowVersion: true, nullable: true),
+                    SerializedCountries = table.Column<string>(nullable: true),
                     StartedAt = table.Column<DateTime>(nullable: true),
                     State = table.Column<int>(nullable: false),
                     TournamentPairingId = table.Column<Guid>(nullable: true),
@@ -647,6 +645,7 @@ namespace ImperaPlus.Web.Migrations
                     NumberOfTeams = table.Column<int>(nullable: false),
                     OptionsId = table.Column<long>(nullable: false),
                     Phase = table.Column<int>(nullable: false),
+                    SerializedMapTemplates = table.Column<string>(nullable: true),
                     StartOfRegistration = table.Column<DateTime>(nullable: false),
                     StartOfTournament = table.Column<DateTime>(nullable: false),
                     State = table.Column<int>(nullable: false),
@@ -700,6 +699,7 @@ namespace ImperaPlus.Web.Migrations
                     Name = table.Column<string>(nullable: true),
                     Password = table.Column<string>(nullable: true),
                     State = table.Column<int>(nullable: false),
+                    TournamentGroupId = table.Column<Guid>(nullable: true),
                     TournamentId = table.Column<Guid>(nullable: false),
                     TournamentId1 = table.Column<Guid>(nullable: true)
                 },
@@ -715,6 +715,12 @@ namespace ImperaPlus.Web.Migrations
                     table.ForeignKey(
                         name: "FK_TournamentTeam_TournamentGroup_GroupId",
                         column: x => x.GroupId,
+                        principalTable: "TournamentGroup",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_TournamentTeam_TournamentGroup_TournamentGroupId",
+                        column: x => x.TournamentGroupId,
                         principalTable: "TournamentGroup",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -907,19 +913,9 @@ namespace ImperaPlus.Web.Migrations
                 column: "OptionsId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LadderQueueEntry_LadderId",
-                table: "LadderQueueEntry",
-                column: "LadderId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_LadderQueueEntry_UserId",
                 table: "LadderQueueEntry",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_LadderStanding_LadderId",
-                table: "LadderStanding",
-                column: "LadderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LadderStanding_UserId",
@@ -1018,6 +1014,11 @@ namespace ImperaPlus.Web.Migrations
                 column: "GroupId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_TournamentTeam_TournamentGroupId",
+                table: "TournamentTeam",
+                column: "TournamentGroupId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TournamentTeam_TournamentId",
                 table: "TournamentTeam",
                 column: "TournamentId");
@@ -1046,7 +1047,8 @@ namespace ImperaPlus.Web.Migrations
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
                 table: "AspNetRoles",
-                column: "NormalizedName");
+                column: "NormalizedName",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -1069,20 +1071,15 @@ namespace ImperaPlus.Web.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUserRoles_UserId",
-                table: "AspNetUserRoles",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_OpenIddictApplications_ClientId",
                 table: "OpenIddictApplications",
                 column: "ClientId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_OpenIddictAuthorizations_UserId",
+                name: "IX_OpenIddictAuthorizations_ApplicationId",
                 table: "OpenIddictAuthorizations",
-                column: "UserId");
+                column: "ApplicationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OpenIddictTokens_ApplicationId",
@@ -1093,11 +1090,6 @@ namespace ImperaPlus.Web.Migrations
                 name: "IX_OpenIddictTokens_AuthorizationId",
                 table: "OpenIddictTokens",
                 column: "AuthorizationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OpenIddictTokens_UserId",
-                table: "OpenIddictTokens",
-                column: "UserId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_AspNetUsers_Alliance_AllianceId",
@@ -1272,13 +1264,13 @@ namespace ImperaPlus.Web.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "OpenIddictApplications");
-
-            migrationBuilder.DropTable(
                 name: "OpenIddictAuthorizations");
 
             migrationBuilder.DropTable(
                 name: "Team");
+
+            migrationBuilder.DropTable(
+                name: "OpenIddictApplications");
 
             migrationBuilder.DropTable(
                 name: "Channels");

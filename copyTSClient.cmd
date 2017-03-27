@@ -1,1 +1,0 @@
-copy ImperaPlus.GeneratedClient.Typescript\* ..\ImperaPlus.Client\src\external\

@@ -29,7 +29,7 @@ namespace ImperaPlus.Backend.Controllers
         /// </summary>
         /// <returns>List of ladders</returns>
         [HttpGet("")]
-        [ProducesResponseType(typeof(LadderSummary), 200)]
+        [ProducesResponseType(typeof(IEnumerable<LadderSummary>), 200)]
         public IEnumerable<LadderSummary> Get()
         {
             return this.ladderService.GetAll();
@@ -67,8 +67,8 @@ namespace ImperaPlus.Backend.Controllers
         /// <param name="count">Count of standings to return</param>
         /// <returns></returns>
         [HttpGet("{ladderId:guid}/standings")]
-        [ProducesResponseType(typeof(IEnumerable<LadderSummary>), 200)]
-        public IEnumerable<DTO.Ladder.LadderStanding> GetStandings(Guid ladderId, int start = 0, int count = 30)
+        [ProducesResponseType(typeof(IEnumerable<LadderStanding>), 200)]
+        public IEnumerable<LadderStanding> GetStandings(Guid ladderId, int start = 0, int count = 30)
         {
             return this.ladderService.GetStandings(ladderId, start, count);
         }

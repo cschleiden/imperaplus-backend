@@ -2670,16 +2670,16 @@ namespace ImperaPlus.GeneratedClient
         /// <summary>Returns active ladders</summary>
         /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<LadderSummary> GetAsync()
+        public System.Threading.Tasks.Task<List<LadderSummary>> GetAllAsync()
         {
-            return GetAsync(System.Threading.CancellationToken.None);
+            return GetAllAsync(System.Threading.CancellationToken.None);
         }
     
         /// <summary>Returns active ladders</summary>
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<LadderSummary> GetAsync(System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<List<LadderSummary>> GetAllAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl).Append("/api/ladder");
@@ -2724,10 +2724,10 @@ namespace ImperaPlus.GeneratedClient
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            var result_ = default(LadderSummary); 
+                            var result_ = default(List<LadderSummary>); 
                             try
                             {
-                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<LadderSummary>(responseData_);
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<List<LadderSummary>>(responseData_);
                                 return result_; 
                             } 
                             catch (System.Exception exception) 
@@ -2742,7 +2742,7 @@ namespace ImperaPlus.GeneratedClient
                             throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
                         }
             
-                        return default(LadderSummary);
+                        return default(List<LadderSummary>);
                     }
                     finally
                     {
@@ -2762,9 +2762,9 @@ namespace ImperaPlus.GeneratedClient
         /// <param name="ladderId">Id of ladder</param>
         /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<Ladder> Get2Async(System.Guid ladderId)
+        public System.Threading.Tasks.Task<Ladder> GetAsync(System.Guid ladderId)
         {
-            return Get2Async(ladderId, System.Threading.CancellationToken.None);
+            return GetAsync(ladderId, System.Threading.CancellationToken.None);
         }
     
         /// <summary>Gets ladder identified by given id</summary>
@@ -2772,7 +2772,7 @@ namespace ImperaPlus.GeneratedClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<Ladder> Get2Async(System.Guid ladderId, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<Ladder> GetAsync(System.Guid ladderId, System.Threading.CancellationToken cancellationToken)
         {
             if (ladderId == null)
                 throw new System.ArgumentNullException("ladderId");
@@ -2948,7 +2948,7 @@ namespace ImperaPlus.GeneratedClient
         /// <param name="count">Count of standings to return</param>
         /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<List<LadderSummary>> GetStandingsAsync(System.Guid ladderId, int? start, int? count)
+        public System.Threading.Tasks.Task<List<LadderStanding>> GetStandingsAsync(System.Guid ladderId, int? start, int? count)
         {
             return GetStandingsAsync(ladderId, start, count, System.Threading.CancellationToken.None);
         }
@@ -2960,7 +2960,7 @@ namespace ImperaPlus.GeneratedClient
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <returns>Success</returns>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<List<LadderSummary>> GetStandingsAsync(System.Guid ladderId, int? start, int? count, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<List<LadderStanding>> GetStandingsAsync(System.Guid ladderId, int? start, int? count, System.Threading.CancellationToken cancellationToken)
         {
             if (ladderId == null)
                 throw new System.ArgumentNullException("ladderId");
@@ -3012,10 +3012,10 @@ namespace ImperaPlus.GeneratedClient
                         if (status_ == "200") 
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            var result_ = default(List<LadderSummary>); 
+                            var result_ = default(List<LadderStanding>); 
                             try
                             {
-                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<List<LadderSummary>>(responseData_);
+                                result_ = Newtonsoft.Json.JsonConvert.DeserializeObject<List<LadderStanding>>(responseData_);
                                 return result_; 
                             } 
                             catch (System.Exception exception) 
@@ -3030,7 +3030,7 @@ namespace ImperaPlus.GeneratedClient
                             throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
                         }
             
-                        return default(List<LadderSummary>);
+                        return default(List<LadderStanding>);
                     }
                     finally
                     {

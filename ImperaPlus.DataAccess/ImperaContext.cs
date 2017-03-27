@@ -14,6 +14,8 @@ using ImperaPlus.Domain.Tournaments;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Profiling;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using OpenIddict.EntityFrameworkCore;
+
 
 namespace ImperaPlus.DataAccess
 {
@@ -22,9 +24,9 @@ namespace ImperaPlus.DataAccess
         private readonly IUserProvider userProvider;
         private readonly IEventAggregator eventAggregator;
 
-        public ImperaContext()
+        public ImperaContext(DbContextOptions<ImperaContext> options)
+            : base(options)
         {
-            // Default constructor used for generating migrations
         }
 
         public ImperaContext(

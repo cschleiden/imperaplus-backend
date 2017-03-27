@@ -89,7 +89,10 @@ namespace ImperaPlus.Web
             services.AddDbContext<ImperaContext>(options =>
             {
                 string connection = Configuration["DBConnection"];
-                options.UseSqlServer(connection, b=> b.MigrationsAssembly("ImperaPlus.Web"));
+
+                options.UseSqlServer(connection, b => b.MigrationsAssembly("ImperaPlus.Web"));
+
+                options.UseOpenIddict();
             });
 
             services.AddCors(opts => opts.AddPolicy(
