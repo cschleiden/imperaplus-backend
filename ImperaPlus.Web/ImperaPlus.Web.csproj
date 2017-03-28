@@ -13,7 +13,57 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="wwwroot\admin\scripts\bootstrap-datetimepicker.js" />
+    <Content Include="wwwroot\admin\scripts\bootstrap-datetimepicker.min.js" />
+    <Content Include="wwwroot\admin\scripts\bootstrap.js" />
+    <Content Include="wwwroot\admin\scripts\bootstrap.min.js" />
+    <Content Include="wwwroot\admin\scripts\jquery.js" />
+    <Content Include="wwwroot\admin\scripts\metisMenu.js" />
+    <Content Include="wwwroot\admin\scripts\moment-with-locales.js" />
+    <Content Include="wwwroot\admin\scripts\moment-with-locales.min.js" />
+    <Content Include="wwwroot\admin\scripts\moment.js" />
+    <Content Include="wwwroot\admin\scripts\moment.min.js" />
+    <Content Include="wwwroot\admin\scripts\morris.js" />
+    <Content Include="wwwroot\admin\scripts\npm.js" />
+    <Content Include="wwwroot\admin\scripts\sb-admin-2.js" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="App.config" />
+    <None Include="wwwroot\admin\bootstrap-datetimepicker.css" />
+    <None Include="wwwroot\admin\bootstrap-datetimepicker.min.css" />
+    <None Include="wwwroot\admin\bootstrap-theme.css" />
+    <None Include="wwwroot\admin\bootstrap-theme.min.css" />
+    <None Include="wwwroot\admin\bootstrap.css" />
+    <None Include="wwwroot\admin\bootstrap.min.css" />
+    <None Include="wwwroot\admin\font-awesome.css" />
+    <None Include="wwwroot\admin\fonts\fontawesome-webfont.eot" />
+    <None Include="wwwroot\admin\fonts\fontawesome-webfont.svg" />
+    <None Include="wwwroot\admin\fonts\fontawesome-webfont.ttf" />
+    <None Include="wwwroot\admin\fonts\fontawesome-webfont.woff" />
+    <None Include="wwwroot\admin\fonts\FontAwesome.otf" />
+    <None Include="wwwroot\admin\jquery.dataTables.css" />
+    <None Include="wwwroot\admin\metisMenu.css" />
+    <None Include="wwwroot\admin\morris.css" />
+    <None Include="wwwroot\admin\sb-admin-2.css" />
+    <None Include="wwwroot\admin\scripts\bootstrap-datetimepicker.js" />
+    <None Include="wwwroot\admin\scripts\bootstrap-datetimepicker.min.js" />
+    <None Include="wwwroot\admin\scripts\bootstrap.js" />
+    <None Include="wwwroot\admin\scripts\bootstrap.min.js" />
+    <None Include="wwwroot\admin\scripts\jquery.js" />
+    <None Include="wwwroot\admin\scripts\metisMenu.js" />
+    <None Include="wwwroot\admin\scripts\moment-with-locales.js" />
+    <None Include="wwwroot\admin\scripts\moment-with-locales.min.js" />
+    <None Include="wwwroot\admin\scripts\moment.js" />
+    <None Include="wwwroot\admin\scripts\moment.min.js" />
+    <None Include="wwwroot\admin\scripts\morris.js" />
+    <None Include="wwwroot\admin\scripts\npm.js" />
+    <None Include="wwwroot\admin\scripts\sb-admin-2.js" />
+    <None Include="wwwroot\admin\site.css" />
+    <None Include="wwwroot\admin\sort_asc.png" />
+    <None Include="wwwroot\admin\sort_asc_disabled.png" />
+    <None Include="wwwroot\admin\sort_both.png" />
+    <None Include="wwwroot\admin\sort_desc.png" />
+    <None Include="wwwroot\admin\sort_desc_disabled.png" />
     <None Update="wwwroot\**\*">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </None>
@@ -24,6 +74,7 @@
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.1.1" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.0.0" />
+    <PackageReference Include="DataTables.AspNet.AspNetCore" Version="2.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="1.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="1.1.0" />
@@ -85,5 +136,8 @@
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="1.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Areas\" />
   </ItemGroup>
 </Project>

@@ -256,7 +256,13 @@ namespace ImperaPlus.Web
             });            
             app.UseOpenIddict();
 
-            app.UseMvc();
+            app.UseStaticFiles();
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute("areaRoute", "{area:exists}/{controller}/{action=Index}");
+
+                routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
+            });
 
             app.UseWebSockets();
             app.UseSignalR();
