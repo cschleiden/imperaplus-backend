@@ -8,11 +8,11 @@ using ImperaPlus.Domain.Utilities;
 
 namespace ImperaPlus.Application
 {
-    public class BonusCardsResolver : ValueResolver<string, Domain.Games.BonusCard[]>
+    public class ConditionalBonusCardResolver : ValueResolver<Domain.Games.BonusCard, DTO.Games.BonusCard>
     {
-        protected override Domain.Games.BonusCard[] ResolveCore(string source)
+        protected override DTO.Games.BonusCard ResolveCore(Domain.Games.BonusCard source)
         {
-            return Domain.Games.Player.ParseCardData(source);
+            throw new NotImplementedException();
         }
     }
 
@@ -95,7 +95,8 @@ namespace ImperaPlus.Application
                 .ForMember(x => x.Cards, c => c.MapFrom(x => x.CurrentPlayer.Cards))
                 .ForMember(x => x.AttacksInCurrentTurn, c => c.MapFrom(x => x.AttacksInCurrentTurn))
                 .ForMember(x => x.MovesInCurrentTurn, c => c.MapFrom(x => x.MovesInCurrentTurn))
-                .ForMember(x => x.CurrentPlayer, c => c.MapFrom(x => x.CurrentPlayer));
+                .ForMember(x => x.CurrentPlayer, c => c.MapFrom(x => x.CurrentPlayer))
+                .ForMember(x => x.UnitsToPlace, c => c.Ignore()); // Manually mapped
            
             Mapper.CreateMap<Domain.Games.Game, DTO.Games.Game>()
                 .ForMember(x => x.Id, c => c.MapFrom(x => x.Id))
@@ -105,7 +106,6 @@ namespace ImperaPlus.Application
                 .ForMember(x => x.MapTemplate, c => c.MapFrom(x => x.MapTemplateName))
                 .ForMember(x => x.Map, c => c.MapFrom(x => x.Map))
                 .ForMember(x => x.Teams, c => c.MapFrom(x => x.Teams))
-                .ForMember(x => x.CurrentPlayer, c => c.Ignore()) // Manually mapped
                 .ForMember(x => x.TurnCounter, c => c.MapFrom(x => x.TurnCounter))
                 .ForMember(x => x.UnitsToPlace, c => c.Ignore()) // Manually mapped
                 .ForMember(x => x.AttacksInCurrentTurn, c => c.MapFrom(x => x.AttacksInCurrentTurn))
@@ -152,7 +152,14 @@ namespace ImperaPlus.Application
             Mapper.CreateMap<Domain.Games.Player, DTO.Games.Player>()
                 .ForMember(x => x.UserId, c => c.MapFrom(x => x.UserId))
                 .ForMember(x => x.Name, c => c.MapFrom(x => x.User.UserName))
-                .ForMember(x => x.Cards, c => c.MapFrom(x => x.Cards))
+                .ForMember(x => x.Cards, c => c.Condition((ResolutionContext context) =>
+                {
+                    // Map BonusCards only for current user
+                    var userId = context.Options.Items["userId"] as string;
+                    var player = context.Parent.SourceValue as Domain.Games.Player;
+
+                    return player != null && player.UserId == userId;
+                }))
                 .ForMember(x => x.State, c => c.MapFrom(x => (PlayerState)x.State))
                 .ForMember(x => x.Outcome, c => c.MapFrom(x => (PlayerOutcome)x.Outcome))
                 .ForMember(x => x.Timeouts, c => c.MapFrom(x => x.Timeouts))

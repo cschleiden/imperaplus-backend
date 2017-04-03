@@ -60,8 +60,10 @@ namespace ImperaPlus.Application
 
         protected DTO.Games.Game MapAndApplyModifiers(Game game)
         {
-            var mappedGame = Mapper.Map<DTO.Games.Game>(game);
-
+            var currentUserId = this.CurrentUserId;
+            
+            var mappedGame = Mapper.Map<DTO.Games.Game>(game, opts => opts.Items.Add("userId", this.CurrentUserId));
+            
             // Apply visibility modifications
             foreach (var visibilityModifier in game.Options.VisibilityModifier)
             {
@@ -70,20 +72,11 @@ namespace ImperaPlus.Application
                 visibilityModifierInstance.Apply(this.CurrentUser, mappedGame);
             }
 
-            if (game.CurrentPlayer != null)
+            // Only send information for current player
+            if (game.CurrentPlayer != null && game.CurrentPlayer.UserId == this.CurrentUserId)
             {
-                if (game.CurrentPlayer.UserId == this.userProvider.GetCurrentUserId())
-                {
-                    // Show extended information
-                    mappedGame.CurrentPlayer = Mapper.Map<DTO.Games.Player>(game.CurrentPlayer);
-                }
-                else
-                {
-                    mappedGame.CurrentPlayer = Mapper.Map<DTO.Games.PlayerSummary>(game.CurrentPlayer);
-                }
+                mappedGame.UnitsToPlace = game.GetUnitsToPlace(this.mapTemplateProvider.GetTemplate(game.MapTemplateName), game.CurrentPlayer);
             }
-
-            mappedGame.UnitsToPlace = game.GetUnitsToPlace(this.mapTemplateProvider.GetTemplate(game.MapTemplateName), game.CurrentPlayer);
 
             return mappedGame;
         }

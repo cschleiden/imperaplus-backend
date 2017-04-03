@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ImperaPlus.Backend.Areas.Admin.Controllers
 {
-    [Authorize(Roles = "admin")]
     public class NewsController : BaseAdminController
     {
         private INewsService newsService;

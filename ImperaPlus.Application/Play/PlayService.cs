@@ -15,6 +15,8 @@ namespace ImperaPlus.Application.Play
 {
     public interface IPlayService
     {
+        DTO.Games.GameActionResult Exchange(long gameId);
+
         DTO.Games.GameActionResult Place(long gameId, IEnumerable<PlaceUnitsOptions> places);
 
         DTO.Games.GameActionResult Attack(long gameId, string originCountryIdentifier, string destinationCountryIdentifier, int numberOfUnits);
@@ -24,8 +26,6 @@ namespace ImperaPlus.Application.Play
         DTO.Games.GameActionResult EndAttack(long gameId);
 
         DTO.Games.Game EndTurn(long gameId);
-
-        DTO.Games.Game Exchange(long gameId);
     }
 
     public class PlayService : BaseGameService, IPlayService
@@ -92,16 +92,14 @@ namespace ImperaPlus.Application.Play
             return this.CommitAndGetGameActionResult(game);
         }
 
-        public DTO.Games.Game Exchange(long gameId)
+        public DTO.Games.GameActionResult Exchange(long gameId)
         {
             var game = this.GetGame(gameId);
             this.CheckPermission(game);
 
             game.ExchangeCards();
-
-            this.UnitOfWork.Commit();
-
-            return this.MapAndApplyModifiers(game);
+            
+            return this.CommitAndGetGameActionResult(game);
         }
 
         public DTO.Games.Game EndTurn(long gameId)
@@ -126,7 +124,7 @@ namespace ImperaPlus.Application.Play
 
         private DTO.Games.GameActionResult CommitAndGetGameActionResult(Game game)
         {            
-            var gameActionResult = Mapper.Map<Domain.Games.Game, DTO.Games.GameActionResult>(game);
+            var gameActionResult = Mapper.Map<Domain.Games.Game, DTO.Games.GameActionResult>(game, opts => opts.Items.Add("userId", this.CurrentUserId));
 
             var changedCountries = game.Map.ChangedCountries.ToList();
             foreach(var visibilityModifier in game.Options.VisibilityModifier)
@@ -137,6 +135,8 @@ namespace ImperaPlus.Application.Play
             }
 
             gameActionResult.CountryUpdates = Mapper.Map<IEnumerable<DTO.Games.Map.Country>>(changedCountries.ToArray()).ToArray();
+            gameActionResult.UnitsToPlace = game.GetUnitsToPlace(this.mapTemplateProvider.GetTemplate(game.MapTemplateName), game.CurrentPlayer);
+
             this.UnitOfWork.Commit();
 
             return gameActionResult;

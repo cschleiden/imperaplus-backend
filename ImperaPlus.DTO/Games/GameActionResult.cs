@@ -38,6 +38,11 @@ namespace ImperaPlus.DTO.Games
         public ActionResult ActionResult { get; set; }
 
         /// <summary>
+        /// Units to place
+        /// </summary>
+        public int UnitsToPlace { get; set; }
+
+        /// <summary>
         /// Numbers of attacks done in current turn
         /// </summary>
         public int AttacksInCurrentTurn { get; set; }

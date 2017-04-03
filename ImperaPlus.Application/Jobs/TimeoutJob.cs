@@ -4,6 +4,7 @@ using Hangfire;
 using ImperaPlus.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using NLog.Fluent;
+using System;
 
 namespace ImperaPlus.Application.Jobs
 {
@@ -29,8 +30,18 @@ namespace ImperaPlus.Application.Jobs
             
             foreach(var game in games)
             {
-                Log.Info().Message("Processing timeout in game {0} {1}", game.Id, game.Name).Write();
-                game.ProcessTimeouts();
+                try
+                {
+                    Log.Info().Message("Processing timeout in game {0} {1}", game.Id, game.Name).Write();
+                    game.ProcessTimeouts();
+                }
+                catch (Exception e)
+                {
+                    // Log and continue with next game
+                    Log.Error()
+                        .Message("Error while processing timeouts for game {0}", game.Id)
+                        .Exception(e);
+                }
 
                 try
                 {

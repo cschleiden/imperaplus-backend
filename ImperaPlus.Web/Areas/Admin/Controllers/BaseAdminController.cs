@@ -8,6 +8,7 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
 {
     [Area("admin")]
     [Authorize(Roles = "admin")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class BaseAdminController : Controller
     {
         protected IUnitOfWork unitOfWork;

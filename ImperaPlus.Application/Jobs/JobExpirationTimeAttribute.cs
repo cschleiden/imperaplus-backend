@@ -9,7 +9,7 @@ namespace ImperaPlus.Application.Jobs
     {
         public void OnStateApplied(ApplyStateContext context, IWriteOnlyTransaction transaction)
         {
-            context.JobExpirationTimeout = TimeSpan.FromHours(10);
+            context.JobExpirationTimeout = TimeSpan.FromHours(1);
         }
 
         public void OnStateUnapplied(ApplyStateContext context, IWriteOnlyTransaction transaction)
