@@ -6,8 +6,6 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Autofac;
 using ImperaPlus.Application.Games;
-using ImperaPlus.Domain;
-using ImperaPlus.Domain.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SignalR.Hubs;
@@ -18,9 +16,9 @@ namespace ImperaPlus.Web.Hubs
     {
     }
 
-    [HubName("notification")]
+    [HubName("game")]
     [Authorize]
-    public class NotificationHub : Hub, INotificationHubContext
+    public class GameHub : Hub, INotificationHubContext
     {
         public static string GameGroup(long gameId)
         {
@@ -36,7 +34,7 @@ namespace ImperaPlus.Web.Hubs
 
         private ILifetimeScope lifetimeScope;
 
-        public NotificationHub(ILifetimeScope scope)
+        public GameHub(ILifetimeScope scope)
             : base()
         {
             this.lifetimeScope = scope.BeginLifetimeScope();
@@ -56,8 +54,7 @@ namespace ImperaPlus.Web.Hubs
         public override async Task OnConnected()
         {
             // Track connection
-            var userManager = this.lifetimeScope.Resolve<UserManager<Domain.User>>();
-            string userId = userManager.GetUserId(ClaimsPrincipal.Current);
+            string userId = this.GetUserId();
             if (!Connections.GetConnections(userId).Contains(Context.ConnectionId))
             {
                 Connections.Add(userId, Context.ConnectionId);
@@ -91,8 +88,7 @@ namespace ImperaPlus.Web.Hubs
 
         public override Task OnReconnected()
         {
-            var userManager = this.lifetimeScope.Resolve<UserManager<Domain.User>>();
-            string userId = userManager.GetUserId(ClaimsPrincipal.Current);
+            string userId = this.GetUserId();
             if (!Connections.GetConnections(userId).Contains(Context.ConnectionId))
             {
                 Connections.Add(userId, Context.ConnectionId);
@@ -107,8 +103,7 @@ namespace ImperaPlus.Web.Hubs
         /// <param name="gameId">Id of game to receive notifications for</param>
         public async Task JoinGame(long gameId)
         {
-            var userManager = this.lifetimeScope.Resolve<UserManager<Domain.User>>();
-            string userId = userManager.GetUserId(ClaimsPrincipal.Current);
+            string userId = this.GetUserId();
 
             var gameService = this.lifetimeScope.Resolve<IGameService>();
             var game = gameService.Get(gameId);
@@ -132,9 +127,8 @@ namespace ImperaPlus.Web.Hubs
             {
                 return;
             }
-
-            var userManager = this.lifetimeScope.Resolve<UserManager<Domain.User>>();
-            string userId = userManager.GetUserId(ClaimsPrincipal.Current);
+            
+            string userId = this.GetUserId();
 
             var gameService = this.lifetimeScope.Resolve<IGameService>();
             var game = gameService.Get(gameId);
@@ -173,8 +167,7 @@ namespace ImperaPlus.Web.Hubs
         /// <param name="isPublic">Value indicating whether message is inteded for all players or only team</param>
         public async Task SendGameMessage(long gameId, string text, bool isPublic)
         {
-            var userManager = this.lifetimeScope.Resolve<UserManager<Domain.User>>();
-            string userId = userManager.GetUserId(ClaimsPrincipal.Current);
+            string userId = this.GetUserId();
 
             var gameService = this.lifetimeScope.Resolve<IGameService>();
             var message = gameService.SendMessage(gameId, text, isPublic);
@@ -190,8 +183,7 @@ namespace ImperaPlus.Web.Hubs
 
         private async Task AddGroup(string groupName)
         {
-            var userManager = this.lifetimeScope.Resolve<UserManager<Domain.User>>();
-            string userId = userManager.GetUserId(ClaimsPrincipal.Current);
+            string userId = this.GetUserId();
 
             await this.Groups.Add(this.Context.ConnectionId, groupName);
             Connections.JoinGroup(userId, groupName);
@@ -199,11 +191,16 @@ namespace ImperaPlus.Web.Hubs
 
         private async Task LeaveGroup(string groupName)
         {
-            var userManager = this.lifetimeScope.Resolve<UserManager<Domain.User>>();
-            string userId = userManager.GetUserId(ClaimsPrincipal.Current);
+            string userId = this.GetUserId();
 
             await this.Groups.Remove(this.Context.ConnectionId, groupName);
             Connections.LeaveGroup(userId, groupName);
+        }
+
+        private string GetUserId()
+        {
+            var userManager = this.lifetimeScope.Resolve<UserManager<Domain.User>>();
+            return userManager.GetUserId(this.Context.User as ClaimsPrincipal);
         }
     }
 }
