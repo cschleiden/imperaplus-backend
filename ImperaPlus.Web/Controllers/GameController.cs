@@ -98,7 +98,7 @@ namespace ImperaPlus.Backend.Controllers
         /// <param name="isPublic">Value indicating whether to return only public messages, default is true</param>
         /// <returns>Messages posted in the requested game</returns>
         [HttpGet("{gameId:long:min(1)}/messages")]
-        [ProducesResponseType(typeof(Game), 200)]
+        [ProducesResponseType(typeof(IEnumerable<DTO.Games.Chat.GameChatMessage>), 200)]
         public IActionResult GetMessages(long gameId, bool isPublic = true)
         {
             var messages = this.gameService.GetMessages(gameId, isPublic);
