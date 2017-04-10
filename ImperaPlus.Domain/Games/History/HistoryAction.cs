@@ -56,8 +56,12 @@ namespace ImperaPlus.Domain.Games.History
 
         /// <summary>
         /// Turn has ended
-        /// TODO: CS: Required?
         /// </summary>
-        EndTurn = 11
+        EndTurn = 11,
+
+        /// <summary>
+        /// Player has surrendered
+        /// </summary>
+        PlayerSurrender = 12
     }
 }

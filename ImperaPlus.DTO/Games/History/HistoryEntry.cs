@@ -53,6 +53,11 @@ namespace ImperaPlus.DTO.Games.History
         PlayerTimeout = 9,
 
         /// <summary>
+        /// Player has surrendered
+        /// </summary>
+        PlayerSurrendered = 12,
+
+        /// <summary>
         /// Countries changes owner, e.g., because a player quit
         /// </summary>
         OwnerChange = 10,

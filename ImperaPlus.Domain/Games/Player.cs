@@ -188,10 +188,15 @@ namespace ImperaPlus.Domain.Games
             this.Outcome = PlayerOutcome.Surrendered;
             this.State = PlayerState.InActive;
 
+            var game = this.Team.Game;
+
             foreach (var country in this.Countries.ToArray())
             {
-                this.Team.Game.Map.UpdateOwnership(this, null, country);
+                game.Map.UpdateOwnership(this, null, country);
+                game.GameHistory.RecordOwnershipChange(this, null, country.CountryIdentifier);
             }
+
+            this.Team.Game.GameHistory.RecordPlayerSurrendered(this);
 
             // TODO: CS: Record in history?
             this.Team.Game.CheckForVictory(this.Team.Game.CurrentPlayer);

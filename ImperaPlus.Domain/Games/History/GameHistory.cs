@@ -95,9 +95,23 @@ namespace ImperaPlus.Domain.Games.History
             });
         }
 
+        public void RecordOwnershipChange(Player oldOwner, Player newOwner, string countryIdentifier)
+        {
+            this.AddEntry(new HistoryEntry(this.Game, oldOwner, HistoryAction.OwnerChange, this.Game.TurnCounter)
+            {                
+                OriginIdentifier = countryIdentifier,
+                OtherPlayer = newOwner
+            });
+        }
+
         public void RecordPlayerDefeated(Player player)
         {
             this.AddEntry(new HistoryEntry(this.Game, player, HistoryAction.PlayerLost, this.Game.TurnCounter));
+        }
+
+        public void RecordPlayerSurrendered(Player player)
+        {
+            this.AddEntry(new HistoryEntry(this.Game, player, HistoryAction.PlayerSurrender, this.Game.TurnCounter));
         }
 
         public void RecordPlayerWon(Player player)
@@ -165,10 +179,24 @@ namespace ImperaPlus.Domain.Games.History
 
                             break;
                         }
+
+                    case HistoryAction.OwnerChange:
+                        {
+                            var country = map.GetCountry(action.OriginIdentifier);
+                            map.UpdateOwnership(action.Actor, country);
+
+                            break;
+                        }
                 }
             }
-        }
+        }        
 
+        /// <summary>
+        /// Applies general actions to the game
+        /// </summary>
+        /// <remarks>
+        /// Does not apply any map changes, use <see cref="GameHistory.GetMapForTurn" /> instead
+        /// </remarks>
         public HistoryGameTurn GetTurn(long turnNo)
         {
             if (turnNo < 0 || turnNo > this.Game.TurnCounter)
@@ -188,9 +216,11 @@ namespace ImperaPlus.Domain.Games.History
                     case HistoryAction.EndGame:
                         break;
 
+                    // Apply any action that affects the map
                     case HistoryAction.PlaceUnits:
                     case HistoryAction.Attack:
                     case HistoryAction.Move:
+                    case HistoryAction.OwnerChange:
                         {
                             ApplyActionsToMap(this.Game.Map, new[] { action });
                             break;
@@ -230,23 +260,10 @@ namespace ImperaPlus.Domain.Games.History
                             break;
                         }
 
-                    case HistoryAction.OwnerChange:
-                        {
-                            var country = this.Game.Map.GetCountry(action.OriginIdentifier);
-
-                            this.Game.Map.UpdateOwnership(action.Actor, country);
-
-                            break;
-                        }
-
                     case HistoryAction.EndTurn:
                         {
                             break;
                         }
-
-                    case HistoryAction.None:
-                    default:
-                        throw new ArgumentOutOfRangeException();
                 }
             }
 

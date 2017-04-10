@@ -28,9 +28,9 @@ namespace ImperaPlus.GeneratedClient
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    PrepareRequest(client_, urlBuilder_);
+                    PrepareRequest(client_, request_, urlBuilder_);
                     var url_ = urlBuilder_.ToString();
-                    PrepareRequest(client_, url_);
+                    PrepareRequest(client_, request_, url_);
 
                     var content_ = new System.Net.Http.FormUrlEncodedContent(new []
                     {

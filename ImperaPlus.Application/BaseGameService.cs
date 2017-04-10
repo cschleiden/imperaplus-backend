@@ -62,7 +62,7 @@ namespace ImperaPlus.Application
         {
             var currentUserId = this.CurrentUserId;
             
-            var mappedGame = Mapper.Map<DTO.Games.Game>(game, opts => opts.Items.Add("userId", this.CurrentUserId));
+            var mappedGame = Mapper.Map<DTO.Games.Game>(game, this.GetMapperOptions());
             
             // Apply visibility modifications
             foreach (var visibilityModifier in game.Options.VisibilityModifier)
@@ -83,9 +83,8 @@ namespace ImperaPlus.Application
 
         protected ImperaPlus.DTO.Games.History.HistoryTurn MapAndApplyModifiers(HistoryGameTurn turn, Map previousTurnMap)
         {
-            var mappedTurn = Mapper.Map<DTO.Games.History.HistoryTurn>(turn);
-
-            var mappedMap = Mapper.Map<DTO.Games.Map.Map>(previousTurnMap);
+            var mappedTurn = Mapper.Map<DTO.Games.History.HistoryTurn>(turn, this.GetMapperOptions());
+            var mappedMap = Mapper.Map<DTO.Games.Map.Map>(previousTurnMap, this.GetMapperOptions());
 
             // Apply visibility modifications
             foreach (var visibilityModifier in turn.Game.Options.VisibilityModifier)
@@ -96,6 +95,11 @@ namespace ImperaPlus.Application
             }
 
             return mappedTurn;
+        }
+
+        private System.Action<IMappingOperationOptions> GetMapperOptions()
+        {
+            return opts => opts.Items.Add("userId", this.CurrentUserId);
         }
 
         protected string CurrentUserId

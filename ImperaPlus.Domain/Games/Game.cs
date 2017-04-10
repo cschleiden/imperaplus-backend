@@ -709,6 +709,7 @@ namespace ImperaPlus.Domain.Games
                     foreach (var country in this.CurrentPlayer.Countries.ToArray())
                     {
                         this.Map.UpdateOwnership(null, country);
+                        this.GameHistory.RecordOwnershipChange(this.CurrentPlayer, null, country.CountryIdentifier);
                     }
 
                     this.CheckForVictory(this.CurrentPlayer);
