@@ -48,6 +48,13 @@ namespace ImperaPlus.Application.Tests.Play
             this.UnitOfWork.Commit();
 
             var fullGame = this.gameService.Get(game.Id);
+
+            if (fullGame.CurrentPlayer.Name == "Bot")
+            {
+                Assert.Inconclusive();
+                return;
+            }
+
             TestUserProvider.User = this.UnitOfWork.Users.FindById(fullGame.CurrentPlayer.UserId);
 
             // Act
