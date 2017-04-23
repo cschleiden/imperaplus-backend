@@ -239,7 +239,16 @@ namespace ImperaPlus.Web
             });            
             app.UseOpenIddict();
 
-            app.UseStaticFiles();
+            // Enable serving client and static assets
+            app.UseDefaultFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                OnPrepareResponse = ctx =>
+                {
+                    ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=6000000");
+                }
+            });
+
             app.UseMvc(routes =>
             {
                 // Route for sub areas, i.e. Admin
