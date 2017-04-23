@@ -1,6 +1,4 @@
-﻿using System;
-using System.Reflection;
-using System.Threading.Tasks;
+﻿using AspNet.Security.OpenIdConnect.Primitives;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Hangfire;
@@ -17,7 +15,6 @@ using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,39 +22,16 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using Swashbuckle.Swagger.Model;
-using Swashbuckle.SwaggerGen.Generator;
+using System;
 using System.IO;
-using AspNet.Security.OpenIdConnect.Primitives;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace ImperaPlus.Web
 {
-    public class FormFilter : Swashbuckle.SwaggerGen.Generator.IOperationFilter
-    {
-        public void Apply(Operation operation, OperationFilterContext context)
-        {
-            if (operation.OperationId.Contains("Exchange"))
-            {
-                operation.Consumes.Add("application/x-www-form-urlencoded");
-
-                foreach(var parameter in operation.Parameters)
-                {
-                    parameter.In = "formData";
-                }
-            };
-
-            string actionName = ((ControllerActionDescriptor)context.ApiDescription.ActionDescriptor).ActionName;
-            operation.OperationId = $"{context.ApiDescription.GroupName}_{actionName}";
-        }
-    }
 
     public class Startup
     {
-        /// <summary>
-        /// Test support: Work on background threads
-        /// </summary>
-        public static bool StartHangfire = true;
-
         /// <summary>
         /// Test support: Require user confirmation
         /// </summary>
@@ -68,6 +42,8 @@ namespace ImperaPlus.Web
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                // Environment specific settings, i.e., setting db connecting string. Do not create in version control repository.
+                .AddJsonFile($"appsettings.environment.json", optional: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
 
@@ -224,7 +200,7 @@ namespace ImperaPlus.Web
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            if (env.IsDevelopment())
+            //if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
@@ -235,12 +211,19 @@ namespace ImperaPlus.Web
 
             // Auth
             app.UseIdentity();
-            //app.UseFacebookAuthentication(new FacebookOptions
-            //{
-            //   ClientId = Configuration["Authentication:Facebook:ClientId"],
-            //    AppId = Configuration["Authentication:Facebook:AppId"],
-            //    AppSecret = Configuration["Authentication:Facebook:AppSecret"]                
-            //});            
+
+            /*app.UseFacebookAuthentication(new FacebookOptions
+            {
+                AppId = Configuration["Authentication:Facebook:AppId"],
+                AppSecret = Configuration["Authentication:Facebook:AppSecret"]
+            });
+
+            app.UseMicrosoftAccountAuthentication(new MicrosoftAccountOptions
+            {
+                ClientId = Configuration["Authentication:MicrosoftAccount:ClientId"],
+                ClientSecret = Configuration["Authentication:MicrosoftAccount:ClientSecret"]
+            });*/
+
             app.UseOAuthValidation(options => {
                 options.Events = new AspNet.Security.OAuth.Validation.OAuthValidationEvents
                 {
@@ -259,6 +242,7 @@ namespace ImperaPlus.Web
             app.UseStaticFiles();
             app.UseMvc(routes =>
             {
+                // Route for sub areas, i.e. Admin
                 routes.MapRoute("areaRoute", "{area:exists}/{controller}/{action=Index}");
 
                 routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");

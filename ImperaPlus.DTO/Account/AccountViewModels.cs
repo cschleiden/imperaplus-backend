@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ImperaPlus.DTO.Account
+﻿namespace ImperaPlus.DTO.Account
 {
     public class ExternalLoginViewModel
     {
+        /// <summary>
+        /// Name of external login provider
+        /// </summary>
         public string Name { get; set; }
 
-        public string Url { get; set; }
-
-        public string State { get; set; }
+        public string AuthenticationScheme { get; set; }
     }
 
     public class ManageInfoViewModel

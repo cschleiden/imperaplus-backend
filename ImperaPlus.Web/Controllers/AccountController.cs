@@ -321,7 +321,7 @@ namespace ImperaPlus.Backend.Controllers
                 LocalLoginProvider = LocalLoginProvider,
                 UserName = user.UserName,
                 Logins = logins.ToArray(),
-                ExternalLoginProviders = null //GetExternalLogins(returnUrl, generateState).ToArray()
+                ExternalLoginProviders = this.GetExternalLogins().ToArray()
             });
         }
 
@@ -492,18 +492,17 @@ namespace ImperaPlus.Backend.Controllers
         [Route("ExternalLogins")]
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<ExternalLoginViewModel>), 200)]
-        public IActionResult GetExternalLogins([FromQuery] string returnUrl, [FromQuery] bool generateState = false)
+        public IEnumerable<ExternalLoginViewModel> GetExternalLogins()
         {
             var descriptions = this._signInManager.GetExternalAuthenticationSchemes();
 
-            return this.Ok(descriptions
+            return descriptions
                 .Select(description => new ExternalLoginViewModel
                 {
                     Name = description.DisplayName,
-                    Url = "",
-                    State = ""
+                    AuthenticationScheme = description.AuthenticationScheme
                 })
-                .ToList());
+                .ToList();
         }
 
         // POST api/Account/Register
