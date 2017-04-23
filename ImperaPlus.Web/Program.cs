@@ -10,6 +10,7 @@ namespace ImperaPlus.Web
         {
             var host = new WebHostBuilder()
                 .CaptureStartupErrors(true)
+                .UseSetting("detailedErrors", "true")
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseKestrel()
