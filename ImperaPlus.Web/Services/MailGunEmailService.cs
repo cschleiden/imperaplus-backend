@@ -32,7 +32,7 @@ namespace ImperaPlus.Web.Services
 
         public Task SendMail(string to, string subject, string bodyHtml, string bodyText)
         {
-            var client = new MailgunClient(this.settings.Domain, this.settings.ApiKey, 1);
+            var client = new MailgunClient(this.settings.Domain, this.settings.ApiKey, 3);
 
             MailMessage myMessage = new MailMessage();
             myMessage.To.Add(to);
