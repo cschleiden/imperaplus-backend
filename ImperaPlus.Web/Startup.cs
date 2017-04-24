@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -145,6 +146,11 @@ namespace ImperaPlus.Web
                 options.IncludeXmlComments(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ImperaPlus.Web.xml"));
             });
 
+            services.AddResponseCompression(options =>
+            {
+                options.Providers.Add<GzipCompressionProvider>();
+            });
+
             services.AddMvc(config =>
                 {
                     config.Filters.Add(new CheckModelForNull());
@@ -240,6 +246,7 @@ namespace ImperaPlus.Web
             app.UseOpenIddict();
 
             // Enable serving client and static assets
+            app.UseResponseCompression();
             app.UseDefaultFiles();
             app.UseStaticFiles(new StaticFileOptions
             {

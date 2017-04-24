@@ -16,9 +16,6 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Properties\PublishProfiles\dev.imperaonline.de - Web Deploy.pubxml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="wwwroot\admin\scripts\bootstrap-datetimepicker.js" />
     <Content Include="wwwroot\admin\scripts\bootstrap-datetimepicker.min.js" />
     <Content Include="wwwroot\admin\scripts\bootstrap.js" />
@@ -32,6 +29,7 @@
     <Content Include="wwwroot\admin\scripts\morris.js" />
     <Content Include="wwwroot\admin\scripts\npm.js" />
     <Content Include="wwwroot\admin\scripts\sb-admin-2.js" />
+    <Content Include="wwwroot\web.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -83,6 +81,7 @@
     <PackageReference Include="DataTables.AspNet.AspNetCore" Version="2.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="1.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.ResponseCompression" Version="1.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="1.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="1.1.0" />
@@ -148,7 +147,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\" />
-    <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
 
   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
