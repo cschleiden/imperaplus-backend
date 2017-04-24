@@ -23,6 +23,8 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using NLog.Extensions.Logging;
+using NLog.Web;
 using System;
 using System.IO;
 using System.Reflection;
@@ -39,6 +41,8 @@ namespace ImperaPlus.Web
 
         public Startup(IHostingEnvironment env)
         {
+            env.ConfigureNLog("nlog.config");
+
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
@@ -202,8 +206,11 @@ namespace ImperaPlus.Web
             ImperaContext dbContext,
             DbSeed dbSeed)
         {
+            loggerFactory.AddNLog();
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+
+            app.AddNLogWeb();
 
             //if (env.IsDevelopment())
             {
