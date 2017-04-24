@@ -36,6 +36,7 @@ namespace ImperaPlus.Web.Filters
 #endif
 
                 Log.Fatal().Message(context.Exception.ToString()).Write();
+                Log.Fatal().Exception(context.Exception).Write();
 
                 // Log exception
                 Log.Fatal().Exception(context.Exception).Write();
