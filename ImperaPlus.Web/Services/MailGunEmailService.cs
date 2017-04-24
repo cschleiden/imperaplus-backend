@@ -3,6 +3,7 @@ using System.Net.Mime;
 using System.Threading.Tasks;
 using ImperaPlus.Application;
 using Typesafe.Mailgun;
+using NLog.Fluent;
 
 namespace ImperaPlus.Web.Services
 {
@@ -19,6 +20,8 @@ namespace ImperaPlus.Web.Services
 
         public MailGunEmailService(MailGunSettings settings)
         {
+            Log.Debug().Message("Starting MailGunEmailService {0} {1}", settings.Domain, settings.ApiKey).Write();
+
             this.settings = settings;
         }
 
