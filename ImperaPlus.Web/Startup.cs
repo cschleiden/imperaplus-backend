@@ -30,7 +30,6 @@ using System.Threading.Tasks;
 
 namespace ImperaPlus.Web
 {
-
     public class Startup
     {
         /// <summary>
@@ -312,6 +311,11 @@ namespace ImperaPlus.Web
             }
             else
             {
+                builder.RegisterInstance(new MailGunSettings
+                {
+                    ApiKey = Configuration["MailGunApiKey"],
+                    Domain = Configuration["MailGunDomain"]
+                });
                 builder.RegisterType<MailGunEmailService>().AsImplementedInterfaces();
             }
 

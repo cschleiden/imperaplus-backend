@@ -526,8 +526,7 @@ namespace ImperaPlus.Backend.Controllers
                 if (Startup.RequireUserConfirmation)
                 {
                     var code = await this._userManager.GenerateEmailConfirmationTokenAsync(user);
-
-                    // TODO: CS: Send email
+                    await this.sendEmailConfirmation(user, code, model.Language, model.CallbackUrl);
                 }
             }
 

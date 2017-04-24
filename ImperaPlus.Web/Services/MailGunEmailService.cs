@@ -6,8 +6,22 @@ using Typesafe.Mailgun;
 
 namespace ImperaPlus.Web.Services
 {
+    public class MailGunSettings
+    {
+        public string Domain { get; set; }
+
+        public string ApiKey { get; set; }
+    }
+
     public class MailGunEmailService : IEmailService
     {
+        private MailGunSettings settings;
+
+        public MailGunEmailService(MailGunSettings settings)
+        {
+            this.settings = settings;
+        }
+
         public Task SendMail(string to, string subject, string bodyText)
         {
             return this.SendMail(to, subject, bodyText, bodyText);
@@ -15,7 +29,7 @@ namespace ImperaPlus.Web.Services
 
         public Task SendMail(string to, string subject, string bodyHtml, string bodyText)
         {
-            var client = new MailgunClient("", "", 1); // Configuration["MailGunDomain"], Configuration["MailGunApiKey"]);
+            var client = new MailgunClient(this.settings.Domain, this.settings.ApiKey, 1);
 
             MailMessage myMessage = new MailMessage();
             myMessage.To.Add(to);
