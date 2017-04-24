@@ -211,6 +211,7 @@ namespace ImperaPlus.Web
             loggerFactory.AddDebug();
 
             app.AddNLogWeb();
+            NLog.LogManager.Configuration.Variables["configDir"] = Configuration["LogDir"];
 
             //if (env.IsDevelopment())
             {
@@ -258,7 +259,11 @@ namespace ImperaPlus.Web
             {
                 OnPrepareResponse = ctx =>
                 {
-                    ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=6000000");
+                    // Do not cache main entry point.
+                    if (!ctx.File.Name.Contains("index.html"))
+                    {
+                        ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=6000000");
+                    }
                 }
             });
 

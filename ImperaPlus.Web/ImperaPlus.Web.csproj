@@ -19,7 +19,9 @@
     <None Remove="nlog.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="nlog.config" />
+    <Content Include="nlog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="wwwroot\admin\scripts\bootstrap-datetimepicker.js" />
     <Content Include="wwwroot\admin\scripts\bootstrap-datetimepicker.min.js" />
     <Content Include="wwwroot\admin\scripts\bootstrap.js" />
