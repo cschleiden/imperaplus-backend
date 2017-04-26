@@ -35,7 +35,6 @@
     <Content Include="wwwroot\admin\scripts\morris.js" />
     <Content Include="wwwroot\admin\scripts\npm.js" />
     <Content Include="wwwroot\admin\scripts\sb-admin-2.js" />
-    <Content Include="wwwroot\web.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
