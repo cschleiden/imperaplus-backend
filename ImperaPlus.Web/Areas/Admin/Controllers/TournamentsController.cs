@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ImperaPlus.Backend.Areas.Admin.Controllers
 {
-    [Authorize(Roles = "admin")]
     public class TournamentsController : BaseAdminController
     {
         private ITournamentService tournamentService;

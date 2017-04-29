@@ -1,6 +1,7 @@
 ﻿using AspNet.Security.OpenIdConnect.Primitives;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using DataTables.AspNet.AspNetCore;
 using Hangfire;
 using ImperaPlus.Application;
 using ImperaPlus.Application.Jobs;
@@ -108,6 +109,11 @@ namespace ImperaPlus.Web
                         {
                             ctx.Response.StatusCode = (int)System.Net.HttpStatusCode.Unauthorized;
                             return Task.CompletedTask;
+                        },
+
+                        OnValidatePrincipal = ctx =>
+                        {
+                            return Task.CompletedTask;
                         }
                     };
 
@@ -116,7 +122,7 @@ namespace ImperaPlus.Web
                     options.ClaimsIdentity.RoleClaimType = OpenIdConnectConstants.Claims.Role;
                 })
                 .AddEntityFrameworkStores<ImperaContext>()
-                .AddDefaultTokenProviders();
+                .AddDefaultTokenProviders();            
 
             services
                 .AddOpenIddict(options =>
@@ -129,8 +135,8 @@ namespace ImperaPlus.Web
 
                     options.AllowPasswordFlow();
 
-                    options.AllowRefreshTokenFlow();
-
+                    options.AllowRefreshTokenFlow();                    
+                    
                     if (this.Environment.IsDevelopment())
                     {
                         // During development, you can disable the HTTPS requirement.
@@ -170,6 +176,8 @@ namespace ImperaPlus.Web
                     });
                     opt.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 });
+
+            services.RegisterDataTables();
 
             // Set default authorization policy
             services.AddAuthorization(o =>
@@ -235,7 +243,7 @@ namespace ImperaPlus.Web
             {
                 ClientId = Configuration["Authentication:MicrosoftAccount:ClientId"],
                 ClientSecret = Configuration["Authentication:MicrosoftAccount:ClientSecret"]
-            });*/
+            });*/            
 
             app.UseOAuthValidation(options => {
                 options.Events = new AspNet.Security.OAuth.Validation.OAuthValidationEvents
@@ -246,10 +254,15 @@ namespace ImperaPlus.Web
                     OnRetrieveToken = context => {
                         context.Token = context.Request.Query["bearer_token"];
 
+                        if (string.IsNullOrEmpty(context.Token))
+                        {
+                            context.Token = context.Request.Cookies["bearer_token"];
+                        }
+
                         return Task.FromResult(0);
                     }                    
                 };
-            });            
+            });
             app.UseOpenIddict();
 
             // Enable serving client and static assets
@@ -270,7 +283,7 @@ namespace ImperaPlus.Web
             app.UseMvc(routes =>
             {
                 // Route for sub areas, i.e. Admin
-                routes.MapRoute("areaRoute", "{area:exists}/{controller}/{action=Index}");
+                routes.MapRoute("areaRoute", "{area:exists}/{controller=News}/{action=Index}");
 
                 routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
@@ -302,7 +315,7 @@ namespace ImperaPlus.Web
             {
                 Queues = new[] { JobQueues.Critical, JobQueues.Normal },                
             });
-            app.UseHangfireDashboard();
+            app.UseHangfireDashboard("/Admin/Hangfire");
 
             Hangfire.Common.JobHelper.SetSerializerSettings(new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
 

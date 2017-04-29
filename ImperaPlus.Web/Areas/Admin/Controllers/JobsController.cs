@@ -1,11 +1,15 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using ImperaPlus.Domain.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ImperaPlus.Backend.Areas.Admin.Controllers
 {
-    [Authorize(Roles = "admin")]
-    public class JobsController : Controller
+    public class JobsController : BaseAdminController
     {
+        public JobsController(IUnitOfWork unitOfWork) : base(unitOfWork)
+        {
+        }
+
         // GET: Admin/Hangfire
         public ActionResult Index()
         {

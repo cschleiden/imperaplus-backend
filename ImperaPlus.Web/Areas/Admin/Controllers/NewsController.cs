@@ -2,7 +2,6 @@
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Utilities;
 using ImperaPlus.DTO.News;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ImperaPlus.Backend.Areas.Admin.Controllers

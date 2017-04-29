@@ -1,20 +1,15 @@
 ﻿using System.Linq;
 using DataTables.AspNet.Core;
 using ImperaPlus.Domain.Repositories;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using DataTables.AspNet.AspNetCore;
 
 namespace ImperaPlus.Backend.Areas.Admin.Controllers
 {
-    [Authorize(Roles = "admin")]
-    public class UsersController : Controller
+    public class UsersController : BaseAdminController
     {
-        private IUnitOfWork unitOfWork;
-
-        public UsersController(IUnitOfWork unitOfWork)
+        public UsersController(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
-            this.unitOfWork = unitOfWork;
         }
 
         public ActionResult Index()
