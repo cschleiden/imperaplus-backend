@@ -111,7 +111,9 @@ namespace ImperaPlus.Domain.Tournaments
         {
             get
             {
-                return this.TeamAWon + this.TeamBWon > this.NumberOfGames / 2;
+                int requiredNumberOfWins = this.NumberOfGames / 2;
+                return this.TeamAWon >= requiredNumberOfWins
+                    || this.TeamBWon >= requiredNumberOfWins;
             }
         }
 

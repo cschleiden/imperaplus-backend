@@ -25,7 +25,7 @@ namespace ImperaPlus.Backend.Controllers
         /// </summary>
         /// <returns>List of tournaments</returns>
         [HttpGet("")]
-        [ProducesResponseType(typeof(IEnumerable<DTO.Tournaments.Tournament>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<DTO.Tournaments.TournamentSummary>), 200)]
         public IActionResult GetAll()
         {
             return this.Ok(this.tournamentService.GetAll());
