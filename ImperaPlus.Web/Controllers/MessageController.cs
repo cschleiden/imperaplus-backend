@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 using ImperaPlus.Application.Messages;
 using ImperaPlus.DTO;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc
+using Microsoft.AspNetCore.Mvc;
 
 namespace ImperaPlus.Backend.Controllers
 {
