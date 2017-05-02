@@ -37,7 +37,7 @@ namespace ImperaPlus.Backend.Controllers
         }
 
         [HttpGet("folders")]
-        [ProducesResponseType(typeof(DTO.Messages.FolderInformation), 200)]
+        [ProducesResponseType(typeof(IEnumerable<DTO.Messages.FolderInformation>), 200)]
         public IActionResult GetFolderInformation()
         {
             return this.Ok(this.messageService.GetFolderInformation());
