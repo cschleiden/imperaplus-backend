@@ -256,7 +256,8 @@ namespace ImperaPlus.Application
             Mapper.CreateMap<Domain.Messages.Message, DTO.Messages.Message>()
                 .ForMember(x => x.SentAt, x => x.MapFrom(c => c.CreatedAt))
                 .ForMember(x => x.From, x => x.MapFrom(c => c.From))
-                .ForMember(x => x.To, x => x.MapFrom(c => c.Recipient));
+                .ForMember(x => x.To, x => x.MapFrom(c => c.Recipient))
+                .ForMember(x => x.IsRead, x => x.MapFrom(c => c.IsRead));
         }
 
         private static void CreateUserMapping()

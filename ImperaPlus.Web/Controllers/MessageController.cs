@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using AspNet.Security.OAuth.Validation;
 using ImperaPlus.Application.Messages;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using ImperaPlus.DTO;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc
 
 namespace ImperaPlus.Backend.Controllers
 {
@@ -22,7 +21,7 @@ namespace ImperaPlus.Backend.Controllers
             this.messageService = messageService;   
         }
 
-        [HttpGet("folder/{folder}")]
+        [HttpGet("folder/{messageFolder}")]
         [ProducesResponseType(typeof(IEnumerable<DTO.Messages.Message>), 200)]
         public IActionResult Get(DTO.Messages.MessageFolder messageFolder = DTO.Messages.MessageFolder.Inbox)
         {
