@@ -5,5 +5,7 @@
         User FindById(string id);
 
         User FindByName(string name);
+
+        User FindByIdWithRoles(string userId);
     }
 }

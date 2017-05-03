@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using ImperaPlus.Domain;
 using ImperaPlus.Domain.Repositories;
@@ -14,6 +15,13 @@ namespace ImperaPlus.DataAccess.Repositories
         public User FindById(string id)
         {
             return this.DbSet.FirstOrDefault(x => x.Id == id);
+        }
+
+        public User FindByIdWithRoles(string id)
+        {
+            return this.DbSet
+                .Include(x => x.Roles)
+                .FirstOrDefault(x => x.Id == id);
         }
 
         public User FindByName(string name)

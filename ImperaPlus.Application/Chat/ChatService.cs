@@ -37,7 +37,7 @@ namespace ImperaPlus.Application.Chat
 
         public async Task<IEnumerable<ChannelInformation>> GetChannelInformationForUser(string userId)
         {
-            var user = this.UnitOfWork.Users.FindById(userId);
+            var user = this.UnitOfWork.Users.FindByIdWithRoles(userId);
 
             if (user == null)
             {
