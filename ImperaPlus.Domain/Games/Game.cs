@@ -627,9 +627,6 @@ namespace ImperaPlus.Domain.Games
                 {
                     active.Outcome = PlayerOutcome.Won;
                     active.State = PlayerState.InActive;
-
-                    this.GameHistory.RecordPlayerWon(active);
-                    // TODO: CS: Generate event
                 }
             }
 
