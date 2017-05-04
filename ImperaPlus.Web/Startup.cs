@@ -33,9 +33,9 @@ using System.Threading.Tasks;
 
 namespace ImperaPlus.Web
 {
-    public class HangfireAuthorizationFilter : IDashboardAuthorizationFilter
+    public class HangfireAuthorizationFilter : Hangfire.Dashboard.IDashboardAuthorizationFilter
     {
-        public bool Authorize(DashboardContext context)
+        public bool Authorize(Hangfire.Dashboard.DashboardContext context)
         {
             var httpContext = context.GetHttpContext();
 
