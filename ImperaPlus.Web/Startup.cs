@@ -33,6 +33,18 @@ using System.Threading.Tasks;
 
 namespace ImperaPlus.Web
 {
+    public class HangfireAuthorizationFilter : IDashboardAuthorizationFilter
+    {
+        public bool Authorize(DashboardContext context)
+        {
+            var httpContext = context.GetHttpContext();
+
+            // TODO: CS: 
+            // Allow all authenticated users to see the Dashboard (potentially dangerous).
+            return httpContext.User.Identity.IsAuthenticated;
+        }
+    }
+
     public class Startup
     {
         /// <summary>
@@ -315,7 +327,10 @@ namespace ImperaPlus.Web
             {
                 Queues = new[] { JobQueues.Critical, JobQueues.Normal },                
             });
-            app.UseHangfireDashboard("/Admin/Hangfire");
+            app.UseHangfireDashboard("/Admin/Hangfire", new DashboardOptions
+                {
+                    Authorization = new [] { new HangfireAuthorizationFilter() }
+                });
 
             Hangfire.Common.JobHelper.SetSerializerSettings(new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
 
