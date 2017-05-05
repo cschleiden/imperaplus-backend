@@ -34,24 +34,13 @@ using System.Threading.Tasks;
 
 namespace ImperaPlus.Web
 {
-    public class HangfireAuthorizationFilter : Hangfire.Dashboard.IDashboardAuthorizationFilter
-    {
-        public bool Authorize(Hangfire.Dashboard.DashboardContext context)
-        {
-            var httpContext = context.GetHttpContext();
-
-            // TODO: CS: 
-            // Allow all authenticated users to see the Dashboard (potentially dangerous).
-            return httpContext.User.Identity.IsAuthenticated;
-        }
-    }
 
     public class Startup
     {
         /// <summary>
         /// Test support: Require user confirmation
         /// </summary>
-        internal static bool RequireUserConfirmation = true;        
+        internal static bool RequireUserConfirmation = true;
 
         public Startup(IHostingEnvironment env)
         {
@@ -135,7 +124,7 @@ namespace ImperaPlus.Web
                     options.ClaimsIdentity.RoleClaimType = OpenIdConnectConstants.Claims.Role;
                 })
                 .AddEntityFrameworkStores<ImperaContext>()
-                .AddDefaultTokenProviders();            
+                .AddDefaultTokenProviders();
 
             services
                 .AddOpenIddict(options =>
@@ -148,8 +137,8 @@ namespace ImperaPlus.Web
 
                     options.AllowPasswordFlow();
 
-                    options.AllowRefreshTokenFlow();                    
-                    
+                    options.AllowRefreshTokenFlow();
+
                     if (this.Environment.IsDevelopment())
                     {
                         // During development, you can disable the HTTPS requirement.
@@ -221,9 +210,9 @@ namespace ImperaPlus.Web
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(
-            IApplicationBuilder app, 
-            IHostingEnvironment env, 
-            ILoggerFactory loggerFactory, 
+            IApplicationBuilder app,
+            IHostingEnvironment env,
+            ILoggerFactory loggerFactory,
             ImperaContext dbContext,
             DbSeed dbSeed)
         {
@@ -239,7 +228,7 @@ namespace ImperaPlus.Web
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
             }
-            
+
             // Enable Cors
             app.UseCors(b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().DisallowCredentials().Build());
 
@@ -256,15 +245,17 @@ namespace ImperaPlus.Web
             {
                 ClientId = Configuration["Authentication:MicrosoftAccount:ClientId"],
                 ClientSecret = Configuration["Authentication:MicrosoftAccount:ClientSecret"]
-            });*/            
+            });*/
 
-            app.UseOAuthValidation(options => {
+            app.UseOAuthValidation(options =>
+            {
                 options.Events = new AspNet.Security.OAuth.Validation.OAuthValidationEvents
                 {
                     // Note: for SignalR connections, the default Authorization header does not work,
                     // because the WebSockets JS API doesn't allow setting custom parameters.
                     // To work around this limitation, the access token is retrieved from the query string.
-                    OnRetrieveToken = context => {
+                    OnRetrieveToken = context =>
+                    {
                         context.Token = context.Request.Query["bearer_token"];
 
                         if (string.IsNullOrEmpty(context.Token))
@@ -273,7 +264,7 @@ namespace ImperaPlus.Web
                         }
 
                         return Task.FromResult(0);
-                    }                    
+                    }
                 };
             });
             app.UseOpenIddict();
@@ -318,7 +309,7 @@ namespace ImperaPlus.Web
             {
                 dbContext.Database.Migrate();
             }
-                
+
             dbSeed.Seed(dbContext).Wait();
 
             AutoMapperConfig.Configure();
@@ -326,12 +317,12 @@ namespace ImperaPlus.Web
             // Hangfire
             app.UseHangfireServer(new BackgroundJobServerOptions
             {
-                Queues = new[] { JobQueues.Critical, JobQueues.Normal },                
+                Queues = new[] { JobQueues.Critical, JobQueues.Normal },
             });
             app.UseHangfireDashboard("/Admin/Hangfire", new DashboardOptions
-                {
-                    Authorization = new [] { new HangfireAuthorizationFilter() }
-                });
+            {
+                Authorization = new[] { new HangfireAuthorizationFilter() }
+            });
 
             Hangfire.Common.JobHelper.SetSerializerSettings(new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
 
@@ -402,12 +393,12 @@ namespace ImperaPlus.Web
             builder.RegisterModule<Domain.DependencyInjectionModule>();
 
             builder.RegisterType<BackgroundJobClient>().AsImplementedInterfaces();
-            
+
 
             builder.Populate(services);
 
             IContainer container = null;
-            container = builder.Build();            
+            container = builder.Build();
 
             return container.Resolve<IServiceProvider>();
         }
