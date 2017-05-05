@@ -3,6 +3,7 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using DataTables.AspNet.AspNetCore;
 using Hangfire;
+using Hangfire.Dashboard;
 using ImperaPlus.Application;
 using ImperaPlus.Application.Jobs;
 using ImperaPlus.DataAccess;
