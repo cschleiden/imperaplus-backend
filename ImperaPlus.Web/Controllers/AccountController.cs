@@ -186,9 +186,7 @@ namespace ImperaPlus.Backend.Controllers
                 // The other claims won't be added to the access
                 // and identity tokens and will be kept private.
             }            
-
-            //principal.AddIdentity()
-
+            
             // Create a new authentication ticket holding the user identity.
             var ticket = new AuthenticationTicket(
                 principal, 
@@ -599,8 +597,10 @@ namespace ImperaPlus.Backend.Controllers
         [HttpPost]        
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordViewModel model)
         {
-            var user = await _userManager.FindByNameAsync(model.Email);
-            if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+            var user = await _userManager.FindByNameAsync(model.UserName);
+            if (user == null 
+                || !(await _userManager.IsEmailConfirmedAsync(user))
+                || !string.Equals(user.Email, model.Email, StringComparison.InvariantCultureIgnoreCase))
             {
                 return this.Ok();
             }
@@ -613,7 +613,10 @@ namespace ImperaPlus.Backend.Controllers
 
             this.SetCulture(model.Language);
 
-            await this._emailSender.SendMail(user.Email, Resources.ResetPasswordSubject, string.Format(Resources.ResetPasswordBody, callbackUrl));
+            await this._emailSender.SendMail(
+                user.Email, 
+                Resources.ResetPasswordSubject, 
+                string.Format(Resources.ResetPasswordBody, callbackUrl));
 
             return this.Ok();
         }
