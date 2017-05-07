@@ -120,7 +120,8 @@
   <data name="EmailConfirmationBody" xml:space="preserve">
     <value>Welcome to Impera! 
 
-Please verify you account by going to {0}, after that you can log in.
+Please verify you account by going to {0} and follow the instructions.
+
 
 -Impera Team</value>
     <comment>{0} is callback url</comment>
@@ -129,7 +130,9 @@ Please verify you account by going to {0}, after that you can log in.
     <value>Impera Account Confirmation</value>
   </data>
   <data name="ResetPasswordBody" xml:space="preserve">
-    <value>You have requested to reset your password. To generate a new password please go to {0}. If you did not attept to reset your password please ignore this email.
+    <value>You have requested to reset your password. To generate a new password please go to {0} 
+
+If you did not attept to reset your password please ignore this email.
 
 -Impera Team</value>
     <comment>{0} is callback url</comment>
