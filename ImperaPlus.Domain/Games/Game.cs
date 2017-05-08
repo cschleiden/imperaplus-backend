@@ -317,6 +317,11 @@ namespace ImperaPlus.Domain.Games
             if (this.State != GameState.Open)
             {
                 throw new DomainException(ErrorCode.CannotLeaveGame, "Game state does not allow leaving");
+            }                       
+
+            if (user.Id == this.CreatedBy.Id)
+            {
+                throw new DomainException(ErrorCode.CannotLeaveGame, "Game creator cannot leave game");
             }
 
             var player = this.GetPlayerForUser(user.Id);
