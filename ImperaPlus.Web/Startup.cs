@@ -318,6 +318,7 @@ namespace ImperaPlus.Web
             app.UseHangfireServer(new BackgroundJobServerOptions
             {
                 Queues = new[] { JobQueues.Critical, JobQueues.Normal },
+                WorkerCount = 10
             });
             app.UseHangfireDashboard("/Admin/Hangfire", new DashboardOptions
             {
