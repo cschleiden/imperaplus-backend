@@ -180,6 +180,7 @@ namespace ImperaPlus.Domain.Tournaments
         /// <summary>
         /// Completion of tournament in percent
         /// </summary>
+        [NotMapped]
         public int Completion
         {
             get
@@ -201,6 +202,7 @@ namespace ImperaPlus.Domain.Tournaments
         /// <summary>
         /// Value indicating whether tournament is for single player teams
         /// </summary>
+        [NotMapped]
         public bool IsSinglePlayerTournament
         {
             get
@@ -212,6 +214,7 @@ namespace ImperaPlus.Domain.Tournaments
         /// <summary>
         /// Gets value indicating whether players can register
         /// </summary>
+        [NotMapped]
         public bool CanRegister
         {
             get
@@ -226,6 +229,7 @@ namespace ImperaPlus.Domain.Tournaments
         /// <summary>
         /// Gets value indicating whether tournament can be started
         /// </summary>
+        [NotMapped]
         public bool CanStart
         {
             get
@@ -239,6 +243,7 @@ namespace ImperaPlus.Domain.Tournaments
         /// <summary>
         /// Gets value indicating whether the tournament has a group phase or only knockout
         /// </summary>
+        [NotMapped]
         public bool HasGroupPhase
         {
             get
@@ -247,6 +252,7 @@ namespace ImperaPlus.Domain.Tournaments
             }
         }
 
+        [NotMapped]
         public bool CanStartNextRound
         {
             get
@@ -255,6 +261,7 @@ namespace ImperaPlus.Domain.Tournaments
             }
         }
 
+        [NotMapped]
         public bool CanEnd
         {
             get
@@ -263,6 +270,7 @@ namespace ImperaPlus.Domain.Tournaments
             }
         }
 
+        [NotMapped]
         public IEnumerable<TournamentTeam> ActiveTeams
         {
             get
@@ -271,6 +279,7 @@ namespace ImperaPlus.Domain.Tournaments
             }
         }
 
+        [NotMapped]
         public bool CanChangeTeams
         {
             get
