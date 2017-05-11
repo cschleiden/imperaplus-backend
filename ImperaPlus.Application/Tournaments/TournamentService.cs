@@ -6,6 +6,9 @@ using ImperaPlus.DataAccess;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Utilities;
 using ImperaPlus.DTO.Tournaments;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace ImperaPlus.Application.Tournaments
 {
@@ -18,9 +21,9 @@ namespace ImperaPlus.Application.Tournaments
 
         IEnumerable<DTO.Tournaments.TournamentTeam> GetTeams(Guid tournamentId);
 
-        TournamentTeamSummary CreateTeam(Guid tournamentId, string name, string password);
+        TournamentTeam CreateTeam(Guid tournamentId, string name, string password);
 
-        TournamentTeamSummary Join(Guid tournamentId);
+        TournamentTeam Join(Guid tournamentId);
 
         void JoinTeam(Guid tournamentId, Guid teamId, string password);
         
@@ -30,19 +33,21 @@ namespace ImperaPlus.Application.Tournaments
 
         IEnumerable<DTO.Tournaments.Tournament> GetAllFull();
 
-        void Create(Tournament tournament);
-
-        void Delete(Guid id);
+        Task Create(Tournament tournament);
+        Task Delete(Guid id);
     }
 
     public class TournamentService : BaseService, ITournamentService
     {
-        public TournamentService(IUnitOfWork unitOfWork, IUserProvider userProvider)
+        private RoleManager<IdentityRole> roleManager;
+
+        public TournamentService(IUnitOfWork unitOfWork, IUserProvider userProvider, RoleManager<IdentityRole> roleManager)
             : base(unitOfWork, userProvider)
         {
+            this.roleManager = roleManager;
         }
 
-        public DTO.Tournaments.TournamentTeamSummary CreateTeam(Guid tournamentId, string name, string password)
+        public DTO.Tournaments.TournamentTeam CreateTeam(Guid tournamentId, string name, string password)
         {
             var tournament = this.GetTournament(tournamentId);
 
@@ -50,7 +55,7 @@ namespace ImperaPlus.Application.Tournaments
 
             this.UnitOfWork.Commit();
            
-            return Mapper.Map<TournamentTeamSummary>(team);
+            return Mapper.Map<TournamentTeam>(team);
         }
 
         public void DeleteTeam(Guid tournamentId, Guid teamId)
@@ -99,7 +104,7 @@ namespace ImperaPlus.Application.Tournaments
             return Mapper.Map<IEnumerable<DTO.Tournaments.TournamentTeam>>(tournament.Teams);
         }
 
-        public TournamentTeamSummary Join(Guid tournamentId)
+        public TournamentTeam Join(Guid tournamentId)
         {
             Require.NotEmpty(tournamentId, nameof(tournamentId));
 
@@ -108,7 +113,7 @@ namespace ImperaPlus.Application.Tournaments
             
             this.UnitOfWork.Commit();
 
-            return Mapper.Map<TournamentTeamSummary>(team);
+            return Mapper.Map<TournamentTeam>(team);
         }
 
         public void JoinTeam(Guid tournamentId, Guid teamId, string password)
@@ -160,8 +165,10 @@ namespace ImperaPlus.Application.Tournaments
             return team;
         }
 
-        public void Create(Tournament tournament)
+        public async Task Create(Tournament tournament)
         {
+            await this.CheckAdmin();
+
             if (tournament.MapTemplates == null || tournament.MapTemplates.Count() == 0)
             {
                 throw new Exceptions.ApplicationException("No map templates", ErrorCode.MapTemplatesRequired);
@@ -201,14 +208,25 @@ namespace ImperaPlus.Application.Tournaments
             return Mapper.Map<IEnumerable<DTO.Tournaments.Tournament>>(tournaments);
         }
 
-        public void Delete(Guid tournamentId)
+        public async Task Delete(Guid tournamentId)
         {
-            // TODO: Check Admin
+            await this.CheckAdmin();
 
             var tournament = this.GetTournament(tournamentId);
 
             this.UnitOfWork.Tournaments.Remove(tournament);
             this.UnitOfWork.Commit();
+        }
+
+        private async Task CheckAdmin()
+        {
+            var adminRole = await this.roleManager.FindByNameAsync("admin");
+            if (!this.CurrentUser.IsInRole(adminRole))
+            {
+                throw new Exceptions.ApplicationException(
+                    "User has to be admin to perform this action", 
+                    ErrorCode.UserIsNotAllowedToPerformAction);
+            }
         }
     }
 }

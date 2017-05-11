@@ -72,7 +72,7 @@ namespace ImperaPlus.Backend.Controllers
         /// /// <param name="password">Optional password for team</param>
         /// <returns>Summary of newly created team</returns>
         [HttpPost("{tournamentId:guid}/teams")]
-        [ProducesResponseType(typeof(DTO.Tournaments.TournamentTeamSummary), 200)]
+        [ProducesResponseType(typeof(DTO.Tournaments.TournamentTeam), 200)]
         public IActionResult PostCreateTeam(Guid tournamentId, string name, string password = null)
         {
             return this.Ok(this.tournamentService.CreateTeam(tournamentId, name, password));
