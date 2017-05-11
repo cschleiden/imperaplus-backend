@@ -14,24 +14,24 @@ namespace ImperaPlus.Application.Tournaments
 {
     public interface ITournamentService
     {
-        IEnumerable<DTO.Tournaments.TournamentSummary> GetAll();
-        IEnumerable<DTO.Tournaments.TournamentSummary> GetAll(DTO.Tournaments.TournamentState state);
+        IEnumerable<TournamentSummary> GetAll();
+        IEnumerable<TournamentSummary> GetAll(DTO.Tournaments.TournamentState state);
 
-        DTO.Tournaments.Tournament Get(Guid tournamentId);
+        Tournament Get(Guid tournamentId);
 
-        IEnumerable<DTO.Tournaments.TournamentTeam> GetTeams(Guid tournamentId);
+        IEnumerable<TournamentTeam> GetTeams(Guid tournamentId);
 
         TournamentTeam CreateTeam(Guid tournamentId, string name, string password);
 
         TournamentTeam Join(Guid tournamentId);
 
-        void JoinTeam(Guid tournamentId, Guid teamId, string password);
+        TournamentTeam JoinTeam(Guid tournamentId, Guid teamId, string password);
         
         void DeleteTeam(Guid tournamentId, Guid teamId);
 
         void Leave(Guid tournamentId);
 
-        IEnumerable<DTO.Tournaments.Tournament> GetAllFull();
+        IEnumerable<Tournament> GetAllFull();
 
         Task Create(Tournament tournament);
         Task Delete(Guid id);
@@ -116,7 +116,7 @@ namespace ImperaPlus.Application.Tournaments
             return Mapper.Map<TournamentTeam>(team);
         }
 
-        public void JoinTeam(Guid tournamentId, Guid teamId, string password)
+        public TournamentTeam JoinTeam(Guid tournamentId, Guid teamId, string password)
         {
             Require.NotEmpty(tournamentId, nameof(tournamentId));
 
@@ -126,6 +126,8 @@ namespace ImperaPlus.Application.Tournaments
             tournament.AddUser(this.CurrentUser, team, password);
 
             this.UnitOfWork.Commit();
+
+            return Mapper.Map<TournamentTeam>(team);
         }
 
         public void Leave(Guid tournamentId)

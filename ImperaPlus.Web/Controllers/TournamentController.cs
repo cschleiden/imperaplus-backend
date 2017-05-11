@@ -85,11 +85,10 @@ namespace ImperaPlus.Backend.Controllers
         /// <param name="teamId">Id of team</param>
         /// <param name="password">Optional password for team to join</param>
         [HttpPost("{tournamentId:guid}/teams/{teamId:guid}")]
+        [ProducesResponseType(typeof(DTO.Tournaments.TournamentTeam), 200)]
         public IActionResult PostJoinTeam(Guid tournamentId, Guid teamId, string password = null)
         {
-            this.tournamentService.JoinTeam(tournamentId, teamId, password);
-
-            return this.Ok();
+            return this.Ok(this.tournamentService.JoinTeam(tournamentId, teamId, password));
         }
 
         /// <summary>
