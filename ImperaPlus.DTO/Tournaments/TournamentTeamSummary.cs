@@ -18,6 +18,11 @@ namespace ImperaPlus.DTO.Tournaments
         public string Name { get; set; }
 
         /// <summary>
+        /// Id of player who created the team
+        /// </summary>
+        public string CreatedById { get; set; }
+
+        /// <summary>
         /// Order of team within group (if groups are enabled)
         /// </summary>
         public int GroupOrder { get; set; }
