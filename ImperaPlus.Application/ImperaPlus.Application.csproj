@@ -208,16 +208,16 @@
       <HintPath>..\packages\NLog.5.0.0-beta06\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="OpenIddict, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OpenIddict.1.0.0-beta2-0591\lib\net451\OpenIddict.dll</HintPath>
+      <HintPath>..\packages\OpenIddict.1.0.0-beta2-0614\lib\net451\OpenIddict.dll</HintPath>
     </Reference>
     <Reference Include="OpenIddict.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OpenIddict.Core.1.0.0-beta2-0591\lib\net451\OpenIddict.Core.dll</HintPath>
+      <HintPath>..\packages\OpenIddict.Core.1.0.0-beta2-0614\lib\net451\OpenIddict.Core.dll</HintPath>
     </Reference>
     <Reference Include="OpenIddict.Models, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OpenIddict.Models.1.0.0-beta2-0591\lib\netstandard1.0\OpenIddict.Models.dll</HintPath>
+      <HintPath>..\packages\OpenIddict.Models.1.0.0-beta2-0614\lib\netstandard1.0\OpenIddict.Models.dll</HintPath>
     </Reference>
     <Reference Include="OpenIddict.Mvc, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OpenIddict.Mvc.1.0.0-beta2-0591\lib\net451\OpenIddict.Mvc.dll</HintPath>
+      <HintPath>..\packages\OpenIddict.Mvc.1.0.0-beta2-0614\lib\net451\OpenIddict.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
