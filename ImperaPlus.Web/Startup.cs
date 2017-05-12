@@ -27,6 +27,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using NLog.Extensions.Logging;
 using NLog.Web;
+using StackExchange.Profiling.Storage;
 using System;
 using System.IO;
 using System.Reflection;
@@ -78,12 +79,20 @@ namespace ImperaPlus.Web
                 options.UseOpenIddict();
             });
 
-            services.AddCors(opts => opts.AddPolicy(
-                opts.DefaultPolicyName,
-                new CorsPolicy
+            services.AddCors(opts =>
+            {
+                var policy = new CorsPolicy()
                 {
                     SupportsCredentials = false
-                }));
+                };
+
+                policy.ExposedHeaders.Add("X-MiniProfiler-Ids");
+                policy.Headers.Add("X-MiniProfiler-Ids");
+
+                opts.AddPolicy(
+                    opts.DefaultPolicyName,
+                    policy);
+            });
 
             // Auth
             services.AddIdentity<Domain.User, IdentityRole>(options =>
@@ -179,6 +188,13 @@ namespace ImperaPlus.Web
                     opt.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
                 });
 
+            services
+                .AddMiniProfiler()
+                .AddEntityFramework();
+
+            services.AddMemoryCache();
+
+            // DataTables for the admin interface
             services.RegisterDataTables();
 
             // Set default authorization policy
@@ -230,7 +246,13 @@ namespace ImperaPlus.Web
             }
 
             // Enable Cors
-            app.UseCors(b => b.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().DisallowCredentials().Build());
+            app.UseCors(b => b
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .WithExposedHeaders("X-MiniProfiler-Ids")
+                .DisallowCredentials()
+                .Build());
 
             // Auth
             app.UseIdentity();
@@ -282,6 +304,16 @@ namespace ImperaPlus.Web
                         ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=6000000");
                     }
                 }
+            });
+
+            app.UseMiniProfiler(new StackExchange.Profiling.MiniProfilerOptions
+            {
+                RouteBasePath = "~/admin/profiler",
+
+                SqlFormatter = new StackExchange.Profiling.SqlFormatters.InlineFormatter(),
+
+                // Control storage
+                Storage = new MemoryCacheStorage(TimeSpan.FromMinutes(60))
             });
 
             app.UseMvc(routes =>

@@ -90,6 +90,9 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="1.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="1.1.0" />
+    <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.0.0-alpha6-79" />
+    <PackageReference Include="MiniProfiler.EntityFrameworkCore" Version="4.0.0-alpha6-79" />
+    <PackageReference Include="MiniProfiler.Shared" Version="4.0.0-alpha6-79" />
     <PackageReference Include="mnailgun" Version="1.0.0" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.3.1" />
     <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="1.0.0-beta2-0591" />
@@ -98,7 +101,7 @@
     <PackageReference Include="Swashbuckle" Version="6.0.0-beta902" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.6.6" />
     <PackageReference Include="Hangfire.SqlServer" Version="1.6.6" />
-    <PackageReference Include="MiniProfiler" Version="3.2.0.157" />
+    <PackageReference Include="MiniProfiler" Version="4.0.0-alpha6-79" />
     <PackageReference Include="NLog" Version="5.0.0-beta06" />
     <PackageReference Include="Microsoft.Owin.Cors" Version="3.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="1.1.2" />

@@ -31,7 +31,7 @@ namespace ImperaPlus.Web.Filters
                 {
                     string controllerName = context.Controller.GetType().Name;
                     string actionName = context.ActionDescriptor.DisplayName;
-                    stack.Push(MiniProfilerExtensions.Step(current, "Controller: " + controllerName + actionName));
+                    stack.Push(MiniProfiler.Current.Step("Controller: " + controllerName + actionName));
                 }
             }
         }
