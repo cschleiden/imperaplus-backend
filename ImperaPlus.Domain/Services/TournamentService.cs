@@ -5,6 +5,8 @@ using ImperaPlus.Domain.Events;
 using ImperaPlus.Domain.Games;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Tournaments;
+using NLog.Fluent;
+using System;
 
 namespace ImperaPlus.Domain.Services
 {
@@ -48,9 +50,12 @@ namespace ImperaPlus.Domain.Services
             {
                 if (tournament.CanStart)
                 {
-                    tournament.Start();
+                    Log.Info().Message("Starting tournament {0}", tournament.Id);
 
+                    tournament.Start();
                     tournamentStarted = true;
+
+                    Log.Info().Message("Started.");
                 }
             }
 
@@ -63,18 +68,27 @@ namespace ImperaPlus.Domain.Services
 
             foreach(var tournament in tournaments)
             {
-                this.SynchronizeGamesToPairings(tournament);
+                try
+                {
+                    Log.Info().Message("Checking tournament {0}", tournament.Id).Write();
 
-                if (tournament.CanStartNextRound)
-                {
-                    tournament.StartNextRound();
+                    this.SynchronizeGamesToPairings(tournament);
+
+                    if (tournament.CanStartNextRound)
+                    {
+                        tournament.StartNextRound();
+                    }
+                    else if (tournament.CanEnd)
+                    {
+                        tournament.End();
+                    }
+
+                    this.CreateGamesForPairings(tournament);
                 }
-                else if (tournament.CanEnd)
+                catch (Exception ex)
                 {
-                    tournament.End();
+                    Log.Error().Message("Error while handling tournament {0}", tournament.Id).Exception(ex).Write();
                 }
-                
-                this.CreateGamesForPairings(tournament);
             }
         }
 
@@ -89,14 +103,22 @@ namespace ImperaPlus.Domain.Services
         
         public void SynchronizeGamesToPairings(Tournament tournament)
         {
-            foreach(var pairing in tournament.Pairings.Where(x => x.State == PairingState.Active))
+            var activePairings = tournament.Pairings.Where(x => x.State == PairingState.Active).ToArray();
+
+            Log.Info().Message("Checking {0} active pairings", activePairings.Length).Write();
+
+            foreach (var pairing in activePairings)
             {
                 // Synchronize number of won games
                 pairing.TeamAWon = this.CountWonGamesForTeam(pairing.Games, pairing.TeamA);
                 pairing.TeamBWon = this.CountWonGamesForTeam(pairing.Games, pairing.TeamB);
 
+                Log.Info().Message("Wins: TeamA {0} TeamB {1}", pairing.TeamAWon, pairing.TeamBWon).Write();
+
                 if (pairing.CanWinnerBeDetermined)
                 {
+                    Log.Info().Message("Found winner for pairing {0}", pairing.Id).Write();
+
                     pairing.State = PairingState.Done;
                     pairing.Loser.State = TournamentTeamState.InActive;
 
