@@ -37,8 +37,7 @@ namespace ImperaPlus.DataAccess.Repositories
 
         public IQueryable<Game> FindForUser(string userId)
         {
-            return
-                this.GameSet.Where(
+            return this.GameSet.Where(
                     g => g.Teams.Any(t => t.Players.Any(p => !p.IsHidden && p.UserId == userId)));
         }
 
