@@ -32,6 +32,9 @@ namespace ImperaPlus.Domain.Tournaments
 
         public string Password { get; set; }
 
+        /// <summary>
+        /// Order of team within its group (if group enabled)
+        /// </summary>
         public int GroupOrder { get; set; }
 
         public Guid? GroupId { get; set; }

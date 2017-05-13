@@ -5,6 +5,9 @@ using ImperaPlus.Domain.Services;
 
 namespace ImperaPlus.Application.Jobs
 {
+    /// <summary>
+    /// Handle tournaments, synchronizes games to pairings, advances rounds etc.
+    /// </summary>
     [Queue(JobQueues.Critical)]
     [DisableConcurrentExecution(60)]
     [AutomaticRetry(Attempts = 0)]

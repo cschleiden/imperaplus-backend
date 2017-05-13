@@ -356,6 +356,7 @@
     <Compile Include="Services\AttackServiceTests.cs" />
     <Compile Include="Services\GameServiceTests.cs" />
     <Compile Include="Services\ScoringServiceTests.cs" />
+    <Compile Include="Tournaments\TournamentService.GroupOrder.Tests.cs" />
     <Compile Include="Tournaments\TournamentServiceTests.cs" />
     <Compile Include="Tournaments\TournamentTests.cs" />
   </ItemGroup>

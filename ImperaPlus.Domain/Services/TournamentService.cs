@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using ImperaPlus.Domain.Events;
 using ImperaPlus.Domain.Games;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Tournaments;
 using NLog.Fluent;
 using System;
+using System.Collections;
 
 namespace ImperaPlus.Domain.Services
 {
@@ -74,6 +74,12 @@ namespace ImperaPlus.Domain.Services
 
                     this.SynchronizeGamesToPairings(tournament);
 
+                    if (tournament.HasGroupPhase && tournament.State == TournamentState.Groups)
+                    {
+                        this.OrderGroupTeams(tournament);
+                    }
+
+                    // Advance rounds
                     if (tournament.CanStartNextRound)
                     {
                         tournament.StartNextRound();
@@ -127,7 +133,73 @@ namespace ImperaPlus.Domain.Services
                 }
             }
         }
-        
+
+        public void OrderGroupTeams(Tournament tournament)
+        {
+            foreach(var group in tournament.Groups)
+            {
+                // Do initial sorting, count wins
+                var wonPairingsByTeam = group.Teams.ToDictionary(x => x.Id, x => 0);
+                var wonGamesByTeam = group.Teams.ToDictionary(x => x.Id, x => 0);
+                foreach(var pairing in group.Pairings)
+                {
+                    wonGamesByTeam[pairing.TeamAId] += pairing.TeamAWon;
+                    wonGamesByTeam[pairing.TeamBId] += pairing.TeamBWon;
+
+                    if (pairing.CanWinnerBeDetermined)
+                    {
+                        wonPairingsByTeam[pairing.Winner.Id] += 1;
+                    }
+                }
+
+                // Sort by: 
+                // - won pairings
+                // - then number of won games
+                // - then look at the pairing of the two teams (if it exists)
+                // - then fall back to Id (basically random in this context)
+                // Note: this is a bit timing dependent, pairings might be won before all games have been played
+                // so order could change later after the group phase. This seems acceptable for now. 
+                var orderedTeams = group.Teams
+                    .OrderByDescending(t => wonPairingsByTeam[t.Id])
+                    .ThenByDescending(t => wonGamesByTeam[t.Id])
+                    .ThenByDescending(t => t, Comparer<TournamentTeam>.Create((teamA, teamB) =>
+                    {
+                        // Check pairing
+                        int factor = 1;
+                        var pairing = group.Pairings.FirstOrDefault(x => x.TeamA == teamA && x.TeamB == teamB);
+                        if (pairing != null && pairing.CanWinnerBeDetermined)
+                        {
+                            var t = teamA;
+                            teamB = teamA;
+                            teamB = t;
+                            factor = -1;
+                        }
+
+                        pairing = group.Pairings.FirstOrDefault(x => x.TeamA == teamA && x.TeamB == teamB);
+                        if (pairing != null && pairing.CanWinnerBeDetermined)
+                        {
+                            if (pairing.Winner == teamA)
+                            {
+                                return -1 * factor;
+                            }
+                            else
+                            {
+                                return 1 * factor;
+                            }
+                        }
+
+                        // Fallback to random Id...
+                        return teamA.Id.CompareTo(teamB.Id);
+                    }))
+                    .ToArray();
+
+                for (int i = 0; i < orderedTeams.Length; ++i)
+                {
+                    orderedTeams[i].GroupOrder = i + 1;
+                }
+            }
+        }
+
         private int CountWonGamesForTeam(IEnumerable<Game> games, TournamentTeam team)
         {
             // Return number of games that

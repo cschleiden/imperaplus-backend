@@ -1,21 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using ImperaPlus.DataAccess;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Utilities;
 using ImperaPlus.DTO.Tournaments;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ImperaPlus.Application.Tournaments
 {
     public interface ITournamentService
     {
         IEnumerable<TournamentSummary> GetAll();
-        IEnumerable<TournamentSummary> GetAll(DTO.Tournaments.TournamentState state);
+        IEnumerable<TournamentSummary> GetAll(TournamentState state);
 
         Tournament Get(Guid tournamentId);
 
@@ -47,7 +47,7 @@ namespace ImperaPlus.Application.Tournaments
             this.roleManager = roleManager;
         }
 
-        public DTO.Tournaments.TournamentTeam CreateTeam(Guid tournamentId, string name, string password)
+        public TournamentTeam CreateTeam(Guid tournamentId, string name, string password)
         {
             var tournament = this.GetTournament(tournamentId);
 
@@ -74,34 +74,34 @@ namespace ImperaPlus.Application.Tournaments
             this.UnitOfWork.Commit();            
         }
 
-        public DTO.Tournaments.Tournament Get(Guid tournamentId)
+        public Tournament Get(Guid tournamentId)
         {
             Require.NotEmpty(tournamentId, nameof(tournamentId));
 
             Domain.Tournaments.Tournament tournament = GetTournament(tournamentId);
 
-            return Mapper.Map<DTO.Tournaments.Tournament>(tournament);
+            return Mapper.Map<Tournament>(tournament);
         }
 
-        public IEnumerable<DTO.Tournaments.TournamentSummary> GetAll(DTO.Tournaments.TournamentState state)
+        public IEnumerable<TournamentSummary> GetAll(TournamentState state)
         {
             var domainState = Mapper.Map<Domain.Tournaments.TournamentState>(state);
 
-            return Mapper.Map<IEnumerable<DTO.Tournaments.TournamentSummary>>(this.UnitOfWork.Tournaments.Get(domainState));
+            return Mapper.Map<IEnumerable<TournamentSummary>>(this.UnitOfWork.Tournaments.Get(domainState));
         }
 
-        public IEnumerable<DTO.Tournaments.TournamentSummary> GetAll()
+        public IEnumerable<TournamentSummary> GetAll()
         {            
-            return Mapper.Map<IEnumerable<DTO.Tournaments.TournamentSummary>>(this.UnitOfWork.Tournaments.Get());
+            return Mapper.Map<IEnumerable<TournamentSummary>>(this.UnitOfWork.Tournaments.Get());
         }
 
-        public IEnumerable<DTO.Tournaments.TournamentTeam> GetTeams(Guid tournamentId)
+        public IEnumerable<TournamentTeam> GetTeams(Guid tournamentId)
         {
             Require.NotEmpty(tournamentId, nameof(tournamentId));
 
             var tournament = this.GetTournament(tournamentId);
 
-            return Mapper.Map<IEnumerable<DTO.Tournaments.TournamentTeam>>(tournament.Teams);
+            return Mapper.Map<IEnumerable<TournamentTeam>>(tournament.Teams);
         }
 
         public TournamentTeam Join(Guid tournamentId)
@@ -207,7 +207,7 @@ namespace ImperaPlus.Application.Tournaments
         {
             var tournaments = this.UnitOfWork.Tournaments.GetAllFull();
 
-            return Mapper.Map<IEnumerable<DTO.Tournaments.Tournament>>(tournaments);
+            return Mapper.Map<IEnumerable<Tournament>>(tournaments);
         }
 
         public async Task Delete(Guid tournamentId)
