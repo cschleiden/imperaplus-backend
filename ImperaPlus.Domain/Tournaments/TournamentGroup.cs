@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ImperaPlus.Domain.Utilities;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ImperaPlus.Domain.Tournaments
 {
@@ -41,6 +42,7 @@ namespace ImperaPlus.Domain.Tournaments
 
         public int Number { get; protected set; }
 
+        [NotMapped]
         public IEnumerable<TournamentTeam> Winners
         {
             get
