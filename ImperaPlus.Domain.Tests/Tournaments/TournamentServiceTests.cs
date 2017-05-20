@@ -67,6 +67,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             var service = new TournamentService(unitOfWork, gameServiceMock.Object, TestUtils.MockMapTemplateProvider());
 
             var tournament = new Tournament("T", 2, 0, 1, 1, DateTime.UtcNow, DateTime.UtcNow, new GameOptions { NumberOfPlayersPerTeam = 1 });
+            tournament.State = TournamentState.Knockout;
 
             var user1 = TestUtils.CreateUser("1");
             var user2 = TestUtils.CreateUser("2");
