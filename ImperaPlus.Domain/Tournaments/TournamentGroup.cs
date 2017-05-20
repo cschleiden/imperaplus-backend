@@ -47,12 +47,9 @@ namespace ImperaPlus.Domain.Tournaments
         {
             get
             {
-                return this.Pairings
-                    .Where(x => x.CanWinnerBeDetermined)
-                    .Select(x => x.Winner)
-                    .GroupBy(x => x)
-                    .OrderByDescending(g => g.Count())
-                    .Select(x => x.Key);
+                return this.Teams
+                    .OrderBy(t => t.GroupOrder)
+                    .Take(2);
             }
         }
     }

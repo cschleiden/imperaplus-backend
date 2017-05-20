@@ -6,6 +6,7 @@ using System.Linq;
 using ImperaPlus.Domain.Exceptions;
 using ImperaPlus.Domain.Games;
 using ImperaPlus.Domain.Utilities;
+using NLog.Fluent;
 
 namespace ImperaPlus.Domain.Tournaments
 {
@@ -498,9 +499,15 @@ namespace ImperaPlus.Domain.Tournaments
 
             if (this.State == TournamentState.Groups)
             {
+                Log.Debug().Message("Switch from Group to KO phase for tournament {0}", this.Name).Write();
+
                 this.State = TournamentState.Knockout;
 
-                this.CreateNextRoundPairings(this.Groups.SelectMany(g => g.Winners.Take(2)).Shuffle());
+                var koTeams = this.Groups.SelectMany(g => g.Winners).Shuffle();
+
+                Log.Debug().Message("Teams for KO phase: {0}", string.Join(", ", koTeams.Select(t => t.Name))).Write();
+
+                this.CreateNextRoundPairings(koTeams);
             }
             else
             {

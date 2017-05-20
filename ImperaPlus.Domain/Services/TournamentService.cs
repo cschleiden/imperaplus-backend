@@ -126,10 +126,16 @@ namespace ImperaPlus.Domain.Services
                     Log.Info().Message("Found winner for pairing {0}", pairing.Id).Write();
 
                     pairing.State = PairingState.Done;
-                    pairing.Loser.State = TournamentTeamState.InActive;
 
-                    // TODO: Generate domain event for winner
-                    // TODO: Generate domain event for loser
+                    if (tournament.State == TournamentState.Knockout)
+                    {
+                        // If the tournament is in knockout mode, losing a pairing means losing the tournament, so update
+                        // the loser's team. 
+                        pairing.Loser.State = TournamentTeamState.InActive;
+
+                        // TODO: Generate domain event for winner
+                        // TODO: Generate domain event for loser
+                    }
                 }
             }
         }
