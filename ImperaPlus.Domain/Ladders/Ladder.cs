@@ -81,6 +81,18 @@ namespace ImperaPlus.Domain.Ladders
             this.Queue.Add(queueEntry);
         }
 
+        public void QueueLeaveUser(User user)
+        {
+            // Ensure user is in queue
+            var entryForUser = this.Queue.FirstOrDefault(x => x.UserId == user.Id);
+            if (entryForUser == null)
+            {
+                throw new DomainException(ErrorCode.LadderUserNotInQueue, "User is not queued for ladder");
+            }
+            
+            this.Queue.Remove(entryForUser);
+        }
+
         public string GetGameName()
         {
             return string.Format("{0}-{1}", this.Name, DateTime.Now.Ticks);
@@ -107,7 +119,7 @@ namespace ImperaPlus.Domain.Ladders
             }
 
             this.IsActive = isActive;
-        }        
+        }
     }
 
     public class LadderQueueEntry : IChangeTrackedEntity

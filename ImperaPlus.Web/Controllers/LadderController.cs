@@ -50,11 +50,22 @@ namespace ImperaPlus.Backend.Controllers
         /// Queue up for a new game in the given ladder
         /// </summary>
         /// <param name="ladderId">Ladder id</param>
-        /// <returns>Status </returns>
         [HttpPost("{ladderId:guid}/queue")]
         public IActionResult PostJoin(Guid ladderId)
         {
             this.ladderService.Queue(ladderId);
+
+            return this.Ok();
+        }
+
+        /// <summary>
+        /// Leave the queue for a ladder
+        /// </summary>
+        /// <param name="ladderId">Ladder Id</param>
+        [HttpDelete("{ladderId:guid}/queue")]
+        public IActionResult DeleteJoin(Guid ladderId)
+        {
+            this.ladderService.LeaveQueue(ladderId);
 
             return this.Ok();
         }

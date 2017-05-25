@@ -15,6 +15,8 @@ namespace ImperaPlus.Domain.Services
 
         void Queue(Guid ladderId, User user);
 
+        void LeaveQueue(Guid ladderId, User user);
+
         Ladder Create(string name, int numberOfTeams, int numberOfPlayers);
     }
 
@@ -94,6 +96,16 @@ namespace ImperaPlus.Domain.Services
             Ladder ladder = this.unitOfWork.Ladders.Query().First(l => l.Id == ladderId);
 
             ladder.QueueUser(user);
+        }
+
+        /// <summary>
+        /// Leave the queue, if currently in it
+        /// </summary>
+        public void LeaveQueue(Guid ladderId, User user)
+        {
+            Ladder ladder = this.unitOfWork.Ladders.GetById(ladderId);
+
+            ladder.QueueLeaveUser(user);
         }
 
         /// <summary>

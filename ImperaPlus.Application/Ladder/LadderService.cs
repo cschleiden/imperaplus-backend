@@ -18,6 +18,8 @@ namespace ImperaPlus.Application.Ladder
 
         void Queue(Guid ladderId);
 
+        void LeaveQueue(Guid ladderId);
+
         LadderSummary Create(DTO.Ladder.Admin.CreationOptions creationOptions);
 
         void Delete(Guid ladderId);
@@ -165,6 +167,15 @@ namespace ImperaPlus.Application.Ladder
             var currentUser = this.CurrentUser;
 
             this.ladderService.Queue(id, currentUser);
+
+            this.UnitOfWork.Commit();
+        }
+
+        public void LeaveQueue(Guid ladderId)
+        {
+            var currentUser = this.CurrentUser;
+
+            this.ladderService.LeaveQueue(ladderId, currentUser);
 
             this.UnitOfWork.Commit();
         }

@@ -212,6 +212,11 @@
 
         TournamentCannotJoinLeave,
 
-        TournamentTeamDeleteNoPermission
+        TournamentTeamDeleteNoPermission,
+
+        /// <summary>
+        /// User wants to leave Ladder queue but is not in it
+        /// </summary>
+        LadderUserNotInQueue
     }
 }

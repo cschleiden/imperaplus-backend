@@ -88,6 +88,26 @@ namespace ImperaPlus.Domain.Tests.Ladders
                 ladder.QueueUser(user1);
                 ladder.QueueUser(user1);
             }
+
+            [TestMethod]
+            public void UserCanLeaveQueue()
+            {
+                var user1 = TestUtils.CreateUser("1");
+                var ladder = new Ladder("Default", 2, 1);
+
+                ladder.QueueUser(user1);
+                ladder.QueueLeaveUser(user1);
+            }
+
+            [TestMethod]
+            [ExpectedDomainException(ErrorCode.LadderUserNotInQueue)]
+            public void UserCannotLeaveQueueIfNotInIt()
+            {
+                var user1 = TestUtils.CreateUser("1");
+                var ladder = new Ladder("Default", 2, 1);
+                
+                ladder.QueueLeaveUser(user1);
+            }
         }
     }
 
