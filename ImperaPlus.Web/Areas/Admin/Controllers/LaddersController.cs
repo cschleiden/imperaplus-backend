@@ -16,7 +16,7 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
 
         public ActionResult Index()
         {
-            var ladders = this.ladderService.GetAllFull();
+            var ladders = this.ladderService.GetAll();
 
             this.AddLookups();
 

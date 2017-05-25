@@ -69,19 +69,5 @@ namespace ImperaPlus.Backend.Controllers
 
             return this.Ok();
         }
-
-        /// <summary>
-        /// Gets ladder standings
-        /// </summary>
-        /// <param name="ladderId">Id of ladder</param>
-        /// <param name="start">Items to skip before returning</param>
-        /// <param name="count">Count of standings to return</param>
-        /// <returns></returns>
-        [HttpGet("{ladderId:guid}/standings")]
-        [ProducesResponseType(typeof(IEnumerable<LadderStanding>), 200)]
-        public IEnumerable<LadderStanding> GetStandings(Guid ladderId, int start = 0, int count = 30)
-        {
-            return this.ladderService.GetStandings(ladderId, start, count);
-        }
     }
 }

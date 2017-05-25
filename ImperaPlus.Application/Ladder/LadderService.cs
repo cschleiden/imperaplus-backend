@@ -12,8 +12,6 @@ namespace ImperaPlus.Application.Ladder
     {
         IEnumerable<LadderSummary> GetAll();
 
-        IEnumerable<DTO.Ladder.Ladder> GetAllFull();
-
         DTO.Ladder.Ladder Get(Guid ladderId);
 
         void Queue(Guid ladderId);
@@ -31,8 +29,6 @@ namespace ImperaPlus.Application.Ladder
         void ToggleActive(Guid ladderId, bool isActive);
 
         void UpdateGameOptions(Guid ladderId, DTO.Games.GameOptions gameOptions);
-
-        IEnumerable<LadderStanding> GetStandings(Guid ladderId, int start, int count = 30);
     }
 
     public class LadderService : BaseService, ILadderService
@@ -119,8 +115,13 @@ namespace ImperaPlus.Application.Ladder
         public DTO.Ladder.Ladder Get(Guid ladderId)
         {           
             Domain.Ladders.Ladder ladder = GetLadder(ladderId);
+            
+            var mappedLadder = Mapper.Map<DTO.Ladder.Ladder>(ladder);
 
-            return Mapper.Map<DTO.Ladder.Ladder>(ladder);
+            // Fill in standings here for now
+            mappedLadder.Standings = Mapper.Map<DTO.Ladder.LadderStanding[]>(GetStandings(ladderId, 0).ToArray());
+
+            return mappedLadder;
         }
 
         public IEnumerable<DTO.Ladder.Ladder> GetAllFull()

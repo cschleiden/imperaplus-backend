@@ -60,7 +60,6 @@ namespace ImperaPlus.DataAccess.Repositories
                 return this.DbSet
                     .Include(x => x.Options)
                     .Include(x => x.Queue)
-                    .Include(x => x.Queue)
                         .ThenInclude(qe => qe.User);
             }
         }
