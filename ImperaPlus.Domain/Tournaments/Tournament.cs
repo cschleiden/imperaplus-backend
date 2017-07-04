@@ -377,7 +377,7 @@ namespace ImperaPlus.Domain.Tournaments
 
             if (currentTeam.CreatedById == user.Id)
             {
-                throw new DomainException(ErrorCode.TournamentCannotJoinLeave, "Creator of team has to delete team");
+                throw new DomainException(ErrorCode.TournamentTeamCreatorHasToDelete, "Creator of team has to delete team");
             }
 
             var participant = currentTeam.Participants.FirstOrDefault(p => p.UserId == user.Id);
@@ -426,6 +426,19 @@ namespace ImperaPlus.Domain.Tournaments
             this.Teams.Add(team);
 
             return team;
+        }
+
+        /// <summary>
+        /// Gets a team in the current tournament that the given user has created
+        /// </summary>
+        /// <param name="user">User to find team</param>
+        public TournamentTeam GetOwnedTeamForUser(User user)
+        {
+            Require.NotNull(user, nameof(user));
+
+            var ownedTeam = this.Teams.FirstOrDefault(t => t.CreatedById == user.Id);
+
+            return ownedTeam;
         }
 
         public void DeleteTeam(User user, TournamentTeam team)

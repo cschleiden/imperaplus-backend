@@ -217,6 +217,13 @@
         /// <summary>
         /// User wants to leave Ladder queue but is not in it
         /// </summary>
-        LadderUserNotInQueue
+        LadderUserNotInQueue,
+
+        /// <summary>
+        /// Team creator has to delete team
+        /// </summary>
+        TournamentTeamCreatorHasToDelete,
+        CannotFindGame,
+        CannotDeleteGame
     }
 }

@@ -23,6 +23,16 @@ namespace ImperaPlus.DTO.Account
         public string ConfirmPassword { get; set; }
     }
 
+    public class DeleteAccountBindingModel
+    {
+        /// <summary>
+        /// Current password of user account to delete
+        /// </summary>
+        [Required]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+    }
+
     public class ResetPasswordViewModel
     {
         /// <summary>

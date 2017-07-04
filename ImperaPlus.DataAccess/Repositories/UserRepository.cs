@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using ImperaPlus.Domain;
 using ImperaPlus.Domain.Repositories;
@@ -27,6 +28,11 @@ namespace ImperaPlus.DataAccess.Repositories
         public User FindByName(string name)
         {
             return this.DbSet.FirstOrDefault(x => x.UserName == name);
+        }
+
+        public IEnumerable<User> FindUsersToDelete()
+        {
+            return this.DbSet.Where(x => x.IsDeleted && x.LastLogin <= DateTime.UtcNow.AddDays(-30));
         }
     }
 }

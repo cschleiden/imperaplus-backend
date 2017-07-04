@@ -322,7 +322,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DbInitializer.cs" />
+    <Compile Include="DbSeed.cs" />
     <Compile Include="IUserProvider.cs" />
     <Compile Include="Repositories\ChannelRepository.cs" />
     <Compile Include="Repositories\ChatMessageRepository.cs" />

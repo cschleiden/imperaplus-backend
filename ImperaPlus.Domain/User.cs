@@ -32,6 +32,10 @@ namespace ImperaPlus.Domain
 
         public virtual ICollection<Ladders.LadderStanding> Standings { get; private set; }
 
+        public bool IsDeleted { get; set; }
+
+        public DateTime LastLogin { get; set; }
+
         /// <summary>
         /// Hash of Impera V1 password for migration
         /// </summary>

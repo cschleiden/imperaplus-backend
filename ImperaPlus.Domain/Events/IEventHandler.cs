@@ -1,9 +1,9 @@
-﻿using Autofac;
-using System;
-using System.Collections.Generic;
-
-namespace ImperaPlus.Domain.Events
-{   
+﻿namespace ImperaPlus.Domain.Events
+{
+    /// <summary>
+    /// Handle domain event before persisting current state
+    /// </summary>
+    /// <typeparam name="TEvent"></typeparam>
     public interface IEventHandler<TEvent> 
         where TEvent : IDomainEvent
     {

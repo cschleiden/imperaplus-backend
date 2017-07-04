@@ -16,7 +16,7 @@ namespace ImperaPlus.Domain.Tests.Games
             var player = game.AddPlayer(user);
 
             // Act
-            game.RemovePlayer(user);
+            game.Leave(user);
 
             // Assert
             Assert.IsTrue(game.Teams.All(x => !x.Players.Any()));
@@ -31,7 +31,7 @@ namespace ImperaPlus.Domain.Tests.Games
             var player = game.CurrentPlayer;
 
             // Act
-            game.RemovePlayer(player.User);
+            game.Leave(player.User);
         }
     }
 }

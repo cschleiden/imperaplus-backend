@@ -1,24 +1,45 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using ImperaPlus.DataAccess;
+using ImperaPlus.Domain;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.DTO.Users;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ImperaPlus.Application.Users
 {
     public interface IUserService
     {
-        IEnumerable<DTO.Users.UserReference> FindUsers(string query);
+        IEnumerable<UserReference> FindUsers(string query);
+
+        void TrackLogin(User user);
+
+        void DeleteAccount();
     }
 
     public class UserService : BaseService, IUserService
     {
         public const int MaxResult = 5;
 
-        public UserService(IUnitOfWork unitOfWork, IUserProvider userProvider)
+        private Domain.Services.IUserService userService;
+
+        public UserService(IUnitOfWork unitOfWork, IUserProvider userProvider, Domain.Services.IUserService userService)
             : base(unitOfWork, userProvider)
         {
+            this.userService = userService;
+        }
+
+        public void TrackLogin(User user)
+        {
+            user.LastLogin = DateTime.UtcNow;
+            this.UnitOfWork.Commit();
+        }
+
+        public void DeleteAccount()
+        {
+            this.userService.DeleteAccount(this.CurrentUser);
+            this.UnitOfWork.Commit();
         }
 
         public IEnumerable<UserReference> FindUsers(string query)

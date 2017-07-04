@@ -352,6 +352,7 @@
     <Compile Include="Jobs\TimeoutJob.cs" />
     <Compile Include="Jobs\TournamentJob.cs" />
     <Compile Include="Jobs\TournamentStartJob.cs" />
+    <Compile Include="Jobs\UserCleanupJob.cs" />
     <Compile Include="Ladder\LadderService.cs" />
     <Compile Include="MapTemplateProvider.cs" />
     <Compile Include="MapTemplates\MapTemplateService.cs" />

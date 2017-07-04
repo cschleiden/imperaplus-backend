@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Autofac;
+﻿using Autofac;
 using ImperaPlus.Domain;
 using ImperaPlus.Domain.Chat;
 using ImperaPlus.Domain.Events;
@@ -11,10 +8,12 @@ using ImperaPlus.Domain.Ladders;
 using ImperaPlus.Domain.Map;
 using ImperaPlus.Domain.News;
 using ImperaPlus.Domain.Tournaments;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Profiling;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using OpenIddict.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 
 namespace ImperaPlus.DataAccess
@@ -124,19 +123,46 @@ namespace ImperaPlus.DataAccess
             base.OnModelCreating(modelBuilder);        
 
             // Games            
-            modelBuilder.Entity<Game>().HasMany(x => x.HistoryEntries).WithOne(x => x.Game).IsRequired().HasForeignKey(x => x.GameId).OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Cascade);
-            modelBuilder.Entity<Game>().HasMany(x => x.Teams).WithOne(x => x.Game).IsRequired().HasForeignKey(x => x.GameId).OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Cascade);
+            modelBuilder.Entity<Game>()
+                .HasMany(x => x.HistoryEntries)
+                .WithOne(x => x.Game)
+                .IsRequired()
+                .HasForeignKey(x => x.GameId)
+                .OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Cascade);
+            modelBuilder.Entity<Game>()
+                .HasMany(x => x.Teams)
+                .WithOne(x => x.Game)
+                .IsRequired()
+                .HasForeignKey(x => x.GameId)
+                .OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Team>().HasMany(x => x.Players).WithOne(x => x.Team).IsRequired().HasForeignKey(x => x.TeamId).OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Cascade);            
+            modelBuilder.Entity<Team>()
+                .HasMany(x => x.Players)
+                .WithOne(x => x.Team)
+                .IsRequired()
+                .HasForeignKey(x => x.TeamId)
+                .OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<HistoryEntry>().HasOne(x => x.Actor).WithMany().IsRequired(false);
-            modelBuilder.Entity<HistoryEntry>().HasOne(x => x.OtherPlayer).WithMany().IsRequired(false);
+            modelBuilder.Entity<Player>()
+                .HasOne(x => x.User)
+                .WithMany()
+                .HasForeignKey(x => x.UserId)
+                .OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.SetNull);
+
+            // Game History
+            modelBuilder.Entity<HistoryEntry>().HasOne(x => x.Actor).WithMany().IsRequired(false).OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Restrict);
+            modelBuilder.Entity<HistoryEntry>().HasOne(x => x.OtherPlayer).WithMany().IsRequired(false).OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Restrict);
             
             // Chat
-            modelBuilder.Entity<Channel>().HasOne(x => x.Game).WithOne().IsRequired(false);
-            modelBuilder.Entity<Channel>().HasOne(x => x.Alliance).WithOne(x => x.Channel).IsRequired(false);
-            modelBuilder.Entity<Channel>().HasMany(x => x.Messages).WithOne(x => x.Channel).IsRequired().OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Cascade);
-            modelBuilder.Entity<Channel>().Ignore(x => x.RecentMessages);
+            modelBuilder.Entity<Channel>()
+                .HasOne(x => x.Game).WithOne().IsRequired(false);
+            modelBuilder.Entity<Channel>()
+                .HasOne(x => x.Alliance).WithOne(x => x.Channel).IsRequired(false);
+            modelBuilder.Entity<Channel>()
+                .HasMany(x => x.Messages).WithOne(x => x.Channel).IsRequired()
+                .OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Cascade);
+            modelBuilder.Entity<Channel>()
+                .Ignore(x => x.RecentMessages);
 
             // Country is serialized manually
             modelBuilder.Ignore<Continent>();
@@ -149,11 +175,12 @@ namespace ImperaPlus.DataAccess
             modelBuilder.Entity<LadderStanding>().HasKey(x => new { x.LadderId, x.UserId });
             modelBuilder.Entity<LadderQueueEntry>().HasKey(x => new { x.LadderId, x.UserId });
         
-            modelBuilder.Entity<NewsEntry>().HasMany(x => x.Content).WithOne().IsRequired(true);
+            modelBuilder.Entity<NewsEntry>().HasMany(x => x.Content).WithOne().IsRequired();
 
             // Aliiance mapping
             modelBuilder.Entity<Alliance>().HasMany(x => x.Members).WithOne(x => x.Alliance).HasForeignKey(x => x.AllianceId);
-            modelBuilder.Entity<Alliance>().HasOne(x => x.Channel).WithOne(x => x.Alliance).IsRequired(false).OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Cascade);
+            modelBuilder.Entity<Alliance>().HasOne(x => x.Channel).WithOne(x => x.Alliance).IsRequired(false)
+                .OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Cascade);
 
             // Tournaments           
             modelBuilder.Entity<Tournament>().HasMany(x => x.Teams).WithOne(x => x.Tournament).HasForeignKey(x => x.TournamentId).IsRequired();
@@ -161,9 +188,16 @@ namespace ImperaPlus.DataAccess
             modelBuilder.Entity<Tournament>().HasMany(x => x.Pairings).WithOne(x => x.Tournament).HasForeignKey(x => x.TournamentId).IsRequired();
             modelBuilder.Entity<Tournament>().HasOne(x => x.Winner).WithOne().IsRequired(false);
 
-            modelBuilder.Entity<TournamentTeam>().HasMany(x => x.Participants).WithOne(x => x.Team).HasForeignKey(x => x.TeamId).IsRequired();
+            modelBuilder.Entity<TournamentTeam>()
+                .HasMany(x => x.Participants).WithOne(x => x.Team)
+                .HasForeignKey(x => x.TeamId).IsRequired()
+                .OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<TournamentParticipant>().HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).IsRequired().OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Restrict);
+            modelBuilder.Entity<TournamentParticipant>()
+                .HasOne(x => x.User).WithMany()
+                .HasForeignKey(x => x.UserId)
+                .IsRequired(false)
+                .OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.SetNull);
 
             modelBuilder.Entity<TournamentPairing>().HasMany(x => x.Games).WithOne().IsRequired(false).HasForeignKey(x => x.TournamentPairingId);
             modelBuilder.Entity<TournamentPairing>().HasOne(x => x.TeamA).WithMany().IsRequired().HasForeignKey(x => x.TeamAId).OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Restrict);
@@ -174,12 +208,22 @@ namespace ImperaPlus.DataAccess
             modelBuilder.Entity<TournamentGroup>().HasMany(x => x.Pairings).WithOne().IsRequired(false);
             modelBuilder.Entity<TournamentGroup>().HasOne(x => x.Tournament).WithMany().IsRequired(true);
 
-
-            modelBuilder.Entity<Domain.Messages.Message>().HasOne(x => x.Owner).WithMany().IsRequired(true);
-            modelBuilder.Entity<Domain.Messages.Message>().HasOne(x => x.From).WithMany();
-            modelBuilder.Entity<Domain.Messages.Message>().HasOne(x => x.Recipient).WithMany();
-
-            base.OnModelCreating(modelBuilder);
+            // Messages
+            modelBuilder.Entity<Domain.Messages.Message>()
+                .HasOne(x => x.Owner)
+                .WithMany()
+                .IsRequired()
+                .OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Restrict);
+            modelBuilder.Entity<Domain.Messages.Message>()
+                .HasOne(x => x.From)
+                .WithMany()
+                .IsRequired(false)
+                .OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Restrict);
+            modelBuilder.Entity<Domain.Messages.Message>()
+                .HasOne(x => x.Recipient)
+                .WithMany()
+                .IsRequired(false)
+                .OnDelete(Microsoft.EntityFrameworkCore.Metadata.DeleteBehavior.Restrict);
         }
     }
 }

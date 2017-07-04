@@ -4,6 +4,7 @@ using ImperaPlus.Domain.Exceptions;
 using ImperaPlus.Domain.Games;
 using ImperaPlus.Domain.Repositories;
 using System.Collections.Generic;
+using System;
 
 namespace ImperaPlus.Domain.Services
 {
@@ -26,6 +27,7 @@ namespace ImperaPlus.Domain.Services
             string name,
             string mapTemplate,
             GameOptions options);
+        void Delete(User currentUser, long gameId);
     }
 
     public class GameService : IGameService
@@ -87,6 +89,34 @@ namespace ImperaPlus.Domain.Services
 
             // Create game
             return new Game(user, type, name, mapTemplate, options);
+        }
+
+        public void Delete(User user, long gameId)
+        {
+            var game = this.GetGame(gameId);
+
+            if (game.CreatedBy != user)
+            {
+                throw new DomainException(ErrorCode.CannotDeleteGame, "User is not allowed to perform this action");
+            }
+
+            if (!game.CanBeDeleted)
+            {
+                throw new DomainException(ErrorCode.CannotDeleteGame, "Game cannot be delete");
+            }
+
+            this.gameRepository.Remove(game);
+        }
+
+        private Game GetGame(long gameId)
+        {
+            var game = this.gameRepository.Find(gameId);
+            if (game == null)
+            {
+                throw new DomainException(ErrorCode.CannotFindGame, "Cannot find game");
+            }
+
+            return game;
         }
     }
 }

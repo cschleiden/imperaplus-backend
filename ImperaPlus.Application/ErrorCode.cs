@@ -73,6 +73,8 @@
 
         CannotCreateTournament,
 
-        MapTemplatesRequired
+        MapTemplatesRequired,
+
+        AccountIsDeleted
     }
 }

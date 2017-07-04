@@ -30,7 +30,7 @@ namespace ImperaPlus.Application
             var game = this.UnitOfWork.Games.Find(gameId);
             if (game == null)
             {
-                throw new Exceptions.ApplicationException("Cannot find game", ErrorCode.CannotFindGame);
+                throw new ApplicationException("Cannot find game", ErrorCode.CannotFindGame);
             }        
 
             return game;

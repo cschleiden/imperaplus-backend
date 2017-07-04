@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using ImperaPlus.Utils;
 using System;
+using NLog.Fluent;
 
 namespace ImperaPlus.Domain.Events
 {
@@ -79,9 +80,21 @@ namespace ImperaPlus.Domain.Events
 
                     foreach (var handler in handlers)
                     {
-                        using (TraceContext.Trace("EventAggregator: Handle " + handler.GetType().Name))
+                        var eventHandlerName = handler.GetType().Name;
+                        using (TraceContext.Trace("EventAggregator: Handle " + eventHandlerName))
                         {
-                            handler.Handle(args);
+                            try
+                            {
+                                handler.Handle(args);
+                            }
+                            catch(Exception ex)
+                            {
+                                Log
+                                    .Error()
+                                    .Message("Error while handlging event {0}", eventHandlerName)
+                                    .Exception(ex)
+                                    .Write();
+                            }
                         }
                     }
                 });

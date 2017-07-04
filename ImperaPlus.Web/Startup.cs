@@ -333,9 +333,10 @@ namespace ImperaPlus.Web
             // Initialize database
             if (env.IsDevelopment())
             {
-                // Always recreate in development
-                //dbContext.Database.EnsureDeleted();
+                // Uncomment this to always recreate in development
+                // dbContext.Database.EnsureDeleted();
                 dbContext.Database.EnsureCreated();
+                dbContext.Database.Migrate();
             }
             else
             {

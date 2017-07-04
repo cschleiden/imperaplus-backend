@@ -154,20 +154,8 @@ namespace ImperaPlus.Application.Games
 
         public void Delete(long gameId)
         {
-            var user = this.CurrentUser;
-            var game = this.GetGame(gameId);
+            this.gameService.Delete(this.CurrentUser, gameId);
 
-            if (game.CreatedBy != user)
-            {
-                throw new Exceptions.ApplicationException("User is not allowed to perform this action", ErrorCode.UserIsNotAllowedToPerformAction);
-            }
-
-            if (!game.CanBeDeleted)
-            {
-                throw new Exceptions.ApplicationException("Cannot delete game", ErrorCode.CannotDeleteGame);
-            }
-
-            this.UnitOfWork.Games.Remove(game);
             this.UnitOfWork.Commit();            
         }
 
@@ -196,7 +184,7 @@ namespace ImperaPlus.Application.Games
             var game = this.GetGame(gameId);
             var user = this.CurrentUser;
 
-            game.RemovePlayer(user);
+            game.Leave(user);
 
             this.UnitOfWork.Commit();
         }

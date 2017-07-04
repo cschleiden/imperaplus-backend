@@ -185,10 +185,14 @@ namespace ImperaPlus.Domain.Games
                 throw new DomainException(ErrorCode.CannotSurrender, "Player is not active");
             }
 
+            var game = this.Team.Game;
+            if (game.State != GameState.Active)
+            {
+                throw new DomainException(ErrorCode.GameNotActive, "Can only surrender if game is active");
+            }
+
             this.Outcome = PlayerOutcome.Surrendered;
             this.State = PlayerState.InActive;
-
-            var game = this.Team.Game;
 
             foreach (var country in this.Countries.ToArray())
             {

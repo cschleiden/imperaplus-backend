@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ImperaPlus.Domain.Services;
 
 namespace ImperaPlus.Application.Tournaments
 {
@@ -40,17 +41,18 @@ namespace ImperaPlus.Application.Tournaments
     public class TournamentService : BaseService, ITournamentService
     {
         private RoleManager<IdentityRole> roleManager;
+        private Domain.Services.ITournamentService tournamentService;
 
-        public TournamentService(IUnitOfWork unitOfWork, IUserProvider userProvider, RoleManager<IdentityRole> roleManager)
+        public TournamentService(IUnitOfWork unitOfWork, IUserProvider userProvider, Domain.Services.ITournamentService tournamentService, RoleManager<IdentityRole> roleManager)
             : base(unitOfWork, userProvider)
         {
+            this.tournamentService = tournamentService;
             this.roleManager = roleManager;
         }
 
         public TournamentTeam CreateTeam(Guid tournamentId, string name, string password)
         {
             var tournament = this.GetTournament(tournamentId);
-
             var team = tournament.CreateTeam(this.CurrentUser, name, password);
 
             this.UnitOfWork.Commit();

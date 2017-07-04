@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using ImperaPlus.Domain.Events;
 using ImperaPlus.Domain.Services;
+using ImperaPlus.Domain.Users;
 
 namespace ImperaPlus.Domain
 {
@@ -13,9 +14,14 @@ namespace ImperaPlus.Domain
             builder.RegisterType<AttackService>().As<IAttackService>();
 
             builder.RegisterType<GameService>().As<IGameService>();
+            builder.RegisterType<UserService>().As<IUserService>();
             builder.RegisterType<ScoringService>().As<IScoringService>();
 
             builder.RegisterType<EventAggregator>().As<IEventAggregator>().InstancePerLifetimeScope();
+
+            // Notifications
+            builder.RegisterType<Tournaments.EventHandler.AccountDeletedHandler>().As<IEventHandler<AccountDeleted>>();
+            builder.RegisterType<Games.EventHandler.AccountDeletedHandler>().As<IEventHandler<AccountDeleted>>();
         }
     }
 }

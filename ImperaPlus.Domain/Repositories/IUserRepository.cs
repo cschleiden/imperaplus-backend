@@ -1,4 +1,6 @@
-﻿namespace ImperaPlus.Domain.Repositories
+﻿using System.Collections.Generic;
+
+namespace ImperaPlus.Domain.Repositories
 {
     public interface IUserRepository : IGenericRepository<User>
     {
@@ -7,5 +9,7 @@
         User FindByName(string name);
 
         User FindByIdWithRoles(string userId);
+
+        IEnumerable<User> FindUsersToDelete();
     }
 }

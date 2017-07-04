@@ -5,7 +5,7 @@ namespace ImperaPlus.Application.Jobs
 {
     [Queue(JobQueues.Normal)]
     [AutomaticRetry(Attempts = 0)]
-    public class NotificationJob : Job
+    public class NotificationJob : BackgroundJob
     {
         public NotificationJob(ILifetimeScope scope)
             : base(scope)

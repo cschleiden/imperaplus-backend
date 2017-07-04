@@ -1,6 +1,7 @@
 ﻿using System;
 using NLog.Fluent;
 using StackExchange.Profiling;
+using System.Threading.Tasks;
 
 namespace ImperaPlus.Utils
 {
@@ -13,6 +14,18 @@ namespace ImperaPlus.Utils
             using (MiniProfiler.Current.Step(name))
             {
                 action();
+            }
+
+            Log.Info().Message("Leaving {0}", name).Write();
+        }
+
+        public static async Task TraceAsync(string name, Func<Task> action)
+        {
+            Log.Info().Message("Entering {0}", name).Write();
+
+            using (MiniProfiler.Current.Step(name))
+            {
+                await action();
             }
 
             Log.Info().Message("Leaving {0}", name).Write();

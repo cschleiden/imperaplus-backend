@@ -22,7 +22,7 @@ namespace ImperaPlus.Application.Jobs
         }
 
         [AutomaticRetry(Attempts = 0)]
-        public void Handle()
+        public override void Handle()
         {
             Log.Info("Processing timeouts").Write();
 

@@ -28,5 +28,10 @@ namespace ImperaPlus.DataAccess.Repositories
         {
             return this.DbSet.FirstOrDefault(x => x.Id == messageId);
         }
+
+        public IEnumerable<Message> OwnedByUser(string userId)
+        {
+            return this.DbSet.Where(x => x.OwnerId == userId);
+        }
     }
 }

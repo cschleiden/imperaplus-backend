@@ -7,6 +7,7 @@ using ImperaPlus.Domain.Tournaments;
 using NLog.Fluent;
 using System;
 using System.Collections;
+using ImperaPlus.Domain.Utilities;
 
 namespace ImperaPlus.Domain.Services
 {
@@ -28,11 +29,11 @@ namespace ImperaPlus.Domain.Services
         private IGameService gameService;
         private IMapTemplateProvider mapTemplateProvider;
         private IUnitOfWork unitOfWork;
-        
+
 
         public TournamentService(
-            IUnitOfWork unitOfWork, 
-            IGameService gameService, 
+            IUnitOfWork unitOfWork,
+            IGameService gameService,
             IMapTemplateProvider mapTemplateProvider)
         {
             this.unitOfWork = unitOfWork;
@@ -46,7 +47,7 @@ namespace ImperaPlus.Domain.Services
 
             var tournaments = this.unitOfWork.Tournaments.Get(TournamentState.Open);
 
-            foreach(var tournament in tournaments)
+            foreach (var tournament in tournaments)
             {
                 if (tournament.CanStart)
                 {
@@ -66,7 +67,7 @@ namespace ImperaPlus.Domain.Services
         {
             var tournaments = this.unitOfWork.Tournaments.Get(Tournament.ActiveStates);
 
-            foreach(var tournament in tournaments)
+            foreach (var tournament in tournaments)
             {
                 try
                 {
@@ -100,13 +101,13 @@ namespace ImperaPlus.Domain.Services
 
         public void CreateGamesForPairings(Tournament tournament)
         {
-            foreach(var pairing in tournament.Pairings.Where(
+            foreach (var pairing in tournament.Pairings.Where(
                 x => x.State == PairingState.None && x.Games.Count() != x.NumberOfGames))
             {
                 this.CreateGamesForPairing(pairing);
             }
         }
-        
+
         public void SynchronizeGamesToPairings(Tournament tournament)
         {
             var activePairings = tournament.Pairings.Where(x => x.State == PairingState.Active).ToArray();
@@ -142,12 +143,12 @@ namespace ImperaPlus.Domain.Services
 
         public void OrderGroupTeams(Tournament tournament)
         {
-            foreach(var group in tournament.Groups)
+            foreach (var group in tournament.Groups)
             {
                 // Do initial sorting, count wins
                 var wonPairingsByTeam = group.Teams.ToDictionary(x => x.Id, x => 0);
                 var wonGamesByTeam = group.Teams.ToDictionary(x => x.Id, x => 0);
-                foreach(var pairing in group.Pairings)
+                foreach (var pairing in group.Pairings)
                 {
                     wonGamesByTeam[pairing.TeamAId] += pairing.TeamAWon;
                     wonGamesByTeam[pairing.TeamBId] += pairing.TeamBWon;

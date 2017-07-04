@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Hangfire.Common;
 using Hangfire.States;
 using Autofac;
+using Hangfire.Server;
 
 namespace ImperaPlus.TestSupport
 {
@@ -27,7 +28,7 @@ namespace ImperaPlus.TestSupport
         public string Create(Job job, IState state)
         {
             var activator = new AutofacJobActivator(scope);
-            job.Perform(activator, new Hangfire.JobCancellationToken(false));
+            job.Perform(activator, new JobCancellationToken(false));
 
             return new Guid().ToString();
         }

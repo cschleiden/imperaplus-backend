@@ -332,8 +332,10 @@
     <Compile Include="Enums\GameType.cs" />
     <Compile Include="Enums\MapDistribution.cs" />
     <Compile Include="Events\EventQueue.cs" />
+    <Compile Include="Games\EventHandler\AccountDeletedHandler.cs" />
     <Compile Include="ISerializedEntity.cs" />
     <Compile Include="Map\MapTemplateDescriptor.cs" />
+    <Compile Include="Messages\EventHandler\AccountDeletedHandler.cs" />
     <Compile Include="Messages\MessageFolder.cs" />
     <Compile Include="Enums\PlayerOutcome.cs" />
     <Compile Include="Enums\PlayerState.cs" />
@@ -363,7 +365,6 @@
     <Compile Include="IOwnedEntity.cs" />
     <Compile Include="Games\Map.cs" />
     <Compile Include="IChangeTrackedEntity.cs" />
-    <Compile Include="IEvent.cs" />
     <Compile Include="IIdentifiableEntity.cs" />
     <Compile Include="Games\Distribution\DefaultMapDistribution.cs" />
     <Compile Include="Games\Distribution\IMapDistribution.cs" />
@@ -403,6 +404,8 @@
     <Compile Include="Services\ScoringService.cs" />
     <Compile Include="Services\Scoring\Glicko2.cs" />
     <Compile Include="Services\TournamentService.cs" />
+    <Compile Include="Services\UserService.cs" />
+    <Compile Include="Tournaments\EventHandler\AccountDeletedHandler.cs" />
     <Compile Include="Tournaments\TournamentTeamState.cs" />
     <Compile Include="Tournaments\TournamentPhase.cs" />
     <Compile Include="Tournaments\TournamentState.cs" />
@@ -413,6 +416,7 @@
     <Compile Include="Tournaments\Tournament.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Users\UserEvents.cs" />
     <Compile Include="Utilities\LinqExtensions.cs" />
     <Compile Include="Utilities\Require.cs" />
     <Compile Include="Utilities\SerializedCollection.cs" />

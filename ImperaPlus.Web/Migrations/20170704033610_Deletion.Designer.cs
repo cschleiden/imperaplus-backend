@@ -12,9 +12,10 @@ using ImperaPlus.Domain.Tournaments;
 namespace ImperaPlus.Web.Migrations
 {
     [DbContext(typeof(ImperaContext))]
-    partial class ImperaContextModelSnapshot : ModelSnapshot
+    [Migration("20170704033610_Deletion")]
+    partial class Deletion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
@@ -1008,7 +1009,8 @@ namespace ImperaPlus.Web.Migrations
 
                     b.HasOne("ImperaPlus.Domain.User", "Owner")
                         .WithMany()
-                        .HasForeignKey("OwnerId");
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("ImperaPlus.Domain.User", "Recipient")
                         .WithMany()

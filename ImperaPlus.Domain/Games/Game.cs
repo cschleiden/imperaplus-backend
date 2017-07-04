@@ -210,6 +210,18 @@ namespace ImperaPlus.Domain.Games
         }
 
         /// <summary>
+        /// Gets a value indicating whether players can leave the game
+        /// </summary>
+        [NotMapped]
+        public bool CanLeave
+        {
+            get
+            {
+                return this.State == GameState.Open;
+            }
+        }
+
+        /// <summary>
         /// Adds a new team
         /// </summary>
         /// <returns>New team</returns>
@@ -310,11 +322,11 @@ namespace ImperaPlus.Domain.Games
         /// Remove player from team and game
         /// </summary>
         /// <param name="user"></param>
-        public void RemovePlayer(User user)
+        public void Leave(User user)
         {
             Require.NotNull(user, "user");
 
-            if (this.State != GameState.Open)
+            if (!this.CanLeave)
             {
                 throw new DomainException(ErrorCode.CannotLeaveGame, "Game state does not allow leaving");
             }                       
@@ -444,7 +456,7 @@ namespace ImperaPlus.Domain.Games
 
             if (this.PlayState != PlayState.PlaceUnits)
             {
-                throw new DomainException(ErrorCode.ExchangingCardsNotAllowed, "Exchaning cards is not allowed");
+                throw new DomainException(ErrorCode.ExchangingCardsNotAllowed, "Exchanging cards is not allowed");
             }
 
             var unitsReceived = this.CurrentPlayer.ExchangeCards();

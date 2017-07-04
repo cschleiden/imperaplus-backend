@@ -25,7 +25,9 @@ namespace ImperaPlus.Domain.Services
         private IGameService gameService;
         private IUnitOfWork unitOfWork;
         private IMapTemplateProvider mapTemplateProvider;
-        private IEventAggregator eventAggregator;        
+        private IEventAggregator eventAggregator;
+
+        private Object createGamesLock = new Object();
 
         public LadderService(IUnitOfWork unitOfWork, IGameService gameService, IMapTemplateProvider mapTemplateProvider, IEventAggregator eventAggregator)
         {
@@ -40,38 +42,40 @@ namespace ImperaPlus.Domain.Services
         /// </summary>
         public void CheckAndCreateMatches()
         {
-            // TODO: CS: Take lock here
-            var ladders = this.unitOfWork.Ladders.GetActive().ToList();
-
-            foreach (var ladder in ladders)
+            lock (this.createGamesLock)
             {
-                var numberOfRequiredPlayers = ladder.Options.NumberOfTeams * ladder.Options.NumberOfPlayersPerTeam;
+                var ladders = this.unitOfWork.Ladders.GetActive().ToList();
 
-                while (ladder.Queue.Count() >= numberOfRequiredPlayers)
+                foreach (var ladder in ladders)
                 {
-                    var game = this.CreateGame(ladder);
-                    this.unitOfWork.Games.Add(game);
-                    ladder.Games.Add(game);
+                    var numberOfRequiredPlayers = ladder.Options.NumberOfTeams * ladder.Options.NumberOfPlayersPerTeam;
 
-                    // Add required players from queue to game
-                    var queueEntries = ladder.Queue.Take(numberOfRequiredPlayers).ToArray();
-                    foreach (var queueEntry in queueEntries.Shuffle())
+                    while (ladder.Queue.Count() >= numberOfRequiredPlayers)
                     {
-                        Debug.Assert(queueEntry.User != null, "User not available for queue entry");
+                        var game = this.CreateGame(ladder);
+                        this.unitOfWork.Games.Add(game);
+                        ladder.Games.Add(game);
 
-                        // Add user to game
-                        game.AddPlayer(queueEntry.User);
+                        // Add required players from queue to game
+                        var queueEntries = ladder.Queue.Take(numberOfRequiredPlayers).ToArray();
+                        foreach (var queueEntry in queueEntries.Shuffle())
+                        {
+                            Debug.Assert(queueEntry.User != null, "User not available for queue entry");
 
-                        // Remove user from queue
-                        ladder.Queue.Remove(queueEntry);
-                        this.unitOfWork.GetGenericRepository<LadderQueueEntry>().Remove(queueEntry);
+                            // Add user to game
+                            game.AddPlayer(queueEntry.User);
+
+                            // Remove user from queue
+                            ladder.Queue.Remove(queueEntry);
+                            this.unitOfWork.GetGenericRepository<LadderQueueEntry>().Remove(queueEntry);
+                        }
+
+                        game.Start(this.mapTemplateProvider.GetTemplate(game.MapTemplateName));
+
+                        this.eventAggregator.Raise(new LadderGameStartedEvent(ladder, game));
+
+                        this.unitOfWork.Commit();
                     }
-
-                    game.Start(this.mapTemplateProvider.GetTemplate(game.MapTemplateName));
-
-                    this.eventAggregator.Raise(new LadderGameStartedEvent(ladder, game));
-
-                    this.unitOfWork.Commit();
                 }
             }
         }

@@ -8,7 +8,7 @@ namespace ImperaPlus.Application.Jobs
 {
     [Queue(JobQueues.Normal)]
     [AutomaticRetry(Attempts = 0)]
-    public class BotJob : Job
+    public class BotJob : BackgroundJob
     {
         private IUnitOfWork unitOfWork;
        

@@ -6,6 +6,8 @@ namespace ImperaPlus.Domain.Repositories
 {
     public interface IMessageRepository : IGenericRepository<Message>
     {
+        IEnumerable<Message> OwnedByUser(string userId);
+
         Message FindById(Guid messageId);
 
         /// <summary>

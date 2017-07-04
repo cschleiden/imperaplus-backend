@@ -12,9 +12,10 @@ using ImperaPlus.Domain.Tournaments;
 namespace ImperaPlus.Web.Migrations
 {
     [DbContext(typeof(ImperaContext))]
-    partial class ImperaContextModelSnapshot : ModelSnapshot
+    [Migration("20170702171526_User IsDeleted column")]
+    partial class UserIsDeletedcolumn
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
@@ -572,7 +573,8 @@ namespace ImperaPlus.Web.Migrations
 
                     b.Property<Guid>("TeamId");
 
-                    b.Property<string>("UserId");
+                    b.Property<string>("UserId")
+                        .IsRequired();
 
                     b.HasKey("Id");
 
@@ -955,8 +957,7 @@ namespace ImperaPlus.Web.Migrations
 
                     b.HasOne("ImperaPlus.Domain.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("ImperaPlus.Domain.Games.Team", b =>
@@ -1008,7 +1009,8 @@ namespace ImperaPlus.Web.Migrations
 
                     b.HasOne("ImperaPlus.Domain.User", "Owner")
                         .WithMany()
-                        .HasForeignKey("OwnerId");
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("ImperaPlus.Domain.User", "Recipient")
                         .WithMany()
@@ -1087,8 +1089,7 @@ namespace ImperaPlus.Web.Migrations
 
                     b.HasOne("ImperaPlus.Domain.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("ImperaPlus.Domain.Tournaments.TournamentTeam", b =>

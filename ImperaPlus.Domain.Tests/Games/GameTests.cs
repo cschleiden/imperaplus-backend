@@ -138,7 +138,7 @@ namespace ImperaPlus.Domain.Tests.Games
             game.AddPlayer(user);
 
             // Act
-            game.RemovePlayer(user);
+            game.Leave(user);
             
             // Assert
             Assert.IsFalse(game.Teams.SelectMany(x => x.Players).Select(x => x.User).Contains(user));
@@ -188,7 +188,7 @@ namespace ImperaPlus.Domain.Tests.Games
             var player = game.Teams.First().Players.First();
 
             // Act
-            game.RemovePlayer(player.User);
+            game.Leave(player.User);
 
             // Assert
         }

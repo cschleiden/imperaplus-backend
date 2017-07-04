@@ -24,7 +24,7 @@ namespace ImperaPlus.Application.Jobs
         }
 
         [AutomaticRetry(Attempts = 0)]
-        public void Handle()
+        public override void Handle()
         {
             this.tournamentService.CheckTournaments();
             this.unitOfWork.Commit();
