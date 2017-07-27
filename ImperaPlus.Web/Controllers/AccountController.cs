@@ -9,6 +9,7 @@ using AspNet.Security.OpenIdConnect.Extensions;
 using AspNet.Security.OpenIdConnect.Primitives;
 using AspNet.Security.OpenIdConnect.Server;
 using ImperaPlus.Application;
+using ImperaPlus.Application.Users;
 using ImperaPlus.Domain;
 using ImperaPlus.DTO;
 using ImperaPlus.DTO.Account;
@@ -21,9 +22,9 @@ using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NLog.Fluent;
 using OpenIddict.Core;
 using OpenIddict.Models;
-using ImperaPlus.Application.Users;
 
 namespace ImperaPlus.Backend.Controllers
 {
@@ -610,9 +611,13 @@ namespace ImperaPlus.Backend.Controllers
         [HttpPost]
         public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmationModel model)
         {
+            Log.Info().Message($"Confirming email for user {model.UserId} - {model.Code}").Write();
+
             var user = await userManager.FindByIdAsync(model.UserId);
             if (user == null)
             {
+                Log.Error().Message($"Could not find user {model.UserId}").Write();
+
                 return this.BadRequest();
             }
 

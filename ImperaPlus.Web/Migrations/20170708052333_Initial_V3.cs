@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace ImperaPlus.Web.Migrations
 {
-    public partial class Initial : Migration
+    public partial class Initial_V3 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -207,7 +207,9 @@ namespace ImperaPlus.Web.Migrations
                     EmailConfirmed = table.Column<bool>(nullable: false),
                     GameSlots = table.Column<int>(nullable: false),
                     IsAllianceAdmin = table.Column<bool>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
                     Language = table.Column<string>(nullable: true),
+                    LastLogin = table.Column<DateTime>(nullable: false),
                     LegacyPasswordHash = table.Column<string>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
@@ -263,6 +265,7 @@ namespace ImperaPlus.Web.Migrations
                     LastGame = table.Column<DateTime>(nullable: false),
                     Rating = table.Column<double>(nullable: false),
                     Rd = table.Column<double>(nullable: false),
+                    UserId1 = table.Column<string>(nullable: true),
                     Vol = table.Column<double>(nullable: false)
                 },
                 constraints: table =>
@@ -280,6 +283,12 @@ namespace ImperaPlus.Web.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_LadderStanding_AspNetUsers_UserId1",
+                        column: x => x.UserId1,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -578,7 +587,7 @@ namespace ImperaPlus.Web.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -605,7 +614,8 @@ namespace ImperaPlus.Web.Migrations
                     State = table.Column<int>(nullable: false),
                     TournamentPairingId = table.Column<Guid>(nullable: true),
                     TurnCounter = table.Column<int>(nullable: false),
-                    Type = table.Column<int>(nullable: false)
+                    Type = table.Column<int>(nullable: false),
+                    UserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -615,7 +625,7 @@ namespace ImperaPlus.Web.Migrations
                         column: x => x.CreatedById,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Games_Ladders_LadderId",
                         column: x => x.LadderId,
@@ -628,6 +638,12 @@ namespace ImperaPlus.Web.Migrations
                         principalTable: "GameOptions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Games_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -699,9 +715,7 @@ namespace ImperaPlus.Web.Migrations
                     Name = table.Column<string>(nullable: true),
                     Password = table.Column<string>(nullable: true),
                     State = table.Column<int>(nullable: false),
-                    TournamentGroupId = table.Column<Guid>(nullable: true),
-                    TournamentId = table.Column<Guid>(nullable: false),
-                    TournamentId1 = table.Column<Guid>(nullable: true)
+                    TournamentId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -719,23 +733,11 @@ namespace ImperaPlus.Web.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TournamentTeam_TournamentGroup_TournamentGroupId",
-                        column: x => x.TournamentGroupId,
-                        principalTable: "TournamentGroup",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
                         name: "FK_TournamentTeam_Tournament_TournamentId",
                         column: x => x.TournamentId,
                         principalTable: "Tournament",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TournamentTeam_Tournament_TournamentId1",
-                        column: x => x.TournamentId1,
-                        principalTable: "Tournament",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -796,7 +798,7 @@ namespace ImperaPlus.Web.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     TeamId = table.Column<Guid>(nullable: false),
-                    UserId = table.Column<string>(nullable: false)
+                    UserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -812,7 +814,7 @@ namespace ImperaPlus.Web.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateIndex(
@@ -878,6 +880,11 @@ namespace ImperaPlus.Web.Migrations
                 column: "TournamentPairingId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Games_UserId",
+                table: "Games",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_HistoryEntry_ActorId",
                 table: "HistoryEntry",
                 column: "ActorId");
@@ -921,6 +928,11 @@ namespace ImperaPlus.Web.Migrations
                 name: "IX_LadderStanding_UserId",
                 table: "LadderStanding",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LadderStanding_UserId1",
+                table: "LadderStanding",
+                column: "UserId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Message_FromId",
@@ -1014,19 +1026,9 @@ namespace ImperaPlus.Web.Migrations
                 column: "GroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TournamentTeam_TournamentGroupId",
-                table: "TournamentTeam",
-                column: "TournamentGroupId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_TournamentTeam_TournamentId",
                 table: "TournamentTeam",
                 column: "TournamentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_TournamentTeam_TournamentId1",
-                table: "TournamentTeam",
-                column: "TournamentId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUsers_AllianceId",
@@ -1121,7 +1123,7 @@ namespace ImperaPlus.Web.Migrations
                 column: "GameId",
                 principalTable: "Games",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_GameChatMessage_Games_GameId",

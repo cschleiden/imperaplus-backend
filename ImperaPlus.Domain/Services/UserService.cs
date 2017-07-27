@@ -30,6 +30,7 @@ namespace ImperaPlus.Domain.Services
             // Let sub-systems react to this
             this.eventAggregator.Raise(new AccountDeleted(user));
 
+            // Mark as deleted, will be cleaned up by a job
             user.IsDeleted = true;
         }
     }

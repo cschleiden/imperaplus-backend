@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Tournaments;
+using ImperaPlus.Domain;
 
 namespace ImperaPlus.DataAccess.Repositories
 {

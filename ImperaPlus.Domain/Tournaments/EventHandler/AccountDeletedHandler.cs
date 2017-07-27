@@ -18,12 +18,17 @@ namespace ImperaPlus.Domain.Tournaments.EventHandler
 
         public void Handle(AccountDeleted evt)
         {
+            // Try to leave open tournaments
             var openTournaments = this.unitOfWork.Tournaments.Get(TournamentState.Open);
             foreach (var tournament in openTournaments)
             {
                 try
                 {
                     tournament.LeaveUser(evt.User);
+                }
+                catch (DomainException domainException) when (domainException.ErrorCode == ErrorCode.TournamentUserNoParticipant)
+                {
+                    // Ignore tournament
                 }
                 catch (DomainException domainException) when (domainException.ErrorCode == ErrorCode.TournamentTeamCreatorHasToDelete)
                 {

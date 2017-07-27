@@ -12,8 +12,8 @@ using ImperaPlus.Domain.Tournaments;
 namespace ImperaPlus.Web.Migrations
 {
     [DbContext(typeof(ImperaContext))]
-    [Migration("20170702171526_User IsDeleted column")]
-    partial class UserIsDeletedcolumn
+    [Migration("20170708052333_Initial_V3")]
+    partial class Initial_V3
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -162,6 +162,8 @@ namespace ImperaPlus.Web.Migrations
 
                     b.Property<int>("Type");
 
+                    b.Property<string>("UserId");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CreatedById");
@@ -171,6 +173,8 @@ namespace ImperaPlus.Web.Migrations
                     b.HasIndex("OptionsId");
 
                     b.HasIndex("TournamentPairingId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Games");
                 });
@@ -360,11 +364,15 @@ namespace ImperaPlus.Web.Migrations
 
                     b.Property<double>("Rd");
 
+                    b.Property<string>("UserId1");
+
                     b.Property<double>("Vol");
 
                     b.HasKey("LadderId", "UserId");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1");
 
                     b.ToTable("LadderStanding");
                 });
@@ -573,8 +581,7 @@ namespace ImperaPlus.Web.Migrations
 
                     b.Property<Guid>("TeamId");
 
-                    b.Property<string>("UserId")
-                        .IsRequired();
+                    b.Property<string>("UserId");
 
                     b.HasKey("Id");
 
@@ -881,7 +888,8 @@ namespace ImperaPlus.Web.Migrations
 
                     b.HasOne("ImperaPlus.Domain.Games.Game", "Game")
                         .WithOne()
-                        .HasForeignKey("ImperaPlus.Domain.Chat.Channel", "GameId");
+                        .HasForeignKey("ImperaPlus.Domain.Chat.Channel", "GameId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("ImperaPlus.Domain.Chat.ChatMessage", b =>
@@ -915,8 +923,9 @@ namespace ImperaPlus.Web.Migrations
             modelBuilder.Entity("ImperaPlus.Domain.Games.Game", b =>
                 {
                     b.HasOne("ImperaPlus.Domain.User", "CreatedBy")
-                        .WithMany("CreatedGames")
-                        .HasForeignKey("CreatedById");
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("ImperaPlus.Domain.Ladders.Ladder", "Ladder")
                         .WithMany("Games")
@@ -930,6 +939,10 @@ namespace ImperaPlus.Web.Migrations
                     b.HasOne("ImperaPlus.Domain.Tournaments.TournamentPairing")
                         .WithMany("Games")
                         .HasForeignKey("TournamentPairingId");
+
+                    b.HasOne("ImperaPlus.Domain.User")
+                        .WithMany("CreatedGames")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("ImperaPlus.Domain.Games.History.HistoryEntry", b =>
@@ -957,7 +970,8 @@ namespace ImperaPlus.Web.Migrations
 
                     b.HasOne("ImperaPlus.Domain.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("ImperaPlus.Domain.Games.Team", b =>
@@ -996,9 +1010,13 @@ namespace ImperaPlus.Web.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("ImperaPlus.Domain.User", "User")
-                        .WithMany("Standings")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("ImperaPlus.Domain.User")
+                        .WithMany("Standings")
+                        .HasForeignKey("UserId1");
                 });
 
             modelBuilder.Entity("ImperaPlus.Domain.Messages.Message", b =>
@@ -1089,7 +1107,8 @@ namespace ImperaPlus.Web.Migrations
 
                     b.HasOne("ImperaPlus.Domain.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull);
                 });
 
             modelBuilder.Entity("ImperaPlus.Domain.Tournaments.TournamentTeam", b =>
