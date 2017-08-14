@@ -6,8 +6,6 @@ namespace ImperaPlus.Domain.Repositories
 {
     public interface IMessageRepository : IGenericRepository<Message>
     {
-        IEnumerable<Message> OwnedByUser(string userId);
-
         Message FindById(Guid messageId);
 
         /// <summary>
@@ -21,5 +19,11 @@ namespace ImperaPlus.Domain.Repositories
         /// <param name="userId">User to check for</param>
         /// <returns>Number of unread messages</returns>
         int CountUnread(string userId);
+
+        IEnumerable<Message> SentByUser(string userId);
+
+        IEnumerable<Message> ReceivedByUser(string userId);
+
+        IEnumerable<Message> OwnedByUser(string userId);
     }
 }

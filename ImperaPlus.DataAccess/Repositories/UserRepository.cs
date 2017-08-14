@@ -30,9 +30,10 @@ namespace ImperaPlus.DataAccess.Repositories
             return this.DbSet.FirstOrDefault(x => x.UserName == name);
         }
 
-        public IEnumerable<User> FindUsersToDelete()
+        public IEnumerable<User> FindUsersToDelete(int days = -30)
         {
-            return this.DbSet.Where(x => x.IsDeleted && x.LastLogin <= DateTime.UtcNow.AddDays(-30));
+            var cutoffDate = DateTime.UtcNow.AddDays(days);
+            return this.DbSet.Where(x => x.IsDeleted && x.LastLogin <= cutoffDate);
         }
     }
 }

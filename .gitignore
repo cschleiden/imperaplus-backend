@@ -180,3 +180,4 @@ src/modules/**/*.js
 *.sublime-workspace
 /Credentials.config
 /.vs/config
+/ImperaPlus.Web/appsettings.environment.json

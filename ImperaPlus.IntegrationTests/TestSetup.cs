@@ -1,20 +1,23 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using ImperaPlus.DataAccess;
+using ImperaPlus.DTO.Account;
 using ImperaPlus.GeneratedClient;
 using ImperaPlus.TestSupport;
 using ImperaPlus.Web;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.PlatformAbstractions;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using ImperaPlus.DTO.Account;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 
 namespace ImperaPlus.Integration.Tests
 {
@@ -29,6 +32,11 @@ namespace ImperaPlus.Integration.Tests
             var startupAssembly = typeof(Startup).GetTypeInfo().Assembly;
             var contentRoot = GetProjectPath(string.Empty, startupAssembly);
 
+            Startup.RequireUserConfirmation = false;
+            Startup.RunningUnderTest = true;
+
+            Application.TestSupport.RunningUnderTest = true;
+
             JsonConvert.DefaultSettings = () =>
             {
                 var settings = new JsonSerializerSettings();
@@ -40,9 +48,9 @@ namespace ImperaPlus.Integration.Tests
             TestSetup.TestServer = new TestServer(new WebHostBuilder()
                 .UseEnvironment(EnvironmentName.Development)
                 .UseContentRoot(contentRoot)
-                .ConfigureServices(services => services.AddScoped<DbSeed, TestDbSeed>())
+                .ConfigureServices(services => TestSetup.RegisterTypes(services))
                 .UseStartup<Startup>());
-            TestSetup.TestServer.BaseAddress = new System.Uri("http://localhost", System.UriKind.Absolute);
+            TestSetup.TestServer.BaseAddress = new Uri("http://localhost", UriKind.Absolute);
 
             var client = ApiClient.GetClient<AccountClient>().Result;
             for (int i = 0; i < 4; ++i)
@@ -60,7 +68,7 @@ namespace ImperaPlus.Integration.Tests
                 {
                     client.RegisterAsync(model).Wait();
                 }
-                catch(AggregateException e)
+                catch (AggregateException e)
                 {
                     if (e.InnerExceptions != null && e.InnerExceptions.Count > 0 && e.InnerExceptions[0] is ImperaPlusException)
                     {
@@ -77,9 +85,16 @@ namespace ImperaPlus.Integration.Tests
             }
         }
 
-        public static void RegisterTypes(ContainerBuilder builder)
+        public static void RegisterTypes(IServiceCollection serviceCollection)
         {
+            serviceCollection.AddScoped<DbSeed, TestDbSeed>();
+
+            var builder = new ContainerBuilder();
+
             builder.RegisterType<SynchronousBackgroundJobClient>().AsImplementedInterfaces();
+            builder.RegisterType<FakeEmailService>().AsImplementedInterfaces();
+
+            builder.Populate(serviceCollection);
         }
 
         public static string GetProjectPath(string solutionRelativePath, Assembly assembly)

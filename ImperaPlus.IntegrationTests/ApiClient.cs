@@ -49,7 +49,12 @@ namespace ImperaPlus.Integration.Tests
         {
             return await GetAuthenticatedClient<TClientType>(
                 "TestUser" + user,
-                "TestPassword" + user);
+                ApiClient.GetUserPassword(user));
+        }
+
+        public static string GetUserPassword(int user)
+        {
+            return "TestPassword" + user;
         }
     }
 }

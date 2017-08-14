@@ -378,7 +378,9 @@ namespace ImperaPlus.Backend.Controllers
         }
 
         [Route("Delete")]
-        [HttpDelete]
+        [HttpPost]
+        [ProducesResponseType(typeof(void), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> DeleteAccount([FromBody] DeleteAccountBindingModel model)
         {
             var user = await GetCurrentUserAsync();

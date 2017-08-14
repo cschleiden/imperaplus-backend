@@ -1,8 +1,7 @@
-﻿using ImperaPlus.GeneratedClient;
-using ImperaPlus.TestSupport;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using ImperaPlus.GeneratedClient;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ImperaPlus.Integration.Tests
 {

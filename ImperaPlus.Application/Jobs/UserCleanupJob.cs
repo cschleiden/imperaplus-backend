@@ -1,4 +1,7 @@
-﻿using Autofac;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Autofac;
 using Hangfire;
 using ImperaPlus.Domain;
 using ImperaPlus.Domain.Repositories;
@@ -6,9 +9,6 @@ using ImperaPlus.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NLog.Fluent;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ImperaPlus.Application.Jobs
 {
@@ -16,6 +16,8 @@ namespace ImperaPlus.Application.Jobs
     [DisableConcurrentExecution(60)]
     public class UserCleanupJob : AsyncJob
     {
+        public const string JobId = "UserCleanup";
+
         private readonly UserManager<User> userManager;
         private IUnitOfWork unitOfWork;
 
@@ -33,7 +35,13 @@ namespace ImperaPlus.Application.Jobs
             {
                 try
                 {
-                    var users = this.unitOfWork.Users.FindUsersToDelete().ToArray();
+                    int days = -30;
+                    if (TestSupport.RunningUnderTest)
+                    {
+                        days = 1;
+                    }
+
+                    var users = this.unitOfWork.Users.FindUsersToDelete(days).ToArray();
                     foreach (var user in users)
                     {
                         Log.Info().Message("Deleting user {0} '{1}'", user.Id, user.UserName).Write();

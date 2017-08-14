@@ -41,12 +41,14 @@ namespace ImperaPlus.Web
         /// <summary>
         /// Test support: Require user confirmation
         /// </summary>
-        internal static bool RequireUserConfirmation = true;
+        public static bool RequireUserConfirmation = true;
+
+        public static bool RunningUnderTest = false;
 
         public Startup(IHostingEnvironment env)
         {
             env.ConfigureNLog("nlog.config");
-
+            
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
@@ -54,6 +56,11 @@ namespace ImperaPlus.Web
                 .AddJsonFile($"appsettings.environment.json", optional: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
+
+            if (Startup.RunningUnderTest)
+            {
+                builder.AddJsonFile($"appsettings.test.json", optional: true);
+            }
 
             if (env.IsDevelopment())
             {
@@ -65,6 +72,7 @@ namespace ImperaPlus.Web
         }
 
         public IConfigurationRoot Configuration { get; }
+
         public IHostingEnvironment Environment { get; private set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -333,9 +341,11 @@ namespace ImperaPlus.Web
             // Initialize database
             if (env.IsDevelopment())
             {
-                // Uncomment this to always recreate in development
-                // dbContext.Database.EnsureDeleted();
-                dbContext.Database.EnsureCreated();
+                if (Startup.RunningUnderTest)
+                {
+                    dbContext.Database.EnsureDeleted();
+                }
+                
                 dbContext.Database.Migrate();
             }
             else

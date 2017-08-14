@@ -33,5 +33,15 @@ namespace ImperaPlus.DataAccess.Repositories
         {
             return this.DbSet.Where(x => x.OwnerId == userId);
         }
+
+        public IEnumerable<Message> SentByUser(string userId)
+        {
+            return this.DbSet.Where(x => x.FromId == userId);
+        }
+
+        public IEnumerable<Message> ReceivedByUser(string userId)
+        {
+            return this.DbSet.Where(x => x.RecipientId == userId);
+        }
     }
 }

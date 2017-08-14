@@ -339,6 +339,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FakeEmailService.cs" />
     <Compile Include="PredefinedRandomGen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SynchronousBackgroundJobClient.cs" />

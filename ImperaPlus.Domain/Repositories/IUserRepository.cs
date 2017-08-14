@@ -10,6 +10,6 @@ namespace ImperaPlus.Domain.Repositories
 
         User FindByIdWithRoles(string userId);
 
-        IEnumerable<User> FindUsersToDelete();
+        IEnumerable<User> FindUsersToDelete(int days = -30);
     }
 }

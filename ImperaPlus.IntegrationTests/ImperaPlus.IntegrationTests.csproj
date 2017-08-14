@@ -15,6 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ImperaPlus.Application\ImperaPlus.Application.csproj" />
     <ProjectReference Include="..\ImperaPlus.DTO\ImperaPlus.DTO.csproj" />
     <ProjectReference Include="..\ImperaPlus.GeneratedClient\ImperaPlus.GeneratedClient.csproj" />
     <ProjectReference Include="..\ImperaPlus.TestSupport\ImperaPlus.TestSupport.csproj" />
@@ -27,10 +28,11 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.Abstractions" Version="1.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="1.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Server" Version="0.2.0-rtm-22752" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.1.17" />
     <PackageReference Include="MSTest.TestFramework" Version="1.1.17" />
     <PackageReference Include="Microsoft.Owin" Version="3.1.0" />

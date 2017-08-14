@@ -1,10 +1,6 @@
-﻿using ImperaPlus.DTO;
+﻿using System.Collections.Generic;
+using ImperaPlus.DTO;
 using ImperaPlus.DTO.Account;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ImperaPlus.GeneratedClient
 {
