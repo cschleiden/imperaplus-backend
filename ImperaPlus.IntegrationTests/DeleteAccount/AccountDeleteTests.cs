@@ -60,6 +60,7 @@ namespace ImperaPlus.IntegrationTests.DeleteAccount
             await this.SendMessages();
             await this.JoinLadder();
             await this.JoinTournament();
+            await this.JoinGame();
         }
 
         private async Task SendMessages()
@@ -143,6 +144,21 @@ namespace ImperaPlus.IntegrationTests.DeleteAccount
             // Join tournament
             var tournamentClient = await ApiClient.GetAuthenticatedClient<TournamentClient>(0);
             await tournamentClient.PostJoinAsync(teamTournamentId);
+        }
+
+        private async Task JoinGame()
+        {
+            var gameClient = await ApiClient.GetAuthenticatedClientDefaultUser<GameClient>();
+
+            var options = new DTO.Games.GameCreationOptions();
+            GameOptionsHelper.SetDefaultGameOptions(options);
+            options.NumberOfPlayersPerTeam = 1;
+            options.NumberOfTeams = 2;
+            options.AddBot = true;
+            options.Name = Guid.NewGuid().ToString();
+            options.MapTemplate = "WorldDeluxe";
+
+            var game = await gameClient.PostAsync(options);
         }
     }
 }
