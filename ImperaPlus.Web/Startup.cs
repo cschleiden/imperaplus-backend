@@ -32,18 +32,25 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
+using ImperaPlus.Domain;
 
 namespace ImperaPlus.Web
 {
 
     public class Startup
     {
+        #region TestSupport
         /// <summary>
         /// Test support: Require user confirmation
         /// </summary>
         public static bool RequireUserConfirmation = true;
 
         public static bool RunningUnderTest = false;
+
+        public static IContainer Container { get; private set; }
+
+        public static ContainerBuilder TestContainerBuilder { get; set; }
+        #endregion
 
         public Startup(IHostingEnvironment env)
         {
@@ -381,7 +388,7 @@ namespace ImperaPlus.Web
         {
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
-            var builder = new ContainerBuilder();
+            var builder = TestContainerBuilder ?? new ContainerBuilder();
 
             // Messaging
             if (Environment.IsDevelopment())
@@ -404,15 +411,9 @@ namespace ImperaPlus.Web
             builder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerLifetimeScope();
 
             builder.RegisterType<DbSeed>().AsSelf();
-
-            // Register repositories
-            //builder.RegisterAssemblyTypes(Assembly.GetAssembly(typeof(GameRepository)))
-            //    .Where(x => x.Name.EndsWith("Repository") && !x.IsInterface).As(x => x.GetInterfaces());
-
-            builder.RegisterType<UserProvider>().As<IUserProvider>();
-
-            // Register SignalR hubs
-            //builder.RegisterHubs(Assembly.GetExecutingAssembly());
+           
+            // Ensure that we can override it from a test
+            builder.RegisterType<UserProvider>().As<IUserProvider>().PreserveExistingDefaults();
 
             // Register Domain services
             builder.RegisterAssemblyTypes(Assembly.GetAssembly(typeof(IGameRepository)))
@@ -444,8 +445,8 @@ namespace ImperaPlus.Web
 
             builder.Populate(services);
 
-            IContainer container = null;
-            container = builder.Build();
+            IContainer container = builder.Build();
+            Startup.Container = container;
 
             return container.Resolve<IServiceProvider>();
         }

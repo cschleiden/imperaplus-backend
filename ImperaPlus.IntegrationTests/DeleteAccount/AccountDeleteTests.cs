@@ -1,8 +1,14 @@
-﻿using System.Threading;
+﻿using System;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using Autofac;
+using ImperaPlus.Backend.Areas.Admin.Helpers;
 using ImperaPlus.DTO.Account;
 using ImperaPlus.GeneratedClient;
 using ImperaPlus.Integration.Tests;
+using ImperaPlus.TestSupport.Testdata;
+using ImperaPlus.Web;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ImperaPlus.IntegrationTests.DeleteAccount
@@ -46,17 +52,14 @@ namespace ImperaPlus.IntegrationTests.DeleteAccount
                 Password = ApiClient.GetUserPassword(0)
             });
 
-            // Force clean up jo
-            this.Log("Force job...");
-            Hangfire.RecurringJob.Trigger(Application.Jobs.UserCleanupJob.JobId);
-
-            await Task.Delay(10000);
-            this.Log("done.");
+            await new Application.Jobs.UserCleanupJob(Startup.Container).Handle();            
         }
 
         private async Task SetupAccount()
         {
-            await SendMessages();
+            await this.SendMessages();
+            await this.JoinLadder();
+            await this.JoinTournament();
         }
 
         private async Task SendMessages()
@@ -90,6 +93,56 @@ namespace ImperaPlus.IntegrationTests.DeleteAccount
 
                 Text = "Test"
             });
+        }
+
+        private async Task JoinLadder()
+        {
+            var ladderClient = await ApiClient.GetAuthenticatedClient<LadderClient>(0);
+
+            var ladders = await ladderClient.GetAllAsync();
+            var ladder = ladders.First();
+            await ladderClient.PostJoinAsync(ladder.Id);
+        }
+
+        private async Task JoinTournament()
+        {
+            // Team
+            await this.CreateAndJoinTournament(2);
+
+            // Single player
+            await this.CreateAndJoinTournament(1);
+        }
+
+        private async Task CreateAndJoinTournament(int numberOfPlayersPerTeam)
+        {
+            var tournamentService = Startup.Container.Resolve<Application.Tournaments.ITournamentService>();
+
+            var options = new DTO.Games.GameOptions
+            {
+                NumberOfTeams = 2,
+                NumberOfPlayersPerTeam = numberOfPlayersPerTeam
+            };
+            GameOptionsHelper.SetDefaultGameOptions(options);
+
+            var teamTournamentId = await tournamentService.Create(new DTO.Tournaments.Tournament
+            {
+                Name = "TestTournament" + Guid.NewGuid().ToString(),
+                StartOfTournament = DateTime.UtcNow,
+                StartOfRegistration = DateTime.UtcNow,
+                Options = options,
+                MapTemplates = new[]
+                {
+                    "WorldDeluxe"
+                },
+                NumberOfGroupGames = 3,
+                NumberOfKnockoutGames = 3,
+                NumberOfFinalGames = 3,
+                NumberOfTeams = 8
+            });
+
+            // Join tournament
+            var tournamentClient = await ApiClient.GetAuthenticatedClient<TournamentClient>(0);
+            await tournamentClient.PostJoinAsync(teamTournamentId);
         }
     }
 }

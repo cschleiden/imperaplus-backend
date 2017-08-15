@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
-using ImperaPlus.DataAccess;
+using ImperaPlus.Domain;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Utilities;
 using Microsoft.EntityFrameworkCore;

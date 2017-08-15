@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using ImperaPlus.Application.Exceptions;
 using ImperaPlus.Application.Visibility;
-using ImperaPlus.DataAccess;
+using ImperaPlus.Domain;
 using ImperaPlus.Domain.Games;
 using ImperaPlus.Domain.Games.History;
 using ImperaPlus.Domain.Repositories;

@@ -66,6 +66,11 @@ namespace ImperaPlus.Domain.Tests
             throw new NotImplementedException();
         }
 
+        public IEnumerable<Ladder> GetInQueue(string userId)
+        {
+            throw new NotImplementedException();
+        }
+
         public int GetStandingPosition(LadderStanding standing)
         {
             throw new NotImplementedException();

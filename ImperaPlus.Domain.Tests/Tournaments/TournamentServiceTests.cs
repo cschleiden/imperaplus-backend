@@ -24,7 +24,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             mockUnitOfWork.SetupGet(x => x.Tournaments).Returns(tournamentRepository);
             var unitOfWork = mockUnitOfWork.Object;
             var gameServiceMock = new Mock<IGameService>();
-            var service = new TournamentService(unitOfWork, gameServiceMock.Object, TestUtils.MockMapTemplateProvider());
+            var service = new TournamentService(TestUtils.MockUserProvider(), unitOfWork, gameServiceMock.Object, TestUtils.MockMapTemplateProvider());
 
             var openTournament = new Tournament(
                 "Tournament", 
@@ -64,7 +64,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             var unitOfWork = mockUnitOfWork.Object;
                         
             var gameServiceMock = new Mock<IGameService>();
-            var service = new TournamentService(unitOfWork, gameServiceMock.Object, TestUtils.MockMapTemplateProvider());
+            var service = new TournamentService(TestUtils.MockUserProvider(), unitOfWork, gameServiceMock.Object, TestUtils.MockMapTemplateProvider());
 
             var tournament = new Tournament("T", 2, 0, 1, 1, DateTime.UtcNow, DateTime.UtcNow, new GameOptions { NumberOfPlayersPerTeam = 1 });
             tournament.State = TournamentState.Knockout;

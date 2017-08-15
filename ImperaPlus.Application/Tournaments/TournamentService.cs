@@ -1,15 +1,14 @@
-﻿using AutoMapper;
-using ImperaPlus.DataAccess;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper;
+using ImperaPlus.Domain;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Utilities;
 using ImperaPlus.DTO.Tournaments;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ImperaPlus.Domain.Services;
 
 namespace ImperaPlus.Application.Tournaments
 {
@@ -34,7 +33,8 @@ namespace ImperaPlus.Application.Tournaments
 
         IEnumerable<Tournament> GetAllFull();
 
-        Task Create(Tournament tournament);
+        Task<Guid> Create(Tournament tournament);
+
         Task Delete(Guid id);
     }
 
@@ -138,8 +138,8 @@ namespace ImperaPlus.Application.Tournaments
 
             var tournament = this.GetTournament(tournamentId);
 
+            // TODO: CS: Move this to domain
             var participantToRemove = tournament.LeaveUser(this.CurrentUser);
-
             this.UnitOfWork.GetGenericRepository<Domain.Tournaments.TournamentParticipant>().Remove(participantToRemove);
 
             this.UnitOfWork.Commit();
@@ -169,9 +169,9 @@ namespace ImperaPlus.Application.Tournaments
             return team;
         }
 
-        public async Task Create(Tournament tournament)
+        public async Task<Guid> Create(Tournament tournament)
         {
-            await this.CheckAdmin();
+            this.CheckAdmin();
 
             if (tournament.MapTemplates == null || tournament.MapTemplates.Count() == 0)
             {
@@ -203,6 +203,8 @@ namespace ImperaPlus.Application.Tournaments
 
             this.UnitOfWork.Tournaments.Add(newTournament);
             this.UnitOfWork.Commit();
+
+            return newTournament.Id;
         }
 
         public IEnumerable<Tournament> GetAllFull()
@@ -214,7 +216,7 @@ namespace ImperaPlus.Application.Tournaments
 
         public async Task Delete(Guid tournamentId)
         {
-            await this.CheckAdmin();
+            this.CheckAdmin();
 
             var tournament = this.GetTournament(tournamentId);
 
@@ -222,15 +224,5 @@ namespace ImperaPlus.Application.Tournaments
             this.UnitOfWork.Commit();
         }
 
-        private async Task CheckAdmin()
-        {
-            var adminRole = await this.roleManager.FindByNameAsync("admin");
-            if (!this.CurrentUser.IsInRole(adminRole))
-            {
-                throw new Exceptions.ApplicationException(
-                    "User has to be admin to perform this action", 
-                    ErrorCode.UserIsNotAllowedToPerformAction);
-            }
-        }
     }
 }

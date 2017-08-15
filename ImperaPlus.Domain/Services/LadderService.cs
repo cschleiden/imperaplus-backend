@@ -6,6 +6,7 @@ using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Utilities;
 using ImperaPlus.Domain.Events;
 using ImperaPlus.Domain.Ladders.Events;
+using System.Collections.Generic;
 
 namespace ImperaPlus.Domain.Services
 {
@@ -18,6 +19,8 @@ namespace ImperaPlus.Domain.Services
         void LeaveQueue(Guid ladderId, User user);
 
         Ladder Create(string name, int numberOfTeams, int numberOfPlayers);
+
+        IEnumerable<Ladder> GetQueuedLadders(User user);
     }
 
     public class LadderService : ILadderService
@@ -110,6 +113,15 @@ namespace ImperaPlus.Domain.Services
             Ladder ladder = this.unitOfWork.Ladders.GetById(ladderId);
 
             ladder.QueueLeaveUser(user);
+        }
+
+        /// <summary>
+        /// Get all ladders where the user is currently queued
+        /// </summary>
+        /// <param name="user">User fo check for</param>
+        public IEnumerable<Ladder> GetQueuedLadders(User user)
+        {
+            return this.unitOfWork.Ladders.GetInQueue(user.Id);
         }
 
         /// <summary>

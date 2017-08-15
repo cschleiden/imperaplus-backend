@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using ImperaPlus.DataAccess;
+using ImperaPlus.Domain;
 using ImperaPlus.Domain.Enums;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.DTO.Chat;

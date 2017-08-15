@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using ImperaPlus.DataAccess;
+﻿using ImperaPlus.Domain;
 using ImperaPlus.Domain.Repositories;
 
 namespace ImperaPlus.Application.Notifications

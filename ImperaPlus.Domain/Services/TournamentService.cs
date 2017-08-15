@@ -26,21 +26,27 @@ namespace ImperaPlus.Domain.Services
 
     public class TournamentService : ITournamentService
     {
+        private IUserProvider userProvider;
+        private IUnitOfWork unitOfWork;
         private IGameService gameService;
         private IMapTemplateProvider mapTemplateProvider;
-        private IUnitOfWork unitOfWork;
-
-
+            
         public TournamentService(
+            IUserProvider userProvider,
             IUnitOfWork unitOfWork,
             IGameService gameService,
             IMapTemplateProvider mapTemplateProvider)
         {
+            this.userProvider = userProvider;
             this.unitOfWork = unitOfWork;
             this.gameService = gameService;
             this.mapTemplateProvider = mapTemplateProvider;
         }
 
+        /// <summary>
+        /// Check all open tournaments whether they can be started
+        /// </summary>
+        /// <returns>True if a tournament was started</returns>
         public bool CheckOpenTournaments()
         {
             bool tournamentStarted = false;
@@ -63,6 +69,9 @@ namespace ImperaPlus.Domain.Services
             return tournamentStarted;
         }
 
+        /// <summary>
+        /// Check all tournaments to see whether rounds need to advanced, or the tournament ended
+        /// </summary>
         public void CheckTournaments()
         {
             var tournaments = this.unitOfWork.Tournaments.Get(Tournament.ActiveStates);

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Autofac;
 using AutoMapper;
 using ImperaPlus.Application.Visibility;
 using ImperaPlus.Domain.Repositories;
@@ -68,7 +67,7 @@ namespace ImperaPlus.Application.Games
 
         public GameService(
             IUnitOfWork unitOfWork, 
-            ImperaPlus.DataAccess.IUserProvider userProvider, 
+            Domain.IUserProvider userProvider, 
             Domain.Services.IGameService gameService, 
             IMapTemplateProvider mapTemplateProvider,
             IVisibilityModifierFactory visibilityModifierFactory)

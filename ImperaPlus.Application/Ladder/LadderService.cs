@@ -1,10 +1,10 @@
-﻿using ImperaPlus.DataAccess;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using AutoMapper;
+using ImperaPlus.Domain;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.DTO.Ladder;
-using System.Collections.Generic;
-using System;
-using AutoMapper;
-using System.Linq;
 
 namespace ImperaPlus.Application.Ladder
 {

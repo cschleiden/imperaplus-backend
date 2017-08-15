@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using ImperaPlus.Application.Tournaments;
 using ImperaPlus.Backend.Areas.Admin.Helpers;
 using ImperaPlus.Domain.Repositories;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ImperaPlus.Backend.Areas.Admin.Controllers

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using ImperaPlus.Application.Visibility;
-using ImperaPlus.DataAccess;
+using ImperaPlus.Domain;
 using ImperaPlus.Domain.Map;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Services;

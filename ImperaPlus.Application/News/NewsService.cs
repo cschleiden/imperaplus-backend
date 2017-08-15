@@ -1,12 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
+using ImperaPlus.Domain;
 using ImperaPlus.Domain.News;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.DTO.News;
-using ImperaPlus.DataAccess;
-using System;
 
 namespace ImperaPlus.Application.News
 {

@@ -21,7 +21,7 @@ namespace ImperaPlus.DataAccess
 {
     public class ImperaContext : IdentityDbContext<User>, IImperaContext
     {
-        private readonly IUserProvider userProvider;
+        private readonly Domain.IUserProvider userProvider;
         private readonly IEventAggregator eventAggregator;
 
         public ImperaContext(DbContextOptions<ImperaContext> options)
@@ -31,7 +31,7 @@ namespace ImperaPlus.DataAccess
 
         public ImperaContext(
             DbContextOptions<ImperaContext> options,
-            IUserProvider userProvider,
+            Domain.IUserProvider userProvider,
             IEventAggregator eventAggregator)
             : base(options)
         {

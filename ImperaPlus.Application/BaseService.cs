@@ -1,8 +1,4 @@
-﻿using AutoMapper;
-using ImperaPlus.Application.Exceptions;
-using ImperaPlus.Application.Visibility;
-using ImperaPlus.DataAccess;
-using ImperaPlus.Domain.Games;
+﻿using ImperaPlus.Domain;
 using ImperaPlus.Domain.Repositories;
 
 namespace ImperaPlus.Application
@@ -20,11 +16,21 @@ namespace ImperaPlus.Application
             this.userProvider = userProvider;
         }       
 
-        protected Domain.User CurrentUser
+        protected User CurrentUser
         {
             get
             {
                 return this.currentUser ?? (this.currentUser = this.UnitOfWork.Users.FindById(this.userProvider.GetCurrentUserId()));
+            }
+        }
+
+        protected void CheckAdmin()
+        {            
+            if (!this.userProvider.IsAdmin())
+            {
+                throw new Exceptions.ApplicationException(
+                    "User has to be admin to perform this action",
+                    ErrorCode.UserIsNotAllowedToPerformAction);
             }
         }
     }

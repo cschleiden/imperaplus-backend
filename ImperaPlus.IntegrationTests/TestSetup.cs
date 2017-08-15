@@ -90,11 +90,12 @@ namespace ImperaPlus.Integration.Tests
             serviceCollection.AddScoped<DbSeed, TestDbSeed>();
 
             var builder = new ContainerBuilder();
+            Startup.TestContainerBuilder = builder;
 
             builder.RegisterType<SynchronousBackgroundJobClient>().AsImplementedInterfaces();
             builder.RegisterType<FakeEmailService>().AsImplementedInterfaces();
-
-            builder.Populate(serviceCollection);
+           
+            builder.RegisterType<ImperaPlus.IntegrationTests.TestUserProvider>().AsImplementedInterfaces();
         }
 
         public static string GetProjectPath(string solutionRelativePath, Assembly assembly)

@@ -1,4 +1,5 @@
-﻿using ImperaPlus.DataAccess;
+﻿using System;
+using ImperaPlus.DataAccess;
 using ImperaPlus.Domain;
 
 namespace ImperaPlus.TestSupport
@@ -15,6 +16,13 @@ namespace ImperaPlus.TestSupport
             return User;
         }
 
+        public bool IsAdmin()
+        {
+            return Admin;
+        }
+
         public static User User { get; set; }
+
+        public static bool Admin { get; set; }
     }
 }

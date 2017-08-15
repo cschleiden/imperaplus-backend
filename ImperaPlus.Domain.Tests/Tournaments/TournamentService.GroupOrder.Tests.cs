@@ -1,13 +1,10 @@
-﻿using ImperaPlus.Domain.Games;
+﻿using System;
+using System.Linq;
+using ImperaPlus.Domain.Games;
 using ImperaPlus.Domain.Services;
 using ImperaPlus.Domain.Tournaments;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ImperaPlus.Domain.Tests.Tournaments
 {
@@ -24,7 +21,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             var unitOfWork = mockUnitOfWork.Object;
 
             var gameServiceMock = new Mock<IGameService>();
-            var service = new TournamentService(unitOfWork, gameServiceMock.Object, TestUtils.MockMapTemplateProvider());
+            var service = new TournamentService(TestUtils.MockUserProvider(), unitOfWork, gameServiceMock.Object, TestUtils.MockMapTemplateProvider());
 
             const int GroupGames = 3;
             var tournament = new Tournament(

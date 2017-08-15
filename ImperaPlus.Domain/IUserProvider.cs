@@ -1,6 +1,6 @@
 ﻿using ImperaPlus.Domain;
 
-namespace ImperaPlus.DataAccess
+namespace ImperaPlus.Domain
 {
     public interface IUserProvider
     {
@@ -9,5 +9,11 @@ namespace ImperaPlus.DataAccess
         /// </summary>
         /// <returns>User Id</returns>
         string GetCurrentUserId();
+
+        /// <summary>
+        /// Gets whether the current user is an admin
+        /// </summary>
+        /// <returns></returns>
+        bool IsAdmin();
     }
 }

@@ -1,10 +1,10 @@
 ﻿using System.Linq;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using ImperaPlus.Domain;
 using ImperaPlus.Domain.Repositories;
-using ImperaPlus.DTO.Games.Map;
 using ImperaPlus.Domain.Services;
-using ImperaPlus.DataAccess;
+using ImperaPlus.DTO.Games.Map;
 
 namespace ImperaPlus.Application
 {

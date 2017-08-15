@@ -323,7 +323,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DbSeed.cs" />
-    <Compile Include="IUserProvider.cs" />
     <Compile Include="Repositories\ChannelRepository.cs" />
     <Compile Include="Repositories\ChatMessageRepository.cs" />
     <Compile Include="IImperaContext.cs" />

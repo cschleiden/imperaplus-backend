@@ -20,6 +20,13 @@ namespace ImperaPlus.DataAccess.Repositories
                 .FirstOrDefault(x => x.Id == id);
         }
 
+        public IEnumerable<Ladder> GetInQueue(string userId)
+        {
+            return this.DbSet
+                .Include(x => x.Queue)
+                .Where(x => x.Queue.Any(qe => qe.UserId == userId));
+        }
+
         public IEnumerable<LadderStanding> GetStandings(Guid ladderId)
         {
             return this.Context.Set<LadderStanding>()

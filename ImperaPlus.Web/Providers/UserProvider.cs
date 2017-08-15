@@ -1,8 +1,7 @@
 ﻿using System.Linq;
-using System.Security.Claims;
-using ImperaPlus.DataAccess;
-using Microsoft.AspNetCore.Http;
 using AspNet.Security.OpenIdConnect.Primitives;
+using ImperaPlus.Domain;
+using Microsoft.AspNetCore.Http;
 
 namespace ImperaPlus.Web.Providers
 {
@@ -21,6 +20,12 @@ namespace ImperaPlus.Web.Providers
         public string GetCurrentUserId()
         {
             return this.httpContextAccessor.HttpContext.User.Claims.First(x => x.Type == OpenIdConnectConstants.Claims.Subject).Value;
+        }
+
+        public virtual bool IsAdmin()
+        {
+            var role = this.httpContextAccessor.HttpContext.User.Claims.First(x => x.Type == OpenIdConnectConstants.Claims.Role).Value;
+            return !string.IsNullOrEmpty(role) && role.Contains("admin");
         }
     }
 }

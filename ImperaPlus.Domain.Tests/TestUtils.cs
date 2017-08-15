@@ -33,6 +33,20 @@ namespace ImperaPlus.Domain.Tests
             return mockMapTemplateProvider.Object;
         }
 
+        public static IUserProvider MockUserProvider(bool isAdmin = true)
+        {
+            var mockUserProvider = new Mock<IUserProvider>();
+
+            mockUserProvider
+                .Setup(x => x.IsAdmin())
+                .Returns(isAdmin);
+            mockUserProvider
+                .Setup(x => x.GetCurrentUserId())
+                .Returns(Guid.NewGuid().ToString());
+
+            return mockUserProvider.Object;
+        }
+
         public static MapTemplate GetMapTemplate()
         {
             var mapTemplate = ImperaPlus.DataAccess.ConvertedMaps.Maps.WorldDeluxe();
