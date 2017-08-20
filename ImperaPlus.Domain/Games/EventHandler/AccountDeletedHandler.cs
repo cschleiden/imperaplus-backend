@@ -1,12 +1,8 @@
 ﻿using ImperaPlus.Domain.Events;
+using ImperaPlus.Domain.Games.Chat;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Services;
 using ImperaPlus.Domain.Users;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ImperaPlus.Domain.Games.EventHandler
 {
@@ -48,6 +44,9 @@ namespace ImperaPlus.Domain.Games.EventHandler
                         player.Surrender();
                     }
                 }
+
+                // TODO: CS: Game chat messages? 
+                // TODO: CS: Game history?
             }
         }
     }

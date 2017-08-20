@@ -15,7 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore.Metadata;
-
+using ImperaPlus.Domain.Games.Chat;
 
 namespace ImperaPlus.DataAccess
 {
@@ -154,6 +154,13 @@ namespace ImperaPlus.DataAccess
                 .HasOne(x => x.User)
                 .WithMany()
                 .HasForeignKey(x => x.UserId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // Game chat
+            modelBuilder.Entity<GameChatMessage>()
+                .HasOne(x => x.User)
+                .WithMany()
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.SetNull);
 

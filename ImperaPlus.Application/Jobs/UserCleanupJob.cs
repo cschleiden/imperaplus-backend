@@ -41,6 +41,8 @@ namespace ImperaPlus.Application.Jobs
                         days = 1;
                     }
 
+                    days = 1; // TODO: CS: Change! 
+
                     var users = this.unitOfWork.Users.FindUsersToDelete(days).ToArray();
                     foreach (var user in users)
                     {
