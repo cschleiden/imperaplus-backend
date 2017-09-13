@@ -16,30 +16,12 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="nlog.config" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="nlog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="wwwroot\admin\scripts\bootstrap-datetimepicker.js" />
-    <Content Include="wwwroot\admin\scripts\bootstrap-datetimepicker.min.js" />
-    <Content Include="wwwroot\admin\scripts\bootstrap.js" />
-    <Content Include="wwwroot\admin\scripts\bootstrap.min.js" />
-    <Content Include="wwwroot\admin\scripts\jquery.js" />
-    <Content Include="wwwroot\admin\scripts\metisMenu.js" />
-    <Content Include="wwwroot\admin\scripts\moment-with-locales.js" />
-    <Content Include="wwwroot\admin\scripts\moment-with-locales.min.js" />
-    <Content Include="wwwroot\admin\scripts\moment.js" />
-    <Content Include="wwwroot\admin\scripts\moment.min.js" />
-    <Content Include="wwwroot\admin\scripts\morris.js" />
-    <Content Include="wwwroot\admin\scripts\npm.js" />
-    <Content Include="wwwroot\admin\scripts\sb-admin-2.js" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="wwwroot\admin\bootstrap-datetimepicker.css" />
-    <None Include="wwwroot\admin\bootstrap-datetimepicker.min.css" />
     <None Include="wwwroot\admin\bootstrap-theme.css" />
     <None Include="wwwroot\admin\bootstrap-theme.min.css" />
     <None Include="wwwroot\admin\bootstrap.css" />
@@ -54,19 +36,6 @@
     <None Include="wwwroot\admin\metisMenu.css" />
     <None Include="wwwroot\admin\morris.css" />
     <None Include="wwwroot\admin\sb-admin-2.css" />
-    <None Include="wwwroot\admin\scripts\bootstrap-datetimepicker.js" />
-    <None Include="wwwroot\admin\scripts\bootstrap-datetimepicker.min.js" />
-    <None Include="wwwroot\admin\scripts\bootstrap.js" />
-    <None Include="wwwroot\admin\scripts\bootstrap.min.js" />
-    <None Include="wwwroot\admin\scripts\jquery.js" />
-    <None Include="wwwroot\admin\scripts\metisMenu.js" />
-    <None Include="wwwroot\admin\scripts\moment-with-locales.js" />
-    <None Include="wwwroot\admin\scripts\moment-with-locales.min.js" />
-    <None Include="wwwroot\admin\scripts\moment.js" />
-    <None Include="wwwroot\admin\scripts\moment.min.js" />
-    <None Include="wwwroot\admin\scripts\morris.js" />
-    <None Include="wwwroot\admin\scripts\npm.js" />
-    <None Include="wwwroot\admin\scripts\sb-admin-2.js" />
     <None Include="wwwroot\admin\site.css" />
     <None Include="wwwroot\admin\sort_asc.png" />
     <None Include="wwwroot\admin\sort_asc_disabled.png" />

@@ -12,6 +12,8 @@ namespace ImperaPlus.Application.Ladder
     {
         IEnumerable<LadderSummary> GetAll();
 
+        IEnumerable<DTO.Ladder.Ladder> GetAllFull();
+
         DTO.Ladder.Ladder Get(Guid ladderId);
 
         void Queue(Guid ladderId);
