@@ -111,7 +111,7 @@ namespace ImperaPlus.Domain.Tournaments
         {
             get
             {
-                int requiredNumberOfWins = this.NumberOfGames / 2;
+                var requiredNumberOfWins = Math.Ceiling(this.NumberOfGames / 2.0);
                 return this.TeamAWon >= requiredNumberOfWins
                     || this.TeamBWon >= requiredNumberOfWins;
             }
