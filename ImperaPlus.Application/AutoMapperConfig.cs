@@ -81,7 +81,10 @@ namespace ImperaPlus.Application
                 .ForMember(x => x.StartedAt, c => c.MapFrom(x => x.StartedAt))
                 .ForMember(x => x.CreatedByUserId, c => c.MapFrom(x => x.CreatedById))
                 .ForMember(x => x.CreatedByName, c => c.MapFrom(x => x.CreatedBy.UserName))
-                .ForMember(x => x.TimeoutSecondsLeft, c => c.MapFrom(x => x.Options.TimeoutInSeconds - (int)((DateTime.UtcNow - x.LastModifiedAt).TotalSeconds)))
+                .ForMember(
+                    x => x.TimeoutSecondsLeft, 
+                    c => c.MapFrom(
+                        x => x.Options.TimeoutInSeconds - (int)((DateTime.UtcNow - x.LastTurnStartedAt).TotalSeconds)))
                 // Ladder
                 .ForMember(x => x.LadderId, c => c.MapFrom(x => x.LadderId))
                 .ForMember(x => x.LadderName, c => c.MapFrom(x => x.Ladder != null ? x.Ladder.Name : null));
@@ -111,7 +114,10 @@ namespace ImperaPlus.Application
                 .ForMember(x => x.AttacksInCurrentTurn, c => c.MapFrom(x => x.AttacksInCurrentTurn))
                 .ForMember(x => x.MovesInCurrentTurn, c => c.MapFrom(x => x.MovesInCurrentTurn))
                 .ForMember(x => x.LastModifiedAt, c => c.MapFrom(x => x.LastModifiedAt))
-                .ForMember(x => x.TimeoutSecondsLeft, c => c.MapFrom(x => x.Options.TimeoutInSeconds - (int)((DateTime.UtcNow - x.LastModifiedAt).TotalSeconds)));
+                .ForMember(
+                    x => x.TimeoutSecondsLeft, 
+                    c => c.MapFrom(
+                        x => x.Options.TimeoutInSeconds - (int)((DateTime.UtcNow - x.LastTurnStartedAt).TotalSeconds)));
 
             Mapper.CreateMap<Domain.Games.Chat.GameChatMessage, DTO.Games.Chat.GameChatMessage>()
                 .ForMember(x => x.DateTime, c => c.MapFrom(x => x.DateTime))

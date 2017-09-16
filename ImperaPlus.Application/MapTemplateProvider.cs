@@ -19,7 +19,13 @@ namespace ImperaPlus.Application
 
             foreach(var method in methods)
             {
-                this.mapTemplateFactory.Add(method.Name.ToLowerInvariant(), () => (MapTemplate)method.Invoke(null, null));
+                var mapName = method.Name.ToLowerInvariant();
+                if (mapName == "testmap")
+                {
+                    continue;
+                }
+
+                this.mapTemplateFactory.Add(mapName, () => (MapTemplate)method.Invoke(null, null));
             }
         }
 

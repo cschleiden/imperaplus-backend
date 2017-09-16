@@ -74,7 +74,7 @@ namespace ImperaPlus.DataAccess.Repositories
         {            
             return this.FullGameSet.Where(x =>
                 x.State == GameState.Active
-                && x.LastModifiedAt <= DateTime.UtcNow.AddSeconds(-x.Options.TimeoutInSeconds));
+                && x.LastTurnStartedAt <= DateTime.UtcNow.AddSeconds(-x.Options.TimeoutInSeconds));
         }
         
         protected IQueryable<Game> FullGameSet

@@ -5,14 +5,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using ImperaPlus.Domain.Annotations;
 using ImperaPlus.Domain.Enums;
-using ImperaPlus.Domain.Events;
 using ImperaPlus.Domain.Exceptions;
 using ImperaPlus.Domain.Games.Chat;
 using ImperaPlus.Domain.Games.Events;
 using ImperaPlus.Domain.Games.History;
 using ImperaPlus.Domain.Ladders;
 using ImperaPlus.Domain.Map;
-using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Services;
 using ImperaPlus.Domain.Utilities;
 using ImperaPlus.Domain.VictoryConditions;
@@ -20,7 +18,7 @@ using ImperaPlus.Utils;
 using NLog.Fluent;
 
 namespace ImperaPlus.Domain.Games
-{    
+{
     public class Game : Entity, IIdentifiableEntity, IChangeTrackedEntity, IOwnedEntity, ISerializedEntity
     {
         [UsedImplicitly]
@@ -114,6 +112,8 @@ namespace ImperaPlus.Domain.Games
         public DateTime LastModifiedAt { get; set; }
 
         public DateTime? StartedAt { get; set; }
+
+        public DateTime LastTurnStartedAt { get; set; }
 
         public virtual Ladder Ladder { get; set; }
         public Guid? LadderId { get; set; }
@@ -389,7 +389,7 @@ namespace ImperaPlus.Domain.Games
         public void EndTurn()
         {
             this.GameHistory.RecordEndTurn();
-            this.TurnCounter++;
+            this.TurnCounter++;        
 
             if (this.State == GameState.Active)
             {
@@ -428,6 +428,8 @@ namespace ImperaPlus.Domain.Games
             this.CardDistributed = false;
 
             this.PlayState = PlayState.PlaceUnits;
+
+            this.LastTurnStartedAt = DateTime.UtcNow;
         }
 
         public int GetUnitsToPlace(MapTemplate mapTemplate, Player player)

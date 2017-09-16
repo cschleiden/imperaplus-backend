@@ -12,9 +12,10 @@ using ImperaPlus.Domain.Tournaments;
 namespace ImperaPlus.Web.Migrations
 {
     [DbContext(typeof(ImperaContext))]
-    partial class ImperaContextModelSnapshot : ModelSnapshot
+    [Migration("20170916042556_Timeoutfix")]
+    partial class Timeoutfix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
