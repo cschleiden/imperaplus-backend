@@ -97,9 +97,14 @@ namespace ImperaPlus.Domain.Games
 
         public IEnumerable<Country> GetCountriesForPlayer(Player player)
         {
-            if (this.PlayerToCountry.ContainsKey(player.Id))
+            return this.GetCountriesForPlayer(player.Id);
+        }
+
+        public IEnumerable<Country> GetCountriesForPlayer(Guid playerId)
+        {
+            if (this.PlayerToCountry.ContainsKey(playerId))
             {
-                return this.PlayerToCountry[player.Id];
+                return this.PlayerToCountry[playerId];
             }
 
             return Enumerable.Empty<Country>();
@@ -115,7 +120,13 @@ namespace ImperaPlus.Domain.Games
         }
 
         internal void UpdateOwnership(Player oldPlayer, Player newPlayer, Country country)
-        {          
+        {        
+            if (oldPlayer == null)
+            {
+                // Try to determine player from current map state
+                oldPlayer = this.game.GetPlayerById(country.PlayerId);
+            }
+
             if (oldPlayer != null)
             {
                 if (this.PlayerToCountry.ContainsKey(oldPlayer.Id))

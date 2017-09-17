@@ -33,6 +33,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using ImperaPlus.Domain;
+using NLog.Fluent;
 
 namespace ImperaPlus.Web
 {
@@ -346,6 +347,7 @@ namespace ImperaPlus.Web
             app.UseSwaggerUi();
 
             // Initialize database
+            Log.Info("Initializing database...").Write();
             if (env.IsDevelopment())
             {
                 if (Startup.RunningUnderTest)
@@ -357,10 +359,15 @@ namespace ImperaPlus.Web
             }
             else
             {
+                Log.Info("Starting migration...").Write();
                 dbContext.Database.Migrate();
+                Log.Info("...done.").Write();
             }
+            Log.Info("...done.").Write();
 
+            Log.Info("Seeding database...").Write();
             dbSeed.Seed(dbContext).Wait();
+            Log.Info("...done.").Write();
 
             AutoMapperConfig.Configure();
 

@@ -247,6 +247,7 @@ namespace ImperaPlus.Application.Games
             Domain.Games.Map previousMap;
             if (turnNo > 0)
             {
+                // Get previous turn's map
                 previousMap = game.GameHistory.GetMapForTurn(turnNo - 1);
             }
             else

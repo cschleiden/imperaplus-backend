@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
 using ImperaPlus.Application.Exceptions;
 using ImperaPlus.Application.Visibility;
 using ImperaPlus.Domain;
@@ -94,12 +95,26 @@ namespace ImperaPlus.Application
                 visibilityModifierInstance.Apply(this.CurrentUser, mappedTurn, mappedMap);
             }
 
+            // Fix game stats, we want them to reflect the history turn's state, not the current game's turn
+            foreach (var team in mappedTurn.Game.Teams)
+            {
+                foreach( var player in team.Players)
+                {
+                    var countriesForPlayerInTurnMap = previousTurnMap.GetCountriesForPlayer(player.Id);
+                    player.NumberOfCountries = countriesForPlayerInTurnMap.Count();
+                    player.NumberOfUnits = countriesForPlayerInTurnMap.Sum(c => c.Units);
+                }
+            }
+
             return mappedTurn;
         }
 
         private System.Action<IMappingOperationOptions> GetMapperOptions()
         {
-            return opts => opts.Items.Add("userId", this.CurrentUserId);
+            return opts =>
+            {
+                opts.Items.Add("userId", this.CurrentUserId);
+            };
         }
 
         protected string CurrentUserId
