@@ -80,22 +80,28 @@ namespace ImperaPlus.Domain.Services
             {
                 try
                 {
-                    Log.Info().Message("Checking tournament {0}", tournament.Id).Write();
+                    Log.Info().Message("Synchronizing games for tournament {0}", tournament.Id).Write();
 
                     this.SynchronizeGamesToPairings(tournament);
 
                     if (tournament.HasGroupPhase && tournament.State == TournamentState.Groups)
                     {
+                        Log.Info().Message("Update group order for tournament {0}", tournament.Id).Write();
+
                         this.OrderGroupTeams(tournament);
                     }
 
                     // Advance rounds
                     if (tournament.CanStartNextRound)
                     {
+                        Log.Info().Message("Starting next round for tournament {0}", tournament.Id).Write();
+
                         tournament.StartNextRound();
                     }
                     else if (tournament.CanEnd)
                     {
+                        Log.Info().Message("Ending tournament {0}", tournament.Id).Write();
+
                         tournament.End();
                     }
 
