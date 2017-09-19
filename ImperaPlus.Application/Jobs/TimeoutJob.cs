@@ -40,7 +40,8 @@ namespace ImperaPlus.Application.Jobs
                     // Log and continue with next game
                     Log.Error()
                         .Message("Error while processing timeouts for game {0}", game.Id)
-                        .Exception(e);
+                        .Exception(e)
+                        .Write();
                 }
 
                 try
@@ -49,7 +50,7 @@ namespace ImperaPlus.Application.Jobs
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    Log.Warn().Message("DbUpdateConcurrencyException for game {0}", game.Id);
+                    Log.Warn().Message("DbUpdateConcurrencyException for game {0}", game.Id).Write();
                 }
             }
         }

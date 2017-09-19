@@ -182,3 +182,4 @@ src/modules/**/*.js
 /.vs/config
 /ImperaPlus.Web/appsettings.environment.json
 /.vs/ImperaPlus/v15/sqlite3/storage.ide
+/.vs/ImperaPlus/v15/sqlite3

@@ -25,7 +25,7 @@ namespace ImperaPlus.Domain.Games
         protected Game()
         {
             this.ChatMessages = new HashSet<GameChatMessage>();
-            this.HistoryEntries = new List<HistoryEntry>();        
+            this.HistoryEntries = new List<HistoryEntry>();
             this.GameHistory = new GameHistory(this);
             this.Countries = new SerializedCollection<Country>();
             this.Teams = new HashSet<Team>();
@@ -68,7 +68,7 @@ namespace ImperaPlus.Domain.Games
 
             this.MapTemplateName = mapTemplateName;
 
-            this.Options = options;            
+            this.Options = options;
 
             this.State = GameState.Open;
             this.PlayState = PlayState.None;
@@ -83,7 +83,8 @@ namespace ImperaPlus.Domain.Games
         /// Has to have a different name than the property, want to force EF to use the property
         /// </summary>
         private string countriesSerialized;
-        public string SerializedCountries {
+        public string SerializedCountries
+        {
             get
             {
                 return this.countriesSerialized;
@@ -173,7 +174,7 @@ namespace ImperaPlus.Domain.Games
                 return this.Teams.SelectMany(x => x.Players).FirstOrDefault(p => p.Id == this.CurrentPlayerId.Value);
             }
         }
-             
+
         public long OptionsId { get; private set; }
         public virtual GameOptions Options { get; private set; }
 
@@ -183,7 +184,7 @@ namespace ImperaPlus.Domain.Games
 
         public int MovesInCurrentTurn { get; set; }
 
-        public bool CardDistributed { get; set; }        
+        public bool CardDistributed { get; set; }
 
         /// <summary>
         /// Gets a value indicating whether the game can start
@@ -197,7 +198,7 @@ namespace ImperaPlus.Domain.Games
                 return players == this.Options.PlayerCount && this.State == GameState.Open;
             }
         }
-        
+
         /// <summary>
         /// Gets a value indicating whether the game can be deleted
         /// </summary>
@@ -254,7 +255,7 @@ namespace ImperaPlus.Domain.Games
             this.RequireGameStarted();
 
             var player = this.GetPlayerForUser(user.Id);
-            
+
             Team team = null;
             if (!isPublic)
             {
@@ -309,7 +310,7 @@ namespace ImperaPlus.Domain.Games
             else
             {
                 team = this.Teams.FirstOrDefault(x => x.Players.Count() < this.Options.NumberOfPlayersPerTeam);
-                if (team  == null)
+                if (team == null)
                 {
                     throw new DomainException(ErrorCode.TooManyTeams, "All teams have enough players");
                 }
@@ -329,7 +330,7 @@ namespace ImperaPlus.Domain.Games
             if (!this.CanLeave)
             {
                 throw new DomainException(ErrorCode.CannotLeaveGame, "Game state does not allow leaving");
-            }                       
+            }
 
             if (user.Id == this.CreatedBy.Id)
             {
@@ -339,7 +340,7 @@ namespace ImperaPlus.Domain.Games
             var player = this.GetPlayerForUser(user.Id);
             var team = player.Team;
 
-            team.RemovePlayer(player);            
+            team.RemovePlayer(player);
 
             if (!team.Players.Any())
             {
@@ -388,33 +389,34 @@ namespace ImperaPlus.Domain.Games
         /// </summary>
         public void EndTurn()
         {
-            this.GameHistory.RecordEndTurn();
-            this.TurnCounter++;        
-
-            if (this.State == GameState.Active)
+            if (this.State != GameState.Active)
             {
-                // Go to next player
-                Player nextPlayer = null;
-                for (int i = 1; i < 2 * this.Options.PlayerCount && nextPlayer == null && nextPlayer != this.CurrentPlayer; ++i)
-                {
-                    var nextPlayerOrder = (this.CurrentPlayer.PlayOrder + i) % this.Options.PlayerCount;
-                    nextPlayer = this.Teams
-                                        .SelectMany(x => x.Players)
-                                        .OrderBy(x => x.PlayOrder)
-                                        .FirstOrDefault(x => x.State == PlayerState.Active && x.PlayOrder >= nextPlayerOrder);
-                }
-
-                if (nextPlayer == null)
-                {
-                    Log.Fatal().Message("Cannot find active player for game {0}", this.Id).Write();
-                    throw new DomainException(ErrorCode.GenericError, "Cannot find active player");
-                }
-
-                this.CurrentPlayerId = nextPlayer.Id;
+                return;
             }
 
+            this.GameHistory.RecordEndTurn();
+            this.TurnCounter++;
+
+            // Go to next player
+            Player nextPlayer = null;
+            for (int i = 1; i < 2 * this.Options.PlayerCount && nextPlayer == null && nextPlayer != this.CurrentPlayer; ++i)
+            {
+                var nextPlayerOrder = (this.CurrentPlayer.PlayOrder + i) % this.Options.PlayerCount;
+                nextPlayer = this.Teams
+                                    .SelectMany(x => x.Players)
+                                    .OrderBy(x => x.PlayOrder)
+                                    .FirstOrDefault(x => x.State == PlayerState.Active && x.PlayOrder >= nextPlayerOrder);
+            }
+
+            if (nextPlayer == null)
+            {
+                Log.Fatal().Message("Cannot find active player for game {0}", this.Id).Write();
+                throw new DomainException(ErrorCode.GenericError, "Cannot find active player");
+            }
+
+            this.CurrentPlayerId = nextPlayer.Id;
+
             this.ResetTurn();
-            
             this.EventQueue.Raise(new TurnEndedEvent(this));
         }
 
@@ -424,7 +426,7 @@ namespace ImperaPlus.Domain.Games
 
             this.AttacksInCurrentTurn = 0;
             this.MovesInCurrentTurn = 0;
-            
+
             this.CardDistributed = false;
 
             this.PlayState = PlayState.PlaceUnits;
@@ -486,7 +488,7 @@ namespace ImperaPlus.Domain.Games
             else if (unitsToPlace < unitsAvailable)
             {
                 throw new DomainException(ErrorCode.PlacingLessUnitsThanAvailable, "Cannot place less units than available");
-            }            
+            }
 
             foreach (var place in countries)
             {
@@ -521,8 +523,8 @@ namespace ImperaPlus.Domain.Games
             IAttackService attackService,
             IRandomGen randomGen,
             MapTemplate mapTemplate,
-            string sourceCountryIdentifier, 
-            string destCountryIdentifier, 
+            string sourceCountryIdentifier,
+            string destCountryIdentifier,
             int numberOfUnits)
         {
             this.RequireGameActive();
@@ -560,7 +562,7 @@ namespace ImperaPlus.Domain.Games
             var otherPlayer = this.GetPlayerById(destCountry.PlayerId);
 
             int attackerUnitsLost = 0;
-            int defenderUnitsLost = 0;            
+            int defenderUnitsLost = 0;
             var result = attackService.Attack(numberOfUnits, destCountry.Units, out attackerUnitsLost, out defenderUnitsLost);
 
             if (result)
@@ -611,16 +613,16 @@ namespace ImperaPlus.Domain.Games
                 this.CardDistributed = true;
 
                 if (this.CurrentPlayer.Cards.Count() < this.Options.MaximumNumberOfCards)
-                {                   
+                {
                     var existingCards = new List<BonusCard>(this.CurrentPlayer.Cards);
-                    
+
                     var cardToDistribute = randomGen.GetNext(0, 2);
-                    existingCards.Add((BonusCard) cardToDistribute);
+                    existingCards.Add((BonusCard)cardToDistribute);
 
                     this.CurrentPlayer.Cards = existingCards.ToArray();
-                }        
+                }
             }
-        }        
+        }
 
         internal void CheckForVictory(Player active, Player passive = null)
         {
@@ -655,7 +657,7 @@ namespace ImperaPlus.Domain.Games
             {
                 // Only one team has survived, all players in this team have won
                 foreach (var player in activeTeams.Single().Players)
-                {                    
+                {
                     player.Outcome = PlayerOutcome.Won;
                     player.State = PlayerState.InActive;
 
@@ -673,9 +675,9 @@ namespace ImperaPlus.Domain.Games
             this.State = GameState.Ended;
 
             this.EndTurn();
-            
+
             this.GameHistory.RecordEnd();
-            
+
             this.EventQueue.Raise(new GameEndedEvent(this));
         }
 
@@ -699,7 +701,7 @@ namespace ImperaPlus.Domain.Games
                 return null;
             }
 
-            var player = this.Teams.SelectMany(x => x.Players).FirstOrDefault(x => x.Id == id);            
+            var player = this.Teams.SelectMany(x => x.Players).FirstOrDefault(x => x.Id == id);
             if (null == player)
             {
                 throw new DomainException(ErrorCode.PlayerNotInGame, "Cannot find player with id");
@@ -710,12 +712,12 @@ namespace ImperaPlus.Domain.Games
 
         public void ProcessTimeouts()
         {
-            if (DateTime.UtcNow - this.LastModifiedAt > TimeSpan.FromSeconds(this.Options.TimeoutInSeconds))
+            if (DateTime.UtcNow - this.LastTurnStartedAt > TimeSpan.FromSeconds(this.Options.TimeoutInSeconds))
             {
                 ++this.CurrentPlayer.Timeouts;
                 this.GameHistory.RecordTimeout();
-                
-                if (this.Options.MaximumTimeoutsPerPlayer > 0 
+
+                if (this.Options.MaximumTimeoutsPerPlayer > 0
                     && this.CurrentPlayer.Timeouts > this.Options.MaximumTimeoutsPerPlayer)
                 {
                     // TODO: CS: Refactor?
@@ -745,8 +747,8 @@ namespace ImperaPlus.Domain.Games
 
         public void Move(
             MapTemplate mapTemplate,
-            string sourceCountryIdentifier, 
-            string destCountryIdentifier, 
+            string sourceCountryIdentifier,
+            string destCountryIdentifier,
             int numberOfUnits)
         {
             this.RequireGameActive();
