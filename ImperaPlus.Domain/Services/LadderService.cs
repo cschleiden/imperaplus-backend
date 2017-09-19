@@ -7,6 +7,7 @@ using ImperaPlus.Domain.Utilities;
 using ImperaPlus.Domain.Events;
 using ImperaPlus.Domain.Ladders.Events;
 using System.Collections.Generic;
+using NLog.Fluent;
 
 namespace ImperaPlus.Domain.Services
 {
@@ -45,16 +46,22 @@ namespace ImperaPlus.Domain.Services
         /// </summary>
         public void CheckAndCreateMatches()
         {
+            Log.Info().Message("Entering CheckAndCreateMatches").Write();
+
             lock (this.createGamesLock)
             {
                 var ladders = this.unitOfWork.Ladders.GetActive().ToList();
 
                 foreach (var ladder in ladders)
                 {
+                    Log.Debug().Message("Checking ladder {0} {1}", ladder.Id, ladder.Name).Write();
+
                     var numberOfRequiredPlayers = ladder.Options.NumberOfTeams * ladder.Options.NumberOfPlayersPerTeam;
 
                     while (ladder.Queue.Count() >= numberOfRequiredPlayers)
                     {
+                        Log.Debug().Message("Found enough players").Write();
+
                         var game = this.CreateGame(ladder);
                         this.unitOfWork.Games.Add(game);
                         ladder.Games.Add(game);
@@ -76,8 +83,9 @@ namespace ImperaPlus.Domain.Services
                         game.Start(this.mapTemplateProvider.GetTemplate(game.MapTemplateName));
 
                         this.eventAggregator.Raise(new LadderGameStartedEvent(ladder, game));
-
                         this.unitOfWork.Commit();
+
+                        Log.Debug().Message("Created game {0}", game.Id).Write();
                     }
                 }
             }
