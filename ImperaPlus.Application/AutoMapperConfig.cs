@@ -95,6 +95,7 @@ namespace ImperaPlus.Application
                 .ForMember(x => x.PlayState, c => c.MapFrom(x => (DTO.Games.PlayState)x.PlayState))
                 .ForMember(x => x.CountryUpdates, c => c.Ignore())
                 .ForMember(x => x.ActionResult, c => c.Ignore())
+                .ForMember(x => x.TurnCounter, c => c.MapFrom(x => x.TurnCounter))
                 .ForMember(x => x.Cards, c => c.MapFrom(x => x.CurrentPlayer.Cards))
                 .ForMember(x => x.AttacksInCurrentTurn, c => c.MapFrom(x => x.AttacksInCurrentTurn))
                 .ForMember(x => x.MovesInCurrentTurn, c => c.MapFrom(x => x.MovesInCurrentTurn))

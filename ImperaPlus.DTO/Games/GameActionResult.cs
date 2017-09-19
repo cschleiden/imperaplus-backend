@@ -13,6 +13,11 @@ namespace ImperaPlus.DTO.Games
         public long Id { get; set; }
 
         /// <summary>
+        /// Turn counter
+        /// </summary>
+        public int TurnCounter { get; set; }
+
+        /// <summary>
         /// List of teams
         /// </summary>
         public Team[] Teams { get; set; }
