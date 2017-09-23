@@ -3,6 +3,7 @@ using System.Linq;
 using ImperaPlus.Domain.Games;
 using ImperaPlus.Domain.Services;
 using ImperaPlus.Domain.Tournaments;
+using ImperaPlus.TestSupport;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -39,7 +40,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
                 this.AddTeam(tournament, i);
             }
 
-            tournament.Start();
+            tournament.Start(new RandomGen());
 
             var teams1 = tournament.Groups.ElementAt(0).Teams.ToArray();
             var teams2 = tournament.Groups.ElementAt(1).Teams.ToArray();

@@ -1,12 +1,12 @@
-﻿using ImperaPlus.Domain.Games;
-using ImperaPlus.Domain.Games.History;
+﻿using ImperaPlus.Domain.Games.History;
 using ImperaPlus.Domain.Services;
 using ImperaPlus.Domain.Tests.Helper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Autofac;
+using RandomGen = ImperaPlus.TestSupport.RandomGen;
+using ImperaPlus.TestSupport;
 
 namespace ImperaPlus.Domain.Tests.Games
 {
@@ -19,8 +19,8 @@ namespace ImperaPlus.Domain.Tests.Games
             // Arrange
             var game = TestUtils.CreateStartedGameWithMapAndPlayersUnitsPlaced();
             var mapTemplate = TestUtils.GetMapTemplate();            
-            var origin = TestHelper.GetCountryWithEnemyConnection(game, game.CurrentPlayer, mapTemplate);
-            var destination = TestHelper.GetConnectedEnemyCountry(game, game.CurrentPlayer, origin, mapTemplate);
+            var origin = Helper.TestHelper.GetCountryWithEnemyConnection(game, game.CurrentPlayer, mapTemplate);
+            var destination = Helper.TestHelper.GetConnectedEnemyCountry(game, game.CurrentPlayer, origin, mapTemplate);
             var player = game.CurrentPlayer;
 
             // Reset history
@@ -32,7 +32,13 @@ namespace ImperaPlus.Domain.Tests.Games
                 Tuple.Create(origin.CountryIdentifier, game.GetUnitsToPlace(mapTemplate, game.CurrentPlayer))
             });
 
-            game.Attack(new AttackService(new AttackerWinsRandomGen()), new RandomGen(), mapTemplate, origin.CountryIdentifier, destination.CountryIdentifier, origin.Units - game.Options.MinUnitsPerCountry);
+            game.Attack(
+                new AttackService(new AttackerWinsRandomGen()), 
+                new RandomGen(), 
+                mapTemplate, 
+                origin.CountryIdentifier, 
+                destination.CountryIdentifier, 
+                origin.Units - game.Options.MinUnitsPerCountry);
             game.EndTurn();
 
             // Assert
@@ -59,8 +65,8 @@ namespace ImperaPlus.Domain.Tests.Games
             // Arrange
             var game = TestUtils.CreateStartedGameWithMapAndPlayers();
             var mapTemplate = TestUtils.GetMapTemplate();
-            var origin = TestHelper.GetCountryWithEnemyConnection(game, game.CurrentPlayer, mapTemplate);
-            var destination = TestHelper.GetConnectedEnemyCountry(game, game.CurrentPlayer, origin, mapTemplate);
+            var origin = Helper.TestHelper.GetCountryWithEnemyConnection(game, game.CurrentPlayer, mapTemplate);
+            var destination = Helper.TestHelper.GetConnectedEnemyCountry(game, game.CurrentPlayer, origin, mapTemplate);
             var player = game.CurrentPlayer;            
 
             // Act 
@@ -96,8 +102,8 @@ namespace ImperaPlus.Domain.Tests.Games
             // Arrange
             var game = TestUtils.CreateStartedGameWithMapAndPlayers();
             var mapTemplate = TestUtils.GetMapTemplate();
-            var origin = TestHelper.GetCountryWithFriendlyConnection(game, game.CurrentPlayer, mapTemplate);
-            var destination = TestHelper.GetConnectedFriendlyCountry(game, game.CurrentPlayer, origin, mapTemplate);
+            var origin = Helper.TestHelper.GetCountryWithFriendlyConnection(game, game.CurrentPlayer, mapTemplate);
+            var destination = Helper.TestHelper.GetConnectedFriendlyCountry(game, game.CurrentPlayer, origin, mapTemplate);
             var player = game.CurrentPlayer;
 
             origin.Units = 4;
@@ -129,8 +135,8 @@ namespace ImperaPlus.Domain.Tests.Games
             // Arrange
             var game = TestUtils.CreateStartedGameWithMapAndPlayers();
             var mapTemplate = TestUtils.GetMapTemplate();
-            var origin = TestHelper.GetCountryWithEnemyConnection(game, game.CurrentPlayer, mapTemplate);
-            var destination = TestHelper.GetConnectedEnemyCountry(game, game.CurrentPlayer, origin, mapTemplate);
+            var origin = Helper.TestHelper.GetCountryWithEnemyConnection(game, game.CurrentPlayer, mapTemplate);
+            var destination = Helper.TestHelper.GetConnectedEnemyCountry(game, game.CurrentPlayer, origin, mapTemplate);
             var player = game.CurrentPlayer;
 
             origin.Units = 4;

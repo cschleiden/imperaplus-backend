@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using ImperaPlus.Domain.Events;
 using ImperaPlus.Domain.Services;
-using ImperaPlus.Domain.Users;
 
 namespace ImperaPlus.Domain
 {
@@ -9,7 +8,6 @@ namespace ImperaPlus.Domain
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<RandomGen>().As<IRandomGen>();
             builder.RegisterType<AttackerRandomGen>().As<IAttackRandomGen>();
             builder.RegisterType<AttackService>().As<IAttackService>();
 

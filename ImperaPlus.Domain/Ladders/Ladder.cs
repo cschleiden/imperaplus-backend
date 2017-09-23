@@ -7,6 +7,7 @@ using ImperaPlus.Domain.Utilities;
 using ImperaPlus.Domain.Exceptions;
 using ImperaPlus.Domain.Annotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using ImperaPlus.Domain.Services;
 
 namespace ImperaPlus.Domain.Ladders
 {
@@ -98,14 +99,14 @@ namespace ImperaPlus.Domain.Ladders
             return string.Format("{0}-{1}", this.Name, DateTime.Now.Ticks);
         }
 
-        public string GetMapTemplateForGame()
+        public string GetMapTemplateForGame(IRandomGen random)
         {
             if (!this.MapTemplates.Any())
             {
                 throw new DomainException(ErrorCode.LadderNoMapTemplates, "No map templates set for ladder");
             }
 
-            return this.MapTemplates.Shuffle().First();
+            return this.MapTemplates.Shuffle(random).First();
         }
 
         public void ToggleActive(bool isActive)

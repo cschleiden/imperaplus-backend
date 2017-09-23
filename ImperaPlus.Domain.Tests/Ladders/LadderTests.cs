@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ImperaPlus.TestSupport;
 
 namespace ImperaPlus.Domain.Tests.Ladders
 {
@@ -156,7 +157,7 @@ namespace ImperaPlus.Domain.Tests.Ladders
                 ladder.QueueUser(user2);
 
                 // Act
-                ladderService.CheckAndCreateMatches();
+                ladderService.CheckAndCreateMatches(new RandomGen());
 
                 // Assert
                 Assert.IsTrue(ladder.Games.Any());

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using ImperaPlus.Domain.Exceptions;
 using ImperaPlus.Domain.Games;
+using ImperaPlus.Domain.Services;
 using ImperaPlus.Domain.Utilities;
 using NLog.Fluent;
 
@@ -289,14 +290,14 @@ namespace ImperaPlus.Domain.Tournaments
             }
         }
 
-        public string GetMapTemplateForGame()
+        public string GetMapTemplateForGame(IRandomGen random)
         {
             if (!this.MapTemplates.Any())
             {
                 throw new DomainException(ErrorCode.TournamentNoMapTemplates, "No map templates set for tournament");
             }
 
-            return this.MapTemplates.Shuffle().First();
+            return this.MapTemplates.Shuffle(random).First();
         }
 
         /// <summary>
@@ -464,7 +465,7 @@ namespace ImperaPlus.Domain.Tournaments
         /// <summary>
         /// Start tournament
         /// </summary>
-        public void Start()
+        public void Start(IRandomGen random)
         {
             if (this.State != TournamentState.Open)
             {
@@ -480,7 +481,7 @@ namespace ImperaPlus.Domain.Tournaments
             {
                 this.State = TournamentState.Groups;
 
-                this.CreateGroupPairings();
+                this.CreateGroupPairings(random);
             } 
             else
             {
@@ -506,7 +507,7 @@ namespace ImperaPlus.Domain.Tournaments
             // TODO: Generate domain event
         }
 
-        public void StartNextRound()
+        public void StartNextRound(IRandomGen random)
         {
             ++this.Phase;
 
@@ -516,7 +517,7 @@ namespace ImperaPlus.Domain.Tournaments
 
                 this.State = TournamentState.Knockout;
 
-                var koTeams = this.Groups.SelectMany(g => g.Winners).Shuffle();
+                var koTeams = this.Groups.SelectMany(g => g.Winners).Shuffle(random);
 
                 Log.Debug().Message("Teams for KO phase: {0}", string.Join(", ", koTeams.Select(t => t.Name))).Write();
 
@@ -557,10 +558,10 @@ namespace ImperaPlus.Domain.Tournaments
         /// <summary>
         /// Create all pairings and games for all groups
         /// </summary>
-        private void CreateGroupPairings()
+        private void CreateGroupPairings(IRandomGen random)
         {
             // Create groups
-            var shuffledTeams = this.Teams.Shuffle();
+            var shuffledTeams = this.Teams.Shuffle(random);
             var teamIterator = shuffledTeams.GetEnumerator();
 
             for (int i = 0; i < this.NumberOfTeams / Tournament.GroupSize; ++i)

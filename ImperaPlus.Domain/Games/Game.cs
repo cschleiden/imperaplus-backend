@@ -352,7 +352,7 @@ namespace ImperaPlus.Domain.Games
         /// <summary>
         /// Start the game
         /// </summary>
-        public void Start(MapTemplate mapTemplate)
+        public void Start(MapTemplate mapTemplate, IRandomGen random)
         {
             if (!this.CanStart)
             {
@@ -363,13 +363,13 @@ namespace ImperaPlus.Domain.Games
             this.State = GameState.Active;
 
             TraceContext.Trace("Create Map from Template", () => Map.CreateFromTemplate(this, mapTemplate));
-            TraceContext.Trace("Distribute countries to teams", () => this.Map.Distribute(this.Teams, mapTemplate, this.Options.MapDistribution));
+            TraceContext.Trace("Distribute countries to teams", () => this.Map.Distribute(this.Teams, mapTemplate, this.Options.MapDistribution, random));
 
             // Determine player order
-            this.DeterminePlayOrder();
+            this.DeterminePlayOrder(random);
 
             // Set current player
-            var currentTeam = this.Teams.RandomElement();
+            var currentTeam = this.Teams.RandomElement(random);
             var currentPlayer = currentTeam.Players.First();
 
             this.CurrentPlayerId = currentPlayer.Id;
@@ -806,7 +806,7 @@ namespace ImperaPlus.Domain.Games
             }
         }
 
-        private void DeterminePlayOrder()
+        private void DeterminePlayOrder(IRandomGen random)
         {
             // Desired outcome: 
             // t1: p1 - 0
@@ -814,7 +814,7 @@ namespace ImperaPlus.Domain.Games
             // t1: p2 - 2
             // t2: p2 - 3
 
-            var shuffledTeams = this.Teams.Shuffle().ToArray();
+            var shuffledTeams = this.Teams.Shuffle(random).ToArray();
             int teamIdx = 0;
             foreach (var shuffledTeam in shuffledTeams)
             {

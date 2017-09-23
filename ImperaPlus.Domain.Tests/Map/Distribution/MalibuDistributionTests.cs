@@ -1,7 +1,7 @@
-﻿using ImperaPlus.Domain.Games.Distribution;
-using ImperaPlus.Domain.Tests.Games;
+﻿using System.Linq;
+using ImperaPlus.Domain.Games.Distribution;
+using ImperaPlus.TestSupport;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
 
 namespace ImperaPlus.Domain.Tests.Map.Distribution
 {
@@ -16,7 +16,7 @@ namespace ImperaPlus.Domain.Tests.Map.Distribution
             game.Options.MapDistribution = Enums.MapDistribution.Malibu;
 
             // Act
-            game.Start(TestUtils.GetMapTemplate());
+            game.Start(TestUtils.GetMapTemplate(), new RandomGen());
 
             // Assert
             Assert.AreEqual(MalibuMapDistribution.START_UNITS, game.Map.Countries.First(x => !x.IsNeutral).Units, "Units do not match");

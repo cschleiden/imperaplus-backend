@@ -342,6 +342,7 @@
     <Compile Include="Games\GameService.cs" />
     <Compile Include="Games\HistoryService.cs" />
     <Compile Include="INotificationService.cs" />
+    <Compile Include="IRandomGenProvider.cs" />
     <Compile Include="JobConfig.cs" />
     <Compile Include="Jobs\BotJob.cs" />
     <Compile Include="Jobs\Job.cs" />
@@ -364,6 +365,7 @@
     <Compile Include="Notifications\PushNotifications.cs" />
     <Compile Include="Play\PlayService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RandomGen.cs" />
     <Compile Include="TestSupport.cs" />
     <Compile Include="Tournaments\TournamentService.cs" />
     <Compile Include="Users\UserService.cs" />

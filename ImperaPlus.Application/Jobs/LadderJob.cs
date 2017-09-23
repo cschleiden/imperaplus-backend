@@ -14,12 +14,14 @@ namespace ImperaPlus.Application.Jobs
     {
         private IUnitOfWork unitOfWork;
         private ILadderService ladderService;
+        private IRandomGenProvider randomGenProvider;
 
         public LadderJob(ILifetimeScope scope)
             : base(scope)
         {
             this.unitOfWork = this.LifetimeScope.Resolve<IUnitOfWork>();
             this.ladderService = this.LifetimeScope.Resolve<ILadderService>();
+            this.randomGenProvider = this.LifetimeScope.Resolve<IRandomGenProvider>();
         }
 
         [AutomaticRetry(Attempts = 0)]
@@ -29,7 +31,7 @@ namespace ImperaPlus.Application.Jobs
             {
                 try
                 {
-                    this.ladderService.CheckAndCreateMatches();
+                    this.ladderService.CheckAndCreateMatches(this.randomGenProvider.GetRandomGen());
                 }
                 catch (DbUpdateConcurrencyException)
                 {

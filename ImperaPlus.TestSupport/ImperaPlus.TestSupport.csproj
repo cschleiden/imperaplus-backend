@@ -342,6 +342,7 @@
     <Compile Include="FakeEmailService.cs" />
     <Compile Include="PredefinedRandomGen.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RandomGen.cs" />
     <Compile Include="SynchronousBackgroundJobClient.cs" />
     <Compile Include="Testdata\TestData.cs" />
     <Compile Include="TestHelper.cs" />

@@ -4,6 +4,7 @@ using System.Linq;
 using ImperaPlus.Domain.Utilities;
 using ImperaPlus.Domain.Map;
 using NLog.Fluent;
+using ImperaPlus.Domain.Services;
 
 namespace ImperaPlus.Domain.Games.Distribution
 {
@@ -11,12 +12,12 @@ namespace ImperaPlus.Domain.Games.Distribution
     {
         public const int START_UNITS = 5;
 
-        public void Distribute(IEnumerable<Team> teams, MapTemplate mapTemplate, Map map)
+        public void Distribute(IEnumerable<Team> teams, MapTemplate mapTemplate, Map map, IRandomGen random)
         {
             var players = teams.SelectMany(x => x.Players).ToArray();
             var numberOfPlayers = players.Count();
 
-            var shuffledCountries = map.Countries.Shuffle().ToArray();
+            var shuffledCountries = map.Countries.Shuffle(random).ToArray();
             var countryIdx = 0;
 
             foreach (var player in players)

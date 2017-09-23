@@ -8,6 +8,7 @@ using ImperaPlus.Domain.Games;
 using ImperaPlus.Domain.Map;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Services;
+using ImperaPlus.TestSupport;
 using Moq;
 
 namespace ImperaPlus.Domain.Tests
@@ -131,7 +132,7 @@ namespace ImperaPlus.Domain.Tests
         {
             var game = CreateGameWithMapAndPlayers(teams, playerPerTeam);
 
-            game.Start(TestUtils.GetMapTemplate());
+            game.Start(TestUtils.GetMapTemplate(), new RandomGen());
 
             return game;
         }

@@ -7,6 +7,7 @@ using ImperaPlus.Domain.Events;
 using ImperaPlus.Domain.Games;
 using ImperaPlus.Domain.Services;
 using ImperaPlus.Domain.Tournaments;
+using ImperaPlus.TestSupport;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -46,7 +47,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             }
 
             // Act
-            var started = service.CheckOpenTournaments();
+            var started = service.CheckOpenTournaments(new RandomGen());
 
             // Assert
             Assert.IsTrue(started);

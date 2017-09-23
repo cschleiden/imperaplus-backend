@@ -103,7 +103,8 @@ namespace ImperaPlus.TestSupport
             builder.RegisterType<Application.Games.GameService>().AsImplementedInterfaces();
             builder.RegisterType<Application.Play.PlayService>().AsImplementedInterfaces();
             builder.RegisterType<Domain.Services.GameService>().AsImplementedInterfaces();
-            builder.RegisterType<ImperaPlus.Application.Visibility.VisibilityModifierFactory>().AsImplementedInterfaces();
+            builder.RegisterType<RandomGenProvider>().AsImplementedInterfaces();
+            builder.RegisterType<Application.Visibility.VisibilityModifierFactory>().AsImplementedInterfaces();
         }
     }
 }

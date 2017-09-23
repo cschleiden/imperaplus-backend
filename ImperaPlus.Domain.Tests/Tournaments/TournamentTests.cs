@@ -3,6 +3,7 @@ using System.Linq;
 using ImperaPlus.Domain.Games;
 using ImperaPlus.Domain.Tests.Helper;
 using ImperaPlus.Domain.Tournaments;
+using ImperaPlus.TestSupport;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ImperaPlus.Domain.Tests.Tournaments
@@ -120,7 +121,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             public void SinglePlayerTeamJoin_AlreadyStarted()
             {
                 var tournament = CreateTournamentWithUsers(0);
-                tournament.Start();
+                tournament.Start(new RandomGen());
 
                 tournament.AddUser(TestUtils.CreateUser("User"));
             }
@@ -207,7 +208,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             public void DeleteTeam_NotAllowedWhenStarted()
             {
                 Tournament tournament = CreateTournamentWithUsers(3, 8);
-                tournament.Start();
+                tournament.Start(new RandomGen());
 
                 Assert.IsFalse(tournament.CanChangeTeams);
             }
@@ -242,7 +243,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             {
                 Tournament tournament = CreateTournamentWithUsers(3, 8);                
 
-                tournament.Start();
+                tournament.Start(new RandomGen());
 
                 Assert.AreEqual(TournamentState.Groups, tournament.State);
                 Assert.AreEqual(DateTime.UtcNow.Ticks, tournament.StartOfTournament.Ticks, 100);
@@ -255,7 +256,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             {
                 var tournament = CreateTournamentWithUsers(0);
 
-                tournament.Start();
+                tournament.Start(new RandomGen());
 
                 Assert.AreEqual(TournamentState.Knockout, tournament.State);
                 Assert.AreEqual(DateTime.UtcNow.Ticks, tournament.StartOfTournament.Ticks, 100);
@@ -271,7 +272,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             public void GroupToKnockout()
             {
                 Tournament tournament = CreateTournamentWithUsers(3, 8);
-                tournament.Start();
+                tournament.Start(new RandomGen());
 
                 foreach(var pairing in tournament.Pairings)
                 {
@@ -282,7 +283,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
 
                 Assert.IsTrue(tournament.CanStartNextRound);
 
-                tournament.StartNextRound();
+                tournament.StartNextRound(new RandomGen());
 
                 Assert.AreEqual(TournamentState.Knockout, tournament.State);
                 Assert.AreEqual(2, tournament.Pairings.Where(x => x.State == PairingState.None).Count());
@@ -292,7 +293,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             public void KnockoutToKnockout()
             {
                 Tournament tournament = CreateTournamentWithUsers(0, 8);
-                tournament.Start();
+                tournament.Start(new RandomGen());
 
                 foreach (var pairing in tournament.Pairings)
                 {
@@ -303,7 +304,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
 
                 Assert.IsTrue(tournament.CanStartNextRound);
 
-                tournament.StartNextRound();
+                tournament.StartNextRound(new RandomGen());
 
                 Assert.AreEqual(TournamentState.Knockout, tournament.State);
                 Assert.AreEqual(1, tournament.Phase);
@@ -314,7 +315,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             public void EndTournament()
             {
                 Tournament tournament = CreateTournamentWithUsers(0, 2);
-                tournament.Start();
+                tournament.Start(new RandomGen());
 
                 tournament.Teams.First().State = TournamentTeamState.InActive;
 

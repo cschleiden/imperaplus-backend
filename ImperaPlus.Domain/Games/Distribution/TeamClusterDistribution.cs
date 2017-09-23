@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ImperaPlus.Domain.Utilities;
-using NLog.Fluent;
+using ImperaPlus.Domain.Services;
 
 namespace ImperaPlus.Domain.Games.Distribution
 {
     public class TeamClusterDistribution : IMapDistribution
     {
-        public void Distribute(IEnumerable<Team> teams, Domain.Map.MapTemplate mapTemplate, Map map)
+        public void Distribute(IEnumerable<Team> teams, Domain.Map.MapTemplate mapTemplate, Map map, IRandomGen random)
         {
             // var players = teams.SelectMany(x => x.Players).ToArray();
             // var numberOfPlayers = players.Count();

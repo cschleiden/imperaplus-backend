@@ -43,7 +43,7 @@ namespace ImperaPlus.Application
 
             builder.RegisterType<LadderNotifications>()
                 .As<Domain.Events.ICompletedEventHandler<GameEndedEvent>>();
-
+            
             // Jobs
             builder.RegisterType<TimeoutJob>().AsSelf();
             builder.RegisterType<LadderJob>().AsSelf();
@@ -56,6 +56,12 @@ namespace ImperaPlus.Application
 
 
             builder.RegisterType<VisibilityModifierFactory>().AsImplementedInterfaces();
+
+            builder.RegisterType<RandomGenProvider>().AsImplementedInterfaces();
+            builder
+                .Register(c => c.Resolve<IRandomGenProvider>().GetRandomGen())
+                .As<Domain.Services.IRandomGen>()
+                .InstancePerLifetimeScope();
         }
     }
 }

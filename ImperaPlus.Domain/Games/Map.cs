@@ -89,10 +89,10 @@ namespace ImperaPlus.Domain.Games
             return map;
         }
 
-        public void Distribute(ICollection<Team> teams, MapTemplate mapTemplate, MapDistribution mapDistribution)
+        public void Distribute(ICollection<Team> teams, MapTemplate mapTemplate, MapDistribution mapDistribution, IRandomGen random)
         {
             var distribution = MapDistributionFactory.Create(mapDistribution);
-            distribution.Distribute(teams, mapTemplate, this);
+            distribution.Distribute(teams, mapTemplate, this, random);
         }
 
         public IEnumerable<Country> GetCountriesForPlayer(Player player)

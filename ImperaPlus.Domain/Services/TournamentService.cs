@@ -6,8 +6,6 @@ using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Tournaments;
 using NLog.Fluent;
 using System;
-using System.Collections;
-using ImperaPlus.Domain.Utilities;
 
 namespace ImperaPlus.Domain.Services
 {
@@ -16,12 +14,12 @@ namespace ImperaPlus.Domain.Services
         /// <summary>
         /// Check whether tournaments can be started and start
         /// </summary>
-        bool CheckOpenTournaments();
+        bool CheckOpenTournaments(IRandomGen random);
 
         /// <summary>
         /// Synchronize tournament games and end tournaments
         /// </summary>
-        void CheckTournaments();
+        void CheckTournaments(IRandomGen random);
     }
 
     public class TournamentService : ITournamentService
@@ -47,7 +45,7 @@ namespace ImperaPlus.Domain.Services
         /// Check all open tournaments whether they can be started
         /// </summary>
         /// <returns>True if a tournament was started</returns>
-        public bool CheckOpenTournaments()
+        public bool CheckOpenTournaments(IRandomGen random)
         {
             bool tournamentStarted = false;
 
@@ -59,7 +57,7 @@ namespace ImperaPlus.Domain.Services
                 {
                     Log.Info().Message("Starting tournament {0}", tournament.Id);
 
-                    tournament.Start();
+                    tournament.Start(random);
                     tournamentStarted = true;
 
                     Log.Info().Message("Started.");
@@ -72,7 +70,7 @@ namespace ImperaPlus.Domain.Services
         /// <summary>
         /// Check all tournaments to see whether rounds need to advanced, or the tournament ended
         /// </summary>
-        public void CheckTournaments()
+        public void CheckTournaments(IRandomGen random)
         {
             var tournaments = this.unitOfWork.Tournaments.Get(Tournament.ActiveStates);
 
@@ -96,7 +94,7 @@ namespace ImperaPlus.Domain.Services
                     {
                         Log.Info().Message("Starting next round for tournament {0}", tournament.Id).Write();
 
-                        tournament.StartNextRound();
+                        tournament.StartNextRound(random);
                     }
                     else if (tournament.CanEnd)
                     {
@@ -105,7 +103,7 @@ namespace ImperaPlus.Domain.Services
                         tournament.End();
                     }
 
-                    this.CreateGamesForPairings(tournament);
+                    this.CreateGamesForPairings(tournament, random);
                 }
                 catch (Exception ex)
                 {
@@ -114,12 +112,12 @@ namespace ImperaPlus.Domain.Services
             }
         }
 
-        public void CreateGamesForPairings(Tournament tournament)
+        public void CreateGamesForPairings(Tournament tournament, IRandomGen random)
         {
             foreach (var pairing in tournament.Pairings.Where(
                 x => x.State == PairingState.None && x.Games.Count() != x.NumberOfGames))
             {
-                this.CreateGamesForPairing(pairing);
+                this.CreateGamesForPairing(pairing, random);
             }
         }
 
@@ -234,7 +232,7 @@ namespace ImperaPlus.Domain.Services
                         && t.Players.Select(p => p.UserId).Contains(team.Participants.First().UserId)));
         }
 
-        private void CreateGamesForPairing(TournamentPairing pairing)
+        private void CreateGamesForPairing(TournamentPairing pairing, IRandomGen random)
         {
             Debug.Assert(pairing.State == PairingState.None, "Pairing state is not correct");
 
@@ -246,7 +244,7 @@ namespace ImperaPlus.Domain.Services
                     Enums.GameType.Tournament,
                     systemUser,
                     pairing.GenerateGameName(i),
-                    pairing.Tournament.GetMapTemplateForGame(),
+                    pairing.Tournament.GetMapTemplateForGame(random),
                     pairing.Tournament.Options);
 
                 game.TournamentPairingId = pairing.Id;
@@ -264,7 +262,7 @@ namespace ImperaPlus.Domain.Services
                     teamB.AddPlayer(participant.User);
                 }
 
-                game.Start(this.mapTemplateProvider.GetTemplate(game.MapTemplateName));
+                game.Start(this.mapTemplateProvider.GetTemplate(game.MapTemplateName), random);
             }
 
             pairing.State = PairingState.Active;

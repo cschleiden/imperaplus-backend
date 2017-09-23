@@ -344,7 +344,6 @@
     <Compile Include="Games\LeavingGameTests.cs" />
     <Compile Include="Helper\ExpectedDomainExceptionAttribute.cs" />
     <Compile Include="Helper\InMemoryUnitOfWork.cs" />
-    <Compile Include="Helper\PredefinedRandomGen.cs" />
     <Compile Include="Helper\TestHelper.cs" />
     <Compile Include="Ladders\LadderTests.cs" />
     <Compile Include="Map\Distribution\GameCreationOptions.cs" />
@@ -374,6 +373,10 @@
     <ProjectReference Include="..\ImperaPlus.Domain\ImperaPlus.Domain.csproj">
       <Project>{B6D49E7C-FF58-4814-993B-EAE2B60D9618}</Project>
       <Name>ImperaPlus.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ImperaPlus.TestSupport\ImperaPlus.TestSupport.csproj">
+      <Project>{878EE769-CC59-49F7-80A9-4A33083FE3F0}</Project>
+      <Name>ImperaPlus.TestSupport</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

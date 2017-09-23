@@ -15,18 +15,20 @@ namespace ImperaPlus.Application.Jobs
     {
         private IUnitOfWork unitOfWork;
         private ITournamentService tournamentService;
+        private IRandomGenProvider randomGenProvider;
 
         public TournamentJob(ILifetimeScope scope)
         : base(scope)
         {
             this.unitOfWork = this.LifetimeScope.Resolve<IUnitOfWork>();
             this.tournamentService = this.LifetimeScope.Resolve<ITournamentService>();
+            this.randomGenProvider = this.LifetimeScope.Resolve<IRandomGenProvider>();
         }
 
         [AutomaticRetry(Attempts = 0)]
         public override void Handle()
         {
-            this.tournamentService.CheckTournaments();
+            this.tournamentService.CheckTournaments(this.randomGenProvider.GetRandomGen());
             this.unitOfWork.Commit();
         }
     }

@@ -102,7 +102,7 @@ namespace ImperaPlus.TestSupport.Testdata
         {
             var game = this.CreateGameWithMapAndPlayers(teams, playerPerTeam);
 
-            game.Start(this.CreateAndSaveMapTemplate());
+            game.Start(this.CreateAndSaveMapTemplate(), new RandomGen());
 
             this.SaveChanges();
 

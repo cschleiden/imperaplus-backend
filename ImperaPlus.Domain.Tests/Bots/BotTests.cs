@@ -2,6 +2,7 @@
 using ImperaPlus.Domain.Bots;
 using ImperaPlus.Domain.Services;
 using ImperaPlus.Domain.Tests.Helper;
+using ImperaPlus.TestSupport;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ImperaPlus.Domain.Tests.Bots

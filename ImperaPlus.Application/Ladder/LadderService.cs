@@ -26,8 +26,6 @@ namespace ImperaPlus.Application.Ladder
 
         void UpdateMapTemplates(Guid id, IEnumerable<string> mapTemplateNames);
 
-        void ForceCreateGames();
-
         void ToggleActive(Guid ladderId, bool isActive);
 
         void UpdateGameOptions(Guid ladderId, DTO.Games.GameOptions gameOptions);
@@ -41,11 +39,6 @@ namespace ImperaPlus.Application.Ladder
             : base(unitOfWork, userProvider)
         {
             this.ladderService = ladderService;
-        }
-
-        public void ForceCreateGames()
-        {
-            this.ladderService.CheckAndCreateMatches();
         }
 
         public LadderSummary Create(DTO.Ladder.Admin.CreationOptions creationOptions)

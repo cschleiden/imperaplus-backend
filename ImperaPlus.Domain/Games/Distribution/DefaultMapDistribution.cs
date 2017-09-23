@@ -2,16 +2,17 @@
 using System.Linq;
 using ImperaPlus.Domain.Utilities;
 using ImperaPlus.Domain.Map;
+using ImperaPlus.Domain.Services;
 
 namespace ImperaPlus.Domain.Games.Distribution
 {
     public class DefaultMapDistribution : IMapDistribution
     {
-        public void Distribute(IEnumerable<Team> teams, MapTemplate mapTemplate, Map map)
+        public void Distribute(IEnumerable<Team> teams, MapTemplate mapTemplate, Map map, IRandomGen random)
         {
-            var shuffledCountries = map.Countries.Shuffle().ToArray();
+            var shuffledCountries = map.Countries.Shuffle(random).ToArray();
 
-            var players = teams.SelectMany(x => x.Players).Shuffle().ToList();
+            var players = teams.SelectMany(x => x.Players).Shuffle(random).ToList();
 
             // Remaining countries are neutral
             var countryCount = shuffledCountries.Count();

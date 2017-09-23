@@ -13,7 +13,7 @@ namespace ImperaPlus.Domain.Services
 {
     public interface ILadderService
     {
-        void CheckAndCreateMatches();
+        void CheckAndCreateMatches(IRandomGen random);
 
         void Queue(Guid ladderId, User user);
 
@@ -44,7 +44,7 @@ namespace ImperaPlus.Domain.Services
         /// <summary>
         /// Checks if enough players for a match have queued up, then create games
         /// </summary>
-        public void CheckAndCreateMatches()
+        public void CheckAndCreateMatches(IRandomGen random)
         {
             Log.Info().Message("Entering CheckAndCreateMatches").Write();
 
@@ -62,13 +62,13 @@ namespace ImperaPlus.Domain.Services
                     {
                         Log.Debug().Message("Found enough players").Write();
 
-                        var game = this.CreateGame(ladder);
+                        var game = this.CreateGame(ladder, random);
                         this.unitOfWork.Games.Add(game);
                         ladder.Games.Add(game);
 
                         // Add required players from queue to game
                         var queueEntries = ladder.Queue.Take(numberOfRequiredPlayers).ToArray();
-                        foreach (var queueEntry in queueEntries.Shuffle())
+                        foreach (var queueEntry in queueEntries.Shuffle(random))
                         {
                             Debug.Assert(queueEntry.User != null, "User not available for queue entry");
 
@@ -80,7 +80,7 @@ namespace ImperaPlus.Domain.Services
                             this.unitOfWork.GetGenericRepository<LadderQueueEntry>().Remove(queueEntry);
                         }
 
-                        game.Start(this.mapTemplateProvider.GetTemplate(game.MapTemplateName));
+                        game.Start(this.mapTemplateProvider.GetTemplate(game.MapTemplateName), random);
 
                         this.eventAggregator.Raise(new LadderGameStartedEvent(ladder, game));
                         this.unitOfWork.Commit();
@@ -135,11 +135,11 @@ namespace ImperaPlus.Domain.Services
         /// <summary>
         /// Create a game for the given ladder
         /// </summary>        
-        protected virtual Games.Game CreateGame(Ladder ladder)
+        protected virtual Games.Game CreateGame(Ladder ladder, IRandomGen random)
         {
             var systemUser = this.unitOfWork.Users.FindByName("System");
 
-            var mapTemplate = ladder.GetMapTemplateForGame();
+            var mapTemplate = ladder.GetMapTemplateForGame(random);
 
             var game = gameService.Create(
                 Enums.GameType.Ranking,

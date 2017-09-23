@@ -64,16 +64,19 @@ namespace ImperaPlus.Application.Games
     public class GameService : BaseGameService, IGameService
     {
         private readonly Domain.Services.IGameService gameService;
+        private readonly IRandomGenProvider randomGenProvider;
 
         public GameService(
             IUnitOfWork unitOfWork, 
             Domain.IUserProvider userProvider, 
             Domain.Services.IGameService gameService, 
             IMapTemplateProvider mapTemplateProvider,
-            IVisibilityModifierFactory visibilityModifierFactory)
+            IVisibilityModifierFactory visibilityModifierFactory, 
+            IRandomGenProvider randomGenProvider)
             : base(unitOfWork, userProvider, mapTemplateProvider, visibilityModifierFactory)
         {
             this.gameService = gameService;
+            this.randomGenProvider = randomGenProvider;
         }
 
         public GameSummary Create(GameCreationOptions creationOptions)
@@ -139,7 +142,7 @@ namespace ImperaPlus.Application.Games
             {
                 using (TraceContext.Trace("Start Game"))
                 {
-                    game.Start(mapTemplate);
+                    game.Start(mapTemplate, this.randomGenProvider.GetRandomGen());
                 }
             }
 
@@ -172,7 +175,7 @@ namespace ImperaPlus.Application.Games
 
             if (game.CanStart)
             {
-                game.Start(mapTemplate);
+                game.Start(mapTemplate, this.randomGenProvider.GetRandomGen());
             } 
 
             this.UnitOfWork.Commit();
