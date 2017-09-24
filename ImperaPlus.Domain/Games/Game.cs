@@ -125,6 +125,9 @@ namespace ImperaPlus.Domain.Games
 
         public string Name { get; private set; }
 
+        /// <summary>
+        /// Use the property
+        /// </summary>
         private Map map;
 
         [NotMapped]
@@ -683,7 +686,7 @@ namespace ImperaPlus.Domain.Games
 
         public void ResetTracking()
         {
-            this.map.ResetTracking();
+            this.Map.ResetTracking();
         }
 
         public Player GetPlayerForUser(string userId)
