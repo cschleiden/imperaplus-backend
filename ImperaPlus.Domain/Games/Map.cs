@@ -59,6 +59,17 @@ namespace ImperaPlus.Domain.Games
                 }).ToList());
         }
 
+        /// <summary>
+        /// Reset country change tracking
+        /// </summary>
+        public void ResetTracking()
+        {
+            foreach(var country in this.Countries)
+            {
+                country.IsUpdated = false;
+            }
+        }
+
         public Country GetCountry(string identifier)
         {
             if (this.countryDict == null)

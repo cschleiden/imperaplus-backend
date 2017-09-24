@@ -1,10 +1,6 @@
-﻿using ImperaPlus.Domain.Enums;
-using ImperaPlus.Domain.Exceptions;
+﻿using ImperaPlus.Domain.Exceptions;
 using ImperaPlus.Domain.Map;
-using ImperaPlus.Domain.Services;
-using ImperaPlus.Domain.Utilities;
 using System;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 
 namespace ImperaPlus.Domain.Games
@@ -12,6 +8,10 @@ namespace ImperaPlus.Domain.Games
     public class Country
     {
         private int units;
+
+        private Guid playerId;
+
+        private Guid teamId;
 
         protected Country()
         {
@@ -25,9 +25,41 @@ namespace ImperaPlus.Domain.Games
             this.units = units;
         }
 
-        public Guid PlayerId { get; internal set; }
+        public Guid PlayerId
+        {
+            get
+            {
+                return this.playerId;
+            }
 
-        public Guid TeamId { get; internal set; }
+            internal set
+            {
+                if (this.playerId != value)
+                {
+                    this.IsUpdated = true;
+                }
+
+                this.playerId = value;
+            }
+        }
+
+        public Guid TeamId
+        {
+            get
+            {
+                return this.teamId;
+            }
+
+            internal set
+            {
+                if (this.teamId != value)
+                {
+                    this.IsUpdated = true;
+                }
+
+                this.teamId = value;
+            }
+        }
 
         public int Units
         {
@@ -45,13 +77,13 @@ namespace ImperaPlus.Domain.Games
                 }
             }
         }
-       
+
         public string CountryIdentifier { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether this country has been updated in the current turn
         /// </summary>
-        [IgnoreDataMember]        
+        [IgnoreDataMember]
         public bool IsUpdated { get; internal set; }
 
         public static Country CreateFromTemplate(Map map, CountryTemplate countryTemplate, int units)

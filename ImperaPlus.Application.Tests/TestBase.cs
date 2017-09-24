@@ -103,7 +103,13 @@ namespace ImperaPlus.TestSupport
             builder.RegisterType<Application.Games.GameService>().AsImplementedInterfaces();
             builder.RegisterType<Application.Play.PlayService>().AsImplementedInterfaces();
             builder.RegisterType<Domain.Services.GameService>().AsImplementedInterfaces();
+
             builder.RegisterType<RandomGenProvider>().AsImplementedInterfaces();
+            builder
+                .Register(c => c.Resolve<IRandomGenProvider>().GetRandomGen())
+                .As<Domain.Services.IRandomGen>()
+                .InstancePerLifetimeScope();
+
             builder.RegisterType<Application.Visibility.VisibilityModifierFactory>().AsImplementedInterfaces();
         }
     }

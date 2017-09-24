@@ -47,6 +47,8 @@ namespace ImperaPlus.Application.Play
             var game = this.GetGame(gameId);
             this.CheckPermission(game);
 
+            game.ResetTracking();
+
             game.PlaceUnits(
                 this.GetMapTemplate(game), places.Select(x => Tuple.Create(x.CountryIdentifier, x.NumberOfUnits)).ToList());
 
@@ -57,6 +59,8 @@ namespace ImperaPlus.Application.Play
         {
             var game = this.GetGame(gameId);
             this.CheckPermission(game);
+
+            game.ResetTracking();
 
             game.Attack(this.attackService, this.randomGen, this.GetMapTemplate(game), originCountryIdentifier, destinationCountryIdentifier, numberOfUnits);
 
@@ -75,6 +79,8 @@ namespace ImperaPlus.Application.Play
         {
             var game = this.GetGame(gameId);
             this.CheckPermission(game);
+
+            game.ResetTracking();
 
             game.Move(this.GetMapTemplate(game), originCountryIdentifier, destinationCountryIdentifier, numberOfUnits);
 

@@ -58,13 +58,13 @@ namespace ImperaPlus.Application.Tests.Play
             TestUserProvider.User = this.UnitOfWork.Users.FindById(fullGame.CurrentPlayer.UserId);
 
             // Act
-            var actionResult = this.playService.Place(game.Id, new[] 
-            { 
+            var actionResult = this.playService.Place(game.Id, new[]
+            {
                 new PlaceUnitsOptions
                 {
                     CountryIdentifier = fullGame.Map.Countries.First(x => x.PlayerId == fullGame.CurrentPlayer.Id).Identifier,
-                    NumberOfUnits= fullGame.UnitsToPlace
-                }   
+                    NumberOfUnits = fullGame.UnitsToPlace
+                }
             });
 
             // Assert

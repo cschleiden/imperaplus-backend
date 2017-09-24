@@ -681,6 +681,11 @@ namespace ImperaPlus.Domain.Games
             this.EventQueue.Raise(new GameEndedEvent(this));
         }
 
+        public void ResetTracking()
+        {
+            this.map.ResetTracking();
+        }
+
         public Player GetPlayerForUser(string userId)
         {
             var player = this.Teams.SelectMany(x => x.Players).FirstOrDefault(x => x.UserId == userId);

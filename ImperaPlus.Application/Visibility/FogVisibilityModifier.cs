@@ -27,12 +27,10 @@ namespace ImperaPlus.Application.Visibility
             }
 
             var visibleCountries = new List<Country>();
-
-            var player = game.Teams.SelectMany(x => x.Players).FirstOrDefault(x => x.UserId == user.Id);
-            if (player != null)
+            
+            Team team = game.Teams.FirstOrDefault(t => t.Players.Any(x => x.UserId == user.Id));
+            if (team != null)
             {
-                var team = game.Teams.First(x => x.Players.Any(p => p.Id == player.Id));
-
                 var mapTemplate = this.MapTemplateProvider.GetTemplate(game.MapTemplate);
                 var countryDict = map.Countries.ToDictionary(x => x.Identifier);
 
@@ -84,14 +82,12 @@ namespace ImperaPlus.Application.Visibility
 
         public override void Expand(Domain.User user, Domain.Games.Game game, List<Domain.Games.Country> changedCountries)
         {
-            var player = game.Teams.SelectMany(x => x.Players).FirstOrDefault(x => x.UserId == user.Id);
-            if (player != null)
+            Domain.Games.Team team = game.Teams.FirstOrDefault(t => t.Players.Any(x => x.UserId == user.Id));
+            if (team != null)
             {
                 HashSet<Domain.Games.Country> countries = new HashSet<Domain.Games.Country>(changedCountries);
                 HashSet<Domain.Games.Country> revealedCountries = new HashSet<Domain.Games.Country>();
-
-                var team = player.Team;
-
+                
                 var mapTemplate = this.MapTemplateProvider.GetTemplate(game.MapTemplateName);
 
                 foreach (var changedCountry in changedCountries)

@@ -334,6 +334,7 @@
   <ItemGroup>
     <Compile Include="Alliance\AllianceServiceTests.cs" />
     <Compile Include="Bots\BotTests.cs" />
+    <Compile Include="Games\CountryUpdateTests.cs" />
     <Compile Include="Games\GamePlayTests.cs" />
     <Compile Include="Games\GameTests.cs" />
     <Compile Include="Helper\AssertHelper.cs" />
