@@ -22,7 +22,7 @@ namespace ImperaPlus.Application.Jobs
         private IUnitOfWork unitOfWork;
         private IScoringService scoringService;
 
-        LadderScorejob(ILifetimeScope scope)
+        public LadderScorejob(ILifetimeScope scope)
             : base(scope)
         {        
             this.unitOfWork = this.LifetimeScope.Resolve<IUnitOfWork>();
