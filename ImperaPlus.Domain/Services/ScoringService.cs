@@ -75,7 +75,7 @@ namespace ImperaPlus.Domain.Services
                 var scorePlayer = new ScorePlayer(player.UserId);
 
                 // TODO: This makes individual queries, optimize                
-                var standing = this.unitOfWork.Ladders.GetUserStanding(ladder.Id, player.User.Id);
+                var standing = this.unitOfWork.Ladders.GetUserStanding(ladder.Id, player.UserId);
                 if (standing != null)
                 {
                     // Player has already competed in this ladder
