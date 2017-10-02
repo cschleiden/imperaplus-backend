@@ -35,7 +35,7 @@ namespace ImperaPlus.Application.Jobs
 
             var unscoredGames = this.unitOfWork.Games.FindUnscoredLadderGames();
 
-            foreach(var unscoredGame in unscoredGames)
+            foreach(var unscoredGame in unscoredGames.ToArray())
             {
                 try
                 {
