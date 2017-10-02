@@ -7,6 +7,7 @@ using ImperaPlus.Domain.Exceptions;
 using ImperaPlus.Domain.Ladders;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Services.Scoring;
+using NLog.Fluent;
 
 namespace ImperaPlus.Domain.Services
 {
@@ -75,7 +76,10 @@ namespace ImperaPlus.Domain.Services
                 var scorePlayer = new ScorePlayer(player.UserId);
 
                 // TODO: This makes individual queries, optimize                
-                var standing = this.unitOfWork.Ladders.GetUserStanding(ladder.Id, player.UserId);
+                //var standing = this.unitOfWork.Ladders.GetUserStanding(ladder.Id, player.UserId);
+                var standing = this.unitOfWork.GetGenericRepository<LadderStanding>()
+                    .Query()
+                    .FirstOrDefault(x => x.LadderId == ladder.Id && x.UserId == player.UserId);
                 if (standing != null)
                 {
                     // Player has already competed in this ladder
@@ -95,6 +99,7 @@ namespace ImperaPlus.Domain.Services
             if (standing == null)
             {
                 // Player has competed in this league for the first time
+                Log.Info().Message("Adding ladder standing for {0} {1}", ladder.Id, user.Id).Write();
                 standing = new LadderStanding(ladder, user);
                 this.unitOfWork.GetGenericRepository<LadderStanding>().Add(standing);
             }
