@@ -80,7 +80,9 @@ namespace ImperaPlus.DataAccess.Repositories
         public IEnumerable<Game> FindUnscoredLadderGames()
         {
             return this.GameSet
-                .Where(x => x.LadderId != null 
+                .Where(x => 
+                    x.State == GameState.Ended
+                    && x.LadderId != null 
                     && (x.LadderScored == null || x.LadderScored == false))
                 .OrderByDescending(x => x.LastTurnStartedAt);
         }
