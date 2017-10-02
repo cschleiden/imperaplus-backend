@@ -47,6 +47,7 @@ namespace ImperaPlus.Application
             // Jobs
             builder.RegisterType<TimeoutJob>().AsSelf();
             builder.RegisterType<LadderJob>().AsSelf();
+            builder.RegisterType<LadderScorejob>().AsSelf();
             builder.RegisterType<BotJob>().AsSelf();
             builder.RegisterType<NotificationJob>().AsSelf();
             builder.RegisterType<UserCleanupJob>().AsSelf();

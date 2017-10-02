@@ -91,7 +91,7 @@ namespace ImperaPlus.Domain.Events
                             {
                                 Log
                                     .Error()
-                                    .Message("Error while handlging event {0}", eventHandlerName)
+                                    .Message("Error while handling event {0}", eventHandlerName)
                                     .Exception(ex)
                                     .Write();
                             }
