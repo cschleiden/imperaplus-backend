@@ -96,7 +96,7 @@ namespace ImperaPlus.Domain.Services
             {
                 // Player has competed in this league for the first time
                 standing = new LadderStanding(ladder, user);
-                ladder.Standings.Add(standing);
+                this.unitOfWork.GetGenericRepository<LadderStanding>().Add(standing);
             }
 
             standing.Rating = rating;

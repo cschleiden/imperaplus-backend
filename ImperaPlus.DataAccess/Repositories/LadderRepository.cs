@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ImperaPlus.Domain.Ladders;
 using ImperaPlus.Domain.Repositories;
-using System;
-using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace ImperaPlus.DataAccess.Repositories
 {
@@ -16,7 +16,7 @@ namespace ImperaPlus.DataAccess.Repositories
         
         public Ladder GetById(Guid id)
         {
-            return this.GetAll()
+            return this.Set
                 .FirstOrDefault(x => x.Id == id);
         }
 
