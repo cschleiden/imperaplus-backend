@@ -82,6 +82,8 @@ namespace ImperaPlus.Domain.Services
                     .FirstOrDefault(x => x.LadderId == ladder.Id && x.UserId == player.UserId);
                 if (standing != null)
                 {
+                    Log.Info().Message("Found ladder standing for {0} {1}", ladder.Id, player.UserId).Write();
+
                     // Player has already competed in this ladder
                     scorePlayer.Rating = standing.Rating;
                     scorePlayer.Vol = standing.Vol;

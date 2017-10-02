@@ -48,9 +48,9 @@ namespace ImperaPlus.Application.Jobs
                 {
                     Log.Info().Message("Error scoring game " + unscoredGame.Id).Exception(ex).Write();
                 }
-            }
 
-            this.unitOfWork.Commit();
+                this.unitOfWork.Commit();
+            }
         }
     }
 }
