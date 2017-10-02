@@ -26,6 +26,8 @@ namespace ImperaPlus.Domain.Repositories
         /// <returns>Number of games</returns>
         int CountForUserAtTurn(string userId);
 
+        IEnumerable<Game> FindUnscoredLadderGames();
+
         IQueryable<Game> FindNotHiddenNotOutcomeForUser(string userId, PlayerOutcome outcome);
 
         IQueryable<Game> FindOpen(string userId);

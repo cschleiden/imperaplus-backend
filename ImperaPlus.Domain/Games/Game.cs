@@ -119,6 +119,11 @@ namespace ImperaPlus.Domain.Games
         public virtual Ladder Ladder { get; set; }
         public Guid? LadderId { get; set; }
 
+        /// <summary>
+        /// Whether the game has been updated for the ladder score
+        /// </summary>
+        public bool? LadderScored { get; set; }
+
         public Guid? TournamentPairingId { get; set; }
 
         public GameType Type { get; private set; }

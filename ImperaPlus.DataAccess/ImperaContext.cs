@@ -1,8 +1,12 @@
-﻿using Autofac;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Autofac;
 using ImperaPlus.Domain;
 using ImperaPlus.Domain.Chat;
 using ImperaPlus.Domain.Events;
 using ImperaPlus.Domain.Games;
+using ImperaPlus.Domain.Games.Chat;
 using ImperaPlus.Domain.Games.History;
 using ImperaPlus.Domain.Ladders;
 using ImperaPlus.Domain.Map;
@@ -10,12 +14,8 @@ using ImperaPlus.Domain.News;
 using ImperaPlus.Domain.Tournaments;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using StackExchange.Profiling;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.EntityFrameworkCore.Metadata;
-using ImperaPlus.Domain.Games.Chat;
+using StackExchange.Profiling;
 
 namespace ImperaPlus.DataAccess
 {
@@ -121,7 +121,7 @@ namespace ImperaPlus.DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);        
+            base.OnModelCreating(modelBuilder);
 
             // Games            
             modelBuilder.Entity<Game>()

@@ -13,7 +13,7 @@ namespace ImperaPlus.Domain.Tests.Services
         {
             // Arrange
             var ladder = new Ladder("Default", 2, 1);
-            var scoringService = new ScoringService();
+            var scoringService = new ScoringService(TestUtils.GetUnitOfWork());
 
             var game = TestUtils.CreateStartedGameWithMapAndPlayersUnitsPlaced();
             game.Teams.First().Players.First().Surrender();

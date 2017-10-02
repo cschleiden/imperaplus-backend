@@ -77,8 +77,10 @@ namespace ImperaPlus.Domain.Tests
             var mockTeamRepository = new Mock<ITeamRepository>();
             mockUnitOfWork.SetupGet(x => x.Teams).Returns(mockTeamRepository.Object);
 
-            var mockLadderQueueEntry = new Mock<IGenericRepository<Domain.Ladders.LadderQueueEntry>>();
+            var mockLadderRepository = new Mock<ILadderRepository>();
+            mockUnitOfWork.SetupGet(x => x.Ladders).Returns(mockLadderRepository.Object);
 
+            var mockLadderQueueEntry = new Mock<IGenericRepository<Domain.Ladders.LadderQueueEntry>>();
             mockUnitOfWork.Setup(x => x.GetGenericRepository<Domain.Ladders.LadderQueueEntry>()).Returns(mockLadderQueueEntry.Object);
 
             return mockUnitOfWork;

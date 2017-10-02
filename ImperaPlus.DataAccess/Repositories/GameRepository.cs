@@ -76,14 +76,18 @@ namespace ImperaPlus.DataAccess.Repositories
                 x.State == GameState.Active
                 && x.LastTurnStartedAt <= DateTime.UtcNow.AddSeconds(-x.Options.TimeoutInSeconds));
         }
-        
+
+        public IEnumerable<Game> FindUnscoredLadderGames()
+        {
+            return this.GameSet.Where(x => x.LadderId != null && x.LadderScored != null && x.LadderScored == false);
+        }
+
         protected IQueryable<Game> FullGameSet
         {
             get
             {
                 return this.GameSet
-                    .Include(x => x.HistoryEntries)
-                    .Include(x => x.Options);
+                    .Include(x => x.HistoryEntries);
             }
         }
 

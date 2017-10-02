@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ImperaPlus.Domain.Exceptions;
 using ImperaPlus.Domain.Ladders;
+using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Services.Scoring;
 
 namespace ImperaPlus.Domain.Services
@@ -17,16 +19,30 @@ namespace ImperaPlus.Domain.Services
     {
         private const int MAX_RANK = 100;
 
+        private IUnitOfWork unitOfWork;
+
+        public ScoringService(IUnitOfWork unitOfWork)
+        {
+            this.unitOfWork = unitOfWork;
+        }
+
         public void Score(Ladder ladder, Games.Game game)
         {
+            if (game.LadderScored.HasValue && game.LadderScored.Value)
+            {
+                throw new DomainException(ErrorCode.GameAlreadyScored, $"Game {game.Id} already scored");
+            }
+
             var playerStandings = new Dictionary<string, LadderStanding>();
 
             var winningTeam = game.Teams.First(x => x.Players.First().Outcome == Enums.PlayerOutcome.Won);
             var otherTeams = game.Teams.Where(t => t != winningTeam);
 
+            // Score winners
             var winningScoreTeam = new ScoreTeam();
             TransformPlayers(ladder, playerStandings, winningTeam, winningScoreTeam);
 
+            // Score losers
             var otherScoreTeams = new List<ScoreTeam>();
             foreach(var otherTeam in otherTeams)
             {
@@ -35,7 +51,11 @@ namespace ImperaPlus.Domain.Services
                 otherScoreTeams.Add(otherScoreTeam);
             }
 
-            var result = new Glicko2().Calculate(winningScoreTeam, otherScoreTeams.ToArray()).SelectMany(x => x.Players).ToDictionary(x => x.Id);
+            // Calculate new ratings for each player
+            var result = new Glicko2()
+                .Calculate(winningScoreTeam, otherScoreTeams.ToArray())
+                .SelectMany(x => x.Players)
+                .ToDictionary(x => x.Id);
             foreach (var user in game.Teams.SelectMany(t => t.Players.Select(x => x.User)))
             {
                 var data = result[user.Id];
@@ -44,24 +64,27 @@ namespace ImperaPlus.Domain.Services
               
                 this.UpdatePlayerRating(ladder, playerStandings[user.Id], user, data.Rating, data.Vol, data.Rd, hasWon);
             }
+
+            game.LadderScored = true;
         }
 
-        private static void TransformPlayers(Ladder ladder, Dictionary<string, LadderStanding> playerStandings, Games.Team team, ScoreTeam scoreTeam)
+        private void TransformPlayers(Ladder ladder, Dictionary<string, LadderStanding> playerStandings, Games.Team team, ScoreTeam scoreTeam)
         {
-            foreach (var winningPlayer in team.Players)
+            foreach (var player in team.Players)
             {
-                var scorePlayer = new ScorePlayer(winningPlayer.UserId);
+                var scorePlayer = new ScorePlayer(player.UserId);
 
-                // TODO: This makes individual queries, optimize
-                var standing = winningPlayer.User.Standings.FirstOrDefault(x => x.LadderId == ladder.Id);
+                // TODO: This makes individual queries, optimize                
+                var standing = this.unitOfWork.Ladders.GetUserStanding(ladder.Id, player.User.Id);
                 if (standing != null)
                 {
+                    // Player has already competed in this ladder
                     scorePlayer.Rating = standing.Rating;
                     scorePlayer.Vol = standing.Vol;
                     scorePlayer.Rd = standing.Rd;
                 }
 
-                playerStandings.Add(winningPlayer.UserId, standing);
+                playerStandings.Add(player.UserId, standing);
 
                 scoreTeam.Players.Add(scorePlayer);
             }
@@ -71,6 +94,7 @@ namespace ImperaPlus.Domain.Services
         {
             if (standing == null)
             {
+                // Player has competed in this league for the first time
                 standing = new LadderStanding(ladder, user);
                 ladder.Standings.Add(standing);
             }

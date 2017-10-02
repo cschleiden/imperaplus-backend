@@ -184,3 +184,4 @@ src/modules/**/*.js
 /.vs/ImperaPlus/v15/sqlite3/storage.ide
 /.vs/ImperaPlus/v15/sqlite3
 *.sqlite
+/.vs

@@ -224,6 +224,7 @@
         /// </summary>
         TournamentTeamCreatorHasToDelete,
         CannotFindGame,
-        CannotDeleteGame
+        CannotDeleteGame,
+        GameAlreadyScored
     }
 }

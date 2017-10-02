@@ -134,6 +134,11 @@ namespace ImperaPlus.Domain.Tests
             throw new NotImplementedException();
         }
 
+        public IEnumerable<Game> FindUnscoredLadderGames()
+        {
+            throw new NotImplementedException();
+        }
+
         public Game FindWithHistory(long gameId)
         {
             throw new NotImplementedException();

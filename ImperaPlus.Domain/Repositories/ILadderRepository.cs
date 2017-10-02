@@ -15,7 +15,7 @@ namespace ImperaPlus.Domain.Repositories
 
         IEnumerable<Ladder> GetActive();
 
-        LadderStanding GetUserStanding(Guid ladderId, string id);
+        LadderStanding GetUserStanding(Guid ladderId, string userId);
 
         int GetStandingPosition(LadderStanding standing);
 

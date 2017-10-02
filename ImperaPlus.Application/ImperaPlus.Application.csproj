@@ -345,6 +345,7 @@
     <Compile Include="IRandomGenProvider.cs" />
     <Compile Include="JobConfig.cs" />
     <Compile Include="Jobs\BotJob.cs" />
+    <Compile Include="Jobs\LadderScoreJob.cs" />
     <Compile Include="Jobs\Job.cs" />
     <Compile Include="Jobs\JobExpirationTimeAttribute.cs" />
     <Compile Include="Jobs\JobQueues.cs" />
