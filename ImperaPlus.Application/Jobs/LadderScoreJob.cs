@@ -37,10 +37,17 @@ namespace ImperaPlus.Application.Jobs
 
             foreach(var unscoredGame in unscoredGames)
             {
-                Log.Info().Message("Scoring game ").Write();
-                
-                var ladder = this.unitOfWork.Ladders.GetById(unscoredGame.LadderId.Value);
-                this.scoringService.Score(ladder, unscoredGame);
+                try
+                {
+                    Log.Info().Message("Scoring game " + unscoredGame.Id).Write();
+
+                    var ladder = this.unitOfWork.Ladders.GetById(unscoredGame.LadderId.Value);
+                    this.scoringService.Score(ladder, unscoredGame);
+                }
+                catch (Exception ex)
+                {
+                    Log.Info().Message("Error scoring game " + unscoredGame.Id).Exception(ex).Write();
+                }
             }
 
             this.unitOfWork.Commit();
