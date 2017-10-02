@@ -13,7 +13,7 @@ namespace ImperaPlus.DataAccess.ConvertedMaps
         public static MapTemplate gta()
         {
 
-var mapTemplate = new MapTemplate("gta") { Image = "gta.jpg" };
+var mapTemplate = new MapTemplate("gta") { Image = "gta.png" };
 var country1 = new CountryTemplate("1", "Westdyke") { X = 489, Y = 245 };
 mapTemplate.Countries.Add(country1);
 var country2 = new CountryTemplate("2", "Leftwood") { X = 480, Y = 396 };
