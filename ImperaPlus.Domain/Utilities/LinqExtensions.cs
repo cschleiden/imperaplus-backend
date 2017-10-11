@@ -11,7 +11,7 @@ namespace ImperaPlus.Domain.Utilities
         {
             var count = source.Count();
 
-            var idx = random.GetNext(0, count);
+            var idx = random.GetNext(0, count - 1);
 
             return source.Skip(idx).Take(1).FirstOrDefault();
         }
@@ -30,7 +30,7 @@ namespace ImperaPlus.Domain.Utilities
             var buffer = source.ToList();
             for (int i = 0; i < buffer.Count; i++)
             {
-                int j = rng.GetNext(i, buffer.Count);
+                int j = rng.GetNext(i, buffer.Count - 1);
                 yield return buffer[j];
 
                 buffer[j] = buffer[i];
