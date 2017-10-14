@@ -5,6 +5,7 @@ using ImperaPlus.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using NLog.Fluent;
 using System;
+using Hangfire.Server;
 
 namespace ImperaPlus.Application.Jobs
 {
@@ -21,9 +22,11 @@ namespace ImperaPlus.Application.Jobs
             this.unitOfWork = this.LifetimeScope.Resolve<IUnitOfWork>();
         }
 
-        public override void Handle()
+        public override void Handle(PerformContext performContext)
         {
-            Log.Info("Processing timeouts").Write();
+            base.Handle(performContext);
+
+            this.Log.Log(Domain.LogLevel.Info, "Processing timeouts");
 
             var games = this.unitOfWork.Games.FindTimeoutGames().ToArray();
             
@@ -31,16 +34,13 @@ namespace ImperaPlus.Application.Jobs
             {
                 try
                 {
-                    Log.Info().Message("Processing timeout in game {0} {1}", game.Id, game.Name).Write();
+                    this.Log.Log(Domain.LogLevel.Info, "Processing timeout in game {0} {1}", game.Id, game.Name);
                     game.ProcessTimeouts();
                 }
                 catch (Exception e)
                 {
                     // Log and continue with next game
-                    Log.Error()
-                        .Message("Error while processing timeouts for game {0}", game.Id)
-                        .Exception(e)
-                        .Write();
+                    this.Log.Log(Domain.LogLevel.Error, "Error while processing timeouts for game {0} {1}", game.Id, e.ToString());
                 }
 
                 try
@@ -49,7 +49,7 @@ namespace ImperaPlus.Application.Jobs
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    Log.Warn().Message("DbUpdateConcurrencyException for game {0}", game.Id).Write();
+                    this.Log.Log(Domain.LogLevel.Error, "DbUpdateConcurrencyException for game {0}", game.Id);
                 }
             }
         }

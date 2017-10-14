@@ -41,7 +41,7 @@ namespace ImperaPlus.Backend.Controllers
 
 
         private readonly IEmailService emailSender;
-        private readonly ILogger logger;
+        private readonly Microsoft.Extensions.Logging.ILogger logger;
         private IUserService userService;
 
         public AccountController(

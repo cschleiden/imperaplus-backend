@@ -19,7 +19,7 @@ namespace ImperaPlus.Domain.Tests.Bots
             var currentPlayer = game.CurrentPlayer;
 
             // Act
-            var bot = new Bot(game, TestUtils.GetMapTemplate(), new AttackService(new AttackerWinsRandomGen()), new RandomGen());
+            var bot = new Bot(new TestLogger(), game, TestUtils.GetMapTemplate(), new AttackService(new AttackerWinsRandomGen()), new RandomGen());
             bot.PlayTurn();
 
             // Assert

@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 using Autofac;
 using Hangfire;
+using Hangfire.Server;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Services;
-using NLog.Fluent;
 
 namespace ImperaPlus.Application.Jobs
 {
@@ -29,9 +25,11 @@ namespace ImperaPlus.Application.Jobs
             this.scoringService = this.LifetimeScope.Resolve<IScoringService>();
         }
 
-        public override void Handle()
+        public override void Handle(PerformContext performContext)
         {
-            Log.Info().Message("Entering scoring job").Write();
+            base.Handle(performContext);
+
+            this.Log.Log(Domain.LogLevel.Info, "Entering scoring job");
 
             var unscoredGames = this.unitOfWork.Games.FindUnscoredLadderGames();
 
@@ -39,14 +37,16 @@ namespace ImperaPlus.Application.Jobs
             {
                 try
                 {
-                    Log.Info().Message("Scoring game " + unscoredGame.Id).Write();
+                    this.Log.Log(Domain.LogLevel.Info, "Scoring game " + unscoredGame.Id);
 
                     var ladder = this.unitOfWork.Ladders.GetById(unscoredGame.LadderId.Value);
                     this.scoringService.Score(ladder, unscoredGame);
+
+                    this.Log.Log(Domain.LogLevel.Info, "Done " + unscoredGame.Id);
                 }
                 catch (Exception ex)
                 {
-                    Log.Info().Message("Error scoring game " + unscoredGame.Id).Exception(ex).Write();
+                    this.Log.Log(Domain.LogLevel.Error, "Error scoring game {0} {1}", unscoredGame.Id, ex);
                 }
 
                 this.unitOfWork.Commit();

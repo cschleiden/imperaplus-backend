@@ -3,6 +3,7 @@ using Hangfire;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Bots;
 using ImperaPlus.Domain.Services;
+using Hangfire.Server;
 
 namespace ImperaPlus.Application.Jobs
 {
@@ -18,8 +19,10 @@ namespace ImperaPlus.Application.Jobs
             this.unitOfWork = this.LifetimeScope.Resolve<IUnitOfWork>();
         }
 
-        public void Play(long gameId)
+        public void Play(long gameId, PerformContext performContext)
         {
+            var logger = new JobLogger(performContext);
+
             var game = this.unitOfWork.Games.Find(gameId);
             if (game.State != Domain.Enums.GameState.Active)
             {
@@ -28,10 +31,11 @@ namespace ImperaPlus.Application.Jobs
 
             var mapTemplateProvider = this.LifetimeScope.Resolve<IMapTemplateProvider>();
             var mapTemplate = mapTemplateProvider.GetTemplate(game.MapTemplateName);
+
             var attackService = this.LifetimeScope.Resolve<IAttackService>();
             var randomGen = this.LifetimeScope.Resolve<IRandomGen>();
 
-            var bot = new Bot(game, mapTemplate, attackService, randomGen);
+            var bot = new Bot(logger, game, mapTemplate, attackService, randomGen);
 
             bot.PlayTurn();
 

@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Hangfire;
+using Hangfire.Server;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Services;
 using ImperaPlus.Utils;
@@ -10,6 +11,7 @@ namespace ImperaPlus.Application.Jobs
 {
     [Queue(JobQueues.Critical)]
     [DisableConcurrentExecution(60)]
+    [AutomaticRetry(Attempts = 0)]
     public class LadderJob : Job
     {
         private IUnitOfWork unitOfWork;
@@ -24,9 +26,10 @@ namespace ImperaPlus.Application.Jobs
             this.randomGenProvider = this.LifetimeScope.Resolve<IRandomGenProvider>();
         }
 
-        [AutomaticRetry(Attempts = 0)]
-        public override void Handle()
+        public override void Handle(PerformContext performContext)
         {
+            base.Handle(performContext);
+
             TraceContext.Trace("Processing ladder", () =>
             {
                 try
@@ -35,7 +38,7 @@ namespace ImperaPlus.Application.Jobs
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    Log.Warn().Message("DbUpdateConcurrencyException while processing ladders").Write();
+                    this.Log.Log(Domain.LogLevel.Error, "DbUpdateConcurrencyException while processing ladders");
                 }
             });
         }

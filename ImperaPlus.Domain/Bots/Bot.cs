@@ -10,6 +10,7 @@ namespace ImperaPlus.Domain.Bots
 {
     public class Bot
     {
+        private readonly ILogger log;
         private readonly Game game;
         private Team ownTeam;
         private Player ownPlayer;
@@ -18,11 +19,13 @@ namespace ImperaPlus.Domain.Bots
         private IRandomGen randomGen;
 
         public Bot(
+            ILogger log,
             Game game, 
             MapTemplate mapTemplate,
             IAttackService attackService,
             IRandomGen randomGen)
         {
+            this.log = log;
             this.game = game;
             this.mapTemplate = mapTemplate;
             this.attackService = attackService;
@@ -47,7 +50,8 @@ namespace ImperaPlus.Domain.Bots
         {
             var unitsToPlace = this.game.GetUnitsToPlace(this.mapTemplate, this.ownPlayer);
 
-            Log.Debug().Message("[Bot] Placing {0} units", unitsToPlace).Write();
+            this.log.Log(LogLevel.Info, "[Bot] Placing {0} units", unitsToPlace);
+
             var ownCountries = this.game.Map.GetCountriesForTeam(this.ownTeam.Id);
             Country ownCountry;
             if (ownCountries.Count() == 1)
@@ -69,7 +73,7 @@ namespace ImperaPlus.Domain.Bots
 
                 if (ownCountry == null)
                 {
-                    Log.Fatal().Message("No connected, enemy country found").Write();
+                    this.log.Log(LogLevel.Error, "No connected, enemy country found");
                 }
             }
 
@@ -105,15 +109,17 @@ namespace ImperaPlus.Domain.Bots
                                         && c.Destination == x.CountryIdentifier));
                 if (enemyCountry == null)
                 {
-                    Log.Fatal().Message("Cannot find enemy country connected to selected own country").Write();
+                    this.log.Log(LogLevel.Error, "Cannot find enemy country connected to selected own country");
                 }
 
                 var numberOfUnits = ownCountry.Units - this.game.Options.MinUnitsPerCountry;
 
-                Log.Debug().Message("Attack from {0} to {1} with {2} units",
+                this.log.Log(
+                    LogLevel.Info,
+                    "Attack from {0} to {1} with {2} units",
                     ownCountry.CountryIdentifier,
                     enemyCountry.CountryIdentifier,
-                    numberOfUnits).Write();
+                    numberOfUnits);
 
                 this.game.Attack(this.attackService, this.randomGen, this.mapTemplate, ownCountry.CountryIdentifier, enemyCountry.CountryIdentifier, numberOfUnits);
             }

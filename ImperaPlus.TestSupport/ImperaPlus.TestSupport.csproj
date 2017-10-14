@@ -346,6 +346,7 @@
     <Compile Include="SynchronousBackgroundJobClient.cs" />
     <Compile Include="Testdata\TestData.cs" />
     <Compile Include="TestHelper.cs" />
+    <Compile Include="TestLogger.cs" />
     <Compile Include="TestUserProvider.cs" />
   </ItemGroup>
   <ItemGroup>

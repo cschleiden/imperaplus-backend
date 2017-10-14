@@ -333,6 +333,7 @@
     <Compile Include="Enums\MapDistribution.cs" />
     <Compile Include="Events\EventQueue.cs" />
     <Compile Include="Games\EventHandler\AccountDeletedHandler.cs" />
+    <Compile Include="ILogger.cs" />
     <Compile Include="ISerializedEntity.cs" />
     <Compile Include="IUserProvider.cs" />
     <Compile Include="Ladders\Events\AccountDeletedHandler.cs" />

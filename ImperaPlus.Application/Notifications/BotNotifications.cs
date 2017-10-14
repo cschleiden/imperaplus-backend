@@ -40,7 +40,7 @@ namespace ImperaPlus.Application.Notifications
             if (evt.Game.State == Domain.Enums.GameState.Active
                 && evt.Game.CurrentPlayer.User.UserName == Constants.BotName)
             {
-                this.backgroundJobClient.Enqueue<BotJob>(x => x.Play(evt.Game.Id));
+                this.backgroundJobClient.Enqueue<BotJob>(x => x.Play(evt.Game.Id, null));
             }
         }
     }
