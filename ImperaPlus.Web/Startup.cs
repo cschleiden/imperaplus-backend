@@ -34,6 +34,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using ImperaPlus.Domain;
 using NLog.Fluent;
+using Hangfire.Console;
 
 namespace ImperaPlus.Web
 {
@@ -226,7 +227,8 @@ namespace ImperaPlus.Web
             services.AddHangfire(x =>
                 x.UseNLogLogProvider()
                  .UseFilter(new JobExpirationTimeAttribute())
-                 .UseSqlServerStorage(Configuration["DBConnection"]));
+                 .UseSqlServerStorage(Configuration["DBConnection"])
+                 .UseConsole());
 
             services.AddSingleton(_ => new JsonSerializer
             {

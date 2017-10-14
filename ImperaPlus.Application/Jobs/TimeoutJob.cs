@@ -10,7 +10,7 @@ namespace ImperaPlus.Application.Jobs
 {
     [Queue(JobQueues.Critical)]
     [DisableConcurrentExecution(60)]
-    [AutomaticRetry(Attempts = 0)]
+    [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
     public class TimeoutJob : Job
     {
         private IUnitOfWork unitOfWork;
@@ -21,7 +21,6 @@ namespace ImperaPlus.Application.Jobs
             this.unitOfWork = this.LifetimeScope.Resolve<IUnitOfWork>();
         }
 
-        [AutomaticRetry(Attempts = 0)]
         public override void Handle()
         {
             Log.Info("Processing timeouts").Write();
