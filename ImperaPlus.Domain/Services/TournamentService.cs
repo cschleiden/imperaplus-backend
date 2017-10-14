@@ -14,12 +14,12 @@ namespace ImperaPlus.Domain.Services
         /// <summary>
         /// Check whether tournaments can be started and start
         /// </summary>
-        bool CheckOpenTournaments(IRandomGen random);
+        bool CheckOpenTournaments(ILogger log, IRandomGen random);
 
         /// <summary>
         /// Synchronize tournament games and end tournaments
         /// </summary>
-        void CheckTournaments(IRandomGen random);
+        void CheckTournaments(ILogger log, IRandomGen random);
     }
 
     public class TournamentService : ITournamentService
@@ -45,7 +45,7 @@ namespace ImperaPlus.Domain.Services
         /// Check all open tournaments whether they can be started
         /// </summary>
         /// <returns>True if a tournament was started</returns>
-        public bool CheckOpenTournaments(IRandomGen random)
+        public bool CheckOpenTournaments(ILogger log, IRandomGen random)
         {
             bool tournamentStarted = false;
 
@@ -55,12 +55,12 @@ namespace ImperaPlus.Domain.Services
             {
                 if (tournament.CanStart)
                 {
-                    Log.Info().Message("Starting tournament {0}", tournament.Id);
+                    log.Log(LogLevel.Info, "Starting tournament {0}", tournament.Id);
 
                     tournament.Start(random);
                     tournamentStarted = true;
 
-                    Log.Info().Message("Started.");
+                    log.Log(LogLevel.Info, "Started.");
                 }
             }
 
@@ -70,7 +70,7 @@ namespace ImperaPlus.Domain.Services
         /// <summary>
         /// Check all tournaments to see whether rounds need to advanced, or the tournament ended
         /// </summary>
-        public void CheckTournaments(IRandomGen random)
+        public void CheckTournaments(ILogger log, IRandomGen random)
         {
             var tournaments = this.unitOfWork.Tournaments.Get(Tournament.ActiveStates);
 
@@ -78,13 +78,13 @@ namespace ImperaPlus.Domain.Services
             {
                 try
                 {
-                    Log.Info().Message("Synchronizing games for tournament {0}", tournament.Id).Write();
+                    log.Log(LogLevel.Info, "Synchronizing games for tournament {0}", tournament.Id);
 
-                    this.SynchronizeGamesToPairings(tournament);
+                    this.SynchronizeGamesToPairings(log, tournament);
 
                     if (tournament.HasGroupPhase && tournament.State == TournamentState.Groups)
                     {
-                        Log.Info().Message("Update group order for tournament {0}", tournament.Id).Write();
+                        log.Log(LogLevel.Info, "Update group order for tournament {0}", tournament.Id);
 
                         this.OrderGroupTeams(tournament);
                     }
@@ -92,27 +92,27 @@ namespace ImperaPlus.Domain.Services
                     // Advance rounds
                     if (tournament.CanStartNextRound)
                     {
-                        Log.Info().Message("Starting next round for tournament {0}", tournament.Id).Write();
+                        log.Log(LogLevel.Info, "Starting next round for tournament {0}", tournament.Id);
 
-                        tournament.StartNextRound(random);
+                        tournament.StartNextRound(random, log);
                     }
                     else if (tournament.CanEnd)
                     {
-                        Log.Info().Message("Ending tournament {0}", tournament.Id).Write();
+                        log.Log(LogLevel.Info, "Ending tournament {0}", tournament.Id);
 
                         tournament.End();
                     }
 
-                    this.CreateGamesForPairings(tournament, random);
+                    this.CreateGamesForPairings(log, tournament, random);
                 }
                 catch (Exception ex)
                 {
-                    Log.Error().Message("Error while handling tournament {0}", tournament.Id).Exception(ex).Write();
+                    Log.Error().Message("Error while handling tournament {0}", tournament.Id).Exception(ex);
                 }
             }
         }
 
-        public void CreateGamesForPairings(Tournament tournament, IRandomGen random)
+        public void CreateGamesForPairings(ILogger log, Tournament tournament, IRandomGen random)
         {
             foreach (var pairing in tournament.Pairings.Where(
                 x => x.State == PairingState.None && x.Games.Count() != x.NumberOfGames))
@@ -121,11 +121,11 @@ namespace ImperaPlus.Domain.Services
             }
         }
 
-        public void SynchronizeGamesToPairings(Tournament tournament)
+        public void SynchronizeGamesToPairings(ILogger log, Tournament tournament)
         {
             var activePairings = tournament.Pairings.Where(x => x.State == PairingState.Active).ToArray();
 
-            Log.Info().Message("Checking {0} active pairings", activePairings.Length).Write();
+            log.Log(LogLevel.Info, "Checking {0} active pairings", activePairings.Length);
 
             foreach (var pairing in activePairings)
             {
@@ -133,11 +133,11 @@ namespace ImperaPlus.Domain.Services
                 pairing.TeamAWon = this.CountWonGamesForTeam(pairing.Games, pairing.TeamA);
                 pairing.TeamBWon = this.CountWonGamesForTeam(pairing.Games, pairing.TeamB);
 
-                Log.Info().Message("Wins: TeamA {0} TeamB {1}", pairing.TeamAWon, pairing.TeamBWon).Write();
+                log.Log(LogLevel.Info, "Wins: TeamA {0} TeamB {1}", pairing.TeamAWon, pairing.TeamBWon);
 
                 if (pairing.CanWinnerBeDetermined)
                 {
-                    Log.Info().Message("Found winner for pairing {0}", pairing.Id).Write();
+                    log.Log(LogLevel.Info, "Found winner for pairing {0}", pairing.Id);
 
                     pairing.State = PairingState.Done;
 

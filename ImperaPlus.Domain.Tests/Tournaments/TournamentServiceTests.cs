@@ -47,7 +47,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             }
 
             // Act
-            var started = service.CheckOpenTournaments(new RandomGen());
+            var started = service.CheckOpenTournaments(new TestLogger(), new RandomGen());
 
             // Assert
             Assert.IsTrue(started);
@@ -107,7 +107,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             pairing.Games = new[] { game };
 
             // Act
-            service.SynchronizeGamesToPairings(tournament);
+            service.SynchronizeGamesToPairings(new TestLogger(), tournament);
 
             // Assert
             Assert.IsTrue(tournament.Pairings.First().CanWinnerBeDetermined);

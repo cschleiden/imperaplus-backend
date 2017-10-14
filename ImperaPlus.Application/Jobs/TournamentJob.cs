@@ -32,7 +32,7 @@ namespace ImperaPlus.Application.Jobs
         {
             base.Handle(performContext);
 
-            this.tournamentService.CheckTournaments(this.randomGenProvider.GetRandomGen());
+            this.tournamentService.CheckTournaments(this.Log, this.randomGenProvider.GetRandomGen());
 
             try
             {

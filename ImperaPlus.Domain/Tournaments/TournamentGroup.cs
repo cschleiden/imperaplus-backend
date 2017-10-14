@@ -52,5 +52,16 @@ namespace ImperaPlus.Domain.Tournaments
                     .Take(2);
             }
         }
+
+        [NotMapped]
+        public IEnumerable<TournamentTeam> Losers
+        {
+            get
+            {
+                return this.Teams
+                    .OrderBy(t => t.GroupOrder)
+                    .Skip(2);
+            }
+        }
     }
 }

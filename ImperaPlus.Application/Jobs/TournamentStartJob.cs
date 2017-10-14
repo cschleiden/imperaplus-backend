@@ -30,7 +30,7 @@ namespace ImperaPlus.Application.Jobs
 
             try
             {
-                if (this.tournamentService.CheckOpenTournaments(this.randomGenProvider.GetRandomGen()))
+                if (this.tournamentService.CheckOpenTournaments(this.Log, this.randomGenProvider.GetRandomGen()))
                 {
                     this.unitOfWork.Commit();
                 }

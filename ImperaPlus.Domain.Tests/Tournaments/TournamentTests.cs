@@ -283,7 +283,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
 
                 Assert.IsTrue(tournament.CanStartNextRound);
 
-                tournament.StartNextRound(new RandomGen());
+                tournament.StartNextRound(new RandomGen(), new TestLogger());
 
                 Assert.AreEqual(TournamentState.Knockout, tournament.State);
                 Assert.AreEqual(2, tournament.Pairings.Where(x => x.State == PairingState.None).Count());
@@ -304,7 +304,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
 
                 Assert.IsTrue(tournament.CanStartNextRound);
 
-                tournament.StartNextRound(new RandomGen());
+                tournament.StartNextRound(new RandomGen(), new TestLogger());
 
                 Assert.AreEqual(TournamentState.Knockout, tournament.State);
                 Assert.AreEqual(1, tournament.Phase);

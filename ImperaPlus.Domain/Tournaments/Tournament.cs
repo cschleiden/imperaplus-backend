@@ -43,9 +43,9 @@ namespace ImperaPlus.Domain.Tournaments
         }
 
         public Tournament(
-            string name, 
-            int numberOfTeams, 
-            int numberOfGroupGames, 
+            string name,
+            int numberOfTeams,
+            int numberOfGroupGames,
             int numberOfKnockoutGames,
             int numberOfFinalGames,
             DateTime startOfRegistration,
@@ -57,7 +57,7 @@ namespace ImperaPlus.Domain.Tournaments
             Require.NotNull(options, nameof(options));
 
             this.Name = name;
-            
+
             if (numberOfTeams <= 0 || Math.Pow(2, Math.Log(numberOfTeams, 2)) != numberOfTeams)
             {
                 throw new DomainException(
@@ -121,7 +121,7 @@ namespace ImperaPlus.Domain.Tournaments
         public virtual ICollection<TournamentTeam> Teams { get; private set; }
 
         public virtual ICollection<TournamentPairing> Pairings { get; set; }
-        
+
         /// <summary>
         /// How many group games should be played, has to be odd
         /// </summary>
@@ -145,7 +145,7 @@ namespace ImperaPlus.Domain.Tournaments
         /// <summary>
         /// Start of tournament
         /// </summary>
-        public DateTime StartOfTournament { get; protected set; }        
+        public DateTime StartOfTournament { get; protected set; }
 
         /// <summary>
         /// End of tournament
@@ -370,7 +370,7 @@ namespace ImperaPlus.Domain.Tournaments
                 throw new DomainException(ErrorCode.TournamentCannotJoinLeave, "Cannot leave team");
             }
 
-            var currentTeam = this.Teams.FirstOrDefault(t => t.Participants.Any(p => p.UserId == user.Id));            
+            var currentTeam = this.Teams.FirstOrDefault(t => t.Participants.Any(p => p.UserId == user.Id));
             if (currentTeam == null)
             {
                 throw new DomainException(ErrorCode.TournamentUserNoParticipant, "User is no participant in tournament");
@@ -482,7 +482,7 @@ namespace ImperaPlus.Domain.Tournaments
                 this.State = TournamentState.Groups;
 
                 this.CreateGroupPairings(random);
-            } 
+            }
             else
             {
                 this.State = TournamentState.Knockout;
@@ -507,19 +507,28 @@ namespace ImperaPlus.Domain.Tournaments
             // TODO: Generate domain event
         }
 
-        public void StartNextRound(IRandomGen random)
+        public void StartNextRound(IRandomGen random, ILogger log)
         {
             ++this.Phase;
 
             if (this.State == TournamentState.Groups)
             {
-                Log.Debug().Message("Switch from Group to KO phase for tournament {0}", this.Name).Write();
+                log.Log(LogLevel.Info, "Switch from Group to KO phase for tournament {0}", this.Name);
 
                 this.State = TournamentState.Knockout;
 
+                // Update losers
+                var losingTeams = this.Groups.SelectMany(g => g.Losers);
+                foreach (var losingTeam in losingTeams)
+                {
+                    log.Log(LogLevel.Info, "Team {0} has lost", losingTeam.Name);
+                    losingTeam.State = TournamentTeamState.InActive;
+                }
+
+                // Create pairings for KO phase
                 var koTeams = this.Groups.SelectMany(g => g.Winners).Shuffle(random);
 
-                Log.Debug().Message("Teams for KO phase: {0}", string.Join(", ", koTeams.Select(t => t.Name))).Write();
+                log.Log(LogLevel.Info, "Teams for KO phase: {0}", string.Join(", ", koTeams.Select(t => t.Name)));
 
                 this.CreateNextRoundPairings(koTeams);
             }
@@ -537,10 +546,10 @@ namespace ImperaPlus.Domain.Tournaments
         /// </summary>
         /// <param name="teams">List of teams to create pairings for</param>
         private void CreateNextRoundPairings(IEnumerable<TournamentTeam> teams)
-        {           
+        {
             var teamArray = teams.ToArray();
 
-            for(int i = 0; i < teamArray.Length; i += 2)
+            for (int i = 0; i < teamArray.Length; i += 2)
             {
                 var teamA = teamArray[i];
                 var teamB = teamArray[i + 1];
@@ -568,7 +577,7 @@ namespace ImperaPlus.Domain.Tournaments
             {
                 var group = new TournamentGroup(this, i + 1);
 
-                for(int j = 0; j < Tournament.GroupSize; ++j)
+                for (int j = 0; j < Tournament.GroupSize; ++j)
                 {
                     teamIterator.MoveNext();
                     group.Teams.Add(teamIterator.Current);
@@ -582,9 +591,9 @@ namespace ImperaPlus.Domain.Tournaments
 
             foreach (var group in this.Groups)
             {
-                for(int i = 0; i < group.Teams.Count(); ++i)
+                for (int i = 0; i < group.Teams.Count(); ++i)
                 {
-                    for(int j = i + 1; j < group.Teams.Count(); ++j)
+                    for (int j = i + 1; j < group.Teams.Count(); ++j)
                     {
                         var teamA = group.Teams.ElementAt(i);
                         var teamB = group.Teams.ElementAt(j);
