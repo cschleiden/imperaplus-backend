@@ -57,7 +57,7 @@ namespace ImperaPlus.Web
         public Startup(IHostingEnvironment env)
         {
             env.ConfigureNLog("nlog.config");
-            
+
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
@@ -91,7 +91,10 @@ namespace ImperaPlus.Web
             {
                 string connection = Configuration["DBConnection"];
 
-                options.UseSqlServer(connection, b => b.MigrationsAssembly("ImperaPlus.Web"));
+                options.UseSqlServer(connection,
+                    b => b
+                        .MigrationsAssembly("ImperaPlus.Web")
+                        .EnableRetryOnFailure());
 
                 options.UseOpenIddict();
             });
@@ -356,7 +359,7 @@ namespace ImperaPlus.Web
                 {
                     dbContext.Database.EnsureDeleted();
                 }
-                
+
                 dbContext.Database.Migrate();
             }
             else
@@ -420,7 +423,7 @@ namespace ImperaPlus.Web
             builder.RegisterType<UnitOfWork>().As<IUnitOfWork>().InstancePerLifetimeScope();
 
             builder.RegisterType<DbSeed>().AsSelf();
-           
+
             // Ensure that we can override it from a test
             builder.RegisterType<UserProvider>().As<IUserProvider>().PreserveExistingDefaults();
 
