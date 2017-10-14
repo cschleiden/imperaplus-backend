@@ -19,9 +19,12 @@ namespace ImperaPlus.Domain.Games
             this.Timeouts = 0;
         }
 
-        public Player(User user, Team team)
+        public Player(Game game, User user, Team team)
             : this()
         {
+            this.Game = game;
+            this.GameId = game.Id;
+
             this.User = user;
             this.UserId = user.Id;
 
@@ -38,6 +41,9 @@ namespace ImperaPlus.Domain.Games
         }
 
         public Guid Id { get; set; }
+
+        public Game Game { get; set; }
+        public long GameId { get; set; }
 
         public string UserId { get; private set; }
         public User User { get; private set; }

@@ -153,9 +153,19 @@ namespace ImperaPlus.DataAccess
             modelBuilder.Entity<Player>()
                 .HasOne(x => x.User)
                 .WithMany()
-                .HasForeignKey(x => x.UserId)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Player>()
+                .HasOne(x => x.Game)
+                .WithMany()
+                .HasForeignKey(x => x.GameId)
+                .IsRequired(true)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Player>()
+                .HasIndex(x => new { x.GameId, x.UserId })
+                .IsUnique();
 
             // Game chat
             modelBuilder.Entity<GameChatMessage>()

@@ -91,14 +91,14 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             game.State = Enums.GameState.Ended;
 
             var team1 = new Team(game);            
-            team1.Players.Add(new Player(user1, team1)
+            team1.Players.Add(new Player(game, user1, team1)
             {
                 Outcome = Enums.PlayerOutcome.Won
             });
             game.Teams.Add(team1);
 
             var team2 = new Team(game);
-            team2.Players.Add(new Player(user2, team2)
+            team2.Players.Add(new Player(game, user2, team2)
             {
                 Outcome = Enums.PlayerOutcome.Defeated
             });

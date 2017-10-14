@@ -61,7 +61,7 @@ namespace ImperaPlus.Domain.Games
                 throw new DomainException(ErrorCode.TeamAlreadyFull, "Team is already full");
             }
 
-            var player = new Player(user, this);
+            var player = new Player(this.Game, user, this);
 
             this.Players.Add(player);
 
