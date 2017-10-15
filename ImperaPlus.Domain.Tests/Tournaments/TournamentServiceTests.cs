@@ -47,7 +47,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             }
 
             // Act
-            var started = service.CheckOpenTournaments(new TestLogger(), new RandomGen());
+            var started = service.CheckOpenTournaments(new TestLogger(), new TestRandomGen());
 
             // Assert
             Assert.IsTrue(started);

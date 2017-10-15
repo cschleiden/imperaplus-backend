@@ -157,7 +157,7 @@ namespace ImperaPlus.Domain.Tests.Ladders
                 ladder.QueueUser(user2);
 
                 // Act
-                ladderService.CheckAndCreateMatches(new RandomGen());
+                ladderService.CheckAndCreateMatches(new TestRandomGen());
 
                 // Assert
                 Assert.IsTrue(ladder.Games.Any());

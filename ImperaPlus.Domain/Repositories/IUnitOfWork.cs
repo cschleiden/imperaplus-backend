@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace ImperaPlus.Domain.Repositories
 {
     public interface IUnitOfWork : IDisposable
     {
+        IAllianceRepository Alliances { get; }
+
         IGameRepository Games { get; }
 
         ITeamRepository Teams { get; }

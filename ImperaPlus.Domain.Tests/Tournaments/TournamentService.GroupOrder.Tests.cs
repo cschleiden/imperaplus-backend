@@ -40,7 +40,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
                 this.AddTeam(tournament, i);
             }
 
-            tournament.Start(new RandomGen());
+            tournament.Start(new TestRandomGen());
 
             var teams1 = tournament.Groups.ElementAt(0).Teams.ToArray();
             var teams2 = tournament.Groups.ElementAt(1).Teams.ToArray();
