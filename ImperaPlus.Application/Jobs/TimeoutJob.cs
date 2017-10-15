@@ -1,17 +1,16 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Autofac;
 using Hangfire;
+using Hangfire.Server;
 using ImperaPlus.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
-using NLog.Fluent;
-using System;
-using Hangfire.Server;
 
 namespace ImperaPlus.Application.Jobs
 {
     [Queue(JobQueues.Critical)]
     [DisableConcurrentExecution(60)]
-    [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
+    [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Fail)]
     public class TimeoutJob : Job
     {
         private IUnitOfWork unitOfWork;

@@ -13,7 +13,7 @@ namespace ImperaPlus.Application.Jobs
     /// </summary>
     [Queue(JobQueues.Critical)]
     [DisableConcurrentExecution(60)]
-    [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
+    [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Fail)]
     public class TournamentJob : Job
     {
         private IUnitOfWork unitOfWork;
