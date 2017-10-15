@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using RandomGen = ImperaPlus.TestSupport.RandomGen;
+using TestRandomGen = ImperaPlus.TestSupport.TestRandomGen;
 using ImperaPlus.TestSupport;
 
 namespace ImperaPlus.Domain.Tests.Games
@@ -33,7 +33,7 @@ namespace ImperaPlus.Domain.Tests.Games
 
             game.Attack(
                 new AttackService(new AttackerWinsRandomGen()), 
-                new RandomGen(), 
+                new TestRandomGen(), 
                 mapTemplate, 
                 origin.CountryIdentifier, 
                 destination.CountryIdentifier, 
@@ -146,7 +146,7 @@ namespace ImperaPlus.Domain.Tests.Games
             var originOwnerId = origin.PlayerId;
             var destinationOwnerId = destination.PlayerId;
 
-            game.Attack(new AttackService(randomGen), new RandomGen(), mapTemplate, origin.CountryIdentifier, destination.CountryIdentifier, origin.Units - game.Options.MinUnitsPerCountry);
+            game.Attack(new AttackService(randomGen), new TestRandomGen(), mapTemplate, origin.CountryIdentifier, destination.CountryIdentifier, origin.Units - game.Options.MinUnitsPerCountry);
             game.EndTurn();
 
             var historicTurnBefore = game.GameHistory.GetTurn(game.TurnCounter - 2);

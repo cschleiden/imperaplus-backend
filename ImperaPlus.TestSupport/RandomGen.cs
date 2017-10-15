@@ -3,7 +3,7 @@ using ImperaPlus.Domain.Services;
 
 namespace ImperaPlus.TestSupport
 {
-    public class RandomGen : IRandomGen
+    public class TestRandomGen : IRandomGen
     {
         private Random random = new Random();
 

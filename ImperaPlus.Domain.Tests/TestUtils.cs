@@ -86,6 +86,9 @@ namespace ImperaPlus.Domain.Tests
             var mockLadderQueueEntry = new Mock<IGenericRepository<Domain.Ladders.LadderQueueEntry>>();
             mockUnitOfWork.Setup(x => x.GetGenericRepository<Domain.Ladders.LadderQueueEntry>()).Returns(mockLadderQueueEntry.Object);
 
+            var mockAlliance = new Mock<IAllianceRepository>();
+            mockUnitOfWork.Setup(x => x.Alliances).Returns(mockAlliance.Object);
+
             return mockUnitOfWork;
         }
 
@@ -137,7 +140,7 @@ namespace ImperaPlus.Domain.Tests
         {
             var game = CreateGameWithMapAndPlayers(teams, playerPerTeam);
 
-            game.Start(TestUtils.GetMapTemplate(), new RandomGen());
+            game.Start(TestUtils.GetMapTemplate(), new TestRandomGen());
 
             return game;
         }

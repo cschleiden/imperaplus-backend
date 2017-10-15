@@ -52,7 +52,7 @@ namespace ImperaPlus.Domain.Tests.Games
             game.AddPlayer(user2);
             
             // Act
-            game.Start(TestUtils.GetMapTemplate(), new RandomGen());
+            game.Start(TestUtils.GetMapTemplate(), new TestRandomGen());
 
             // Assert
             Assert.AreEqual(GameState.Active, game.State);
@@ -70,7 +70,7 @@ namespace ImperaPlus.Domain.Tests.Games
             game.AddPlayer(user1);
 
             // Act
-            game.Start(TestUtils.GetMapTemplate(), new RandomGen());
+            game.Start(TestUtils.GetMapTemplate(), new TestRandomGen());
 
             // Assert
         }
@@ -83,7 +83,7 @@ namespace ImperaPlus.Domain.Tests.Games
             var game = TestUtils.CreateStartedGameWithMapAndPlayers();
 
             // Act
-            game.Start(TestUtils.GetMapTemplate(), new RandomGen());
+            game.Start(TestUtils.GetMapTemplate(), new TestRandomGen());
 
             // Assert            
         }
@@ -95,7 +95,7 @@ namespace ImperaPlus.Domain.Tests.Games
             var game = TestUtils.CreateGameWithMapAndPlayers();
 
             // Act
-            game.Start(TestUtils.GetMapTemplate(), new RandomGen());
+            game.Start(TestUtils.GetMapTemplate(), new TestRandomGen());
 
             // Assert
             Assert.AreEqual(42, game.Map.Countries.Count(x => !x.IsNeutral));
@@ -109,7 +109,7 @@ namespace ImperaPlus.Domain.Tests.Games
             game.Options.MapDistribution = MapDistribution.Malibu;
 
             // Act
-            game.Start(TestUtils.GetMapTemplate(), new RandomGen());
+            game.Start(TestUtils.GetMapTemplate(), new TestRandomGen());
 
             // Assert
             Assert.AreEqual(game.Options.NumberOfPlayersPerTeam * game.Options.NumberOfTeams, game.Map.Countries.Count(x => !x.IsNeutral));

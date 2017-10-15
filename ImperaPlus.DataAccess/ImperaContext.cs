@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Autofac;
 using ImperaPlus.Domain;
+using ImperaPlus.Domain.Alliances;
 using ImperaPlus.Domain.Chat;
 using ImperaPlus.Domain.Events;
 using ImperaPlus.Domain.Games;
@@ -38,6 +39,8 @@ namespace ImperaPlus.DataAccess
             this.userProvider = userProvider;
             this.eventAggregator = eventAggregator;
         }
+
+        public virtual DbSet<Alliance> Alliances { get; set; }
 
         public virtual DbSet<Game> Games { get; set; }
 
@@ -207,8 +210,15 @@ namespace ImperaPlus.DataAccess
             modelBuilder.Entity<NewsEntry>().HasMany(x => x.Content).WithOne().IsRequired().OnDelete(DeleteBehavior.Cascade);
 
             // Aliiance mapping
-            modelBuilder.Entity<Alliance>().HasMany(x => x.Members).WithOne(x => x.Alliance).HasForeignKey(x => x.AllianceId);
-            modelBuilder.Entity<Alliance>().HasOne(x => x.Channel).WithOne(x => x.Alliance).IsRequired(false)
+            modelBuilder.Entity<Alliance>()
+                .HasMany(x => x.Members)
+                .WithOne(x => x.Alliance)
+                .HasForeignKey(x => x.AllianceId)
+                .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<Alliance>()
+                .HasOne(x => x.Channel)
+                .WithOne(x => x.Alliance)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Tournaments           
