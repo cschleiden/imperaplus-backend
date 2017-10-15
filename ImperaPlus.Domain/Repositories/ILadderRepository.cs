@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using ImperaPlus.Domain.Ladders;
-using System.Linq;
 using System;
 
 namespace ImperaPlus.Domain.Repositories

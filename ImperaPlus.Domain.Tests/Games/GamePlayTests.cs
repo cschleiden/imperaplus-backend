@@ -4,7 +4,6 @@ using System.Linq;
 using ImperaPlus.Domain.Enums;
 using ImperaPlus.Domain.Exceptions;
 using ImperaPlus.Domain.Services;
-using ImperaPlus.Domain.Tests.Helper;
 using ImperaPlus.TestSupport;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RandomGen = ImperaPlus.TestSupport.RandomGen;

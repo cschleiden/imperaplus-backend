@@ -1,6 +1,5 @@
 ﻿using ImperaPlus.Domain.Games;
 using ImperaPlus.Domain.Map;
-using NLog.Fluent;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace ImperaPlus.DTO.Games
+﻿namespace ImperaPlus.DTO.Games
 {
     /// <summary>
     /// 

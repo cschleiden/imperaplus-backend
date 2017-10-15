@@ -5,7 +5,6 @@ using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Services;
 using ImperaPlus.Utils;
 using Microsoft.EntityFrameworkCore;
-using NLog.Fluent;
 
 namespace ImperaPlus.Application.Jobs
 {

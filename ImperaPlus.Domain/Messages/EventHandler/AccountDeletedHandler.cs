@@ -1,5 +1,4 @@
-﻿using System;
-using ImperaPlus.Domain.Events;
+﻿using ImperaPlus.Domain.Events;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Users;
 

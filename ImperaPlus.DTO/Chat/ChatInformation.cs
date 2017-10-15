@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace ImperaPlus.DTO.Chat
+﻿namespace ImperaPlus.DTO.Chat
 {
     /// <summary>
     /// Returned when a user joins the chat with information about channels and messages

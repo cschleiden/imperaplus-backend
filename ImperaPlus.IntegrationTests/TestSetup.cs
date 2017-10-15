@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Autofac;
-using Autofac.Extensions.DependencyInjection;
 using ImperaPlus.DataAccess;
 using ImperaPlus.DTO.Account;
 using ImperaPlus.GeneratedClient;
@@ -11,7 +9,6 @@ using ImperaPlus.TestSupport;
 using ImperaPlus.Web;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

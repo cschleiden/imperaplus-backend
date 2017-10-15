@@ -1,6 +1,4 @@
-﻿using System;
-using ImperaPlus.DataAccess;
-using ImperaPlus.Domain;
+﻿using ImperaPlus.Domain;
 
 namespace ImperaPlus.TestSupport
 {

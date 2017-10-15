@@ -1,5 +1,4 @@
-﻿using System.Net.Http;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ImperaPlus.Integration.Tests
 {

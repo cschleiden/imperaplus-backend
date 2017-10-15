@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-
-namespace ImperaPlus.DTO.Games.Map
-{    
+﻿namespace ImperaPlus.DTO.Games.Map
+{
 
     public class MapTemplate
     {

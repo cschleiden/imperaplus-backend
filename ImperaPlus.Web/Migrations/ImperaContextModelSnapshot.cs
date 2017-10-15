@@ -2,12 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using ImperaPlus.DataAccess;
-using ImperaPlus.Domain.Enums;
-using ImperaPlus.Domain.Games.History;
-using ImperaPlus.Domain.Messages;
-using ImperaPlus.Domain.Tournaments;
 
 namespace ImperaPlus.Web.Migrations
 {

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace ImperaPlus.DTO.Chat
+﻿namespace ImperaPlus.DTO.Chat
 {
     /// <summary>
     /// Information about a single channel

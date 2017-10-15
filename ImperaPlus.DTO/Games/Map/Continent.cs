@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace ImperaPlus.DTO.Games.Map
+﻿namespace ImperaPlus.DTO.Games.Map
 {
     /// <summary>
     /// Represents a single continent on a map

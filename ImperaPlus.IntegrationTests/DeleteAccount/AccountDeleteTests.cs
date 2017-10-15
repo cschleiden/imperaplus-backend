@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
 using ImperaPlus.Backend.Areas.Admin.Helpers;
 using ImperaPlus.DTO.Account;
 using ImperaPlus.GeneratedClient;
 using ImperaPlus.Integration.Tests;
-using ImperaPlus.TestSupport.Testdata;
 using ImperaPlus.Web;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

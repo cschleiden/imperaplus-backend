@@ -3,7 +3,6 @@ using ImperaPlus.Application;
 using ImperaPlus.Application.Exceptions;
 using ImperaPlus.DTO.Games.Map;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using ImperaPlus.DTO;
 
 namespace ImperaPlus.Backend.Controllers

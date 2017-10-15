@@ -1,7 +1,4 @@
-﻿using System;
-using ImperaPlus.DTO.Games;
-
-namespace ImperaPlus.DTO.Tournaments
+﻿namespace ImperaPlus.DTO.Tournaments
 {
     /// <summary>
     /// Full tournament

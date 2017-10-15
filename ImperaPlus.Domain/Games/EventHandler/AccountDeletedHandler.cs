@@ -1,5 +1,4 @@
 ﻿using ImperaPlus.Domain.Events;
-using ImperaPlus.Domain.Games.Chat;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Services;
 using ImperaPlus.Domain.Users;

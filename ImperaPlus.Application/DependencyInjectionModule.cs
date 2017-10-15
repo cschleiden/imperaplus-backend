@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Hangfire;
 using ImperaPlus.Application.Chat;
 using ImperaPlus.Application.Games;
 using ImperaPlus.Application.Jobs;

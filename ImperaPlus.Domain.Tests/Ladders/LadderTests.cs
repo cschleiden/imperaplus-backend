@@ -1,17 +1,11 @@
 ﻿using ImperaPlus.Domain.Events;
 using ImperaPlus.Domain.Ladders;
 using ImperaPlus.Domain.Services;
-using ImperaPlus.Domain.Tests.Games;
 using ImperaPlus.Domain.Tests.Helper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using ImperaPlus.TestSupport;
 
 namespace ImperaPlus.Domain.Tests.Ladders

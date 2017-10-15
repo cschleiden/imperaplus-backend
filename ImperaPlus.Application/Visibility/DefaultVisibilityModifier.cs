@@ -1,11 +1,7 @@
 ﻿using ImperaPlus.Domain.Services;
 using ImperaPlus.DTO.Games;
 using ImperaPlus.DTO.Games.History;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ImperaPlus.Application.Visibility
 {

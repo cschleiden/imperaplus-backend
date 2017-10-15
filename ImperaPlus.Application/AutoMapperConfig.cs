@@ -3,7 +3,6 @@ using System.Linq;
 using System.Collections.Generic;
 using AutoMapper;
 using ImperaPlus.DTO.Games;
-using ImperaPlus.Domain.Games;
 using ImperaPlus.Domain.Utilities;
 
 namespace ImperaPlus.Application

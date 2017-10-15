@@ -7,7 +7,6 @@ using ImperaPlus.Domain.Exceptions;
 using ImperaPlus.Domain.Games;
 using ImperaPlus.Domain.Services;
 using ImperaPlus.Domain.Utilities;
-using NLog.Fluent;
 
 namespace ImperaPlus.Domain.Tournaments
 {

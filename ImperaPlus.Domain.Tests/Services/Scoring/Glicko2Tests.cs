@@ -1,10 +1,6 @@
 ﻿using ImperaPlus.Domain.Services.Scoring;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ImperaPlus.Domain.Tests.Services.Scoring
 {

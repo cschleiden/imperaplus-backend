@@ -1,6 +1,4 @@
-﻿using ImperaPlus.Domain;
-
-namespace ImperaPlus.Domain
+﻿namespace ImperaPlus.Domain
 {
     public interface IUserProvider
     {

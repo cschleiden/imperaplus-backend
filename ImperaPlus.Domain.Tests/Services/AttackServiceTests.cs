@@ -1,7 +1,5 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ImperaPlus.Domain.Services;
-using ImperaPlus.Domain.Tests.Helper;
 using ImperaPlus.TestSupport;
 
 namespace ImperaPlus.Domain.Tests.Services

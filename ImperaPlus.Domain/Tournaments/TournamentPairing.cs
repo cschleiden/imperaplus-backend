@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
-using System.Linq;
 using ImperaPlus.Domain.Games;
-using ImperaPlus.Domain.Services;
 using ImperaPlus.Domain.Utilities;
 
 namespace ImperaPlus.Domain.Tournaments

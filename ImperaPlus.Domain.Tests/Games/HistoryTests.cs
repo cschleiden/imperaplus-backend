@@ -1,6 +1,5 @@
 ﻿using ImperaPlus.Domain.Games.History;
 using ImperaPlus.Domain.Services;
-using ImperaPlus.Domain.Tests.Helper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;

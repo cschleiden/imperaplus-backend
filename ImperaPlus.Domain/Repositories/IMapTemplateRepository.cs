@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using ImperaPlus.Domain.Map;
+﻿using ImperaPlus.Domain.Map;
 
 namespace ImperaPlus.Domain.Repositories
 {

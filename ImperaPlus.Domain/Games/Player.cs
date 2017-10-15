@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using ImperaPlus.Domain.Events;
 
 namespace ImperaPlus.Domain.Games
 {

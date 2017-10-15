@@ -1,5 +1,4 @@
-﻿using ImperaPlus.Domain.Enums;
-using ImperaPlus.Domain.Games;
+﻿using ImperaPlus.Domain.Games;
 using System.Linq;
 
 namespace ImperaPlus.Domain.VictoryConditions

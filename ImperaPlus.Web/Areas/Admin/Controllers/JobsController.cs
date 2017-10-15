@@ -1,5 +1,4 @@
 ﻿using ImperaPlus.Domain.Repositories;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ImperaPlus.Backend.Areas.Admin.Controllers

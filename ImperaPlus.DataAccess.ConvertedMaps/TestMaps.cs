@@ -1,5 +1,4 @@
-﻿using System;
-using ImperaPlus.Domain.Map;
+﻿using ImperaPlus.Domain.Map;
 
 namespace ImperaPlus.DataAccess.ConvertedMaps
 {
