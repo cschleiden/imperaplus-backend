@@ -2,6 +2,7 @@
 using ImperaPlus.Application.Exceptions;
 using ImperaPlus.Domain.Exceptions;
 using ImperaPlus.DTO;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using NLog.Fluent;
@@ -35,8 +36,7 @@ namespace ImperaPlus.Web.Filters
                 Debugger.Launch();
 #endif
 
-                Log.Fatal().Message(context.Exception.ToString()).Write();
-                Log.Fatal().Exception(context.Exception).Write();
+                new TelemetryClient().TrackException(context.Exception);
 
                 // Log exception
                 Log.Fatal().Exception(context.Exception).Write();
