@@ -18,9 +18,6 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Content Remove="nlog.config" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="App.config" />
     <None Include="wwwroot\admin\bootstrap-theme.css" />
     <None Include="wwwroot\admin\bootstrap-theme.min.css" />
