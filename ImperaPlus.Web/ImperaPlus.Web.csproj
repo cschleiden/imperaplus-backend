@@ -18,9 +18,7 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="nlog.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Remove="nlog.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
