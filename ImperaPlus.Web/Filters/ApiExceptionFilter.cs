@@ -13,11 +13,16 @@ namespace ImperaPlus.Web.Filters
     {
         public override void OnException(ExceptionContext context)
         {
+            var client = new TelemetryClient();
+
             var domainException = context.Exception as DomainException;
             if (domainException != null)
             {
                 context.ExceptionHandled = true;
-                context.Result = new BadRequestObjectResult(new ErrorResponse(domainException.ErrorCode.ToString(), domainException.Message));                
+                context.Result = new BadRequestObjectResult(new ErrorResponse(domainException.ErrorCode.ToString(), domainException.Message));
+
+                client.TrackException(domainException);
+
                 return;
             }
 
@@ -25,7 +30,10 @@ namespace ImperaPlus.Web.Filters
             if (applicationException != null)
             {
                 context.ExceptionHandled = true;
-                context.Result = new BadRequestObjectResult(new ErrorResponse(applicationException.ErrorCode.ToString(), applicationException.Message));               
+                context.Result = new BadRequestObjectResult(new ErrorResponse(applicationException.ErrorCode.ToString(), applicationException.Message));
+
+                client.TrackException(applicationException);
+
                 return;
             }
 
@@ -36,7 +44,7 @@ namespace ImperaPlus.Web.Filters
                 Debugger.Launch();
 #endif
 
-                new TelemetryClient().TrackException(context.Exception);
+                client.TrackException(context.Exception);
 
                 // Log exception
                 Log.Fatal().Exception(context.Exception).Write();
