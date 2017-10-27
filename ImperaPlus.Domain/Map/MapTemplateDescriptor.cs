@@ -13,5 +13,7 @@ namespace ImperaPlus.Domain.Map
         public string CreatedBy { get; set; }
 
         public DateTime LastModifiedAt { get; set; }
+
+        public bool IsActive { get; set; }
     }
 }

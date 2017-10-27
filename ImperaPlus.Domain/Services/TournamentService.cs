@@ -123,9 +123,9 @@ namespace ImperaPlus.Domain.Services
 
         public void SynchronizeGamesToPairings(ILogger log, Tournament tournament)
         {
-            var activePairings = tournament.Pairings.Where(x => x.State == PairingState.Active).ToArray();
+            var activePairings = tournament.Pairings.Where(x => x.State == PairingState.Active).ToList();
 
-            log.Log(LogLevel.Info, "Checking {0} active pairings", activePairings.Length);
+            log.Log(LogLevel.Info, "Checking {0} active pairings", activePairings.Count);
 
             foreach (var pairing in activePairings)
             {
@@ -211,9 +211,9 @@ namespace ImperaPlus.Domain.Services
                         // Fallback to random Id...
                         return teamA.Id.CompareTo(teamB.Id);
                     }))
-                    .ToArray();
+                    .ToList();
 
-                for (int i = 0; i < orderedTeams.Length; ++i)
+                for (int i = 0; i < orderedTeams.Count; ++i)
                 {
                     orderedTeams[i].GroupOrder = i + 1;
                 }
