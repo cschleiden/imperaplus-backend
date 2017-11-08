@@ -125,7 +125,8 @@ namespace ImperaPlus.DataAccess
                 var mapName = mapMethod.Name;
                 var mapTemplateDescriptor = new MapTemplateDescriptor
                 {
-                    Name = mapName
+                    Name = mapName,
+                    IsActive = true
                 };
 
                 mapTemplateDescriptor.LastModifiedAt = mapTemplateDescriptor.CreatedAt = DateTime.UtcNow;

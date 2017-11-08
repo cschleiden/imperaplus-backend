@@ -160,7 +160,7 @@ namespace ImperaPlus.DataAccess
                 .HasOne(x => x.Game)
                 .WithMany()
                 .HasForeignKey(x => x.GameId)
-                .IsRequired(true)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Player>()
