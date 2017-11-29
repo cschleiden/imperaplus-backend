@@ -5,7 +5,6 @@
         T Id
         {
             get;
-            set;
         }
     }
 

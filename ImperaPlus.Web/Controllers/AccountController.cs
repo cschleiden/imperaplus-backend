@@ -259,7 +259,9 @@ namespace ImperaPlus.Backend.Controllers
                 HasRegistered = logins.Any(x => x.LoginProvider == "Local"),
                 LoginProvider = null, // TODO : CS: 
                 Language = user.Language,
-                Roles = roles.ToArray()
+                Roles = roles.ToArray(),
+                AllianceAdmin = user.IsAllianceAdmin,
+                AllianceId = user.AllianceId
             });
         }
 

@@ -242,6 +242,10 @@
         AllianceNotFound,
         UserAlreadyInAlliance,
         AllianceUserIsNotAdmin,
-        AllianceWithNameAlreadyExists
+        AllianceWithNameAlreadyExists,
+        UserNotAMemberOfAlliance,
+        UserAlreadyAllianceAdmin,
+        ActiveRequestToJoinAllianceExists,
+        NoActiveRequestToJoinAlliance
     }
 }

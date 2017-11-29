@@ -61,34 +61,20 @@ namespace ImperaPlus.Domain.Tests.Alliance
             this.allianceService.Create(user, "testAlliance", "Test");
         }
 
-        //[TestMethod]
-        //public void CreateAllianceNameAlreadyInUse()
-        //{
-        //    Assert.Fail();
-        //}
+        [TestMethod]
+        public void DeleteAlliance()
+        {
+            var alliance = new Alliances.Alliance("testAlliance", "test");
+            var admin = TestUtils.CreateUser("Admin");
+            alliance.AddMember(admin);
+            alliance.MakeAdmin(admin);
+            this.unitOfWork.Alliances.Add(alliance);
+            this.unitOfWork.Commit();
+            
+            this.allianceService.Delete(alliance.Id, admin);
+            this.unitOfWork.Commit();
 
-        //[TestMethod]
-        //public void CreateAllianceInvalidName()
-        //{
-        //    Assert.Fail();
-        //}
-
-        //[TestMethod]
-        //public void AddPlayerToAlliance()
-        //{
-        //    Assert.Fail();
-        //}
-
-        //[TestMethod]
-        //public void AddPlayerToAllianceWhoHasAlreadyJoined()
-        //{
-        //    Assert.Fail();
-        //}
-
-        //[TestMethod]
-        //public void RemovePlayerFromAlliance()
-        //{
-        //    Assert.Fail();
-        //}
+            Assert.IsNull(this.unitOfWork.Alliances.GetWithMembers(alliance.Id));
+        }
     }
 }

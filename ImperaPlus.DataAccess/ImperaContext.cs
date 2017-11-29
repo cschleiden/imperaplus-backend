@@ -220,6 +220,11 @@ namespace ImperaPlus.DataAccess
                 .WithOne(x => x.Alliance)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Alliance>()
+                .HasMany(x => x.Requests)
+                .WithOne(x => x.Alliance)
+                .IsRequired(true)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Tournaments           
             modelBuilder.Entity<Tournament>().HasMany(x => x.Teams).WithOne(x => x.Tournament).HasForeignKey(x => x.TournamentId).IsRequired().OnDelete(DeleteBehavior.Cascade);

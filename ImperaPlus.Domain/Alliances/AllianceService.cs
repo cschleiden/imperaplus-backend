@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Collections.Generic;
 using ImperaPlus.Domain.Exceptions;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Services;
@@ -13,11 +14,19 @@ namespace ImperaPlus.Domain.Alliances
 
         void Delete(Guid allianceId, User admin);
 
-        void RequestToJoin(Guid allianceId, User user);
+        void RequestToJoin(Guid allianceId, User user, string reason);
+
+        void ApproveRequestToJoin(Guid allianceId, User approver, User user);
+
+        void DenyRequestToJoin(Guid allianceId, User denier, User user);
 
         void Leave(Guid allianceId, User user);
 
         void MakeAdmin(Guid allianceId, User currentAdmin, User user);
+
+        IEnumerable<Alliance> GetAll();
+
+        Alliance Get(Guid allianceId);
     }
 
     public class AllianceService : IAllianceService
@@ -29,6 +38,16 @@ namespace ImperaPlus.Domain.Alliances
         {
             this.unitOfWork = unitOfWork;
             this.randomGen = randomGen;
+        }
+
+        public IEnumerable<Alliance> GetAll()
+        {
+            return this.unitOfWork.Alliances.GetAll();
+        }
+
+        public Alliance Get(Guid allianceId)
+        {
+            return this.unitOfWork.Alliances.GetWithMembers(allianceId);
         }
 
         public Alliance Create(User creator, string name, string description)
@@ -50,7 +69,6 @@ namespace ImperaPlus.Domain.Alliances
 
             Alliance alliance = new Alliance(name, description);
             alliance.AddMember(creator);
-            creator.IsAllianceAdmin = true;
 
             return alliance;
         }
@@ -63,7 +81,7 @@ namespace ImperaPlus.Domain.Alliances
 
             this.CheckAdmin(alliance, admin);
 
-            
+            this.unitOfWork.Alliances.Remove(alliance);
         }
 
         public void MakeAdmin(Guid allianceId, User currentAdmin, User user)
@@ -76,14 +94,44 @@ namespace ImperaPlus.Domain.Alliances
 
             this.CheckAdmin(alliance, currentAdmin);
 
+            alliance.MakeAdmin(user);
         }
 
-        public void RequestToJoin(Guid allianceId, User user)
+        public void RequestToJoin(Guid allianceId, User user, string reason)
         {
+            Require.NotEmpty(allianceId, nameof(allianceId));
             Require.NotNull(user, nameof(user));
+            
+            Alliance alliance = this.GetAlliance(allianceId);            
+            
+            // Create new request
+            alliance.RequestToJoin(user, reason);
+        }
+
+        public void ApproveRequestToJoin(Guid allianceId, User approver, User user)
+        {
+            Require.NotEmpty(allianceId, nameof(allianceId));
+            Require.NotNull(approver, nameof(approver));
+            Require.NotNull(user, nameof(user));
+
             Alliance alliance = this.GetAlliance(allianceId);
 
-            
+            this.CheckAdmin(alliance, approver);
+
+            alliance.ApproveRequest(approver, user);
+        }
+
+        public void DenyRequestToJoin(Guid allianceId, User denier, User user)
+        {
+            Require.NotEmpty(allianceId, nameof(allianceId));
+            Require.NotNull(denier, nameof(denier));
+            Require.NotNull(user, nameof(user));
+
+            Alliance alliance = this.GetAlliance(allianceId);
+
+            this.CheckAdmin(alliance, denier);
+
+            alliance.DenyRequest(denier, user);
         }
 
         public void Leave(Guid allianceId, User user)
@@ -91,12 +139,14 @@ namespace ImperaPlus.Domain.Alliances
             Require.NotNull(user, nameof(user));
             Alliance alliance = this.GetAlliance(allianceId);
 
-            if (!alliance.Members.Any(m => m.Id == user.Id))
+            if (!alliance.IsMember(user))
             {
-                throw new DomainException(ErrorCode.AttackingNotPossible, "User {0} is not a member of the alliance {1}", user.Id, allianceId);
+                throw new DomainException(
+                    ErrorCode.UserNotAMemberOfAlliance, 
+                    "User {0} is not a member of the alliance {1}", user.Id, allianceId);
             }
 
-            bool isAdmin = alliance.Administrators.Any(a => a.Id == user.Id);
+            bool isAdmin = alliance.IsAdmin(user);
             if (isAdmin)
             {
                 bool isOnlyAdmin = alliance.Administrators.Count() == 1;
@@ -113,8 +163,8 @@ namespace ImperaPlus.Domain.Alliances
                     else
                     {
                         // There are other members, make one admin
-                        var newAdmin = alliance.Members.Shuffle(this.randomGen).First();
-                        newAdmin.IsAllianceAdmin = true;
+                        var newAdmin = alliance.Members.Shuffle(this.randomGen).First(x => x.IsAllianceAdmin == false);
+                        alliance.MakeAdmin(newAdmin);
                     }
                 }
             }
@@ -128,7 +178,9 @@ namespace ImperaPlus.Domain.Alliances
             Alliance alliance = this.unitOfWork.Alliances.GetWithMembers(allianceId);
             if (alliance == null)
             {
-                throw new DomainException(ErrorCode.AllianceNotFound, "Alliance {0} not found", allianceId);
+                throw new DomainException(
+                    ErrorCode.AllianceNotFound, 
+                    "Alliance {0} not found", allianceId);
             }
 
             return alliance;
@@ -139,7 +191,9 @@ namespace ImperaPlus.Domain.Alliances
             bool isAdmin = alliance.IsAdmin(admin);
             if (!isAdmin)
             {
-                throw new DomainException(ErrorCode.AllianceUserIsNotAdmin, "User {0} is not an admin of alliance {1}", admin.Id, alliance.Id);
+                throw new DomainException(
+                    ErrorCode.AllianceUserIsNotAdmin, 
+                    "User {0} is not an admin of alliance {1}", admin.Id, alliance.Id);
             }
         }
     }

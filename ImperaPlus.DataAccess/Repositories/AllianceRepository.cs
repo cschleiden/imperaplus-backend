@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ImperaPlus.Domain.Alliances;
 using ImperaPlus.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -16,11 +14,6 @@ namespace ImperaPlus.DataAccess.Repositories
         {
         }
 
-        public Alliance Get(Guid allianceId)
-        {
-            return this.DbSet.Find(allianceId);
-        }
-
         public Alliance GetWithMembers(Guid allianceId)
         {
             return this.WithMembers.FirstOrDefault(x => x.Id == allianceId);
@@ -30,6 +23,11 @@ namespace ImperaPlus.DataAccess.Repositories
         {
             var lowerName = name.ToLower();
             return this.DbSet.FirstOrDefault(x => x.Name.ToLower() == lowerName);
+        }
+
+        public IEnumerable<Alliance> GetAll()
+        {
+            return this.WithMembers;
         }
 
         private IQueryable<Alliance> WithMembers
