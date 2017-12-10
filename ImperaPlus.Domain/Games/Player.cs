@@ -199,6 +199,7 @@ namespace ImperaPlus.Domain.Games
             this.Outcome = PlayerOutcome.Surrendered;
             this.State = PlayerState.InActive;
 
+            // Change player's countries to neutral player
             foreach (var country in this.Countries.ToArray())
             {
                 game.Map.UpdateOwnership(this, null, country);
@@ -206,11 +207,15 @@ namespace ImperaPlus.Domain.Games
             }
 
             this.Team.Game.GameHistory.RecordPlayerSurrendered(this);
-
-            // TODO: CS: Record in history?
             this.Team.Game.CheckForVictory(this.Team.Game.CurrentPlayer);
 
             this.EventQueue.Raise(new PlayerSurrenderedEvent(this.Team.Game, this));
+            
+            if (this.Game.CurrentPlayer == this)
+            {
+                // Player was the current player, advance turn
+                this.Game.EndTurn();
+            }
         }        
     }
 }

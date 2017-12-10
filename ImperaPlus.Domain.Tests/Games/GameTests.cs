@@ -310,7 +310,7 @@ namespace ImperaPlus.Domain.Tests.Games
         public void SurrenderGameWhenPlayerIsCurrentPlayerSuccess()
         {
             // Arrange
-            var game = TestUtils.CreateStartedGameWithMapAndPlayersUnitsPlaced();
+            var game = TestUtils.CreateStartedGameWithMapAndPlayersUnitsPlaced(3);
             var player = game.CurrentPlayer;
 
             var ownedCountry = player.Countries.First();
@@ -319,10 +319,9 @@ namespace ImperaPlus.Domain.Tests.Games
             player.Surrender();
 
             // Assert
-            Assert.AreEqual(GameState.Ended, game.State);
-
             Assert.AreEqual(PlayerState.InActive, player.State);
             Assert.AreEqual(PlayerOutcome.Surrendered, player.Outcome);
+            Assert.AreNotEqual(player, game.CurrentPlayer, "Surrendering player should not be current player");
 
             Assert.IsTrue(ownedCountry.IsNeutral);
         }
