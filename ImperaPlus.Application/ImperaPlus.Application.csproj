@@ -337,6 +337,7 @@
     <Compile Include="AutoMapperConfig.cs" />
     <Compile Include="BaseGameService.cs" />
     <Compile Include="BaseService.cs" />
+    <Compile Include="Chat\ChatHubContext.cs" />
     <Compile Include="Chat\ChatService.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="DependencyInjectionModule.cs" />

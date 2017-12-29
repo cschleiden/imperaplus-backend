@@ -12,6 +12,8 @@
                 <th>Id</th>
                 <th>Name</th>
                 <th>Email</th>
+                <th>Deleted</th>
+                <th>Actions</th>
             </tr>
         </thead>
     </table>
@@ -19,22 +21,40 @@
 
 @section scripts {
     $(document).ready(function() {
-        $('#table-users').DataTable({
-            'responsive': true,
-            'processing': true,
-            'serverSide': true,
-            'ajax': {
-                'url': '@Url.Action("Data", "Users")',
-                'type': 'POST'
-            },
-            'columns': [
-                { 'data': "id" },
-                { 'data': "name" },
-                { 'data': "email" }
-            ],
-            'ordering': false,
-            'info': false,
-            'searchDelay': 1000
-        });
+    $('#table-users').DataTable({
+    'responsive': true,
+    'processing': true,
+    'serverSide': true,
+    'ajax': {
+    'url': '@Url.Action("Data", "Users")',
+    'type': 'POST'
+    },
+    'columns': [
+    { 'data': "id" },
+    { 'data': "name" },
+    { 'data': "email" },
+    { 'data': "isDeleted" },
+    {
+    'data': "id",
+    'render': function (data, type, row, meta) {
+    return '<button onclick="deleteUser(\'' + data + '\')">Delete</button>';
+    }
+    }
+    ],
+    'ordering': false,
+    'info': false,
+    'searchDelay': 1000
     });
+    });
+
+    function deleteUser(id) {
+    $.ajax({
+    url: '@Url.Action("Delete", "Users")' + '?userId=' + id,
+    type: 'POST',
+    contentType: 'application/json',
+    success: function(result) {
+    alert("Removed");
+    }
+    });
+    }
 }

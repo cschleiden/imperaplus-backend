@@ -15,6 +15,8 @@ namespace ImperaPlus.Application.Users
         void TrackLogin(User user);
 
         void DeleteAccount();
+
+        void DeleteAccount(User user, bool force = false);
     }
 
     public class UserService : BaseService, IUserService
@@ -37,7 +39,12 @@ namespace ImperaPlus.Application.Users
 
         public void DeleteAccount()
         {
-            this.userService.DeleteAccount(this.CurrentUser);
+            this.DeleteAccount(this.CurrentUser);
+        }
+
+        public void DeleteAccount(User user, bool force = false)
+        {
+            this.userService.DeleteAccount(user, force);
             this.UnitOfWork.Commit();
         }
 

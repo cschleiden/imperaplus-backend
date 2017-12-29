@@ -323,6 +323,8 @@
     <Compile Include="Alliance.cs" />
     <Compile Include="Bots\Bot.cs" />
     <Compile Include="Chat\Channel.cs" />
+    <Compile Include="Chat\EventHandler\AccountDeletedHandler.cs" />
+    <Compile Include="Chat\IChatHubContext.cs" />
     <Compile Include="DependencyInjectionModule.cs" />
     <Compile Include="DomainDepsResolver.cs" />
     <Compile Include="Entity.cs" />

@@ -7,7 +7,7 @@ namespace ImperaPlus.Domain.Services
 {
     public interface IUserService
     {
-        void DeleteAccount(User user);
+        void DeleteAccount(User user, bool force);
     }
 
     public class UserService : IUserService
@@ -23,12 +23,12 @@ namespace ImperaPlus.Domain.Services
             this.gameService = gameService;
         }
 
-        public void DeleteAccount(User user)
+        public void DeleteAccount(User user, bool force)
         {
             Require.NotNull(user, nameof(user));
 
             // Let sub-systems react to this
-            this.eventAggregator.Raise(new AccountDeleted(user));
+            this.eventAggregator.Raise(new AccountDeleted(user, force));
 
             // Mark as deleted, will be cleaned up by a job
             user.IsDeleted = true;

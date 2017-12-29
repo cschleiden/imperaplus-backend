@@ -1,20 +1,39 @@
 ﻿using System.Linq;
+using DataTables.AspNet.AspNetCore;
 using DataTables.AspNet.Core;
+using ImperaPlus.Application.Users;
 using ImperaPlus.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using DataTables.AspNet.AspNetCore;
 
 namespace ImperaPlus.Backend.Areas.Admin.Controllers
 {
     public class UsersController : BaseAdminController
     {
-        public UsersController(IUnitOfWork unitOfWork) : base(unitOfWork)
+        private readonly IUserService userService;
+
+        public UsersController(IUnitOfWork unitOfWork, IUserService userService) 
+            : base(unitOfWork)
         {
+            this.userService = userService;
         }
 
         public ActionResult Index()
         {
             return View();
+        }
+
+        [HttpPost]
+        public ActionResult Delete(string userId)
+        {
+            var user = this.unitOfWork.Users.FindById(userId);
+            if (user != null)
+            {
+                this.userService.DeleteAccount(user);
+
+                return this.Ok();
+            }
+
+            return this.NotFound();
         }
 
         [HttpPost]
@@ -33,9 +52,10 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
                 .Take(request.Length)
                 .Select(u => new
                 {
-                    Id = u.Id,
+                    u.Id,
                     Name = u.UserName,
-                    Email = u.Email
+                    u.Email,
+                    u.IsDeleted
                 });
 
             var response = DataTablesResponse.Create(request, data.Count(), data.Count(), dataPage);

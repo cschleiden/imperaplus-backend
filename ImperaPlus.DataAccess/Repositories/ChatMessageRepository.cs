@@ -1,6 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Collections.Generic;
+using System.Linq;
+using ImperaPlus.Domain;
 using ImperaPlus.Domain.Chat;
 using ImperaPlus.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace ImperaPlus.DataAccess.Repositories
 {
@@ -8,6 +11,11 @@ namespace ImperaPlus.DataAccess.Repositories
     {
         public ChatMessageRepository(DbContext context) : base(context)
         {
+        }
+
+        public IEnumerable<ChatMessage> FindForUser(User user)
+        {
+            return this.DbSet.Where(x => x.CreatedById == user.Id);
         }
     }
 }

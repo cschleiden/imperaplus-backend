@@ -13,9 +13,13 @@ using Microsoft.Extensions.Logging;
 
 namespace ImperaPlus.Web.Hubs
 {
+    public interface IMessagingHubContext : IHub
+    {
+    }
+
     [HubName("chat")]
     [Authorize]
-    public class MessagingHub : Hub
+    public class MessagingHub : Hub, IMessagingHubContext
     {
         private readonly static ConnectionMapping<string> Connections =
             new ConnectionMapping<string>();
