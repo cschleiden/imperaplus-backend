@@ -52,6 +52,7 @@ namespace ImperaPlus.Application.Users
         {
             return Mapper.Map<IEnumerable<UserReference>>(this.UnitOfWork.Users
                 .Query()
+                .Where(x => !x.IsDeleted)
                 .Where(x => x.UserName.StartsWith(query))
                 .OrderBy(x => x.UserName)
                 .Take(MaxResult));
