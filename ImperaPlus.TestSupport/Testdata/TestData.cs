@@ -51,7 +51,9 @@ namespace ImperaPlus.TestSupport.Testdata
             var game = this.GameService.Create(
                 GameType.Fun,
                 this.CreateUser("Test"),                
-                "NewGame", 60 * 10, mapTemplate.Name, playerPerTeam, teams, new[] { VictoryConditionType.Survival },
+                "NewGame", 
+                null, 
+                60 * 10, mapTemplate.Name, playerPerTeam, teams, new[] { VictoryConditionType.Survival },
                 new[] { VisibilityModifierType.None });
 
             this.context.Games.Add(game);

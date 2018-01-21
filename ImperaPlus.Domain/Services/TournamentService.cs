@@ -244,6 +244,7 @@ namespace ImperaPlus.Domain.Services
                     Enums.GameType.Tournament,
                     systemUser,
                     pairing.GenerateGameName(i),
+                    null,
                     pairing.Tournament.GetMapTemplateForGame(random),
                     pairing.Tournament.Options);
 

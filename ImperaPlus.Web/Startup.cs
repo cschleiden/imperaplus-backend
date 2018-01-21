@@ -178,7 +178,6 @@ namespace ImperaPlus.Web
                 });
 
             // Swagger
-            //services.AddTransient<IApiDescriptionGroupCollectionProvider, ApiDescriptionGroupCollectionProvider>();
             services.AddSwaggerGen(options =>
             {
                 options.OperationFilter<FormFilter>();

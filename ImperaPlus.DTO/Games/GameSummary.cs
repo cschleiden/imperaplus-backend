@@ -24,6 +24,11 @@ namespace ImperaPlus.DTO.Games
         public string Name { get; set; }
 
         /// <summary>
+        /// Whether the game has a password
+        /// </summary>
+        public bool HasPassword { get; set; }
+
+        /// <summary>
         /// Id of the ladder if type is Ranking
         /// </summary>
         public Guid? LadderId { get; set; }

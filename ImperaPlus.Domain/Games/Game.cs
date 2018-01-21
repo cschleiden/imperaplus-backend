@@ -35,13 +35,14 @@ namespace ImperaPlus.Domain.Games
             User user,
             GameType type,
             string name,
+            string password,
             string mapTemplateName,
             int timeoutInSeconds,
             int numberOfTeams,
             int numberOfPlayersPerTeam,
             IEnumerable<VictoryConditionType> victoryConditions,
             IEnumerable<VisibilityModifierType> visibilityModifier)
-            : this(user, type, name, mapTemplateName, new GameOptions
+            : this(user, type, name, password, mapTemplateName, new GameOptions
             {
                 NumberOfPlayersPerTeam = numberOfPlayersPerTeam,
                 NumberOfTeams = numberOfTeams,
@@ -56,12 +57,19 @@ namespace ImperaPlus.Domain.Games
             User user,
             GameType type,
             string name,
+            string password,
             string mapTemplateName,
             GameOptions options)
             : this()
         {
             this.Type = type;
             this.Name = name;
+            this.Password = password;
+
+            if (this.Password != null && this.Type != GameType.Fun)
+            {
+                throw new DomainException(ErrorCode.GamePasswordOnlyAllowedForFun, "Passwords for games are only allowed for fun games");
+            }
 
             this.CreatedBy = user;
             this.CreatedAt = DateTime.UtcNow;
@@ -129,6 +137,8 @@ namespace ImperaPlus.Domain.Games
         public GameType Type { get; private set; }
 
         public string Name { get; private set; }
+
+        public string Password { get; private set; }
 
         /// <summary>
         /// Use the property
@@ -299,11 +309,14 @@ namespace ImperaPlus.Domain.Games
         /// <summary>
         /// Add player and implicitly create team
         /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
-        public Player AddPlayer(User user)
+        public Player AddPlayer(User user, string password = null)
         {
             Require.NotNull(user, "user");
+
+            if (this.IsPasswordProtected && !string.Equals(password, this.Password, StringComparison.InvariantCultureIgnoreCase))
+            {
+                throw new DomainException(ErrorCode.GamePasswordNotCorrect, "Game is password protected and given password does not match");
+            }
 
             if (this.Teams.SelectMany(x => x.Players).Any(x => x.UserId == user.Id))
             {
@@ -756,6 +769,14 @@ namespace ImperaPlus.Domain.Games
         public int RequiredSlots
         {
             get { return 1 /* + MapSlots*/; }
+        }
+
+        public bool IsPasswordProtected
+        {
+            get
+            {
+                return this.Password != null;
+            }
         }
 
         public void Move(

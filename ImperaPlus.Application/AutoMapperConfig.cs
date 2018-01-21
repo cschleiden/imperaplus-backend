@@ -73,6 +73,7 @@ namespace ImperaPlus.Application
 
             Mapper.CreateMap<Domain.Games.Game, DTO.Games.GameSummary>()
                 .ForMember(x => x.Name, c => c.MapFrom(x => x.Name))
+                .ForMember(x => x.HasPassword, c => c.MapFrom(x => x.IsPasswordProtected))
                 .ForMember(x => x.Type, c => c.MapFrom(x => (GameType)x.Type))
                 .ForMember(x => x.State, c => c.MapFrom(x => (GameState)x.State))
                 .ForMember(x => x.MapTemplate, c => c.MapFrom(x => x.MapTemplateName))
@@ -104,6 +105,7 @@ namespace ImperaPlus.Application
             Mapper.CreateMap<Domain.Games.Game, DTO.Games.Game>()
                 .ForMember(x => x.Id, c => c.MapFrom(x => x.Id))
                 .ForMember(x => x.Name, c => c.MapFrom(x => x.Name))
+                .ForMember(x => x.HasPassword, c => c.MapFrom(x => x.IsPasswordProtected))
                 .ForMember(x => x.Type, c => c.MapFrom(x => (GameType)x.Type))
                 .ForMember(x => x.State, c => c.MapFrom(x => (GameState)x.State))
                 .ForMember(x => x.MapTemplate, c => c.MapFrom(x => x.MapTemplateName))

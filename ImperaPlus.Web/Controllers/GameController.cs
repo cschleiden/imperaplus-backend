@@ -127,10 +127,11 @@ namespace ImperaPlus.Backend.Controllers
         /// Join the given game
         /// </summary>
         /// <param name="gameId">Id of game to join</param>
+        /// <param name="password">Optional password</param>
         [HttpPost("{gameId:long:min(1)}/join")]
-        public IActionResult PostJoin(long gameId)
+        public IActionResult PostJoin(long gameId, string password)
         {
-            this.gameService.Join(gameId);
+            this.gameService.Join(gameId, password);
 
             return this.Ok();
         }

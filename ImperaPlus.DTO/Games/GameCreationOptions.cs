@@ -21,6 +21,12 @@ namespace ImperaPlus.DTO.Games
         public string Name { get; set; }
 
         /// <summary>
+        /// Optional password for fun games
+        /// </summary>
+        [StringLength(64, MinimumLength = 3)]
+        public string Password { get; set; }
+
+        /// <summary>
         /// Value indicating whether the bot will join the game
         /// </summary>
         public bool AddBot { get; set; }

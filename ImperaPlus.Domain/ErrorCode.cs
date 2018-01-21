@@ -225,6 +225,8 @@
         TournamentTeamCreatorHasToDelete,
         CannotFindGame,
         CannotDeleteGame,
-        GameAlreadyScored
+        GameAlreadyScored,
+        GamePasswordNotCorrect,
+        GamePasswordOnlyAllowedForFun
     }
 }

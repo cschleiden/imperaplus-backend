@@ -82,7 +82,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             tournament.Teams.Add(teamA);
             tournament.Teams.Add(teamB);
 
-            var game = new Game(null, Enums.GameType.Tournament, "T", "WorldDeluxe", new GameOptions());
+            var game = new Game(null, Enums.GameType.Tournament, "T", null, "WorldDeluxe", new GameOptions());
 
             game.State = Enums.GameState.Ended;
 

@@ -17,7 +17,7 @@ namespace ImperaPlus.Application.Games
 
         void Delete(long gameId);
 
-        void Join(long gameId);
+        void Join(long gameId, string password);
 
         void Leave(long gameId);
 
@@ -103,11 +103,23 @@ namespace ImperaPlus.Application.Games
             {
                 throw new Exceptions.ApplicationException("Timouts has to be at least 300 seconds", ErrorCode.GenericApplicationError);
             }
+            
+            var password = creationOptions.Password;
+            if (password != null)
+            {
+                // Trim any whitespace off the password and optionall convert to null, disabling it
+                password = password.Trim();
+                if (string.IsNullOrWhiteSpace(password))
+                {
+                    password = null;
+                }
+            }
 
             var game = this.gameService.Create(
                 Domain.Enums.GameType.Fun, // TODO: CS: Expose this as parameter?
                 user,                 
                 creationOptions.Name,
+                password,
                 creationOptions.TimeoutInSeconds,
                 mapTemplate.Name,
                 creationOptions.NumberOfPlayersPerTeam, 
@@ -125,8 +137,9 @@ namespace ImperaPlus.Application.Games
             
             game.Options.MaximumNumberOfCards = creationOptions.MaximumNumberOfCards;
 
-            game.AddPlayer(user);
-
+            // Add player, use the given password
+            game.AddPlayer(user, password);
+            
             if (creationOptions.AddBot)
             {
                 using (TraceContext.Trace("Add Bot"))
@@ -161,12 +174,12 @@ namespace ImperaPlus.Application.Games
             this.UnitOfWork.Commit();            
         }
 
-        public void Join(long gameId)
+        public void Join(long gameId, string password)
         {
             var game = this.GetGame(gameId);
             var user = this.CurrentUser;
             
-            game.AddPlayer(user);
+            game.AddPlayer(user, password);
 
             // Ensure all Ids are generated
             this.UnitOfWork.Commit();

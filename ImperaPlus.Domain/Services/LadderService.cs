@@ -145,6 +145,7 @@ namespace ImperaPlus.Domain.Services
                 Enums.GameType.Ranking,
                 systemUser,
                 ladder.GetGameName(),
+                null,
                 mapTemplate,
                 ladder.Options);            
 

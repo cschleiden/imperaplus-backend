@@ -131,7 +131,7 @@ namespace ImperaPlus.Integration.Tests
                 await this.EnsureGameDoesShowInOpenList(gameClient.Item1, gameSummary.Id);
 
                 this.Log("Join game for player");
-                await gameClient.Item1.PostJoinAsync(gameSummary.Id);
+                await gameClient.Item1.PostJoinAsync(gameSummary.Id, null);
             }
 
             this.Log("Make sure game has disappeared from open list");

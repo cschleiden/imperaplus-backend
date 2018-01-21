@@ -127,6 +127,7 @@ namespace ImperaPlus.Domain.Tests.Ladders
                     It.IsAny<User>(),
                     It.IsAny<string>(),
                     It.IsAny<string>(),
+                    It.IsAny<string>(),
                     It.IsAny<Domain.Games.GameOptions>()))
                     .Returns(TestUtils.CreateGame(2, 1, Enums.GameType.Ranking));
 

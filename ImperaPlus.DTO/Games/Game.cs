@@ -23,6 +23,11 @@ namespace ImperaPlus.DTO.Games
         public string Name { get; set; }
 
         /// <summary>
+        /// Whether the game has a password
+        /// </summary>
+        public bool HasPassword { get; set; }
+
+        /// <summary>
         /// Name of the MapTemplate for this game
         /// </summary>
         public string MapTemplate { get; set; }

@@ -104,6 +104,7 @@ namespace ImperaPlus.Domain.Tests
                 CreateUser("Test"),
                 type,
                 "NewGame", 
+                null,
                 mapTemplate.Name, 
                 60 * 10, 
                 teams,

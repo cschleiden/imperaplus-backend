@@ -13,6 +13,7 @@ namespace ImperaPlus.Domain.Services
             GameType type,
             User user, 
             string name, 
+            string password,
             int timeoutInSeconds,
             string mapTemplate, 
             int numberOfPlayersPerTeam, 
@@ -24,6 +25,7 @@ namespace ImperaPlus.Domain.Services
             GameType type,
             User user,
             string name,
+            string password,
             string mapTemplate,
             GameOptions options);
         void Delete(User currentUser, long gameId);
@@ -44,6 +46,7 @@ namespace ImperaPlus.Domain.Services
             GameType type,
             User user,
             string name,
+            string password,
             int timeoutInSeconds,
             string mapTemplate, 
             int numberOfPlayersPerTeam, 
@@ -64,13 +67,14 @@ namespace ImperaPlus.Domain.Services
             }
 
             // Create game
-            return new Game(user, type, name, mapTemplate, timeoutInSeconds, numberOfTeams, numberOfPlayersPerTeam, victoryConditions, visibilityModifier);
+            return new Game(user, type, name, password, mapTemplate, timeoutInSeconds, numberOfTeams, numberOfPlayersPerTeam, victoryConditions, visibilityModifier);
         }
 
         public Game Create(
             GameType type,
             User user,
             string name,
+            string password,
             string mapTemplate,
             GameOptions options)
         {
@@ -87,7 +91,7 @@ namespace ImperaPlus.Domain.Services
             }
 
             // Create game
-            return new Game(user, type, name, mapTemplate, options);
+            return new Game(user, type, name, password, mapTemplate, options);
         }
 
         public void Delete(User user, long gameId)
