@@ -145,7 +145,7 @@ namespace ImperaPlus.Application.Games
                 using (TraceContext.Trace("Add Bot"))
                 {
                     var botUser = this.UnitOfWork.Users.Query().First(x => x.UserName == Constants.BotName);
-                    game.AddPlayer(botUser);
+                    game.AddPlayer(botUser, password);
                 }
             }
 
