@@ -193,6 +193,7 @@ mapTemplate.Connections.Add(new Connection("4", "5"));
 mapTemplate.Connections.Add(new Connection("5", "3"));
 mapTemplate.Connections.Add(new Connection("5", "4"));
 mapTemplate.Connections.Add(new Connection("5", "6"));
+mapTemplate.Connections.Add(new Connection("5", "11"));
 mapTemplate.Connections.Add(new Connection("5", "50"));
 mapTemplate.Connections.Add(new Connection("6", "5"));
 mapTemplate.Connections.Add(new Connection("6", "11"));
