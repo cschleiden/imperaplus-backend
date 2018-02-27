@@ -1,4 +1,5 @@
-﻿using ImperaPlus.Application.Ladder;
+﻿using System;
+using ImperaPlus.Application.Ladder;
 using ImperaPlus.Domain.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
@@ -65,6 +66,14 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
         public ActionResult PutForceCreate()
         {
             return null;
-        }        
+        }
+
+        [HttpDelete]
+        public ActionResult Delete(Guid id)
+        {
+            this.ladderService.Delete(id);
+
+            return this.RedirectToAction("Index");
+        }
     }
 }
