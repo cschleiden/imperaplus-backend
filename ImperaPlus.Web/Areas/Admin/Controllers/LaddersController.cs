@@ -60,16 +60,10 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
             this.ladderService.ToggleActive(summary.Id, ladder.IsActive);
 
             return this.RedirectToAction("Index");
-        }
-        
-        [HttpPut]
-        public ActionResult PutForceCreate()
-        {
-            return null;
-        }
+        }        
 
-        [HttpDelete]
-        public ActionResult Delete(Guid id)
+        [HttpPost]
+        public ActionResult PostDelete(Guid id)
         {
             this.ladderService.Delete(id);
 

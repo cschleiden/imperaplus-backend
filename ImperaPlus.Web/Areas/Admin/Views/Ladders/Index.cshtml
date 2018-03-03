@@ -5,57 +5,55 @@
 
 <h2>Ladders</h2>
 
-
 @foreach (ImperaPlus.DTO.Ladder.Ladder ladder in Model)
 {
-    using (Html.BeginForm("PostUpdate", "Ladders", FormMethod.Post))
-    {
-        @Html.HiddenFor(x => ladder.Id)
+<div class="panel panel-default">
+    <div class="panel-heading" role="tab">
+        <h4 class="panel-title">
+            <a class="collapsed" role="button" data-toggle="collapse" href="#ladder-@ladder.Id">
+                @ladder.Name
+            </a>
+        </h4>
+    </div>
+    <div class="panel-collapse collapse" id="ladder-@ladder.Id">
+        @using (Html.BeginForm("PostUpdate", "Ladders", FormMethod.Post))
+        {
+            @Html.HiddenFor(x => ladder.Id)
+            <div class="panel-body form-horizontal">
+                <div class="form-group">
+                    <div class="col-md-push-3 col-md-6 text-left">
+                        <label>
+                            @Html.EditorFor(model => ladder.IsActive) Is Active
+                        </label>
+                    </div>
+                </div>
 
-        <div class="panel panel-default">
-            <div class="panel-heading" role="tab" >
-                <h4 class="panel-title">
-                    <a class="collapsed" role="button" data-toggle="collapse" href="#ladder-@ladder.Id">
-                        @ladder.Name
-                    </a>
-                </h4>
+                <div class="form-group">
+                    @Html.LabelFor(x => ladder.MapTemplates, htmlAttributes: new { @class = "control-label col-md-3" })
+                    <div class="col-md-6">
+                        @Html.ListBoxFor(x => ladder.MapTemplates,
+                    new MultiSelectList(ViewBag.MapTemplates as IEnumerable<string>, ladder.MapTemplates),
+                    new { @class = "form-control" })
+                    </div>
+                </div>
+
+                @Html.EditorFor(x => ladder.Options, "../Shared/GameOptions")
+
+                <div class="pull-right">
+                    <button type="submit" class="btn btn-sm btn-info">Update</button>
+                </div>
             </div>
-            <div class="panel-collapse collapse" id="ladder-@ladder.Id">
-                <div class="panel-body form-horizontal">
-                    <div class="form-group">
-                        <div class="col-md-push-3 col-md-6 text-left">
-                            <label>
-                                @Html.EditorFor(model => ladder.IsActive) Is Active
-                            </label>
-                        </div>
-                    </div>
+        }
 
-                    <div class="form-group">
-                        @Html.LabelFor(x => ladder.MapTemplates, htmlAttributes: new { @class = "control-label col-md-3" })
-                        <div class="col-md-6">
-                            @Html.ListBoxFor(x => ladder.MapTemplates,
-                                new MultiSelectList(ViewBag.MapTemplates as IEnumerable<string>, ladder.MapTemplates),
-                                new { @class = "form-control" })
-                        </div>
-                    </div>
-
-                    @Html.EditorFor(x => ladder.Options, "../Shared/GameOptions")
-                </div>
-
-                <div class="panel-footer clearfix">
-                    <div class="pull-right">
-                        @using (Html.BeginForm("Delete", "Ladder"))
-                        {
-                            @Html.Hidden("id", ladder.Id);
-                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                        }
-                    </div>
-
-                    <div class="pull-right">
-                        <button type="submit" class="btn btn-sm btn-info">Update</button>
-                    </div>
-                </div>
+        <div class="panel-footer clearfix">
+            <div class="pull-right">
+                @using (Html.BeginForm("PostDelete", "Ladders", FormMethod.Post))
+                {
+                    @Html.Hidden("id", ladder.Id);
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                }
             </div>
         </div>
-    }
+    </div>
+</div>
 }

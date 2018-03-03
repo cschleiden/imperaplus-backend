@@ -55,6 +55,8 @@ namespace ImperaPlus.Application.Ladder
             var ladder = this.GetLadder(ladderId);
 
             this.UnitOfWork.Ladders.Remove(ladder);
+
+            this.UnitOfWork.Commit();
         }
 
         public void UpdateMapTemplates(Guid id, IEnumerable<string> mapTemplateNames)
