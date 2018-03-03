@@ -1,0 +1,33 @@
+﻿@{
+    ViewBag.Title = "Games";
+}
+
+<h2>Games</h2>
+
+<div class="dataTable_wrapper">
+    <table class="display" cellspacing="0" width="100%" id="table-games">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Id</th>
+                <th>Type</th>
+                <th>Name</th>
+                <th>State</th>
+                <th>PlayState</th>
+                <th>MapTemplate</th>
+                <th>CreatedBy</th>
+                <th>CurrentPlayer</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+@section scripts {
+    var sourceLocation = "@Url.Action("Data", "Games")";
+    var viewLocation = "@Url.Action("View", "Games")";
+}
+
+@section imports {
+    <script src="~/admin/scripts/games.js"></script>
+}

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.14
+VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImperaPlus.Application", "ImperaPlus.Application\ImperaPlus.Application.csproj", "{10F47789-AAFB-4C67-AD7C-7B7FB3F8BEAD}"
 EndProject
@@ -130,5 +130,8 @@ Global
 		{A17B38AC-E13A-4237-94DF-F2753C9D9E87} = {4E11833C-92F6-463A-AE49-A0207A7F63AD}
 		{2628B31E-F3AE-44D6-9242-3939E49D82CD} = {5AB5980C-7026-49AA-B4F2-194FE8F29D70}
 		{95A05DAD-EF0D-42C6-8EC1-A77DFFBA836B} = {F86A43BD-6FAB-4A06-923A-4856902CA3F1}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3E386201-2100-42DF-A6A0-20305BFDAB1E}
 	EndGlobalSection
 EndGlobal

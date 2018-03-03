@@ -1,0 +1,55 @@
+﻿@model ImperaPlus.DTO.Games.Game
+
+@{
+    Layout = null;
+}
+
+<div class="game-info" style="width: 100%">
+    <h2>Teams/Players</h2>
+
+    <table style="width: 100%">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Players</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var team in Model.Teams.OrderBy(t => t.PlayOrder))
+            {
+                <tr>
+                    <td>@team.Id</td>
+                    <td>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Name</th>
+                                    <th>State</th>
+                                    <th>Timeouts</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var player in team.Players.OrderBy(p => p.PlayOrder))
+                                {
+                                    <tr>
+                                        <td>@player.Id</td>
+                                        <td>@player.Name</td>
+                                        <td>@player.State.ToString()</td>
+                                        <td>@player.Timeouts</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h2>Game Options</h2>
+
+    <div class="form-horizontal">
+        @Html.EditorFor(x => Model.Options, "../Shared/GameOptions")
+    </div>
+</div>

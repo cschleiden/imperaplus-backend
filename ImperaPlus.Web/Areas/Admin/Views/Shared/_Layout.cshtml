@@ -248,7 +248,7 @@
                 </li>
                 <!-- /.dropdown -->
             </ul>
-            
+
 
             @Html.Partial("Navigation")
         </nav>
@@ -279,5 +279,7 @@
             $('.datepicker').datetimepicker();
         });
     </script>
+
+    @RenderSection("imports", required: false);
 </body>
 </html>

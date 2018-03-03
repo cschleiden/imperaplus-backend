@@ -62,7 +62,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.ResponseCompression" Version="1.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="1.1.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="1.1.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="1.1.2" />    
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="1.1.1" />
     <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.0.0-alpha6-79" />
     <PackageReference Include="MiniProfiler.EntityFrameworkCore" Version="4.0.0-alpha6-79" />
@@ -129,7 +129,6 @@
     <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Areas\Admin\Views\Games\" />
     <Folder Include="Migrations\" />
     <Folder Include="Migrations\" />
     <Folder Include="Migrations\" />
