@@ -46,6 +46,7 @@ namespace ImperaPlus.DataAccess.Repositories
                     .Include(x => x.Games)
                         .ThenInclude(g => g.Teams)
                         .ThenInclude(t => t.Players)
+                        .ThenInclude(p => p.User)
                     .Include(x => x.Games)
                         .ThenInclude(g => g.Options)
                     .FirstOrDefault(p => p.Id == pairingId);
