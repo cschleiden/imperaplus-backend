@@ -20,6 +20,11 @@ namespace ImperaPlus.Domain.Services
         /// Synchronize tournament games and end tournaments
         /// </summary>
         void CheckTournaments(ILogger log, IRandomGen random);
+
+        /// <summary>
+        /// Get games for the given pairing
+        /// </summary>
+        IEnumerable<Game> GetGamesForPairing(Guid pairingId);
     }
 
     public class TournamentService : ITournamentService
@@ -267,6 +272,11 @@ namespace ImperaPlus.Domain.Services
             }
 
             pairing.State = PairingState.Active;
+        }
+
+        public IEnumerable<Game> GetGamesForPairing(Guid pairingId)
+        {
+            return this.unitOfWork.Tournaments.GetGamesForPairing(pairingId);
         }
     }
 }

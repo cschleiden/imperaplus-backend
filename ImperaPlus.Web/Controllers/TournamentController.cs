@@ -65,6 +65,17 @@ namespace ImperaPlus.Backend.Controllers
         }
 
         /// <summary>
+        /// Get teams for tournament pairing
+        /// </summary>
+        /// <param name="pairingId">Id of tournament pairing</param>
+        [HttpGet("pairings/{pairingId:guid}/")]
+        [ProducesResponseType(typeof(IEnumerable<DTO.Games.GameSummary>), 200)]
+        public IActionResult GetGamesForPairing(Guid pairingId)
+        {
+            return this.Ok(this.tournamentService.GetGamesForPairing(pairingId));
+        }
+
+        /// <summary>
         /// Create new team for a tournament
         /// </summary>
         /// <param name="tournamentId">Id of tournament</param>

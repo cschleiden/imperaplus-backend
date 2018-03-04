@@ -1,10 +1,17 @@
-﻿namespace ImperaPlus.DTO.Tournaments
+﻿using System;
+
+namespace ImperaPlus.DTO.Tournaments
 {
     /// <summary>
     /// One pairing in tournament, represents a number of games between two teams
     /// </summary>
     public class TournamentPairing
     {
+        /// <summary>
+        /// Tournament pairing id
+        /// </summary>
+        public Guid Id { get; set; }
+
         /// <summary>
         /// First team in pairing
         /// </summary>

@@ -6,6 +6,7 @@ using AutoMapper;
 using ImperaPlus.Domain;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Utilities;
+using ImperaPlus.DTO.Games;
 using ImperaPlus.DTO.Tournaments;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -36,6 +37,8 @@ namespace ImperaPlus.Application.Tournaments
         Task<Guid> Create(Tournament tournament);
 
         Task Delete(Guid id);
+
+        IEnumerable<GameSummary> GetGamesForPairing(Guid pairingId);
     }
 
     public class TournamentService : BaseService, ITournamentService
@@ -214,7 +217,7 @@ namespace ImperaPlus.Application.Tournaments
             return Mapper.Map<IEnumerable<Tournament>>(tournaments);
         }
 
-        public async Task Delete(Guid tournamentId)
+        public Task Delete(Guid tournamentId)
         {
             this.CheckAdmin();
 
@@ -222,7 +225,14 @@ namespace ImperaPlus.Application.Tournaments
 
             this.UnitOfWork.Tournaments.Remove(tournament);
             this.UnitOfWork.Commit();
+
+            return Task.FromResult(0);
         }
 
+        public IEnumerable<GameSummary> GetGamesForPairing(Guid pairingId)
+        {
+            var games = this.tournamentService.GetGamesForPairing(pairingId);
+            return Mapper.Map<IEnumerable<GameSummary>>(games);
+        }
     }
 }

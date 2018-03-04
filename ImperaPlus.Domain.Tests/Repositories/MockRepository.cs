@@ -171,5 +171,10 @@ namespace ImperaPlus.Domain.Tests
         {
             return this.FindById(id);
         }
+
+        public IEnumerable<Game> GetGamesForPairing(Guid pairingId)
+        {
+            return Enumerable.Empty<Game>();
+        }
     }
 }

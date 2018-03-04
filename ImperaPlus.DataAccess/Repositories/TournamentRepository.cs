@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Tournaments;
+using ImperaPlus.Domain.Games;
 
 namespace ImperaPlus.DataAccess.Repositories
 {
@@ -37,6 +38,14 @@ namespace ImperaPlus.DataAccess.Repositories
         public IEnumerable<Tournament> GetAllFull()
         {
             return this.Set;
+        }
+
+        public IEnumerable<Game> GetGamesForPairing(Guid pairingId)
+        {
+            var pairing = this.Context.Set<TournamentPairing>()
+                    .FirstOrDefault(p => p.Id == pairingId);
+
+            return pairing.Games;
         }
 
         private IQueryable<Tournament> Set

@@ -87,5 +87,10 @@ namespace ImperaPlus.DTO.Games
         /// Teams in the game
         /// </summary>
         public IEnumerable<TeamSummary> Teams { get; set; }
+
+        /// <summary>
+        /// Current turn
+        /// </summary>
+        public int TurnCounter { get; set; }
     }
 }

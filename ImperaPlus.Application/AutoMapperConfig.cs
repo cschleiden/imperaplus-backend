@@ -81,6 +81,7 @@ namespace ImperaPlus.Application
                 .ForMember(x => x.StartedAt, c => c.MapFrom(x => x.StartedAt))
                 .ForMember(x => x.CreatedByUserId, c => c.MapFrom(x => x.CreatedById))
                 .ForMember(x => x.CreatedByName, c => c.MapFrom(x => x.CreatedBy.UserName))
+                .ForMember(x => x.TurnCounter, c => c.MapFrom(x => x.TurnCounter))
                 .ForMember(
                     x => x.TimeoutSecondsLeft, 
                     c => c.MapFrom(
