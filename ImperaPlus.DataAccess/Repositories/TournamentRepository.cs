@@ -43,6 +43,11 @@ namespace ImperaPlus.DataAccess.Repositories
         public IEnumerable<Game> GetGamesForPairing(Guid pairingId)
         {
             var pairing = this.Context.Set<TournamentPairing>()
+                    .Include(x => x.Games)
+                        .ThenInclude(g => g.Teams)
+                        .ThenInclude(t => t.Players)
+                    .Include(x => x.Games)
+                        .ThenInclude(g => g.Options)
                     .FirstOrDefault(p => p.Id == pairingId);
 
             return pairing.Games;
