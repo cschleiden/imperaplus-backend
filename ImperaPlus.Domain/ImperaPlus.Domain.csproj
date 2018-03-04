@@ -411,6 +411,7 @@
     <Compile Include="Services\TournamentService.cs" />
     <Compile Include="Services\UserService.cs" />
     <Compile Include="Tournaments\EventHandler\AccountDeletedHandler.cs" />
+    <Compile Include="Tournaments\PairingState.cs" />
     <Compile Include="Tournaments\TournamentTeamState.cs" />
     <Compile Include="Tournaments\TournamentPhase.cs" />
     <Compile Include="Tournaments\TournamentState.cs" />
