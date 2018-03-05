@@ -4,7 +4,6 @@ using System.Linq;
 using ImperaPlus.Domain.Games;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Tournaments;
-using NLog.Fluent;
 using System;
 
 namespace ImperaPlus.Domain.Services
@@ -112,7 +111,7 @@ namespace ImperaPlus.Domain.Services
                 }
                 catch (Exception ex)
                 {
-                    Log.Error().Message("Error while handling tournament {0}", tournament.Id).Exception(ex);
+                    log.Log(LogLevel.Error, "Error while handling tournament {0}: {1}", tournament.Id, ex);
                 }
             }
         }
@@ -275,6 +274,8 @@ namespace ImperaPlus.Domain.Services
                 }
 
                 game.Start(this.mapTemplateProvider.GetTemplate(game.MapTemplateName), random);
+
+                log.Log(LogLevel.Info, "Done.");
             }
 
             pairing.State = PairingState.Active;
