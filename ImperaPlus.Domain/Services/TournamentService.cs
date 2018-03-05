@@ -5,6 +5,7 @@ using ImperaPlus.Domain.Games;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Tournaments;
 using System;
+using ImperaPlus.Domain.Exceptions;
 
 namespace ImperaPlus.Domain.Services
 {
@@ -112,6 +113,9 @@ namespace ImperaPlus.Domain.Services
                 catch (Exception ex)
                 {
                     log.Log(LogLevel.Error, "Error while handling tournament {0}: {1}", tournament.Id, ex);
+
+                    // Rethrow exception, we have to cancel the job
+                    throw;
                 }
             }
         }
@@ -250,13 +254,30 @@ namespace ImperaPlus.Domain.Services
             {
                 log.Log(LogLevel.Info, "Creating game {0}", i);
 
-                var game = gameService.Create(
-                    Enums.GameType.Tournament,
-                    systemUser,
-                    pairing.GenerateGameName(i),
-                    null,
-                    pairing.Tournament.GetMapTemplateForGame(random),
-                    pairing.Tournament.Options);
+                string gameName = pairing.GenerateGameName(i);
+                Game game;
+
+                try
+                {
+                    game = gameService.Create(
+                        Enums.GameType.Tournament,
+                        systemUser,
+                        gameName,
+                        null,
+                        pairing.Tournament.GetMapTemplateForGame(random),
+                        pairing.Tournament.Options);
+                }
+                catch (DomainException exception) when (exception.ErrorCode == ErrorCode.NameAlreadyTaken)
+                {
+                    // Try again
+                    game = gameService.Create(
+                        Enums.GameType.Tournament,
+                        systemUser,
+                        gameName + Guid.NewGuid().ToString(),
+                        null,
+                        pairing.Tournament.GetMapTemplateForGame(random),
+                        pairing.Tournament.Options);
+                }
 
                 game.TournamentPairingId = pairing.Id;
                 pairing.Games.Add(game);

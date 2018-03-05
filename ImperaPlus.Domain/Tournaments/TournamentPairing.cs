@@ -113,7 +113,7 @@ namespace ImperaPlus.Domain.Tournaments
         /// <param name="index">Index of game</param>
         public string GenerateGameName(int index)
         {
-            return $"{this.Tournament.Name}-{this.TeamA.Name}-{this.TeamB.Name}-{index}";
+            return $"{this.Tournament.Name}-{this.TeamA.Name}-{this.TeamB.Name}-{this.Phase}-{index}";
         }
     }
 }
