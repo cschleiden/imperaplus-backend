@@ -119,10 +119,14 @@ namespace ImperaPlus.Domain.Services
 
         public void CreateGamesForPairings(ILogger log, Tournament tournament, IRandomGen random)
         {
+            log.Log(LogLevel.Info, "Creating games for {0}", tournament.Id);
+
             foreach (var pairing in tournament.Pairings.Where(
                 x => x.State == PairingState.None && x.Games.Count() != x.NumberOfGames))
             {
-                this.CreateGamesForPairing(pairing, random);
+                log.Log(LogLevel.Info, "Creating games for pairing {0}", pairing.Id);
+
+                this.CreateGamesForPairing(log, pairing, random);
             }
         }
 
@@ -130,7 +134,7 @@ namespace ImperaPlus.Domain.Services
         {
             var activePairings = tournament.Pairings.Where(x => x.State == PairingState.Active).ToList();
 
-            log.Log(LogLevel.Info, "Checking {0} active pairings", activePairings.Count);
+            log.Log(LogLevel.Info, "Checking {0} active pairings or {1} total", activePairings.Count, tournament.Pairings.Count);
 
             foreach (var pairing in activePairings)
             {
@@ -237,7 +241,7 @@ namespace ImperaPlus.Domain.Services
                         && t.Players.Select(p => p.UserId).Contains(team.Participants.First().UserId)));
         }
 
-        private void CreateGamesForPairing(TournamentPairing pairing, IRandomGen random)
+        private void CreateGamesForPairing(ILogger log, TournamentPairing pairing, IRandomGen random)
         {
             Debug.Assert(pairing.State == PairingState.None, "Pairing state is not correct");
 
@@ -245,6 +249,8 @@ namespace ImperaPlus.Domain.Services
 
             for (int i = 0; i < pairing.NumberOfGames; ++i)
             {
+                log.Log(LogLevel.Info, "Creating game {0}", i);
+
                 var game = gameService.Create(
                     Enums.GameType.Tournament,
                     systemUser,
