@@ -231,6 +231,7 @@ mapTemplate.Connections.Add(new Connection("14", "20"));
 mapTemplate.Connections.Add(new Connection("15", "14"));
 mapTemplate.Connections.Add(new Connection("15", "16"));
 mapTemplate.Connections.Add(new Connection("15", "17"));
+mapTemplate.Connections.Add(new Connection("15", "20"));
 mapTemplate.Connections.Add(new Connection("15", "50"));
 mapTemplate.Connections.Add(new Connection("16", "17"));
 mapTemplate.Connections.Add(new Connection("16", "15"));
