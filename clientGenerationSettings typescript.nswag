@@ -1,11 +1,7 @@
 ﻿{
+  "runtime": "Default",
   "swaggerGenerator": {
     "webApiToSwagger": {
-      "assemblyPaths": [
-        "ImperaPlus.Web/bin/Debug/net461/ImperaPlus.Web.exe"
-      ],
-      "referencePaths": [],
-      "isAspNetCore": true,
       "controllerNames": [
         "ImperaPlus.Backend.Controllers.AccountController",
         "ImperaPlus.Backend.Controllers.BaseController",
@@ -20,16 +16,26 @@
         "ImperaPlus.Backend.Controllers.TournamentController",
         "ImperaPlus.Backend.Controllers.UserController"
       ],
+      "isAspNetCore": true,
       "defaultUrlTemplate": "api/{controller}/{id}",
       "defaultPropertyNameHandling": "CamelCase",
+      "defaultReferenceTypeNullHandling": "Null",
       "defaultEnumHandling": "String",
       "flattenInheritanceHierarchy": false,
       "generateKnownTypes": true,
       "generateXmlObjects": false,
+      "generateAbstractProperties": false,
       "addMissingPathParameters": false,
+      "ignoreObsoleteProperties": false,
+      "allowReferencesWithProperties": false,
+      "excludedTypeNames": [],
       "infoTitle": "Web API Swagger specification",
       "infoVersion": "1.0.0",
-      "output": null
+      "output": null,
+      "assemblyPaths": [
+        "ImperaPlus.Web/bin/Debug/net461/ImperaPlus.Web.exe"
+      ],
+      "referencePaths": []
     }
   },
   "codeGenerators": {
@@ -37,9 +43,11 @@
       "className": "{controller}Client",
       "moduleName": "",
       "namespace": "",
-      "typeScriptVersion": 2.0,
+      "typeScriptVersion": 2.7,
       "template": "Fetch",
       "promiseType": "Promise",
+      "httpClass": "Http",
+      "injectionTokenType": "OpaqueToken",
       "dateTimeType": "Date",
       "nullValue": "Undefined",
       "generateClientClasses": true,
@@ -47,6 +55,9 @@
       "generateOptionalParameters": false,
       "wrapDtoExceptions": false,
       "clientBaseClass": "",
+      "wrapResponses": false,
+      "generateResponseClasses": true,
+      "responseClass": "SwaggerResponse",
       "configurationClass": "",
       "useTransformOptionsMethod": false,
       "useTransformResultMethod": false,
@@ -61,8 +72,11 @@
       "excludedTypeNames": [],
       "handleReferences": false,
       "generateConstructorInterface": true,
+      "convertConstructorInterfaceData": false,
       "importRequiredTypes": true,
+      "useGetBaseUrlMethod": false,
       "baseUrlTokenName": "API_BASE_URL",
+      "queryNullValue": "",
       "output": "../ImperaPlus.Client/src/external/imperaClients.ts"
     }
   }
