@@ -246,7 +246,7 @@
         UserNotAMemberOfAlliance,
         UserAlreadyAllianceAdmin,
         ActiveRequestToJoinAllianceExists,
-        NoActiveRequestToJoinAlliance
+        NoActiveRequestToJoinAlliance,
         GamePasswordNotCorrect,
         GamePasswordOnlyAllowedForFun
     }
