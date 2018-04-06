@@ -320,7 +320,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Alliance.cs" />
+    <Compile Include="Alliances\Alliance.cs" />
+    <Compile Include="Alliances\AllianceJoinRequest.cs" />
+    <Compile Include="Alliances\AllianceService.cs" />
+    <Compile Include="Alliances\EventHandler\AccountDeletedHandler.cs" />
     <Compile Include="Bots\Bot.cs" />
     <Compile Include="Chat\Channel.cs" />
     <Compile Include="Chat\EventHandler\AccountDeletedHandler.cs" />
@@ -387,6 +390,7 @@
     <Compile Include="News\NewsContent.cs" />
     <Compile Include="News\NewsEntry.cs" />
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Repositories\IAllianceRepository.cs" />
     <Compile Include="Repositories\IChannelRepository.cs" />
     <Compile Include="Repositories\IChatMessageRepository.cs" />
     <Compile Include="Repositories\IGameRepository.cs" />

@@ -20,7 +20,8 @@ namespace ImperaPlus.DataAccess
         private ITeamRepository teamRepository;
         private ILadderRepository ladderRepository;
         private IMessageRepository messageRepository;
-        private ITournamentRepository tournamentRepository;        
+        private ITournamentRepository tournamentRepository;
+        private IAllianceRepository allianceRepository;
 
         public UnitOfWork(ImperaContext context)
         {
@@ -130,6 +131,8 @@ namespace ImperaPlus.DataAccess
                 return this.tournamentRepository ?? (this.tournamentRepository = new TournamentRepository(this.context));
             }
         }
+
+        public IAllianceRepository Alliances => this.allianceRepository ?? (this.allianceRepository = new AllianceRepository(this.context));
 
         public void Commit()
         {

@@ -222,8 +222,20 @@ namespace ImperaPlus.Application
             CreateTournamentMapping();
             CreateMessageMapping();
             CreateUserMapping();
+            CreateAllianceMapping();
 
             Mapper.AssertConfigurationIsValid();
+        }
+
+        private static void CreateAllianceMapping()
+        {
+            Mapper.CreateMap<Domain.Alliances.Alliance, DTO.Alliances.AllianceSummary>()
+                .ForMember(x => x.NumberOfMembers, x => x.MapFrom(a => a.Members.Count()))
+                .ForMember(x => x.Admins, x => x.MapFrom(a => a.Administrators));
+
+            Mapper.CreateMap<Domain.Alliances.Alliance, DTO.Alliances.Alliance>()
+                .ForMember(x => x.NumberOfMembers, x => x.MapFrom(a => a.Members.Count()))
+                .ForMember(x => x.Admins, x => x.MapFrom(a => a.Administrators));
         }
 
         private static void CreateLadderMapping()

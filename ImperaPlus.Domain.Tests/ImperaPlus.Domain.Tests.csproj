@@ -333,6 +333,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Alliance\AllianceServiceTests.cs" />
+    <Compile Include="Alliance\AllianceTests.cs" />
     <Compile Include="Bots\BotTests.cs" />
     <Compile Include="Games\CountryUpdateTests.cs" />
     <Compile Include="Games\GamePlayTests.cs" />
@@ -344,7 +345,6 @@
     <Compile Include="Games\HistoryTests.cs" />
     <Compile Include="Games\LeavingGameTests.cs" />
     <Compile Include="Helper\ExpectedDomainExceptionAttribute.cs" />
-    <Compile Include="Helper\InMemoryUnitOfWork.cs" />
     <Compile Include="Helper\TestHelper.cs" />
     <Compile Include="Ladders\LadderTests.cs" />
     <Compile Include="Map\Distribution\GameCreationOptions.cs" />
@@ -370,6 +370,10 @@
     <ProjectReference Include="..\ImperaPlus.DataAccess.ConvertedMaps\ImperaPlus.DataAccess.ConvertedMaps.csproj">
       <Project>{3c4e70ad-b549-4f8c-9929-0a64a4262e0e}</Project>
       <Name>ImperaPlus.DataAccess.ConvertedMaps</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ImperaPlus.DataAccess.InMemory\ImperaPlus.DataAccess.InMemory.csproj">
+      <Project>{CFABC046-321A-455C-BF2B-840D85D26E53}</Project>
+      <Name>ImperaPlus.DataAccess.InMemory</Name>
     </ProjectReference>
     <ProjectReference Include="..\ImperaPlus.Domain\ImperaPlus.Domain.csproj">
       <Project>{B6D49E7C-FF58-4814-993B-EAE2B60D9618}</Project>

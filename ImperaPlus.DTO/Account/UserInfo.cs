@@ -1,4 +1,6 @@
-﻿namespace ImperaPlus.DTO.Account
+﻿using System;
+
+namespace ImperaPlus.DTO.Account
 {
     /// <summary>
     /// Information for specific user
@@ -34,5 +36,15 @@
         /// Roles the user is currently in
         /// </summary>
         public string[] Roles { get; set; }
+
+        /// <summary>
+        /// Id of alliance the user is a member of
+        /// </summary>
+        public Guid? AllianceId { get; set; }
+
+        /// <summary>
+        /// When the user is member of an alliance, whether he is an admin
+        /// </summary>
+        public bool AllianceAdmin { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using ImperaPlus.Domain.Alliances;
 using ImperaPlus.Domain.Events;
 using ImperaPlus.Domain.Services;
 
@@ -12,6 +13,7 @@ namespace ImperaPlus.Domain
             builder.RegisterType<AttackService>().As<IAttackService>();
 
             builder.RegisterType<GameService>().As<IGameService>();
+            builder.RegisterType<AllianceService>().As<IAllianceService>();
             builder.RegisterType<UserService>().As<IUserService>();
             builder.RegisterType<ScoringService>().As<IScoringService>();
 

@@ -18,6 +18,8 @@ namespace ImperaPlus.Application.Tournaments
         IEnumerable<TournamentSummary> GetAll();
         IEnumerable<TournamentSummary> GetAll(TournamentState state);
 
+        IEnumerable<Tournament> GetAllFull();
+
         Tournament Get(Guid tournamentId);
 
         IEnumerable<TournamentTeam> GetTeams(Guid tournamentId);
@@ -31,8 +33,6 @@ namespace ImperaPlus.Application.Tournaments
         void DeleteTeam(Guid tournamentId, Guid teamId);
 
         void Leave(Guid tournamentId);
-
-        IEnumerable<Tournament> GetAllFull();
 
         Task<Guid> Create(Tournament tournament);
 
@@ -217,7 +217,7 @@ namespace ImperaPlus.Application.Tournaments
             return Mapper.Map<IEnumerable<Tournament>>(tournaments);
         }
 
-        public Task Delete(Guid tournamentId)
+        public void Delete(Guid tournamentId)
         {
             this.CheckAdmin();
 

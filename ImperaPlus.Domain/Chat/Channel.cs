@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ImperaPlus.Domain.Alliances;
 using ImperaPlus.Domain.Enums;
 using ImperaPlus.Domain.Games;
 

@@ -48,6 +48,9 @@
     <Compile Include="Account\LoginRequest.cs" />
     <Compile Include="Account\LoginResponseModel.cs" />
     <Compile Include="Account\UserInfo.cs" />
+    <Compile Include="Alliances\Alliance.cs" />
+    <Compile Include="Alliances\AllianceCreationOptions.cs" />
+    <Compile Include="Alliances\AllianceSummary.cs" />
     <Compile Include="Chat\ChannelInformation.cs" />
     <Compile Include="Chat\ChatInformation.cs" />
     <Compile Include="Chat\ChatMessage.cs" />

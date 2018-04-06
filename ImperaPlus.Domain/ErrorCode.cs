@@ -208,10 +208,19 @@
         /// </summary>
         TournamentDuplicateTeamName,
 
+        /// <summary>
+        /// Cannot modify tournament for user, user is no participant
+        /// </summary>
         TournamentUserNoParticipant,
 
+        /// <summary>
+        /// Cannot join or leave the tournament
+        /// </summary>
         TournamentCannotJoinLeave,
 
+        /// <summary>
+        /// Cannot delete tournament, no permission to do so
+        /// </summary>
         TournamentTeamDeleteNoPermission,
 
         /// <summary>
@@ -223,9 +232,21 @@
         /// Team creator has to delete team
         /// </summary>
         TournamentTeamCreatorHasToDelete,
+
         CannotFindGame,
+
         CannotDeleteGame,
+
         GameAlreadyScored,
+        UserDoesNotExist,
+        AllianceNotFound,
+        UserAlreadyInAlliance,
+        AllianceUserIsNotAdmin,
+        AllianceWithNameAlreadyExists,
+        UserNotAMemberOfAlliance,
+        UserAlreadyAllianceAdmin,
+        ActiveRequestToJoinAllianceExists,
+        NoActiveRequestToJoinAlliance
         GamePasswordNotCorrect,
         GamePasswordOnlyAllowedForFun
     }

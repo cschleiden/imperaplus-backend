@@ -116,7 +116,7 @@ namespace ImperaPlus.Application.Games
             }
 
             var game = this.gameService.Create(
-                Domain.Enums.GameType.Fun, // TODO: CS: Expose this as parameter?
+                Domain.Enums.GameType.Fun,
                 user,                 
                 creationOptions.Name,
                 password,
