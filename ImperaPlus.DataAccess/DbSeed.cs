@@ -148,15 +148,13 @@ namespace ImperaPlus.DataAccess
                 context.Channels.Add(new Channel
                 {
                     Name = "General",
-                    Type = ChannelType.General,
-                    CreatedBy = systemUser
+                    Type = ChannelType.General
                 });
 
                 context.Channels.Add(new Channel
                 {
                     Name = "Admin",
-                    Type = ChannelType.Admin,
-                    CreatedBy = systemUser
+                    Type = ChannelType.Admin
                 });
             }
 

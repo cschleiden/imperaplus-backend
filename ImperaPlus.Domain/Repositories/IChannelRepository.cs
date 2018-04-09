@@ -6,7 +6,7 @@ namespace ImperaPlus.Domain.Repositories
 {
     public interface IChannelRepository : IGenericRepository<Channel>
     {
-        Channel FindById(Guid id);
+        Channel GetById(Guid channelId);
 
         Channel GetByType(ChannelType general);
     }

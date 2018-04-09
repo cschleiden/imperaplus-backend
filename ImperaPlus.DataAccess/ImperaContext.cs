@@ -183,9 +183,16 @@ namespace ImperaPlus.DataAccess
             
             // Chat
             modelBuilder.Entity<Channel>()
-                .HasOne(x => x.Game).WithOne().IsRequired(false).OnDelete(DeleteBehavior.Cascade);
+                .HasOne(x => x.Game)
+                .WithOne()
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Channel>()
-                .HasOne(x => x.Alliance).WithOne(x => x.Channel).IsRequired(false).OnDelete(DeleteBehavior.Cascade);
+                .HasOne(x => x.Alliance)
+                .WithOne(x => x.Channel)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasForeignKey<Channel>(x => x.AllianceId);
             modelBuilder.Entity<Channel>()
                 .HasMany(x => x.Messages)
                 .WithOne(x => x.Channel)
@@ -215,11 +222,6 @@ namespace ImperaPlus.DataAccess
                 .WithOne(x => x.Alliance)
                 .HasForeignKey(x => x.AllianceId)
                 .OnDelete(DeleteBehavior.SetNull);
-            modelBuilder.Entity<Alliance>()
-                .HasOne(x => x.Channel)
-                .WithOne(x => x.Alliance)
-                .IsRequired(false)
-                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Alliance>()
                 .HasMany(x => x.Requests)
                 .WithOne(x => x.Alliance)

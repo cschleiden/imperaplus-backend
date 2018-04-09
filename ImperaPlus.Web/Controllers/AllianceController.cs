@@ -43,7 +43,7 @@ namespace ImperaPlus.Backend.Controllers
         /// </summary>
         /// <param name="allianceId">Id of the requested alliance</param>
         /// <returns>Information about the requested alliance</returns>
-        [HttpGet("{allianceId:long:min(1)}")]
+        [HttpGet("{allianceId:guid}")]
         [ProducesResponseType(typeof(Alliance), 200)]
         public IActionResult Get(Guid allianceId)
         {

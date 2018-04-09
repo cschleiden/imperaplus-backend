@@ -217,7 +217,7 @@ namespace ImperaPlus.Application.Tournaments
             return Mapper.Map<IEnumerable<Tournament>>(tournaments);
         }
 
-        public void Delete(Guid tournamentId)
+        public Task Delete(Guid tournamentId)
         {
             this.CheckAdmin();
 

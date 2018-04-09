@@ -22,6 +22,8 @@ namespace ImperaPlus.Domain.Alliances
         {
             this.Name = name;
             this.Description = description;
+
+            this.Channel = new Channel(name, Enums.ChannelType.Alliance, null, this.Id);
         }
 
         public Guid Id { get; protected set; }

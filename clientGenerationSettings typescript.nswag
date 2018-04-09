@@ -4,6 +4,7 @@
     "webApiToSwagger": {
       "controllerNames": [
         "ImperaPlus.Backend.Controllers.AccountController",
+        "ImperaPlus.Backend.Controllers.AllianceController",
         "ImperaPlus.Backend.Controllers.BaseController",
         "ImperaPlus.Backend.Controllers.GameController",
         "ImperaPlus.Backend.Controllers.HistoryController",

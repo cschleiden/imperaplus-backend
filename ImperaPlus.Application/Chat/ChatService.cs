@@ -52,9 +52,10 @@ namespace ImperaPlus.Application.Chat
             };
 
             // Alliance channel if user is a member
-            if (user.Alliance != null)
+            if (user.AllianceId.HasValue)
             {
-                channels.Add(Mapper.Map<ChannelInformation>(user.Alliance.Channel));
+                var alliance = this.UnitOfWork.Alliances.GetWithMembers(user.AllianceId.Value);
+                channels.Add(Mapper.Map<ChannelInformation>(this.UnitOfWork.Channels.GetById(alliance.ChannelId)));
             }            
 
             // Admin

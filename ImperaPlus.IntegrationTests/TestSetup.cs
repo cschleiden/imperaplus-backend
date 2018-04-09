@@ -69,7 +69,7 @@ namespace ImperaPlus.Integration.Tests
                 {
                     if (e.InnerExceptions != null && e.InnerExceptions.Count > 0 && e.InnerExceptions[0] is ImperaPlusException)
                     {
-                        if ((e.InnerExceptions[0] as ImperaPlusException).StatusCode == "400")
+                        if ((e.InnerExceptions[0] as ImperaPlusException).StatusCode == 400)
                         {
                             // ignore
                         }

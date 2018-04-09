@@ -34,7 +34,8 @@ namespace ImperaPlus.DataAccess.Repositories
         {
             get
             {
-                return this.DbSet.Include(x => x.Members);
+                return this.DbSet
+                    .Include(x => x.Members);
             }
         }
     }

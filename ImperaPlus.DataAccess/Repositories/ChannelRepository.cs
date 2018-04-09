@@ -14,17 +14,22 @@ namespace ImperaPlus.DataAccess.Repositories
         {
         }
 
-        public Channel FindById(Guid id)
+        public Channel GetById(Guid channelId)
         {
-            return this.DbSet.FirstOrDefault(x => x.Id == id);
+            var channel = this.DbSet.First(x => x.Id == channelId);
+            this.AddMessages(channel);
+            return channel;
         }
 
         public Channel GetByType(ChannelType channelType)
         {
-            var channel = this.DbSet
-                .Include(x => x.CreatedBy)
-                .First(x => x.Type == channelType);
+            var channel = this.DbSet.First(x => x.Type == channelType);
+            this.AddMessages(channel);
+            return channel;
+        }
 
+        private void AddMessages(Channel channel)
+        {
             channel.RecentMessages = this.Context
                     .Entry(channel)
                     .Collection(c => c.Messages)
@@ -33,10 +38,7 @@ namespace ImperaPlus.DataAccess.Repositories
                     .OrderByDescending(x => x.CreatedAt)
                     .Where(x => x.CreatedBy != null && !x.CreatedBy.IsDeleted)
                     .Take(20)
-                    .OrderBy(x => x.CreatedAt)
-                    .ToList();
-
-            return channel;
+                    .OrderBy(x => x.CreatedAt);
         }
     }
 }

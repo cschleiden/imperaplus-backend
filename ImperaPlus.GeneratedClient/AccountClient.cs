@@ -60,9 +60,9 @@ namespace ImperaPlus.GeneratedClient
                             }
                             catch (System.Exception exception)
                             {
-                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new ImperaPlusException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception);
                             }
-                            throw new ImperaPlusException<ErrorResponse>("Client Error", status_, responseData_, headers_, result_, null);
+                            throw new ImperaPlusException<ErrorResponse>("Client Error", (int)response_.StatusCode, responseData_, headers_, result_, null);
                         }
                         else
                         if (status_ == "200")
@@ -76,14 +76,14 @@ namespace ImperaPlus.GeneratedClient
                             }
                             catch (System.Exception exception)
                             {
-                                throw new ImperaPlusException("Could not deserialize the response body.", status_, responseData_, headers_, exception);
+                                throw new ImperaPlusException("Could not deserialize the response body.", (int)response_.StatusCode, responseData_, headers_, exception);
                             }
                         }
                         else
                         if (status_ != "200" && status_ != "204")
                         {
                             var responseData_ = await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", status_, responseData_, headers_, null);
+                            throw new ImperaPlusException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
                         }
 
                         return default(LoginResponseModel);

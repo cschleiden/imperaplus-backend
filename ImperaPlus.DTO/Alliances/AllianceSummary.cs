@@ -17,6 +17,11 @@ namespace ImperaPlus.DTO.Alliances
         public string Name { get; set; }
 
         /// <summary>
+        /// Alliance description
+        /// </summary>
+        public string Description { get; set; }
+
+        /// <summary>
         /// Number of members in alliance
         /// </summary>
         public int NumberOfMembers { get; set; }
