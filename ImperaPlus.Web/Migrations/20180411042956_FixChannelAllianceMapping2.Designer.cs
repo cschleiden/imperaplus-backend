@@ -13,9 +13,10 @@ using ImperaPlus.Domain.Tournaments;
 namespace ImperaPlus.Web.Migrations
 {
     [DbContext(typeof(ImperaContext))]
-    partial class ImperaContextModelSnapshot : ModelSnapshot
+    [Migration("20180411042956_FixChannelAllianceMapping2")]
+    partial class FixChannelAllianceMapping2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")

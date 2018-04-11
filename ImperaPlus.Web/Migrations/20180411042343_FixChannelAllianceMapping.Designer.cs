@@ -13,9 +13,10 @@ using ImperaPlus.Domain.Tournaments;
 namespace ImperaPlus.Web.Migrations
 {
     [DbContext(typeof(ImperaContext))]
-    partial class ImperaContextModelSnapshot : ModelSnapshot
+    [Migration("20180411042343_FixChannelAllianceMapping")]
+    partial class FixChannelAllianceMapping
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
@@ -33,8 +34,6 @@ namespace ImperaPlus.Web.Migrations
                     b.Property<string>("Name");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ChannelId");
 
                     b.ToTable("Alliances");
                 });
@@ -78,6 +77,8 @@ namespace ImperaPlus.Web.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<Guid?>("AllianceId");
+
                     b.Property<long?>("GameId");
 
                     b.Property<string>("Name");
@@ -85,6 +86,9 @@ namespace ImperaPlus.Web.Migrations
                     b.Property<int>("Type");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AllianceId")
+                        .IsUnique();
 
                     b.HasIndex("GameId")
                         .IsUnique();
@@ -910,14 +914,6 @@ namespace ImperaPlus.Web.Migrations
                     b.ToTable("OpenIddictTokens");
                 });
 
-            modelBuilder.Entity("ImperaPlus.Domain.Alliances.Alliance", b =>
-                {
-                    b.HasOne("ImperaPlus.Domain.Chat.Channel", "Channel")
-                        .WithMany()
-                        .HasForeignKey("ChannelId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("ImperaPlus.Domain.Alliances.AllianceJoinRequest", b =>
                 {
                     b.HasOne("ImperaPlus.Domain.Alliances.Alliance", "Alliance")
@@ -940,6 +936,11 @@ namespace ImperaPlus.Web.Migrations
 
             modelBuilder.Entity("ImperaPlus.Domain.Chat.Channel", b =>
                 {
+                    b.HasOne("ImperaPlus.Domain.Alliances.Alliance", "Alliance")
+                        .WithOne("Channel")
+                        .HasForeignKey("ImperaPlus.Domain.Chat.Channel", "AllianceId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
                     b.HasOne("ImperaPlus.Domain.Games.Game", "Game")
                         .WithOne()
                         .HasForeignKey("ImperaPlus.Domain.Chat.Channel", "GameId")

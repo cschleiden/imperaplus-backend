@@ -14,7 +14,7 @@ namespace ImperaPlus.Domain.Chat
             this.Messages = new List<ChatMessage>();
         }
 
-        public Channel(string name, ChannelType channelType, long? gameId = null, Guid? allianceId = null)
+        public Channel(string name, ChannelType channelType, long? gameId = null)
             : this()
         {
             this.Name = name;
@@ -23,11 +23,6 @@ namespace ImperaPlus.Domain.Chat
             if (gameId.HasValue)
             {
                 this.GameId = gameId.Value;
-            }
-
-            if (allianceId.HasValue)
-            {
-                this.AllianceId = allianceId.Value;
             }
         }
 
@@ -39,9 +34,6 @@ namespace ImperaPlus.Domain.Chat
 
         public long? GameId { get; set; }
         public virtual Game Game { get; set; }
-
-        public Guid? AllianceId { get; set; }
-        public virtual Alliance Alliance { get; set; }
 
         public virtual ICollection<ChatMessage> Messages { get; private set; }
 

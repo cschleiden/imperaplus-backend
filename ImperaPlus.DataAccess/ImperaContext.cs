@@ -188,12 +188,6 @@ namespace ImperaPlus.DataAccess
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Channel>()
-                .HasOne(x => x.Alliance)
-                .WithOne(x => x.Channel)
-                .IsRequired(false)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasForeignKey<Channel>(x => x.AllianceId);
-            modelBuilder.Entity<Channel>()
                 .HasMany(x => x.Messages)
                 .WithOne(x => x.Channel)
                 .IsRequired()
@@ -227,6 +221,12 @@ namespace ImperaPlus.DataAccess
                 .WithOne(x => x.Alliance)
                 .IsRequired(true)
                 .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Alliance>()
+                .HasOne(x => x.Channel)
+                .WithMany()
+                .IsRequired(true)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasForeignKey(x => x.ChannelId);
 
             // Tournaments           
             modelBuilder.Entity<Tournament>().HasMany(x => x.Teams).WithOne(x => x.Tournament).HasForeignKey(x => x.TournamentId).IsRequired().OnDelete(DeleteBehavior.Cascade);
