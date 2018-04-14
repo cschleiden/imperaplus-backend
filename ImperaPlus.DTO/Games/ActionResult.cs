@@ -1,11 +1,23 @@
 ﻿namespace ImperaPlus.DTO.Games
 {
+    /// <summary>
+    /// Outcome of an action
+    /// </summary>
     public enum ActionResult
     {
-        None = 0,
+        /// <summary>
+        /// Default
+        /// </summary>
+        None,
 
-        Successful = 1,
+        /// <summary>
+        /// Action was successful
+        /// </summary>
+        Successful,
 
-        NotSuccessful = 2
+        /// <summary>
+        /// Action was not successful
+        /// </summary>
+        NotSuccessful
     }
 }

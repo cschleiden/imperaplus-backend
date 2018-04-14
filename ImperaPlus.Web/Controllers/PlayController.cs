@@ -5,6 +5,7 @@ using ImperaPlus.DTO.Games.Play;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ImperaPlus.DTO;
+using ImperaPlus.Domain.Repositories;
 
 namespace ImperaPlus.Backend.Controllers
 {
@@ -20,7 +21,8 @@ namespace ImperaPlus.Backend.Controllers
         private readonly IPlayService playService;
         private IGameService gameService;
 
-        public PlayController(IGameService gameService, IPlayService playService) 
+        public PlayController(IUnitOfWork unitOfWork, IGameService gameService, IPlayService playService)
+            : base(unitOfWork)
         {
             this.gameService = gameService;
             this.playService = playService;

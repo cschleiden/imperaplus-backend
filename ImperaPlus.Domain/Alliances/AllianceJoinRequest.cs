@@ -18,6 +18,7 @@ namespace ImperaPlus.Domain.Alliances
         }
 
         public AllianceJoinRequest(Alliance alliance, User requestedBy, string reason)
+            : this()
         {
             this.Alliance = alliance;
             this.AllianceId = alliance.Id;

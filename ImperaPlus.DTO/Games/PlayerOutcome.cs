@@ -2,7 +2,7 @@
 {
     public enum PlayerOutcome
     {
-        None = 0,
+        None,
 
         Won,
 

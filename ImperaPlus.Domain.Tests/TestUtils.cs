@@ -23,6 +23,19 @@ namespace ImperaPlus.Domain.Tests
             };
         }
 
+        public static User CreateUser(string name, IUnitOfWork unitOfWork)
+        {
+            var user = new User()
+            {
+                UserName = name
+            };
+
+            unitOfWork.Users.Add(user);
+            unitOfWork.Commit();
+
+            return user;
+        }
+
         public static IMapTemplateProvider MockMapTemplateProvider()
         {
             var mockMapTemplateProvider = new Mock<IMapTemplateProvider>();

@@ -10,58 +10,59 @@ namespace ImperaPlus.Domain.Alliances
 {
     public interface IAllianceService
     {
-        Alliance Create(User creator, string name, string description);
-
-        void Delete(Guid allianceId, User admin);
-
-        void RequestToJoin(Guid allianceId, User user, string reason);
-
-        void ApproveRequestToJoin(Guid allianceId, User approver, User user);
-
-        void DenyRequestToJoin(Guid allianceId, User denier, User user);
-
-        void Leave(Guid allianceId, User user);
-
-        void MakeAdmin(Guid allianceId, User currentAdmin, User user);
+        Alliance Get(Guid allianceId);
 
         IEnumerable<Alliance> GetAll();
 
-        Alliance Get(Guid allianceId);
+        Alliance Create(string name, string description);
+
+        void Delete(Guid allianceId);
+
+        void Leave(Guid allianceId);
+
+        void RemoveMember(Guid allianceId, string userId);
+
+        void ChangeAdmin(Guid allianceId, string userId, bool isAdmin);
+
+        IEnumerable<AllianceJoinRequest> GetJoinRequests(Guid allianceId);
+
+        AllianceJoinRequest RequestToJoin(Guid allianceId, string reason);
+
+        AllianceJoinRequest UpdateRequest(Guid allianceId, Guid requestId, AllianceJoinRequestState state);
     }
 
-    public class AllianceService : IAllianceService
+    public class AllianceService : BaseDomainService, IAllianceService
     {
-        private IUnitOfWork unitOfWork;
         private IRandomGen randomGen;
 
-        public AllianceService(IUnitOfWork unitOfWork, IRandomGen randomGen)
+        public AllianceService(IUnitOfWork UnitOfWork, IRandomGen randomGen, IUserProvider userProvider)
+            : base(UnitOfWork, userProvider)
         {
-            this.unitOfWork = unitOfWork;
             this.randomGen = randomGen;
         }
 
         public IEnumerable<Alliance> GetAll()
         {
-            return this.unitOfWork.Alliances.GetAll();
+            return this.UnitOfWork.Alliances.GetAll();
         }
 
         public Alliance Get(Guid allianceId)
         {
-            return this.unitOfWork.Alliances.GetWithMembers(allianceId);
+            return this.UnitOfWork.Alliances.GetWithMembers(allianceId);
         }
 
-        public Alliance Create(User creator, string name, string description)
+        public Alliance Create(string name, string description)
         {
-            Require.NotNull(creator, nameof(creator));
             Require.NotNullOrEmpty(name, nameof(name));
             Require.NotNullOrEmpty(description, nameof(description));
 
+            var creator = this.CurrentUser;
             if (creator.AllianceId.HasValue)
             {
                 throw new DomainException(ErrorCode.UserAlreadyInAlliance, "User {0} is already in an alliance", creator.Id);
             }
 
-            var allianceWithSameName = this.unitOfWork.Alliances.FindByName(name);
+            var allianceWithSameName = this.UnitOfWork.Alliances.FindByName(name);
             if (allianceWithSameName != null)           
             {
                 throw new DomainException(ErrorCode.AllianceWithNameAlreadyExists, "Alliance with that name already exists");
@@ -70,75 +71,64 @@ namespace ImperaPlus.Domain.Alliances
             Alliance alliance = new Alliance(name, description);
             alliance.AddMember(creator);
 
+            this.UnitOfWork.Alliances.Add(alliance);
+
             return alliance;
         }
 
-        public void Delete(Guid allianceId, User admin)
+        public void Delete(Guid allianceId)
         {
             Require.NotEmpty(allianceId, nameof(allianceId));
 
             Alliance alliance = this.GetAlliance(allianceId);
+            this.CheckAdmin(alliance);
 
-            this.CheckAdmin(alliance, admin);
-
-            this.unitOfWork.Alliances.Remove(alliance);
+            this.UnitOfWork.Alliances.Remove(alliance);
         }
 
-        public void MakeAdmin(Guid allianceId, User currentAdmin, User user)
+        public void RemoveMember(Guid allianceId, string userId)
+        {
+            var alliance = this.GetAlliance(allianceId);
+            this.CheckAdmin();
+
+            var user = this.GetUser(userId);
+            alliance.RemoveMember(user);
+        }
+
+        public void ChangeAdmin(Guid allianceId, string userId, bool isAdmin)
+        {
+            Alliance alliance = this.GetAlliance(allianceId);
+            this.CheckAdmin(alliance);
+
+            var user = this.GetUser(userId);
+
+            if (isAdmin)
+            {
+                alliance.MakeAdmin(user);
+            }
+            else
+            {
+                alliance.RemoveAdmin(user);
+            }
+        }
+
+        public IEnumerable<AllianceJoinRequest> GetJoinRequests(Guid allianceId)
         {
             Require.NotEmpty(allianceId, nameof(allianceId));
-            Require.NotNull(currentAdmin, nameof(currentAdmin));
-            Require.NotNull(user, nameof(user));
 
             Alliance alliance = this.GetAlliance(allianceId);
+            this.CheckAdmin(alliance);
 
-            this.CheckAdmin(alliance, currentAdmin);
-
-            alliance.MakeAdmin(user);
+            return alliance.Requests;
         }
 
-        public void RequestToJoin(Guid allianceId, User user, string reason)
+        public void Leave(Guid allianceId)
         {
             Require.NotEmpty(allianceId, nameof(allianceId));
-            Require.NotNull(user, nameof(user));
-            
-            Alliance alliance = this.GetAlliance(allianceId);            
-            
-            // Create new request
-            alliance.RequestToJoin(user, reason);
-        }
 
-        public void ApproveRequestToJoin(Guid allianceId, User approver, User user)
-        {
-            Require.NotEmpty(allianceId, nameof(allianceId));
-            Require.NotNull(approver, nameof(approver));
-            Require.NotNull(user, nameof(user));
+            var user = this.CurrentUser;
 
             Alliance alliance = this.GetAlliance(allianceId);
-
-            this.CheckAdmin(alliance, approver);
-
-            alliance.ApproveRequest(approver, user);
-        }
-
-        public void DenyRequestToJoin(Guid allianceId, User denier, User user)
-        {
-            Require.NotEmpty(allianceId, nameof(allianceId));
-            Require.NotNull(denier, nameof(denier));
-            Require.NotNull(user, nameof(user));
-
-            Alliance alliance = this.GetAlliance(allianceId);
-
-            this.CheckAdmin(alliance, denier);
-
-            alliance.DenyRequest(denier, user);
-        }
-
-        public void Leave(Guid allianceId, User user)
-        {
-            Require.NotNull(user, nameof(user));
-            Alliance alliance = this.GetAlliance(allianceId);
-
             if (!alliance.IsMember(user))
             {
                 throw new DomainException(
@@ -158,7 +148,7 @@ namespace ImperaPlus.Domain.Alliances
                     if (isOnlyMember)
                     {
                         // User was the only member, we can delete the alliance
-                        this.Delete(allianceId, user);
+                        this.Delete(allianceId);
                     }
                     else
                     {
@@ -175,7 +165,9 @@ namespace ImperaPlus.Domain.Alliances
 
         private Alliance GetAlliance(Guid allianceId)
         {
-            Alliance alliance = this.unitOfWork.Alliances.GetWithMembers(allianceId);
+            Require.NotEmpty(allianceId, nameof(allianceId));
+
+            Alliance alliance = this.UnitOfWork.Alliances.GetWithMembers(allianceId);
             if (alliance == null)
             {
                 throw new DomainException(
@@ -186,14 +178,40 @@ namespace ImperaPlus.Domain.Alliances
             return alliance;
         }
         
-        private void CheckAdmin(Alliance alliance, User admin)
+        private void CheckAdmin(Alliance alliance)
         {
-            bool isAdmin = alliance.IsAdmin(admin);
+            bool isAdmin = alliance.IsAdmin(this.CurrentUser);
             if (!isAdmin)
             {
                 throw new DomainException(
                     ErrorCode.AllianceUserIsNotAdmin, 
-                    "User {0} is not an admin of alliance {1}", admin.Id, alliance.Id);
+                    "User {0} is not an admin of alliance {1}", this.CurrentUser.Id, alliance.Id);
+            }
+        }
+
+        public AllianceJoinRequest RequestToJoin(Guid allianceId, string reason)
+        {
+            var alliance = this.GetAlliance(allianceId);
+            return alliance.RequestToJoin(this.CurrentUser, reason);
+        }
+
+        public AllianceJoinRequest UpdateRequest(Guid allianceId, Guid requestId, AllianceJoinRequestState state)
+        {
+            var alliance = this.GetAlliance(allianceId);
+            this.CheckAdmin(alliance);
+
+            if (state == AllianceJoinRequestState.Approved)
+            {
+                // Approve request
+                return alliance.ApproveRequest(this.CurrentUser, requestId);
+            }
+            else if (state == AllianceJoinRequestState.Denied)
+            {
+                return alliance.DenyRequest(this.CurrentUser, requestId);
+            }
+            else
+            {
+                throw new DomainException(ErrorCode.InvalidAllianceJoinRequestState, "Invalid state for join request");
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using ImperaPlus.Application.Games;
+using ImperaPlus.Domain.Repositories;
 using ImperaPlus.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +17,8 @@ namespace ImperaPlus.Backend.Controllers
     {
         private IGameService gameService;
 
-        public HistoryController(IGameService gameService)
+        public HistoryController(IUnitOfWork unitOfWork, IGameService gameService)
+            : base(unitOfWork)
         {
             this.gameService = gameService;
         }

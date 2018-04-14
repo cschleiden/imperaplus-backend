@@ -334,7 +334,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Alliances\AllianceService.cs" />
     <Compile Include="AutoMapperConfig.cs" />
     <Compile Include="BaseGameService.cs" />
     <Compile Include="BaseService.cs" />

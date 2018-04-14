@@ -8,16 +8,16 @@
         /// <summary>
         /// Default map distribution
         /// </summary>
-        Default = 0,
+        Default,
 
         /// <summary>
         /// Malibu map distribution, one country per player
         /// </summary>
-        Malibu = 1,
+        Malibu,
 
         /// <summary>
         /// TODO: CS Maybe teams start right next to each other?
         /// </summary>
-        TeamCluster = 2
+        // TeamCluster
     }
 }

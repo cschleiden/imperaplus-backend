@@ -4,14 +4,13 @@ namespace ImperaPlus.TestSupport
 {
     public class TestUserProvider : IUserProvider
     {
+        public static User User { get; set; }
+
+        public static bool Admin { get; set; }
+
         public string GetCurrentUserId()
         {
             return User.Id;
-        }
-
-        public User GetCurrentUser()
-        {
-            return User;
         }
 
         public bool IsAdmin()
@@ -19,8 +18,11 @@ namespace ImperaPlus.TestSupport
             return Admin;
         }
 
-        public static User User { get; set; }
-
-        public static bool Admin { get; set; }
+        public TestUserProvider()
+        {
+            // Reset
+            User = null;
+            Admin = false;
+        }
     }
 }

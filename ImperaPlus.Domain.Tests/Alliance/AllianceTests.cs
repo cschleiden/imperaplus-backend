@@ -1,4 +1,5 @@
-﻿using ImperaPlus.DataAccess.InMemory;
+﻿using System;
+using ImperaPlus.DataAccess.InMemory;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Tests.Helper;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -136,7 +137,7 @@ namespace ImperaPlus.Domain.Tests.Alliance
             var request = alliance.RequestToJoin(user, "Reason");
             this.unitOfWork.Commit();
 
-            alliance.ApproveRequest(admin, user);
+            alliance.ApproveRequest(admin, request.Id);
 
             Assert.IsTrue(alliance.IsMember(user));
         }
@@ -150,7 +151,7 @@ namespace ImperaPlus.Domain.Tests.Alliance
             var user = TestUtils.CreateUser("user");
             this.unitOfWork.Commit();
 
-            alliance.ApproveRequest(admin, user);
+            alliance.ApproveRequest(admin, Guid.NewGuid());
         }
 
 
@@ -163,7 +164,7 @@ namespace ImperaPlus.Domain.Tests.Alliance
             var request = alliance.RequestToJoin(user, "Reason");
             this.unitOfWork.Commit();
 
-            alliance.DenyRequest(admin, user);
+            alliance.DenyRequest(admin, request.Id);
 
             Assert.IsFalse(alliance.IsMember(user));
         }
@@ -177,7 +178,7 @@ namespace ImperaPlus.Domain.Tests.Alliance
             var user = TestUtils.CreateUser("user");
             this.unitOfWork.Commit();
 
-            alliance.DenyRequest(admin, user);
+            alliance.DenyRequest(admin, Guid.NewGuid());
         }
 
         private Alliances.Alliance GetTestAlliance(User admin)

@@ -13,6 +13,14 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ImperaPlus.TestSupport
 {
+    public class TestRandomGenProvider : IRandomGenProvider
+    {
+        public IRandomGen GetRandomGen()
+        {
+            return new RandomGen(0);
+        }
+    }
+
     public class TestBase
     {
         protected ImperaContext Context;
@@ -99,15 +107,15 @@ namespace ImperaPlus.TestSupport
             builder.RegisterType<AttackService>().As<IAttackService>();
             builder.RegisterModule(new Domain.DependencyInjectionModule());
 
-            builder.RegisterType<Application.MapTemplateService>().AsImplementedInterfaces();
+            builder.RegisterType<MapTemplateService>().AsImplementedInterfaces();
             builder.RegisterType<Application.Games.GameService>().AsImplementedInterfaces();
             builder.RegisterType<Application.Play.PlayService>().AsImplementedInterfaces();
-            builder.RegisterType<Domain.Services.GameService>().AsImplementedInterfaces();
+            builder.RegisterType<GameService>().AsImplementedInterfaces();
 
-            builder.RegisterType<RandomGenProvider>().AsImplementedInterfaces();
+            builder.RegisterType<TestRandomGenProvider>().AsImplementedInterfaces();
             builder
                 .Register(c => c.Resolve<IRandomGenProvider>().GetRandomGen())
-                .As<Domain.Services.IRandomGen>()
+                .As<IRandomGen>()
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<Application.Visibility.VisibilityModifierFactory>().AsImplementedInterfaces();

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using ImperaPlus.Application.Messages;
+using ImperaPlus.Domain.Repositories;
 using ImperaPlus.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +17,8 @@ namespace ImperaPlus.Backend.Controllers
     {
         private IMessageService messageService;
 
-        public MessageController(IMessageService messageService)
+        public MessageController(IUnitOfWork unitOfWork, IMessageService messageService)
+            : base(unitOfWork)
         {
             this.messageService = messageService;   
         }

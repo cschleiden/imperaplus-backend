@@ -8,7 +8,7 @@ namespace ImperaPlus.DTO.Games
         /// <summary>
         /// Default
         /// </summary>
-        None = 0,
+        None,
 
         /// <summary>
         /// Player can place units and exchange cards

@@ -1,4 +1,5 @@
 ﻿using ImperaPlus.Application.Notifications;
+using ImperaPlus.Domain.Repositories;
 using ImperaPlus.DTO;
 using ImperaPlus.DTO.Notifications;
 using Microsoft.AspNetCore.Authorization;
@@ -14,7 +15,8 @@ namespace ImperaPlus.Backend.Controllers
     {
         private INotificationService notificationService;
 
-        public NotificationController(INotificationService notificationService)
+        public NotificationController(IUnitOfWork unitOfWork, INotificationService notificationService)
+            : base(unitOfWork)
         {
             this.notificationService = notificationService;
         }

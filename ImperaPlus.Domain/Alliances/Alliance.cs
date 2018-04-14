@@ -66,7 +66,7 @@ namespace ImperaPlus.Domain.Alliances
             return this.Members.Any(m => m.Id == user.Id);
         }
 
-        internal void MakeAdmin(User user)
+        public  void MakeAdmin(User user)
         {
             Require.NotNull(user, nameof(user));
 
@@ -74,24 +74,26 @@ namespace ImperaPlus.Domain.Alliances
             if (!isMember)
             {
                 throw new DomainException(
-                    ErrorCode.UserNotAMemberOfAlliance, 
+                    ErrorCode.UserNotAMemberOfAlliance,
                     "User {0} is not a member of alliance {1}", user.Id, this.Id);
-            }
-
-            bool isAdminAlready = this.IsAdmin(user);
-            if (isAdminAlready)
-            {
-                throw new DomainException(
-                    ErrorCode.UserAlreadyAllianceAdmin,
-                    "User {0} is already an admin of alliance {1}", user.Id, this.Id);
             }
 
             user.IsAllianceAdmin = true;
         }
 
-        /// <summary>
-        /// Returns a value indicating whether the given user is an alliance admin
-        /// </summary>
+        public void RemoveAdmin(User user)
+        {
+            bool isMember = this.IsMember(user);
+            if (!isMember)
+            {
+                throw new DomainException(
+                    ErrorCode.UserNotAMemberOfAlliance,
+                    "User {0} is not a member of alliance {1}", user.Id, this.Id);
+            }
+
+            user.IsAllianceAdmin = false;
+        }
+        
         public bool IsAdmin(User currentAdmin)
         {
             Require.NotNull(currentAdmin, nameof(currentAdmin));
@@ -130,7 +132,7 @@ namespace ImperaPlus.Domain.Alliances
             {
                 throw new DomainException(
                     ErrorCode.ActiveRequestToJoinAllianceExists,
-                    "There is already an active request to join the alliance for thi user");
+                    "There is already an active request to join the alliance for this user");
             }
 
             var request = new AllianceJoinRequest(this, user, reason);
@@ -142,29 +144,32 @@ namespace ImperaPlus.Domain.Alliances
         /// <summary>
         /// Approves the most request active request for a user if it exists
         /// </summary>
-        public void ApproveRequest(User approver, User user)
+        public AllianceJoinRequest ApproveRequest(User approver, Guid requestId)
         {
-            var activeRequest = this.GetActiveRequestForUser(user);
+            var request = this.GetActiveRequest(requestId);
 
-            this.AddMember(user);
-            activeRequest.Approve(approver);
+            this.AddMember(request.RequestedByUser);
+            request.Approve(approver);
+
+            return request;
         }
 
-        public void DenyRequest(User denier, User user)
+        public AllianceJoinRequest DenyRequest(User denier, Guid requestId)
         {
-            var activeRequest = this.GetActiveRequestForUser(user);
-            
-            activeRequest.Deny(denier);
+            var request = this.GetActiveRequest(requestId);
+            request.Deny(denier);
+
+            return request;
         }
 
-        private AllianceJoinRequest GetActiveRequestForUser(User user)
+        private AllianceJoinRequest GetActiveRequest(Guid requestId)
         {
-            var request = this.FindActiveRequestForUser(user);
+            var request = this.Requests.FirstOrDefault(x => x.State == AllianceJoinRequestState.Active && x.Id == requestId);
             if (request == null)
             {
                 throw new DomainException(
                     ErrorCode.NoActiveRequestToJoinAlliance,
-                    "There is no active request for user {0} to join alliance {1}", user.Id, this.Id);
+                    "There is no active request with id {0} to join alliance {1}", requestId, this.Id);
             }
 
             return request;

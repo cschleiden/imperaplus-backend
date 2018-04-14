@@ -248,6 +248,8 @@
         ActiveRequestToJoinAllianceExists,
         NoActiveRequestToJoinAlliance,
         GamePasswordNotCorrect,
-        GamePasswordOnlyAllowedForFun
+        GamePasswordOnlyAllowedForFun,
+        UserIsNotAllowedToPerformAction,
+        InvalidAllianceJoinRequestState
     }
 }

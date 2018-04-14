@@ -18,25 +18,26 @@ namespace ImperaPlus.Domain.Tests.Alliance
         public void Setup()
         {
             this.unitOfWork = InMemory.GetInMemoryUnitOfWork();
-            this.allianceService = new AllianceService(this.unitOfWork, new TestRandomGen());
+            this.allianceService = new AllianceService(this.unitOfWork, new TestRandomGen(), new TestUserProvider());
         }
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void CreateAllianceShouldFail()
         {
-            this.allianceService.Create(null, null, null);
+            this.allianceService.Create(null, null);
         }
 
         [TestMethod]
         [ExpectedDomainException(ErrorCode.UserAlreadyInAlliance)]
         public void CreateAllianceWhenUserIsAlreadyAMember()
         {
-            var user = TestUtils.CreateUser("TestUser");
+            var user = TestUtils.CreateUser("TestUser", this.unitOfWork);
             user.AllianceId = Guid.NewGuid();
             user.Alliance = new Alliances.Alliance("Test", "Test");
+            TestUserProvider.User = user;
 
-            this.allianceService.Create(user, "Test2", "Test");
+            this.allianceService.Create("Test2", "Test");
         }
 
         [TestMethod]
@@ -46,8 +47,9 @@ namespace ImperaPlus.Domain.Tests.Alliance
             this.unitOfWork.Alliances.Add(new Alliances.Alliance("testAlliance", "test"));
             this.unitOfWork.Commit();
 
-            var user = TestUtils.CreateUser("TestUser");
-            this.allianceService.Create(user, "TestAlliance", "Test");
+            var user = TestUtils.CreateUser("TestUser", this.unitOfWork);
+            TestUserProvider.User = user;
+            this.allianceService.Create("TestAlliance", "Test");
         }
 
         [TestMethod]
@@ -57,21 +59,23 @@ namespace ImperaPlus.Domain.Tests.Alliance
             this.unitOfWork.Alliances.Add(new Alliances.Alliance("testAlliance", "test"));
             this.unitOfWork.Commit();
 
-            var user = TestUtils.CreateUser("TestUser");
-            this.allianceService.Create(user, "testAlliance", "Test");
+            var user = TestUtils.CreateUser("TestUser", this.unitOfWork);
+            TestUserProvider.User = user;
+            this.allianceService.Create("testAlliance", "Test");
         }
 
         [TestMethod]
         public void DeleteAlliance()
         {
             var alliance = new Alliances.Alliance("testAlliance", "test");
-            var admin = TestUtils.CreateUser("Admin");
+            var admin = TestUtils.CreateUser("Admin", this.unitOfWork);
+            TestUserProvider.User = admin;
             alliance.AddMember(admin);
             alliance.MakeAdmin(admin);
             this.unitOfWork.Alliances.Add(alliance);
             this.unitOfWork.Commit();
             
-            this.allianceService.Delete(alliance.Id, admin);
+            this.allianceService.Delete(alliance.Id);
             this.unitOfWork.Commit();
 
             Assert.IsNull(this.unitOfWork.Alliances.GetWithMembers(alliance.Id));

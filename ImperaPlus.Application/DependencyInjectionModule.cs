@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using ImperaPlus.Application.Alliances;
 using ImperaPlus.Application.Chat;
 using ImperaPlus.Application.Games;
 using ImperaPlus.Application.Jobs;
@@ -31,7 +30,6 @@ namespace ImperaPlus.Application
             builder.RegisterType<UserService>().As<IUserService>();
             builder.RegisterType<NotificationService>().As<INotificationService>();
             builder.RegisterType<TournamentService>().As<ITournamentService>();
-            builder.RegisterType<AllianceService>().As<IAllianceService>();
 
             // Notifications
             builder.RegisterType<PushNotifications>()

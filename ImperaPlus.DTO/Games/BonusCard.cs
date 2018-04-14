@@ -8,16 +8,16 @@
         /// <summary>
         /// 
         /// </summary>
-        A = 0,
+        A,
 
         /// <summary>
         /// 
         /// </summary>
-        B = 1,
+        B,
 
         /// <summary>
         /// 
         /// </summary>
-        C = 2
+        C
     }
 }

@@ -324,6 +324,7 @@
     <Compile Include="Alliances\AllianceJoinRequest.cs" />
     <Compile Include="Alliances\AllianceService.cs" />
     <Compile Include="Alliances\EventHandler\AccountDeletedHandler.cs" />
+    <Compile Include="BaseDomainService.cs" />
     <Compile Include="Bots\Bot.cs" />
     <Compile Include="Chat\Channel.cs" />
     <Compile Include="Chat\EventHandler\AccountDeletedHandler.cs" />

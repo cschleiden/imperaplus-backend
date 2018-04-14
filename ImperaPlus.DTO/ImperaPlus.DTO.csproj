@@ -50,6 +50,8 @@
     <Compile Include="Account\UserInfo.cs" />
     <Compile Include="Alliances\Alliance.cs" />
     <Compile Include="Alliances\AllianceCreationOptions.cs" />
+    <Compile Include="Alliances\AllianceJoinRequest.cs" />
+    <Compile Include="Alliances\AllianceJoinRequestState.cs" />
     <Compile Include="Alliances\AllianceSummary.cs" />
     <Compile Include="Chat\ChannelInformation.cs" />
     <Compile Include="Chat\ChatInformation.cs" />

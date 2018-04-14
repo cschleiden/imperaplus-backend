@@ -4,6 +4,7 @@ using ImperaPlus.Domain.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ImperaPlus.DTO;
+using ImperaPlus.Domain.Repositories;
 
 namespace ImperaPlus.Backend.Controllers
 {
@@ -15,7 +16,8 @@ namespace ImperaPlus.Backend.Controllers
     {
         private IUserService userService;
 
-        public UserController(IUserService userService)
+        public UserController(IUnitOfWork unitOfWork, IUserService userService)
+            : base(unitOfWork)
         {
             this.userService = userService;
         }
