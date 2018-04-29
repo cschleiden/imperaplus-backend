@@ -82,17 +82,6 @@ namespace ImperaPlus.Domain.Tests.Alliance
         }
 
         [TestMethod]
-        [ExpectedDomainException(ErrorCode.UserAlreadyAllianceAdmin)]
-        public void MakeAdminAlreadyAdmin()
-        {
-            var admin = TestUtils.CreateUser("admin");
-            var alliance = this.GetTestAlliance(admin);
-            this.unitOfWork.Commit();
-            
-            alliance.MakeAdmin(admin);
-        }
-
-        [TestMethod]
         public void RequestToJoin()
         {
             var alliance = this.GetTestAlliance(TestUtils.CreateUser("admin"));
