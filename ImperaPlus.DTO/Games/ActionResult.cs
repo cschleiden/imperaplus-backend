@@ -3,7 +3,7 @@
     /// <summary>
     /// Outcome of an action
     /// </summary>
-    public enum ActionResult
+    public enum Result
     {
         /// <summary>
         /// Default

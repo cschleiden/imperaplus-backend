@@ -1,4 +1,5 @@
 ﻿using System;
+using ImperaPlus.DTO.Users;
 
 namespace ImperaPlus.DTO.Alliances
 {
@@ -20,14 +21,14 @@ namespace ImperaPlus.DTO.Alliances
         public Guid AllianceId { get; set; }
     
         /// <summary>
-        /// Date and time when the request was last modified
+        /// Date and time when the request was last modified (e.g., approved or denied)
         /// </summary>
         public DateTime LastModifiedAt { get; set; }
 
         /// <summary>
-        /// Id of user wishing to join the alliance
+        /// User wishing to join the alliance
         /// </summary>
-        public string RequestedByUserId { get; private set; }
+        public UserReference RequestedByUser { get; set; }
 
         /// <summary>
         /// State of the request

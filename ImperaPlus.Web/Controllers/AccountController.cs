@@ -62,7 +62,7 @@ namespace ImperaPlus.Backend.Controllers
         [AllowAnonymous]
         [Consumes("application/x-www-form-urlencoded")]
         [HttpPost("token")]
-        [Swashbuckle.SwaggerGen.Annotations.SwaggerOperationFilter(typeof(FormFilter))]
+        // [Swashbuckle.SwaggerGen.Annotations.SwaggerOperationFilter(typeof(FormFilter))]
         [ProducesResponseType(typeof(LoginResponseModel), 200)]
         public async Task<IActionResult> Exchange([FromForm] LoginRequest loginRequest)
         {

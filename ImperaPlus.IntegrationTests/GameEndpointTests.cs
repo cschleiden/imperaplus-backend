@@ -279,7 +279,7 @@ namespace ImperaPlus.Integration.Tests
 
                         var attackResult = await playClient.PostAttackAsync(gameDefault.Id, attackOptions);
 
-                        if (attackResult.ActionResult == ActionResult.Successful)
+                        if (attackResult.ActionResult == Result.Successful)
                         {
                             this.Log("\tAttack successful, units left {0}", attackResult.CountryUpdates.First(x => x.Identifier == attackOptions.DestinationCountryIdentifier).Units);
                         }

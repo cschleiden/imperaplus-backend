@@ -78,7 +78,7 @@ namespace ImperaPlus.Domain.Tests.Alliance
             this.allianceService.Delete(alliance.Id);
             this.unitOfWork.Commit();
 
-            Assert.IsNull(this.unitOfWork.Alliances.GetWithMembers(alliance.Id));
+            Assert.IsNull(this.unitOfWork.Alliances.Get(alliance.Id));
         }
     }
 }

@@ -14,9 +14,13 @@ namespace ImperaPlus.DataAccess.Repositories
         {
         }
 
-        public Alliance GetWithMembers(Guid allianceId)
+        public Alliance Get(Guid allianceId)
         {
-            return this.WithMembers.FirstOrDefault(x => x.Id == allianceId);
+            return this
+                .WithMembers
+                .Include(x => x.Requests)
+                    .ThenInclude(x => x.RequestedByUser)
+                .FirstOrDefault(x => x.Id == allianceId);
         }
 
         public Alliance FindByName(string name)
@@ -28,6 +32,13 @@ namespace ImperaPlus.DataAccess.Repositories
         public IEnumerable<Alliance> GetAll()
         {
             return this.WithMembers;
+        }
+
+        public IEnumerable<AllianceJoinRequest> GetRequestsForUser(string userId)
+        {
+            return this.Context.Set<AllianceJoinRequest>()
+                .Where(x => x.RequestedByUserId == userId)
+                .OrderBy(x => x.CreatedAt);
         }
 
         private IQueryable<Alliance> WithMembers

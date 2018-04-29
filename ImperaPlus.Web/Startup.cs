@@ -1,12 +1,17 @@
-﻿using AspNet.Security.OpenIdConnect.Primitives;
+﻿using System;
+using System.Reflection;
+using System.Threading.Tasks;
+using AspNet.Security.OpenIdConnect.Primitives;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using DataTables.AspNet.AspNetCore;
 using Hangfire;
+using Hangfire.Console;
 using Hangfire.Dashboard;
 using ImperaPlus.Application;
 using ImperaPlus.Application.Jobs;
 using ImperaPlus.DataAccess;
+using ImperaPlus.Domain;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Web.Filters;
 using ImperaPlus.Web.Providers;
@@ -26,15 +31,10 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using NLog.Extensions.Logging;
-using NLog.Web;
-using StackExchange.Profiling.Storage;
-using System;
-using System.IO;
-using System.Reflection;
-using System.Threading.Tasks;
-using ImperaPlus.Domain;
 using NLog.Fluent;
-using Hangfire.Console;
+using NLog.Web;
+using NSwag.AspNetCore;
+using StackExchange.Profiling.Storage;
 
 namespace ImperaPlus.Web
 {
@@ -176,14 +176,6 @@ namespace ImperaPlus.Web
                         options.AddEphemeralSigningKey();
                     }
                 });
-
-            // Swagger
-            services.AddSwaggerGen(options =>
-            {
-                options.OperationFilter<FormFilter>();
-                options.DescribeStringEnumsInCamelCase();
-                options.IncludeXmlComments(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ImperaPlus.Web.xml"));
-            });
 
             services.AddResponseCompression(options =>
             {
@@ -336,6 +328,15 @@ namespace ImperaPlus.Web
                 Storage = new MemoryCacheStorage(TimeSpan.FromMinutes(60))
             });
 
+            app.UseSwaggerUi(typeof(Startup).Assembly, settings =>
+            {
+                // settings.UseJsonEditor = true;
+                settings.GeneratorSettings.DefaultEnumHandling = NJsonSchema.EnumHandling.String;
+                settings.GeneratorSettings.IsAspNetCore = true;
+                settings.GeneratorSettings.DefaultPropertyNameHandling = NJsonSchema.PropertyNameHandling.CamelCase;
+                settings.GeneratorSettings.OperationProcessors.Add(new SwaggerFormOperationProcessor());
+            });
+
             app.UseMvc(routes =>
             {
                 // Route for sub areas, i.e. Admin
@@ -345,10 +346,7 @@ namespace ImperaPlus.Web
             });
 
             app.UseWebSockets();
-            app.UseSignalR();
-
-            app.UseSwagger();
-            app.UseSwaggerUi();
+            app.UseSignalR();            
 
             // Initialize database
             Log.Info("Initializing database...").Write();

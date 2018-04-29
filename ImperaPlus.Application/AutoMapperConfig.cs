@@ -236,6 +236,9 @@ namespace ImperaPlus.Application
             Mapper.CreateMap<Domain.Alliances.Alliance, DTO.Alliances.Alliance>()
                 .ForMember(x => x.NumberOfMembers, x => x.MapFrom(a => a.Members.Count()))
                 .ForMember(x => x.Admins, x => x.MapFrom(a => a.Administrators));
+
+            Mapper.CreateMap<Domain.Alliances.AllianceJoinRequest, DTO.Alliances.AllianceJoinRequest>();
+            Mapper.CreateMap<Domain.Alliances.AllianceJoinRequestState, DTO.Alliances.AllianceJoinRequestState>();
         }
 
         private static void CreateLadderMapping()

@@ -24,11 +24,16 @@ namespace ImperaPlus.Domain.Alliances
 
         void ChangeAdmin(Guid allianceId, string userId, bool isAdmin);
 
+        /// <summary>
+        /// Get all requests for the calling user
+        /// </summary>
+        IEnumerable<AllianceJoinRequest> GetJoinRequests();
+
         IEnumerable<AllianceJoinRequest> GetJoinRequests(Guid allianceId);
 
         AllianceJoinRequest RequestToJoin(Guid allianceId, string reason);
 
-        AllianceJoinRequest UpdateRequest(Guid allianceId, Guid requestId, AllianceJoinRequestState state);
+        AllianceJoinRequest UpdateRequest(Guid allianceId, Guid requestId, AllianceJoinRequestState state);        
     }
 
     public class AllianceService : BaseDomainService, IAllianceService
@@ -48,7 +53,7 @@ namespace ImperaPlus.Domain.Alliances
 
         public Alliance Get(Guid allianceId)
         {
-            return this.UnitOfWork.Alliances.GetWithMembers(allianceId);
+            return this.UnitOfWork.Alliances.Get(allianceId);
         }
 
         public Alliance Create(string name, string description)
@@ -70,6 +75,7 @@ namespace ImperaPlus.Domain.Alliances
 
             Alliance alliance = new Alliance(name, description);
             alliance.AddMember(creator);
+            alliance.MakeAdmin(creator);
 
             this.UnitOfWork.Alliances.Add(alliance);
 
@@ -167,7 +173,7 @@ namespace ImperaPlus.Domain.Alliances
         {
             Require.NotEmpty(allianceId, nameof(allianceId));
 
-            Alliance alliance = this.UnitOfWork.Alliances.GetWithMembers(allianceId);
+            Alliance alliance = this.UnitOfWork.Alliances.Get(allianceId);
             if (alliance == null)
             {
                 throw new DomainException(
@@ -213,6 +219,11 @@ namespace ImperaPlus.Domain.Alliances
             {
                 throw new DomainException(ErrorCode.InvalidAllianceJoinRequestState, "Invalid state for join request");
             }
+        }
+
+        public IEnumerable<AllianceJoinRequest> GetJoinRequests()
+        {
+            return this.UnitOfWork.Alliances.GetRequestsForUser(this.CurrentUser.Id);
         }
     }
 }

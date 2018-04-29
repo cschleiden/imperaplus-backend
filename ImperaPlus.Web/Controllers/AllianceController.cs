@@ -36,6 +36,16 @@ namespace ImperaPlus.Backend.Controllers
             return this.Map<IEnumerable<AllianceSummary>>(this.allianceService.GetAll());
         }
 
+        /// <summary>
+        /// Lists all requests to join an alliance by the current user
+        /// </summary>
+        /// <returns>List of requests</returns>
+        [HttpGet("requests")]
+        [ProducesResponseType(typeof(IEnumerable<AllianceJoinRequest>), 200)]
+        public IActionResult GetAllRequests()
+        {
+            return this.Map<IEnumerable<AllianceJoinRequest>>((this.allianceService.GetJoinRequests()));
+        }
 
         /// <summary>
         /// Get detailed information about a single alliance
@@ -59,6 +69,19 @@ namespace ImperaPlus.Backend.Controllers
         public IActionResult Create([FromBody] AllianceCreationOptions creationOptions)
         {
             return this.CommitAndMap<Alliance>(this.allianceService.Create(creationOptions.Name, creationOptions.Description));
+        }
+
+        /// <summary>
+        /// Delete alliance
+        /// </summary>
+        /// <param name="allianceId">Id of alliance</param>
+        /// <returns>Summary of new alliance</returns>
+        [HttpDelete("{allianceId:guid}")]
+        [ProducesResponseType(typeof(void), 200)]
+        public IActionResult Delete(Guid allianceId)
+        {
+            this.allianceService.Delete(allianceId);
+            return this.Commit();
         }
 
         /// <summary>
@@ -107,7 +130,7 @@ namespace ImperaPlus.Backend.Controllers
         /// Lists requests to join an alliance
         /// </summary>
         /// <param name="allianceId">Id of the alliance</param>
-        /// <returns>List of active requests</returns>
+        /// <returns>List of requests</returns>
         [HttpGet("{allianceId:guid}/requests")]
         [ProducesResponseType(typeof(IEnumerable<AllianceJoinRequest>), 200)]
         public IActionResult GetRequests(Guid allianceId)
@@ -123,7 +146,7 @@ namespace ImperaPlus.Backend.Controllers
         /// <param name="state">New request state</param>
         [HttpPatch("{allianceId:guid}/requests/{requestId:guid}")]
         [ProducesResponseType(typeof(AllianceJoinRequest), 200)]
-        public IActionResult ApproveRequest(Guid allianceId, Guid requestId, [FromBody] AllianceJoinRequestState state)
+        public IActionResult UpdateRequest(Guid allianceId, Guid requestId, [FromBody] AllianceJoinRequestState state)
         {
             return this.CommitAndMap<AllianceJoinRequest>(
                 this.allianceService.UpdateRequest(allianceId, requestId, Mapper.Map<Domain.Alliances.AllianceJoinRequestState>(state)));

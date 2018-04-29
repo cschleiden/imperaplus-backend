@@ -42,8 +42,7 @@ namespace ImperaPlus.Web.Hubs
         {
             lock (this.connections)
             {
-                ConnectionInfo connectionInfo;
-                if (!this.connections.TryGetValue(key, out connectionInfo))
+                if (!this.connections.TryGetValue(key, out ConnectionInfo connectionInfo))
                 {
                     return;
                 }
@@ -59,8 +58,7 @@ namespace ImperaPlus.Web.Hubs
         {
             lock (this.connections)
             {
-                ConnectionInfo connectionInfo;
-                if (!this.connections.TryGetValue(key, out connectionInfo))
+                if (!this.connections.TryGetValue(key, out ConnectionInfo connectionInfo))
                 {
                     connectionInfo = new ConnectionInfo();
                     this.connections.Add(key, connectionInfo);
@@ -68,9 +66,15 @@ namespace ImperaPlus.Web.Hubs
 
                 lock (connectionInfo)
                 {
-                    this.connectionIds.Add(connectionId, key);
+                    if (!this.connectionIds.ContainsKey(connectionId))
+                    {
+                        this.connectionIds.Add(connectionId, key);
+                    }
 
-                    connectionInfo.ConnectionIds.Add(connectionId);
+                    if (!connectionInfo.ConnectionIds.Contains(connectionId))
+                    {
+                        connectionInfo.ConnectionIds.Add(connectionId);
+                    }
                 }
             }
         }

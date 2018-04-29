@@ -8,8 +8,10 @@ namespace ImperaPlus.Domain.Repositories
     {
         IEnumerable<Alliance> GetAll();
 
-        Alliance GetWithMembers(Guid allianceId);
+        Alliance Get(Guid allianceId);
 
-        Alliance FindByName(string name);      
+        Alliance FindByName(string name);
+
+        IEnumerable<AllianceJoinRequest> GetRequestsForUser(string userId);
     }
 }

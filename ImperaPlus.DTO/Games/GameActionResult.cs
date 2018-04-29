@@ -38,7 +38,7 @@
         /// <summary>
         /// Result of the previous action
         /// </summary>
-        public ActionResult ActionResult { get; set; }
+        public Result ActionResult { get; set; }
 
         /// <summary>
         /// Units to place

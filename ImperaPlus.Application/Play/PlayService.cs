@@ -70,7 +70,7 @@ namespace ImperaPlus.Application.Play
 
             var destCountry = actionResult.CountryUpdates.FirstOrDefault(x => x.Identifier == destinationCountryIdentifier);
             actionResult.ActionResult = (destCountry != null && destCountry.PlayerId == currentPlayer.Id)
-                ? DTO.Games.ActionResult.Successful : DTO.Games.ActionResult.NotSuccessful;
+                ? DTO.Games.Result.Successful : DTO.Games.Result.NotSuccessful;
 
             return actionResult;
         }
