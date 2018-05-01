@@ -87,6 +87,12 @@ namespace ImperaPlus.DataAccess.Repositories
                 .OrderByDescending(x => x.LastTurnStartedAt);
         }
 
+        public IEnumerable<Game> FindOpenPasswordFunGames()
+        {
+            return this.GameSet
+                .Where(x => x.State == GameState.Open && x.Password != null && x.CreatedAt <= DateTime.UtcNow.AddDays(-5));
+        }
+
         protected IQueryable<Game> FullGameSet
         {
             get

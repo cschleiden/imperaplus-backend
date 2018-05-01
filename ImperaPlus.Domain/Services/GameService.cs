@@ -28,6 +28,9 @@ namespace ImperaPlus.Domain.Services
             string password,
             string mapTemplate,
             GameOptions options);
+
+        void CleanupFunGames();
+
         void Delete(User currentUser, long gameId);
     }
 
@@ -40,6 +43,14 @@ namespace ImperaPlus.Domain.Services
         {
             this.scope = scope;
             this.gameRepository = unitOfWork.Games;
+        }
+
+        public void CleanupFunGames()
+        {
+            foreach (var game in this.gameRepository.FindOpenPasswordFunGames())
+            {
+                this.gameRepository.Remove(game);
+            }
         }
 
         public Game Create(
