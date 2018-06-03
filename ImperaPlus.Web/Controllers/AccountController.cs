@@ -260,7 +260,7 @@ namespace ImperaPlus.Backend.Controllers
                 LoginProvider = null, // TODO : CS: 
                 Language = user.Language,
                 Roles = roles.ToArray(),
-                AllianceAdmin = user.IsAllianceAdmin,
+                AllianceAdmin = user.AllianceId.HasValue && user.AllianceId != Guid.Empty && user.IsAllianceAdmin, // Can only be admin if in an alliance
                 AllianceId = user.AllianceId
             });
         }

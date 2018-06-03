@@ -94,11 +94,23 @@ namespace ImperaPlus.Domain.Alliances
 
         public void RemoveMember(Guid allianceId, string userId)
         {
-            var alliance = this.GetAlliance(allianceId);
-            this.CheckAdmin();
+            Require.NotEmpty(allianceId, nameof(allianceId));
+            Require.NotNullOrEmpty(userId, nameof(userId));
 
-            var user = this.GetUser(userId);
-            alliance.RemoveMember(user);
+            var alliance = this.GetAlliance(allianceId);            
+
+            if (string.Equals(this.CurrentUser.Id, userId, StringComparison.InvariantCultureIgnoreCase))
+            {
+                this.Leave(allianceId);
+            }
+            else
+            {
+                // Users can remove themselves from an alliance, if the user to be removed is not the calling user, check for admin rights
+                this.CheckAdmin();
+
+                var user = this.GetUser(userId);
+                alliance.RemoveMember(user);
+            }
         }
 
         public void ChangeAdmin(Guid allianceId, string userId, bool isAdmin)
@@ -165,6 +177,7 @@ namespace ImperaPlus.Domain.Alliances
                 }
             }
 
+            user.IsAllianceAdmin = false;
             user.Alliance = null;
             user.AllianceId = null;
         }

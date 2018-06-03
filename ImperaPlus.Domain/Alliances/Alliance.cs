@@ -59,6 +59,9 @@ namespace ImperaPlus.Domain.Alliances
             }
 
             this.Members.Add(user);
+            
+            // Ensure newly added member are not added as admin
+            user.IsAllianceAdmin = false;
         }
 
         public bool IsMember(User user)
@@ -115,6 +118,10 @@ namespace ImperaPlus.Domain.Alliances
 
             var member = this.Members.FirstOrDefault(x => x.Id == user.Id);
             this.Members.Remove(member);
+
+            user.Alliance = null;
+            user.AllianceId = null;
+            user.IsAllianceAdmin = false;
         }
 
         public AllianceJoinRequest RequestToJoin(User user, string reason)
