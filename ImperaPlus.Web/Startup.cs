@@ -87,6 +87,11 @@ namespace ImperaPlus.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            // Work around for https://github.com/aspnet/Home/issues/3132
+            var manager = new Microsoft.AspNetCore.Mvc.ApplicationParts.ApplicationPartManager();
+            manager.ApplicationParts.Add(new Microsoft.AspNetCore.Mvc.ApplicationParts.AssemblyPart(typeof(Startup).Assembly));
+            services.AddSingleton(manager);
+
             services.AddDbContext<ImperaContext>(options =>
             {
                 string connection = Configuration["DBConnection"];
