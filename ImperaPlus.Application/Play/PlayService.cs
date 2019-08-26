@@ -32,11 +32,11 @@ namespace ImperaPlus.Application.Play
         private IRandomGen randomGen;
         private IAttackService attackService;
 
-        public PlayService(IUnitOfWork unitOfWork, IUserProvider userProvider, IVisibilityModifierFactory visibilityModifierFactory, 
+        public PlayService(IUnitOfWork unitOfWork, IMapper mapper, IUserProvider userProvider, IVisibilityModifierFactory visibilityModifierFactory, 
             IAttackService attackService,
             IMapTemplateProvider mapTemplateProvider, 
             IRandomGen randomGen)
-            : base(unitOfWork, userProvider, mapTemplateProvider, visibilityModifierFactory)
+            : base(unitOfWork, mapper, userProvider, mapTemplateProvider, visibilityModifierFactory)
         {
             this.attackService = attackService;
             this.randomGen = randomGen;

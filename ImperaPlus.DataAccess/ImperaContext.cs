@@ -15,7 +15,6 @@ using ImperaPlus.Domain.News;
 using ImperaPlus.Domain.Tournaments;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using StackExchange.Profiling;
 
 namespace ImperaPlus.DataAccess

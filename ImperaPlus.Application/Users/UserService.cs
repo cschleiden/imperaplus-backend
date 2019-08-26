@@ -25,8 +25,8 @@ namespace ImperaPlus.Application.Users
 
         private Domain.Services.IUserService userService;
 
-        public UserService(IUnitOfWork unitOfWork, IUserProvider userProvider, Domain.Services.IUserService userService)
-            : base(unitOfWork, userProvider)
+        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IUserProvider userProvider, Domain.Services.IUserService userService)
+            : base(unitOfWork, mapper, userProvider)
         {
             this.userService = userService;
         }

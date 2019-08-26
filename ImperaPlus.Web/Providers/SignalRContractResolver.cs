@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using Newtonsoft.Json.Serialization;
-using Microsoft.AspNetCore.SignalR.Infrastructure;
 
 namespace ImperaPlus.Web.Providers
 {
@@ -15,7 +14,8 @@ namespace ImperaPlus.Web.Providers
         {
             _defaultContractSerializer = new DefaultContractResolver();
             _camelCaseContractResolver = new CamelCasePropertyNamesContractResolver();
-            _assembly = typeof(Connection).GetTypeInfo().Assembly;
+            // TODO: Fix
+            //_assembly = typeof(Connection).GetTypeInfo().Assembly;
         }
 
 

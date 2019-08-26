@@ -35,8 +35,8 @@ namespace ImperaPlus.Application.Ladder
     {
         private Domain.Services.ILadderService ladderService;
 
-        public LadderService(IUnitOfWork unitOfWork, IUserProvider userProvider, Domain.Services.ILadderService ladderService)
-            : base(unitOfWork, userProvider)
+        public LadderService(IUnitOfWork unitOfWork, IMapper mapper, IUserProvider userProvider, Domain.Services.ILadderService ladderService)
+            : base(unitOfWork, mapper, userProvider)
         {
             this.ladderService = ladderService;
         }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ImperaPlus.Domain.Alliances;
 using ImperaPlus.Domain.Games;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace ImperaPlus.Domain
 {
@@ -58,7 +58,9 @@ namespace ImperaPlus.Domain
 
         public bool IsInRole(IdentityRole role)
         {
-            return this.Roles.Any(x => x.RoleId == role.Id);
+            return false;
+            // TODO: Fix this!
+            //return this.Roles.Any(x => x.RoleId == role.Id);
         }
     }
 }

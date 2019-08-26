@@ -1,4 +1,5 @@
-﻿using ImperaPlus.Domain;
+﻿using AutoMapper;
+using ImperaPlus.Domain;
 using ImperaPlus.Domain.Repositories;
 
 namespace ImperaPlus.Application.Notifications
@@ -13,8 +14,8 @@ namespace ImperaPlus.Application.Notifications
 
     public class NotificationService : BaseService, INotificationService
     {
-        public NotificationService(IUnitOfWork unitOfWork, IUserProvider userProvider)
-            : base(unitOfWork, userProvider)
+        public NotificationService(IUnitOfWork unitOfWork, IMapper mapper, IUserProvider userProvider)
+            : base(unitOfWork, mapper, userProvider)
         {
         }
 

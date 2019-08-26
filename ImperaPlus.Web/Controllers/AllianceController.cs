@@ -19,8 +19,8 @@ namespace ImperaPlus.Backend.Controllers
     {
         private Domain.Alliances.IAllianceService allianceService;
 
-        public AllianceController(Domain.Repositories.IUnitOfWork unitOfWork, Domain.Alliances.IAllianceService allianceService)
-            : base(unitOfWork)
+        public AllianceController(Domain.Repositories.IUnitOfWork unitOfWork, IMapper mapper, Domain.Alliances.IAllianceService allianceService)
+            : base(unitOfWork, mapper)
         {
             this.allianceService = allianceService;
         }
@@ -149,7 +149,7 @@ namespace ImperaPlus.Backend.Controllers
         public IActionResult UpdateRequest(Guid allianceId, Guid requestId, [FromBody] AllianceJoinRequestState state)
         {
             return this.CommitAndMap<AllianceJoinRequest>(
-                this.allianceService.UpdateRequest(allianceId, requestId, Mapper.Map<Domain.Alliances.AllianceJoinRequestState>(state)));
+                this.allianceService.UpdateRequest(allianceId, requestId, this.Mapper.Map<Domain.Alliances.AllianceJoinRequestState>(state)));
         }
     }
 }

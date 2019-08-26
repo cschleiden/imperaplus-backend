@@ -17,14 +17,14 @@ using ImperaPlus.Web;
 using ImperaPlus.Web.Resources;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NLog.Fluent;
+using OpenIddict.Abstractions;
 using OpenIddict.Core;
-using OpenIddict.Models;
+using OpenIddict.EntityFrameworkCore.Models;
 
 namespace ImperaPlus.Backend.Controllers
 {
@@ -150,7 +150,7 @@ namespace ImperaPlus.Backend.Controllers
             return BadRequest(new ErrorResponse(Application.ErrorCode.GenericApplicationError, "Grant type is not supported."));
         }
 
-        private async Task<AuthenticationTicket> CreateTicketAsync(OpenIdConnectRequest request, User user, AuthenticationProperties properties = null)
+        private async Task<AuthenticationTicket> CreateTicketAsync(OpenIdConnectRequest request, User user, Microsoft.AspNetCore.Authentication.AuthenticationProperties properties = null)
         {
             // Set the list of scopes granted to the client application.
             // Note: the offline_access scope must be granted

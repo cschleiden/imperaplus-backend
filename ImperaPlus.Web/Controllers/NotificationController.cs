@@ -4,6 +4,7 @@ using ImperaPlus.DTO;
 using ImperaPlus.DTO.Notifications;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 
 namespace ImperaPlus.Backend.Controllers
 {
@@ -15,8 +16,8 @@ namespace ImperaPlus.Backend.Controllers
     {
         private INotificationService notificationService;
 
-        public NotificationController(IUnitOfWork unitOfWork, INotificationService notificationService)
-            : base(unitOfWork)
+        public NotificationController(IUnitOfWork unitOfWork, IMapper mapper, INotificationService notificationService)
+            : base(unitOfWork, mapper)
         {
             this.notificationService = notificationService;
         }

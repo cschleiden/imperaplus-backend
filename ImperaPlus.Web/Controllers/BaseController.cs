@@ -6,16 +6,18 @@ namespace ImperaPlus.Backend.Controllers
 {
     public class BaseController : Controller
     {
-        private IUnitOfWork unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
+        protected readonly IMapper Mapper;
 
-        protected BaseController(IUnitOfWork unitOfWork)
+        protected BaseController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
+            this.Mapper = mapper;
         }
 
         protected IActionResult Map<T>(object source)
         {
-            return this.Ok(Mapper.Map<T>(source));
+            return this.Ok(this.Mapper.Map<T>(source));
         }
 
         protected IActionResult CommitAndMap<T>(object source)

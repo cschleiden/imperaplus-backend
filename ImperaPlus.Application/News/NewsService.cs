@@ -22,8 +22,9 @@ namespace ImperaPlus.Application.News
     {
         public NewsService(
             IUnitOfWork unitOfWork,
+            IMapper mapper,
             IUserProvider userProvider)
-            : base(unitOfWork, userProvider)
+            : base(unitOfWork, mapper, userProvider)
         {            
         }
 

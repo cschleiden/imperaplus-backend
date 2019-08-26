@@ -1,131 +1,15 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C1FE2446-7358-4458-9B22-7F0297AA2323}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ImperaPlus.DTO</RootNamespace>
-    <AssemblyName>ImperaPlus.DTO</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <AssemblyTitle>ImperaPlus.DTO</AssemblyTitle>
+    <Product>ImperaPlus.DTO</Product>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.*" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.*" />
+    <PackageReference Include="System.Net.Http" Version="4.*" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Account\AccountBindingModels.cs" />
-    <Compile Include="Account\AccountViewModels.cs" />
-    <Compile Include="Account\LoginRequest.cs" />
-    <Compile Include="Account\LoginResponseModel.cs" />
-    <Compile Include="Account\UserInfo.cs" />
-    <Compile Include="Alliances\Alliance.cs" />
-    <Compile Include="Alliances\AllianceCreationOptions.cs" />
-    <Compile Include="Alliances\AllianceJoinRequest.cs" />
-    <Compile Include="Alliances\AllianceJoinRequestState.cs" />
-    <Compile Include="Alliances\AllianceSummary.cs" />
-    <Compile Include="Chat\ChannelInformation.cs" />
-    <Compile Include="Chat\ChatInformation.cs" />
-    <Compile Include="Chat\ChatMessage.cs" />
-    <Compile Include="Chat\User.cs" />
-    <Compile Include="Chat\UserChangeEvent.cs" />
-    <Compile Include="Chat\UserType.cs" />
-    <Compile Include="ErrorResponse.cs" />
-    <Compile Include="Games\ActionResult.cs" />
-    <Compile Include="Games\BonusCard.cs" />
-    <Compile Include="Games\Chat\GameChatMessage.cs" />
-    <Compile Include="Games\Game.cs" />
-    <Compile Include="Games\GameActionResult.cs" />
-    <Compile Include="Games\GameCreationOptions.cs" />
-    <Compile Include="Games\GameOptions.cs" />
-    <Compile Include="Games\GameState.cs" />
-    <Compile Include="Games\GameSummary.cs" />
-    <Compile Include="Games\GameType.cs" />
-    <Compile Include="Games\History\HistoryEntry.cs" />
-    <Compile Include="Games\MapDistributions.cs" />
-    <Compile Include="Games\Map\Connection.cs" />
-    <Compile Include="Games\Map\Continent.cs" />
-    <Compile Include="Games\Map\CountryTemplate.cs" />
-    <Compile Include="Games\Map\Map.cs" />
-    <Compile Include="Games\Map\MapTemplate.cs" />
-    <Compile Include="Games\Map\MapTemplateDescriptor.cs" />
-    <Compile Include="Games\Player.cs" />
-    <Compile Include="Games\PlayerOutcome.cs" />
-    <Compile Include="Games\PlayerState.cs" />
-    <Compile Include="Games\PlayerSummary.cs" />
-    <Compile Include="Games\PlayState.cs" />
-    <Compile Include="Games\Play\AttackOptions.cs" />
-    <Compile Include="Games\Play\MoveOptions.cs" />
-    <Compile Include="Games\Play\PlaceUnitsOptions.cs" />
-    <Compile Include="Games\Team.cs" />
-    <Compile Include="Games\TeamSummary.cs" />
-    <Compile Include="Games\VictoryConditionType.cs" />
-    <Compile Include="Games\VisibilityModifierType.cs" />
-    <Compile Include="Ladder\Admin\CreationOptions.cs" />
-    <Compile Include="Ladder\Admin\MapTemplateUpdate.cs" />
-    <Compile Include="Ladder\Ladder.cs" />
-    <Compile Include="Ladder\LadderStanding.cs" />
-    <Compile Include="Ladder\LadderSummary.cs" />
-    <Compile Include="Messages\FolderInformation.cs" />
-    <Compile Include="Messages\Message.cs" />
-    <Compile Include="Messages\MessageFolder.cs" />
-    <Compile Include="Messages\SendMessage.cs" />
-    <Compile Include="News\NewsContent.cs" />
-    <Compile Include="News\NewsItem.cs" />
-    <Compile Include="Notifications\GameChatMessageNotification.cs" />
-    <Compile Include="Notifications\NewMessageNotification.cs" />
-    <Compile Include="Notifications\Notification.cs" />
-    <Compile Include="Notifications\NotificationSummary.cs" />
-    <Compile Include="Notifications\NotificationType.cs" />
-    <Compile Include="Notifications\PlayersTurnNotification.cs" />
-    <Compile Include="Notifications\PlayerSurrenderedNotification.cs" />
-    <Compile Include="Notifications\TurnEndedNotification.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tournaments\Tournament.cs" />
-    <Compile Include="Tournaments\TournamentGroup.cs" />
-    <Compile Include="Tournaments\TournamentPairing.cs" />
-    <Compile Include="Tournaments\TournamentState.cs" />
-    <Compile Include="Tournaments\TournamentSummary.cs" />
-    <Compile Include="Tournaments\TournamentTeam.cs" />
-    <Compile Include="Tournaments\TournamentTeamState.cs" />
-    <Compile Include="Tournaments\TournamentTeamSummary.cs" />
-    <Compile Include="Users\UserReference.cs" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

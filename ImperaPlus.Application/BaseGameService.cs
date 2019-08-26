@@ -16,11 +16,12 @@ namespace ImperaPlus.Application
         protected readonly IMapTemplateProvider mapTemplateProvider;
 
         public BaseGameService(
-            IUnitOfWork unitOfWork, 
+            IUnitOfWork unitOfWork,
+            IMapper mapper,
             IUserProvider userProvider,
             IMapTemplateProvider mapTemplateProvider,
             IVisibilityModifierFactory visibilityModifierFactory)
-            : base(unitOfWork, userProvider)
+            : base(unitOfWork, mapper, userProvider)
         {
             this.mapTemplateProvider = mapTemplateProvider;
             this.visibilityModifierFactory = visibilityModifierFactory;

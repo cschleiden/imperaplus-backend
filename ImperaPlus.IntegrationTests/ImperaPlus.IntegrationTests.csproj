@@ -1,56 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net461</TargetFramework>
-    <AssemblyName>ImperaPlus.IntegrationTests</AssemblyName>
-    <PackageId>ImperaPlus.IntegrationTests</PackageId>    
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <PackageId>ImperaPlus.IntegrationTests</PackageId>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <PlatformTarget>x64</PlatformTarget>
-  </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\ImperaPlus.Application\ImperaPlus.Application.csproj" />
     <ProjectReference Include="..\ImperaPlus.DTO\ImperaPlus.DTO.csproj" />
     <ProjectReference Include="..\ImperaPlus.GeneratedClient\ImperaPlus.GeneratedClient.csproj" />
     <ProjectReference Include="..\ImperaPlus.TestSupport\ImperaPlus.TestSupport.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ImperaPlus.Web\ImperaPlus.Web.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="1.1.2" />
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection.Abstractions" Version="1.1.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="1.1.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="1.1.3" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR.Server" Version="0.2.0-rtm-22752" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="1.1.17" />
-    <PackageReference Include="MSTest.TestFramework" Version="1.1.17" />
-    <PackageReference Include="Microsoft.Owin" Version="3.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="1.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="1.1.2" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="1.1.2" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="1.1.1" />
-    <PackageReference Include="OpenIddict" Version="1.0.0-beta2-0614" />
-    <PackageReference Include="OpenIddict.Core" Version="1.0.0-beta2-0614" />
-    <PackageReference Include="OpenIddict.Mvc" Version="1.0.0-beta2-0614" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
 </Project>

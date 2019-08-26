@@ -46,8 +46,8 @@ namespace ImperaPlus.Application.Tournaments
         private RoleManager<IdentityRole> roleManager;
         private Domain.Services.ITournamentService tournamentService;
 
-        public TournamentService(IUnitOfWork unitOfWork, IUserProvider userProvider, Domain.Services.ITournamentService tournamentService, RoleManager<IdentityRole> roleManager)
-            : base(unitOfWork, userProvider)
+        public TournamentService(IUnitOfWork unitOfWork, IMapper mapper, IUserProvider userProvider, Domain.Services.ITournamentService tournamentService, RoleManager<IdentityRole> roleManager)
+            : base(unitOfWork, mapper, userProvider)
         {
             this.tournamentService = tournamentService;
             this.roleManager = roleManager;
@@ -172,7 +172,7 @@ namespace ImperaPlus.Application.Tournaments
             return team;
         }
 
-        public async Task<Guid> Create(Tournament tournament)
+        public Task<Guid> Create(Tournament tournament)
         {
             this.CheckAdmin();
 
@@ -207,7 +207,7 @@ namespace ImperaPlus.Application.Tournaments
             this.UnitOfWork.Tournaments.Add(newTournament);
             this.UnitOfWork.Commit();
 
-            return newTournament.Id;
+            return Task.FromResult(newTournament.Id);
         }
 
         public IEnumerable<Tournament> GetAllFull()

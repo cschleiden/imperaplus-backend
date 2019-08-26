@@ -3,11 +3,9 @@ using System.Reflection;
 using System.Threading.Tasks;
 using AspNet.Security.OpenIdConnect.Primitives;
 using Autofac;
-using Autofac.Extensions.DependencyInjection;
 using DataTables.AspNet.AspNetCore;
 using Hangfire;
 using Hangfire.Console;
-using Hangfire.Dashboard;
 using ImperaPlus.Application;
 using ImperaPlus.Application.Jobs;
 using ImperaPlus.DataAccess;
@@ -21,7 +19,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -30,10 +27,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using NLog.Extensions.Logging;
 using NLog.Fluent;
-using NLog.Web;
-using NSwag.AspNetCore;
 using StackExchange.Profiling.Storage;
 
 namespace ImperaPlus.Web
@@ -137,21 +131,22 @@ namespace ImperaPlus.Web
                     }
 
                     // Ensure that we never redirect when user is not authorized, but only return 401 response
-                    options.Cookies.ApplicationCookie.AutomaticAuthenticate = false;
-                    options.Cookies.ApplicationCookie.AutomaticChallenge = false;
-                    options.Cookies.ApplicationCookie.Events = new Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationEvents
-                    {
-                        OnRedirectToLogin = ctx =>
-                        {
-                            ctx.Response.StatusCode = (int)System.Net.HttpStatusCode.Unauthorized;
-                            return Task.CompletedTask;
-                        },
+                    // TODO: Fix for admin flow
+                    //options.Cookies.ApplicationCookie.AutomaticAuthenticate = false;
+                    //options.Cookies.ApplicationCookie.AutomaticChallenge = false;
+                    //options.Cookies.ApplicationCookie.Events = new Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationEvents
+                    //{
+                    //    OnRedirectToLogin = ctx =>
+                    //    {
+                    //        ctx.Response.StatusCode = (int)System.Net.HttpStatusCode.Unauthorized;
+                    //        return Task.CompletedTask;
+                    //    },
 
-                        OnValidatePrincipal = ctx =>
-                        {
-                            return Task.CompletedTask;
-                        }
-                    };
+                    //    OnValidatePrincipal = ctx =>
+                    //    {
+                    //        return Task.CompletedTask;
+                    //    }
+                    //};
 
                     options.ClaimsIdentity.UserNameClaimType = OpenIdConnectConstants.Claims.Name;
                     options.ClaimsIdentity.UserIdClaimType = OpenIdConnectConstants.Claims.Subject;
@@ -376,7 +371,8 @@ namespace ImperaPlus.Web
             dbSeed.Seed(dbContext).Wait();
             Log.Info("...done.").Write();
 
-            AutoMapperConfig.Configure();
+            // TODO: Fix, move to DI
+            //AutoMapperConfig.Configure();
 
             // Hangfire
             app.UseHangfireServer(new BackgroundJobServerOptions
