@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Builder;
+using Autofac.Extensions.DependencyInjection;
 
 namespace ImperaPlus.Web
 {
@@ -15,6 +16,7 @@ namespace ImperaPlus.Web
                 .CaptureStartupErrors(true)
                 .UseSetting("detailedErrors", "true")
                 .UseContentRoot(Directory.GetCurrentDirectory())
+                .ConfigureServices(services => services.AddAutofac())
                 .UseIISIntegration()
                 .UseKestrel()
                 .UseStartup<Startup>()
