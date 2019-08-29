@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using AspNet.Security.OpenIdConnect.Primitives;
 using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using DataTables.AspNet.AspNetCore;
 using Hangfire;
 using Hangfire.Console;
@@ -465,13 +466,13 @@ namespace ImperaPlus.Web
 
             builder.RegisterType<BackgroundJobClient>().AsImplementedInterfaces();
 
-
-            //builder.Populate(services);
+            builder.Populate(services);
 
             IContainer container = builder.Build();
             Startup.Container = container;
 
-            return container.Resolve<IServiceProvider>();
+            // return container.Resolve<IServiceProvider>();
+            return new AutofacServiceProvider(Startup.Container);
         }
     }
 }

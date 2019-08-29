@@ -13,6 +13,7 @@ using ImperaPlus.Domain.Ladders;
 using ImperaPlus.Domain.Map;
 using ImperaPlus.Domain.News;
 using ImperaPlus.Domain.Tournaments;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Profiling;
@@ -124,6 +125,8 @@ namespace ImperaPlus.DataAccess
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<IdentityUserLogin<int>>().HasKey(p => new { p.UserId, p.LoginProvider });
 
             // Games            
             modelBuilder.Entity<Game>()

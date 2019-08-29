@@ -14,7 +14,6 @@
     <Compile Remove="Migrations\20171108030440_FixGameDelete.Designer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="wwwroot\admin\bootstrap-theme.css" />
     <None Include="wwwroot\admin\bootstrap-theme.min.css" />
     <None Include="wwwroot\admin\bootstrap.css" />

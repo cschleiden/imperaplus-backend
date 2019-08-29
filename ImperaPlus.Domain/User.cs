@@ -38,6 +38,11 @@ namespace ImperaPlus.Domain
         public DateTime LastLogin { get; set; }
 
         /// <summary>
+        /// Navigation property for this users login accounts.
+        /// </summary>
+        public virtual ICollection<IdentityUserLogin<int>> Logins { get; } = new List<IdentityUserLogin<int>>();
+
+        /// <summary>
         /// Hash of Impera V1 password for migration
         /// </summary>
         public string LegacyPasswordHash { get; set; }
