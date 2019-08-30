@@ -232,7 +232,7 @@ namespace ImperaPlus.Web
                 {
                     (config.Storage as MemoryCacheStorage).CacheDuration = TimeSpan.FromMinutes(60);
 
-                    config.RouteBasePath = "~/admin/profiler";
+                    config.RouteBasePath = "/admin/profiler";
                 })
                 .AddEntityFramework();
 
@@ -268,6 +268,8 @@ namespace ImperaPlus.Web
             {
                 options.EnableDetailedErrors = true;
             });
+
+            services.AddOpenApiDocument();
 
             return this.RegisterDependencies(services);
         }
@@ -337,15 +339,9 @@ namespace ImperaPlus.Web
 
             app.UseMiniProfiler();
 
-            app.UseSwaggerUi(settings =>
-            {
-                // settings.UseJsonEditor = true;
-                // TODO: FIX: Still needed?
-                //settings.GeneratorSettings.DefaultEnumHandling = NJsonSchema.EnumHandling.String;
-                //settings.GeneratorSettings.IsAspNetCore = true;
-                //settings.GeneratorSettings.DefaultPropertyNameHandling = NJsonSchema.PropertyNameHandling.CamelCase;
-                //settings.GeneratorSettings.OperationProcessors.Add(new SwaggerFormOperationProcessor());
-            });
+            // Configure swagger generation & UI
+            app.UseOpenApi();
+            app.UseSwaggerUi3();
 
             app.UseMvc(routes =>
             {
