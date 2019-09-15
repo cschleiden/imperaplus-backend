@@ -38,7 +38,7 @@ namespace ImperaPlus.Integration.Tests
             {
                 var settings = new JsonSerializerSettings();
                 settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                settings.Converters.Add(new StringEnumConverter(false));
+                settings.Converters.Add(new StringEnumConverter(new CamelCaseNamingStrategy(), false));
                 return settings;
             };
 
