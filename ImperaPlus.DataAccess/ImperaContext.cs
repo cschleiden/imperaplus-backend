@@ -126,7 +126,21 @@ namespace ImperaPlus.DataAccess
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<IdentityUserLogin<int>>().HasKey(p => new { p.UserId, p.LoginProvider });
+            modelBuilder.Entity<IdentityUserLogin<string>>().HasKey(p => new { p.UserId, p.LoginProvider });
+
+            modelBuilder.Entity<User>()
+                .HasMany(e => e.Logins)
+                .WithOne()
+                .HasForeignKey(e => e.UserId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<User>()
+                .HasMany(e => e.Roles)
+                .WithOne()
+                .HasForeignKey(e => e.UserId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Games            
             modelBuilder.Entity<Game>()

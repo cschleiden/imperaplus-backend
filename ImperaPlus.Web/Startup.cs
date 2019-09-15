@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using AspNet.Security.OpenIdConnect.Primitives;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using AutoMapper;
 using DataTables.AspNet.AspNetCore;
 using Hangfire;
 using Hangfire.Console;
@@ -32,6 +34,7 @@ using Newtonsoft.Json.Converters;
 using NLog.Extensions.Logging;
 using NLog.Fluent;
 using NLog.Web;
+using OpenIddict.Abstractions;
 using StackExchange.Profiling.Storage;
 
 namespace ImperaPlus.Web
@@ -178,6 +181,10 @@ namespace ImperaPlus.Web
                         c.AllowPasswordFlow();
                         c.AllowRefreshTokenFlow();
                         c.EnableTokenEndpoint("/api/Account/Token");
+
+                        c.RegisterScopes(OpenIddictConstants.Scopes.Roles);
+
+                        c.AcceptAnonymousClients();                    
                     });
 
                     // TODO: FIX: Is this still required?
@@ -286,7 +293,6 @@ namespace ImperaPlus.Web
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            app.AddNLogWeb();
             NLog.LogManager.Configuration.Variables["configDir"] = Configuration["LogDir"];
 
             //if (env.IsDevelopment())
@@ -297,12 +303,11 @@ namespace ImperaPlus.Web
 
             // Enable Cors
             app.UseCors(b => b
-                .AllowAnyOrigin()
+                .WithOrigins("http://localhost:8080", "https://dev.imperaonline.de", "https://imperaonline.de", "https://www.imperaonline.de")
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .WithExposedHeaders("X-MiniProfiler-Ids")
-                .DisallowCredentials()
-                .Build());
+                .AllowCredentials());
 
             // Auth
             app.UseAuthentication();
@@ -381,9 +386,6 @@ namespace ImperaPlus.Web
             dbSeed.Seed(dbContext).Wait();
             Log.Info("...done.").Write();
 
-            // TODO: Fix, move to DI
-            //AutoMapperConfig.Configure();
-
             // Hangfire
             app.UseHangfireServer(new BackgroundJobServerOptions
             {
@@ -409,6 +411,27 @@ namespace ImperaPlus.Web
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             var builder = TestContainerBuilder ?? new ContainerBuilder();
+
+            // Register AutoMapper
+            var assemblyNames = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
+            var assembliesTypes = assemblyNames
+                .Where(a => a.Name.Contains("ImperaPlus", StringComparison.OrdinalIgnoreCase))
+                .SelectMany(an => Assembly.Load(an).GetTypes())
+                .Where(p => typeof(Profile).IsAssignableFrom(p) && p.IsPublic && !p.IsAbstract)
+                .Distinct();
+
+            var autoMapperProfiles = assembliesTypes
+                .Select(p => (Profile)Activator.CreateInstance(p)).ToList();
+
+            builder.Register(ctx => new MapperConfiguration(cfg =>
+            {
+                foreach (var profile in autoMapperProfiles)
+                {
+                    cfg.AddProfile(profile);
+                }
+            }));
+
+            builder.Register(ctx => ctx.Resolve<MapperConfiguration>().CreateMapper()).As<IMapper>().InstancePerLifetimeScope();
 
             // Messaging
             if (Environment.IsDevelopment())

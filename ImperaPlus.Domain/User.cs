@@ -40,7 +40,12 @@ namespace ImperaPlus.Domain
         /// <summary>
         /// Navigation property for this users login accounts.
         /// </summary>
-        public virtual ICollection<IdentityUserLogin<int>> Logins { get; } = new List<IdentityUserLogin<int>>();
+        public virtual ICollection<IdentityUserLogin<string>> Logins { get; } = new List<IdentityUserLogin<string>>();
+
+        /// <summary>
+        /// Navigation property for this users login accounts.
+        /// </summary>
+        public virtual ICollection<IdentityUserRole<string>> Roles { get; } = new List<IdentityUserRole<string>>();
 
         /// <summary>
         /// Hash of Impera V1 password for migration
@@ -63,9 +68,7 @@ namespace ImperaPlus.Domain
 
         public bool IsInRole(IdentityRole role)
         {
-            return false;
-            // TODO: Fix this!
-            //return this.Roles.Any(x => x.RoleId == role.Id);
+            return this.Roles.Any(x => x.RoleId == role.Id);
         }
     }
 }

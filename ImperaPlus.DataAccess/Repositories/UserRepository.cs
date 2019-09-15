@@ -20,9 +20,8 @@ namespace ImperaPlus.DataAccess.Repositories
 
         public User FindByIdWithRoles(string id)
         {
-            // TODO: FIX!
             return this.DbSet
-                //.Include(x => x.Roles)
+                .Include(x => x.Roles)
                 .FirstOrDefault(x => x.Id == id);
         }
 

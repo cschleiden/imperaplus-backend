@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Autofac.Extensions.DependencyInjection;
+using NLog.Web;
 
 namespace ImperaPlus.Web
 {
@@ -9,20 +10,21 @@ namespace ImperaPlus.Web
     {
         public static void Main(string[] args)
         {
-            var host = new WebHostBuilder()
-#if !DEBUG
-                .UseApplicationInsights()
-#endif
-                .CaptureStartupErrors(true)
-                .UseSetting("detailedErrors", "true")
-                .UseContentRoot(Directory.GetCurrentDirectory())
-                .ConfigureServices(services => services.AddAutofac())
-                .UseIISIntegration()
-                .UseKestrel()
-                .UseStartup<Startup>()
-                .Build();
-
-            host.Run();
+            BuildWebHost(args).Run();
         }
+
+        public static IWebHost BuildWebHost(string[] args) => new WebHostBuilder()
+            .UseNLog()
+#if !DEBUG
+            .UseApplicationInsights()
+#endif
+            .CaptureStartupErrors(true)
+            .UseSetting("detailedErrors", "true")
+            .UseContentRoot(Directory.GetCurrentDirectory())
+            .ConfigureServices(services => services.AddAutofac())
+            .UseIISIntegration()
+            .UseKestrel()
+            .UseStartup<Startup>()
+            .Build();
     }
 }
