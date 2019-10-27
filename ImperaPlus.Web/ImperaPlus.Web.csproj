@@ -1,70 +1,67 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-  <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyName>ImperaPlus.Web</AssemblyName>
-    <OutputType>Exe</OutputType>
-    <PackageId>ImperaPlus.Web</PackageId>
-    <UserSecretsId>aspnet-ImperaPlus.Web-20161015033223</UserSecretsId>
-    <ApplicationInsightsResourceId>/subscriptions/e1016674-2664-4ce2-b009-195e0c5c6120/resourcegroups/Impera/providers/microsoft.insights/components/Impera_Backend</ApplicationInsightsResourceId>
-    <ApplicationInsightsAnnotationResourceId>/subscriptions/e1016674-2664-4ce2-b009-195e0c5c6120/resourcegroups/Impera/providers/microsoft.insights/components/Impera_Backend</ApplicationInsightsAnnotationResourceId>
-  </PropertyGroup>  
-  <ItemGroup>
-    <Compile Remove="Migrations\20171108030440_FixGameDelete.cs" />
-    <Compile Remove="Migrations\20171108030440_FixGameDelete.Designer.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="wwwroot\admin\bootstrap-theme.css" />
-    <None Include="wwwroot\admin\bootstrap-theme.min.css" />
-    <None Include="wwwroot\admin\bootstrap.css" />
-    <None Include="wwwroot\admin\bootstrap.min.css" />
-    <None Include="wwwroot\admin\font-awesome.css" />
-    <None Include="wwwroot\admin\fonts\fontawesome-webfont.eot" />
-    <None Include="wwwroot\admin\fonts\fontawesome-webfont.svg" />
-    <None Include="wwwroot\admin\fonts\fontawesome-webfont.ttf" />
-    <None Include="wwwroot\admin\fonts\fontawesome-webfont.woff" />
-    <None Include="wwwroot\admin\fonts\FontAwesome.otf" />
-    <None Include="wwwroot\admin\jquery.dataTables.css" />
-    <None Include="wwwroot\admin\metisMenu.css" />
-    <None Include="wwwroot\admin\morris.css" />
-    <None Include="wwwroot\admin\sb-admin-2.css" />
-    <None Include="wwwroot\admin\site.css" />
-    <None Include="wwwroot\admin\sort_asc.png" />
-    <None Include="wwwroot\admin\sort_asc_disabled.png" />
-    <None Include="wwwroot\admin\sort_both.png" />
-    <None Include="wwwroot\admin\sort_desc.png" />
-    <None Include="wwwroot\admin\sort_desc_disabled.png" />
-    <None Update="wwwroot\**\*">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </None>
-    <ProjectReference Include="..\ImperaPlus.Application\ImperaPlus.Application.csproj" />
-    <ProjectReference Include="..\ImperaPlus.DataAccess\ImperaPlus.DataAccess.csproj" />
-    <ProjectReference Include="..\ImperaPlus.DTO\ImperaPlus.DTO.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Migrations\" />
-  </ItemGroup>  
-  <ItemGroup>
-    <PackageReference Include="DataTables.AspNet.AspNetCore" Version="2.0.2" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.7.1" />
-    <PackageReference Include="Microsoft.AspNetCore.App">
-      <PrivateAssets Condition="'%(PackageReference.Version)' == ''">all</PrivateAssets>
-      <Publish Condition="'%(PackageReference.Version)' == ''">true</Publish>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.6" />
-    <PackageReference Include="mnailgun" Version="3.0.2" />
-    <PackageReference Include="nlog" Version="4.6.7" />
-    <PackageReference Include="NLog.Web.AspNetCore" Version="4.8.4" />
-    <PackageReference Include="NSwag.AspNetCore" Version="13.0.6" />
-    <PackageReference Include="OpenIddict" Version="2.0.0" />
-    <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="2.0.0" />
-    <PackageReference Include="MiniProfiler.EntityFrameworkCore" Version="4.0.180" />
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.4.0" />
-  </ItemGroup>
-  <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk.Web">
+    <PropertyGroup>
+        <TargetFramework>netcoreapp2.2</TargetFramework>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <AssemblyName>ImperaPlus.Web</AssemblyName>
+        <OutputType>Exe</OutputType>
+        <PackageId>ImperaPlus.Web</PackageId>
+        <UserSecretsId>aspnet-ImperaPlus.Web-20161015033223</UserSecretsId>
+        <ApplicationInsightsResourceId>/subscriptions/e1016674-2664-4ce2-b009-195e0c5c6120/resourcegroups/Impera/providers/microsoft.insights/components/Impera_Backend</ApplicationInsightsResourceId>
+        <ApplicationInsightsAnnotationResourceId>/subscriptions/e1016674-2664-4ce2-b009-195e0c5c6120/resourcegroups/Impera/providers/microsoft.insights/components/Impera_Backend</ApplicationInsightsAnnotationResourceId>
+    </PropertyGroup>
     <ItemGroup>
-      <DocFile Include="bin\$(Configuration)\$(TargetFramework)\*.xml" />
+        <None Include="wwwroot\admin\bootstrap-theme.css" />
+        <None Include="wwwroot\admin\bootstrap-theme.min.css" />
+        <None Include="wwwroot\admin\bootstrap.css" />
+        <None Include="wwwroot\admin\bootstrap.min.css" />
+        <None Include="wwwroot\admin\font-awesome.css" />
+        <None Include="wwwroot\admin\fonts\fontawesome-webfont.eot" />
+        <None Include="wwwroot\admin\fonts\fontawesome-webfont.svg" />
+        <None Include="wwwroot\admin\fonts\fontawesome-webfont.ttf" />
+        <None Include="wwwroot\admin\fonts\fontawesome-webfont.woff" />
+        <None Include="wwwroot\admin\fonts\FontAwesome.otf" />
+        <None Include="wwwroot\admin\jquery.dataTables.css" />
+        <None Include="wwwroot\admin\metisMenu.css" />
+        <None Include="wwwroot\admin\morris.css" />
+        <None Include="wwwroot\admin\sb-admin-2.css" />
+        <None Include="wwwroot\admin\site.css" />
+        <None Include="wwwroot\admin\sort_asc.png" />
+        <None Include="wwwroot\admin\sort_asc_disabled.png" />
+        <None Include="wwwroot\admin\sort_both.png" />
+        <None Include="wwwroot\admin\sort_desc.png" />
+        <None Include="wwwroot\admin\sort_desc_disabled.png" />
+        <None Update="wwwroot\**\*">
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </None>
+        <ProjectReference Include="..\ImperaPlus.Application\ImperaPlus.Application.csproj" />
+        <ProjectReference Include="..\ImperaPlus.DataAccess\ImperaPlus.DataAccess.csproj" />
+        <ProjectReference Include="..\ImperaPlus.DTO\ImperaPlus.DTO.csproj" />
     </ItemGroup>
-    <Copy SourceFiles="@(DocFile)" DestinationFolder="$(PublishDir)" SkipUnchangedFiles="false" />
-  </Target>
+    <ItemGroup>
+        <Folder Include="Migrations\" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="DataTables.AspNet.AspNetCore" Version="2.0.2" />
+        <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.7.1" />
+        <PackageReference Include="Microsoft.AspNetCore.App">
+            <PrivateAssets Condition="'%(PackageReference.Version)' == ''">all</PrivateAssets>
+            <Publish Condition="'%(PackageReference.Version)' == ''">true</Publish>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.6" />
+        <PackageReference Include="mnailgun" Version="3.0.2" />
+        <PackageReference Include="nlog" Version="4.6.7" />
+        <PackageReference Include="NLog.Web.AspNetCore" Version="4.8.4" />
+        <PackageReference Include="NSwag.AspNetCore" Version="13.0.6" />
+        <PackageReference Include="OpenIddict" Version="2.0.0" />
+        <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="2.0.0" />
+        <PackageReference Include="MiniProfiler.EntityFrameworkCore" Version="4.0.180" />
+        <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.4.0" />
+    </ItemGroup>
+    <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
+        <ItemGroup>
+            <DocFile Include="bin\$(Configuration)\$(TargetFramework)\*.xml" />
+        </ItemGroup>
+        <Copy SourceFiles="@(DocFile)" DestinationFolder="$(PublishDir)" SkipUnchangedFiles="false" />
+    </Target>
 </Project>
