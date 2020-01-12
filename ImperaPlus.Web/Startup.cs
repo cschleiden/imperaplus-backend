@@ -24,6 +24,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,9 +32,8 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using NLog.Extensions.Logging;
+using Newtonsoft.Json.Serialization;
 using NLog.Fluent;
-using NLog.Web;
 using OpenIddict.Abstractions;
 using StackExchange.Profiling.Storage;
 
@@ -57,12 +57,10 @@ namespace ImperaPlus.Web
 
         public Startup(IHostingEnvironment env)
         {
-            env.ConfigureNLog("nlog.config");
-
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                // Environment specific settings, i.e., setting db connecting string. Do not create in version control repository.
+                // Environment specific settings, i.e., setting db connection string. Do not create in version control repository.
                 .AddJsonFile($"appsettings.environment.json", optional: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
@@ -184,7 +182,7 @@ namespace ImperaPlus.Web
 
                         c.RegisterScopes(OpenIddictConstants.Scopes.Roles);
 
-                        c.AcceptAnonymousClients();                    
+                        c.AcceptAnonymousClients();
                     });
 
                     // TODO: FIX: Is this still required?
@@ -200,14 +198,8 @@ namespace ImperaPlus.Web
                     // To work around this limitation, the access token is retrieved from the query string.
                     OnRetrieveToken = context =>
                     {
-                        context.Token = context.Request.Query["bearer_token"];
-
-                        if (string.IsNullOrEmpty(context.Token))
-                        {
-                            context.Token = context.Request.Cookies["bearer_token"];
-                        }
-
-                        return Task.FromResult(0);
+                        context.Token = context.Request.Query["access_token"];
+                        return Task.CompletedTask;
                     }
                 };
             });
@@ -267,14 +259,23 @@ namespace ImperaPlus.Web
             services.AddSingleton(_ => new JsonSerializer
             {
                 DateTimeZoneHandling = DateTimeZoneHandling.Utc,
-                DateFormatHandling = DateFormatHandling.IsoDateFormat,
-                ContractResolver = new SignalRContractResolver()
+                DateFormatHandling = DateFormatHandling.IsoDateFormat
             });
 
-            services.AddSignalR(options =>
-            {
-                options.EnableDetailedErrors = true;
-            });
+            services
+                .AddSignalR(options =>
+                {
+                    options.EnableDetailedErrors = true;
+                })
+                .AddJsonProtocol(options =>
+                {
+                    options.PayloadSerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                    options.PayloadSerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
+                    options.PayloadSerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
+                });
+
+            // Have SignalR use the name claim as user id
+            services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
 
             services.AddOpenApiDocument();
 
@@ -289,10 +290,6 @@ namespace ImperaPlus.Web
             ImperaContext dbContext,
             DbSeed dbSeed)
         {
-            loggerFactory.AddNLog();
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
-
             NLog.LogManager.Configuration.Variables["configDir"] = Configuration["LogDir"];
 
             //if (env.IsDevelopment())
@@ -469,8 +466,7 @@ namespace ImperaPlus.Web
             var jsonSettings = new JsonSerializerSettings()
             {
                 DateTimeZoneHandling = Newtonsoft.Json.DateTimeZoneHandling.Utc,
-                DateFormatHandling = Newtonsoft.Json.DateFormatHandling.IsoDateFormat,
-                ContractResolver = new SignalRContractResolver()
+                DateFormatHandling = Newtonsoft.Json.DateFormatHandling.IsoDateFormat
             };
             jsonSettings.Converters.Add(new StringEnumConverter
             {

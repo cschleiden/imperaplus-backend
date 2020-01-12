@@ -10,6 +10,9 @@
         <ApplicationInsightsResourceId>/subscriptions/e1016674-2664-4ce2-b009-195e0c5c6120/resourcegroups/Impera/providers/microsoft.insights/components/Impera_Backend</ApplicationInsightsResourceId>
         <ApplicationInsightsAnnotationResourceId>/subscriptions/e1016674-2664-4ce2-b009-195e0c5c6120/resourcegroups/Impera/providers/microsoft.insights/components/Impera_Backend</ApplicationInsightsAnnotationResourceId>
     </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+      <NoWarn>1701;1702;1591</NoWarn>
+    </PropertyGroup>
     <ItemGroup>
         <None Include="wwwroot\admin\bootstrap-theme.css" />
         <None Include="wwwroot\admin\bootstrap-theme.min.css" />
@@ -40,6 +43,7 @@
     </ItemGroup>
     <ItemGroup>
         <Folder Include="Migrations\" />
+        <Folder Include="logs\" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="DataTables.AspNet.AspNetCore" Version="2.0.2" />
