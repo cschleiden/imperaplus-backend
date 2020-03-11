@@ -947,7 +947,7 @@ var country468 = new CountryTemplate("468", "Niger") { X = 602, Y = 6056 };
 mapTemplate.Countries.Add(country468);
 var country469 = new CountryTemplate("469", "Tschad") { X = 733, Y = 6242 };
 mapTemplate.Countries.Add(country469);
-var country470 = new CountryTemplate("470", "�quatorialguinea") { X = 372, Y = 6361 };
+var country470 = new CountryTemplate("470", "Äquatorialguinea") { X = 372, Y = 6361 };
 mapTemplate.Countries.Add(country470);
 var country471 = new CountryTemplate("471", "Kamerun") { X = 439, Y = 6341 };
 mapTemplate.Countries.Add(country471);
