@@ -67,7 +67,7 @@ var country28 = new CountryTemplate("28", "Ost-Shara") { X = 1060, Y = 320 };
 mapTemplate.Countries.Add(country28);
 var country29 = new CountryTemplate("29", "Sued-Shara") { X = 1014, Y = 414 };
 mapTemplate.Countries.Add(country29);
-var country30 = new CountryTemplate("30", "Meervolk H�fen") { X = 1032, Y = 456 };
+var country30 = new CountryTemplate("30", "Meervolk Häfen") { X = 1032, Y = 456 };
 mapTemplate.Countries.Add(country30);
 var country31 = new CountryTemplate("31", "WestlichesLdW") { X = 684, Y = 626 };
 mapTemplate.Countries.Add(country31);

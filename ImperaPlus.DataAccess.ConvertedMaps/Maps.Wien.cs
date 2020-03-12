@@ -33,7 +33,7 @@ var country11 = new CountryTemplate("11", "Doebling") { X = 325, Y = 230 };
 mapTemplate.Countries.Add(country11);
 var country12 = new CountryTemplate("12", "Hernals") { X = 251, Y = 322 };
 mapTemplate.Countries.Add(country12);
-var country13 = new CountryTemplate("13", "W�hring") { X = 257, Y = 277 };
+var country13 = new CountryTemplate("13", "Währing") { X = 257, Y = 277 };
 mapTemplate.Countries.Add(country13);
 var country14 = new CountryTemplate("14", "Penzing") { X = 131, Y = 380 };
 mapTemplate.Countries.Add(country14);
