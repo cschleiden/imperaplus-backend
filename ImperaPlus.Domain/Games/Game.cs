@@ -570,7 +570,7 @@ namespace ImperaPlus.Domain.Games
                 throw new DomainException(ErrorCode.OriginCountryNotOwnedByTeam, "Can only initiate actions from countries that belong to the same team");
             }
 
-            if (sourceCountry.PlayerId == destCountry.PlayerId)
+            if (this.CurrentPlayerId == destCountry.PlayerId)
             {
                 throw new DomainException(ErrorCode.AttackOwnCountries, "Cannot attack own countries");
             }
