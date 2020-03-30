@@ -187,3 +187,4 @@ src/modules/**/*.js
 /.vs
 
 ImperaPlus.Web/internal-nlog.txt
+dist

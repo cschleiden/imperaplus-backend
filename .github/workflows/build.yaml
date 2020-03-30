@@ -1,0 +1,48 @@
+# Deploy any change to master to the dev environment
+name: Build & Test & Deploy to dev
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    env:
+      Website: dev.imperaonline.de
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.201
+    - name: Build deployment package with dotnet
+      run: dotnet build --configuration Release
+    - name: Build deployment package
+      run: dotnet msbuild /p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="drop.zip" /p:DeployTarget=Package /p:DeployIisAppPath=${env:Website}
+    - name: run tests
+      run: dotnet test    
+    - uses: actions/upload-artifact@v1
+      with:
+        name: build
+        path: drop.zip
+  deploy:
+    needs: build
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/download-artifact@v1
+      with:
+        name: build
+        path: drop.zip
+    - run: ./scripts/deployBackend.ps1 -Source "${env:GITHUB_WORKSPACE}\drop.zip" -Destination "${env:Website}/${env:DestFolder}" -DestinationComputer "https://imperaonline.de:8172/msdeploy.axd?site=${env:Website}" -AdditionalArguments "-verbose -setParam:'IIS Web Application Name'=$(Website) -enableRule:AppOffline -skip:objectName=filePath,absolutePath=appsettings..*.json -skip:skipaction='Delete',objectname='filePath',absolutepath='.*\\wwwroot\\.*' -skip:skipaction='Delete',objectname='dirPath',absolutepath='.*\\wwwroot\\assets'
+ -preSync:runCommand='C:\Windows\System32\inetsrv\appcmd stop APPPOOL ${env:AppPool}' -source:webserver -dest:auto,computername=Server -verbose -postSync:runCommand='C:\Windows\System32\inetsrv\appcmd start APPPOOL ${env:AppPool}'" -Username ${env:Login} -Password ${env:Password} -AuthType "basic"
+      env: 
+        DestFolder: wwwroot
+        Login: ${{ secrets.Login }}
+        Password: ${{ secrets.Password }}
+        AppPool: dev.imperaonline.de(domain)(4.0)(pool)
