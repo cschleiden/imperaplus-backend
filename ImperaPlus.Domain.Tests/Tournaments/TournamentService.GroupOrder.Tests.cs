@@ -105,14 +105,14 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             var g1 = tournament.Groups.ElementAt(0).Teams.OrderBy(t => t.GroupOrder).ToArray();
             this.AssertArray(new[]
             {
-                teams1[0], teams1[1], teams1[2], teams1[3]
-            }, g1);
+                teams1[0].Id, teams1[1].Id, teams1[2].Id, teams1[3].Id
+            }, g1.Select(x => x.Id).ToArray());
 
             var g2 = tournament.Groups.ElementAt(1).Teams.OrderBy(t => t.GroupOrder).ToArray();
             this.AssertArray(new[]
             {
-                teams2[1], teams2[3], teams2[0], teams2[2]
-            }, g2);
+                teams2[1].Id, teams2[3].Id, teams2[0].Id, teams2[2].Id
+            }, g2.Select(x => x.Id).ToArray());
         }
 
         private void AssertArray<T>(T[] expected, T[] v)
