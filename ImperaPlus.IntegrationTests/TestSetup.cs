@@ -30,9 +30,9 @@ namespace ImperaPlus.IntegrationTests
             var startupAssembly = typeof(Startup).GetTypeInfo().Assembly;
             var contentRoot = GetProjectPath(string.Empty, startupAssembly);
 
+            // User account do not need verification
             Startup.RequireUserConfirmation = false;
             Startup.RunningUnderTest = true;
-
             Application.TestSupport.RunningUnderTest = true;
 
             JsonConvert.DefaultSettings = () =>
