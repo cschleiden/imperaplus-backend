@@ -19,16 +19,14 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.201
-    - name: Build deployment package with dotnet
-      run: dotnet build --configuration Release
     - name: Build deployment package
-      run: dotnet msbuild /p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="drop.zip" /p:DeployTarget=Package /p:DeployIisAppPath=${env:Website}
+      run: dotnet msbuild /p:Configuration:Release /p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="drop.zip" /p:DeployTarget=Package /p:DeployIisAppPath=${env:Website}
     - name: run tests
       run: dotnet test    
     - uses: actions/upload-artifact@v1
       with:
         name: build
-        path: drop.zip
+        path: ImperaPlus.Web/drop.zip
   deploy:
     needs: build
     runs-on: windows-latest
