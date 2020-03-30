@@ -19,6 +19,8 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.201
+    - name: Build with dotnet
+      run: dotnet build --configuration Release
     - name: Build deployment package
       run: dotnet msbuild /p:Configuration=Release /p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="drop.zip" /p:DeployTarget=Package /p:DeployIisAppPath=${env:Website}
     - name: run tests
