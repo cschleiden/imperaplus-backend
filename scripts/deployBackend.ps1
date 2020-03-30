@@ -62,8 +62,8 @@ if (-not $DestinationComputer -or -not $AuthType) {
 
 [string[]] $arguments = 
  "-verb:sync",
- "-source:contentPath='$Source'",
- "-dest:contentPath='$Destination',$($remoteArguments)includeAcls='False'",
+ "-source:package='$Source'",
+ "-dest:auto,$($remoteArguments)includeAcls='False'",
  "-allowUntrusted"
 
 $fullCommand = """$msdeploy"" $arguments $AdditionalArguments"
