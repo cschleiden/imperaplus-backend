@@ -112,7 +112,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             this.AssertArray(new[]
             {
                 teams2[1].Id, teams2[3].Id, teams2[0].Id, teams2[2].Id
-            }, g2.Select(x => x.Id).ToArray());
+            }, g2.Select(x => x.Id).ToArray()); 
         }
 
         private void AssertArray<T>(T[] expected, T[] v)

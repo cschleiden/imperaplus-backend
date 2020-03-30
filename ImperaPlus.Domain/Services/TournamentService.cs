@@ -221,7 +221,7 @@ namespace ImperaPlus.Domain.Services
                         }
 
                         // Fallback to random Id...
-                        return teamA.Id.CompareTo(teamB.Id);
+                        return teamA.GroupOrder.CompareTo(teamB.GroupOrder);
                     }))
                     .ToList();
 
