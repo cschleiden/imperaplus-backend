@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using System.Threading.Tasks;
-using Hangfire.Server;
 using Hangfire.Console;
+using Hangfire.Server;
 
 namespace ImperaPlus.Application.Jobs
 {

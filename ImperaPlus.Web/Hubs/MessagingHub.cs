@@ -6,18 +6,19 @@ using System.Threading.Tasks;
 using Autofac;
 using ImperaPlus.Application.Chat;
 using ImperaPlus.DTO.Chat;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.AspNetCore.SignalR.Hubs;
 using Microsoft.Extensions.Logging;
-
+    
 namespace ImperaPlus.Web.Hubs
 {
-    public interface IMessagingHubContext : IHub
+    public interface IMessagingHubContext
     {
     }
 
-    [HubName("chat")]
+    // TODO: FIX
+    //[HubName("chat")]
     [Authorize]
     public class MessagingHub : Hub, IMessagingHubContext
     {
@@ -48,16 +49,16 @@ namespace ImperaPlus.Web.Hubs
             base.Dispose(disposing);
         }
 
-        public override Task OnConnected()
+        public override async Task OnConnectedAsync()
         {
             // Track connection
             string userName = this.GetUser().UserName;
             Connections.Add(userName, this.Context.ConnectionId);
 
-            return base.OnConnected();
+            await base.OnConnectedAsync();
         }
 
-        public override Task OnDisconnected(bool stopCalled)
+        public async override Task OnDisconnectedAsync(Exception exception)        
         {
             string name;
             IEnumerable<string> channels;
@@ -66,7 +67,7 @@ namespace ImperaPlus.Web.Hubs
                 // Remove clients from groups
                 foreach (var channel in channels)
                 {
-                    this.Clients.OthersInGroup(channel).leave(new UserChangeEvent
+                    await this.Clients.OthersInGroup(channel).SendAsync("leave", new UserChangeEvent
                     {
                         ChannelIdentifier = channel,
                         UserName = name
@@ -74,25 +75,14 @@ namespace ImperaPlus.Web.Hubs
                 }
             }
 
-            return base.OnDisconnected(stopCalled);
-        }
-
-        public override Task OnReconnected()
-        {
-            string userName = this.GetUser().UserName;
-            if (!Connections.GetConnections(userName).Contains(Context.ConnectionId))
-            {
-                Connections.Add(userName, Context.ConnectionId);
-            }
-
-            return base.OnReconnected();
+            await base.OnDisconnectedAsync(exception);
         }
 
         /// <summary>
         /// Initialize connection to the chat and notify server that client is ready to receive messages
         /// </summary>
         /// <returns></returns>
-        public ChatInformation Init()
+        public async Task<ChatInformation> Init()
         {
             string userId = this.GetUserId();
             string userName = this.GetUser().UserName;
@@ -102,11 +92,11 @@ namespace ImperaPlus.Web.Hubs
             var channels = chatService.GetChannelInformationForUser(userId).Result;
             foreach (var channel in channels)
             {
-                this.Groups.Add(this.Context.ConnectionId, channel.Identifier);
+                await this.Groups.AddToGroupAsync(this.Context.ConnectionId, channel.Identifier);
                 Connections.JoinGroup(userName, channel.Identifier);
 
                 // Inform other clients in channel/group
-                this.Clients.OthersInGroup(channel.Identifier).@join(new UserChangeEvent
+                await this.Clients.OthersInGroup(channel.Identifier).SendAsync("join", new UserChangeEvent
                 {
                     ChannelIdentifier = channel.Identifier,
                     UserName = userName
@@ -136,8 +126,7 @@ namespace ImperaPlus.Web.Hubs
             chatService.SendMessage(channelId, userId, message);
 
             // Send message to currently online players
-            var user = this.GetUserId();
-            this.Clients.Group(channelId.ToString()).broadcastMessage(new ChatMessage
+            this.Clients.Group(channelId.ToString()).SendAsync("broadcastMessage", new ChatMessage
             {
                 ChannelIdentifier = channelId.ToString(),
                 UserName = this.GetUser().UserName,

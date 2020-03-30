@@ -1,6 +1,7 @@
 ﻿using System;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using AutoMapper;
 using ImperaPlus.Application;
 using ImperaPlus.DataAccess;
 using ImperaPlus.Domain;
@@ -33,7 +34,6 @@ namespace ImperaPlus.TestSupport
         public virtual void TestInit()
         {
             this.SetupScope();
-            AutoMapperConfig.Configure();
 
             this.TestData = new TestData(this.Context, this.Scope, new GameService(this.Scope, this.UnitOfWork));
 
@@ -68,6 +68,13 @@ namespace ImperaPlus.TestSupport
         protected void SetupScope()
         {
             var builder = new ContainerBuilder();
+
+            builder.Register(ctx => new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new AutoMapperConfig());
+            }));
+
+            builder.Register(ctx => ctx.Resolve<MapperConfiguration>().CreateMapper()).As<IMapper>().InstancePerLifetimeScope();
 
             var serviceCollection = new ServiceCollection()
                  .AddEntityFrameworkInMemoryDatabase();

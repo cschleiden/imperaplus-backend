@@ -3,6 +3,7 @@ using ImperaPlus.Domain.Repositories;
 using ImperaPlus.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 
 namespace ImperaPlus.Backend.Controllers
 {
@@ -17,8 +18,8 @@ namespace ImperaPlus.Backend.Controllers
     {
         private IGameService gameService;
 
-        public HistoryController(IUnitOfWork unitOfWork, IGameService gameService)
-            : base(unitOfWork)
+        public HistoryController(IUnitOfWork unitOfWork, IMapper mapper, IGameService gameService)
+            : base(unitOfWork, mapper)
         {
             this.gameService = gameService;
         }

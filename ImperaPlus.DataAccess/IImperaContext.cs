@@ -4,7 +4,7 @@ using ImperaPlus.Domain.Games;
 using ImperaPlus.Domain.Ladders;
 using ImperaPlus.Domain.Map;
 using ImperaPlus.Domain.News;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace ImperaPlus.DataAccess

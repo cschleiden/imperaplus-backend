@@ -8,7 +8,6 @@ using ImperaPlus.Domain.Enums;
 using ImperaPlus.Domain.Ladders;
 using ImperaPlus.Domain.Map;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace ImperaPlus.DataAccess
 {

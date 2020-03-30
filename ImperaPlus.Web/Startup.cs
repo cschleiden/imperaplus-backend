@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using AspNet.Security.OpenIdConnect.Primitives;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using AutoMapper;
 using DataTables.AspNet.AspNetCore;
 using Hangfire;
 using Hangfire.Console;
-using Hangfire.Dashboard;
+using Hangfire.MemoryStorage;
 using ImperaPlus.Application;
 using ImperaPlus.Application.Jobs;
 using ImperaPlus.DataAccess;
@@ -21,8 +23,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,10 +33,9 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using NLog.Extensions.Logging;
+using Newtonsoft.Json.Serialization;
 using NLog.Fluent;
-using NLog.Web;
-using NSwag.AspNetCore;
+using OpenIddict.Abstractions;
 using StackExchange.Profiling.Storage;
 
 namespace ImperaPlus.Web
@@ -56,12 +58,10 @@ namespace ImperaPlus.Web
 
         public Startup(IHostingEnvironment env)
         {
-            env.ConfigureNLog("nlog.config");
-
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                // Environment specific settings, i.e., setting db connecting string. Do not create in version control repository.
+                // Environment specific settings, i.e., setting db connection string. Do not create in version control repository.
                 .AddJsonFile($"appsettings.environment.json", optional: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
@@ -96,10 +96,17 @@ namespace ImperaPlus.Web
             {
                 string connection = Configuration["DBConnection"];
 
-                options.UseSqlServer(connection,
-                    b => b
-                        .MigrationsAssembly("ImperaPlus.Web")
-                        .EnableRetryOnFailure());
+                if (Startup.RunningUnderTest)
+                {
+                    options.UseInMemoryDatabase(databaseName: "impera-test");
+                }
+                else
+                {
+                    options.UseSqlServer(connection,
+                        b => b
+                            .MigrationsAssembly("ImperaPlus.Web")
+                            .EnableRetryOnFailure());
+                }
 
                 options.UseOpenIddict();
             });
@@ -137,21 +144,22 @@ namespace ImperaPlus.Web
                     }
 
                     // Ensure that we never redirect when user is not authorized, but only return 401 response
-                    options.Cookies.ApplicationCookie.AutomaticAuthenticate = false;
-                    options.Cookies.ApplicationCookie.AutomaticChallenge = false;
-                    options.Cookies.ApplicationCookie.Events = new Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationEvents
-                    {
-                        OnRedirectToLogin = ctx =>
-                        {
-                            ctx.Response.StatusCode = (int)System.Net.HttpStatusCode.Unauthorized;
-                            return Task.CompletedTask;
-                        },
+                    // TODO: Fix for admin flow
+                    //options.Cookies.ApplicationCookie.AutomaticAuthenticate = false;
+                    //options.Cookies.ApplicationCookie.AutomaticChallenge = false;
+                    //options.Cookies.ApplicationCookie.Events = new Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationEvents
+                    //{
+                    //    OnRedirectToLogin = ctx =>
+                    //    {
+                    //        ctx.Response.StatusCode = (int)System.Net.HttpStatusCode.Unauthorized;
+                    //        return Task.CompletedTask;
+                    //    },
 
-                        OnValidatePrincipal = ctx =>
-                        {
-                            return Task.CompletedTask;
-                        }
-                    };
+                    //    OnValidatePrincipal = ctx =>
+                    //    {
+                    //        return Task.CompletedTask;
+                    //    }
+                    //};
 
                     options.ClaimsIdentity.UserNameClaimType = OpenIdConnectConstants.Claims.Name;
                     options.ClaimsIdentity.UserIdClaimType = OpenIdConnectConstants.Claims.Subject;
@@ -163,24 +171,46 @@ namespace ImperaPlus.Web
             services
                 .AddOpenIddict(options =>
                 {
-                    options.AddEntityFrameworkCoreStores<ImperaContext>();
-
-                    options.EnableTokenEndpoint("/api/Account/Token");
-
-                    options.AddMvcBinders();
-
-                    options.AllowPasswordFlow();
-
-                    options.AllowRefreshTokenFlow();
-
-                    if (this.Environment.IsDevelopment())
+                    options.AddCore(x =>
                     {
-                        // During development, you can disable the HTTPS requirement.
-                        options.DisableHttpsRequirement();
+                        x.UseEntityFrameworkCore(c => c.UseDbContext<ImperaContext>());
+                    });
 
-                        options.AddEphemeralSigningKey();
-                    }
+                    options.AddServer(c =>
+                    {
+                        if (this.Environment.IsDevelopment())
+                        {
+                            c.DisableHttpsRequirement();
+                            c.AddEphemeralSigningKey();
+                        }
+
+                        c.AllowPasswordFlow();
+                        c.AllowRefreshTokenFlow();
+                        c.EnableTokenEndpoint("/api/Account/Token");
+
+                        c.RegisterScopes(OpenIddictConstants.Scopes.Roles);
+
+                        c.AcceptAnonymousClients();
+                    });
+
+                    // TODO: FIX: Is this still required?
+                    // options.AddMvcBinders();
                 });
+
+            services.AddAuthentication().AddOAuthValidation(config =>
+            {
+                config.Events = new AspNet.Security.OAuth.Validation.OAuthValidationEvents
+                {
+                    // Note: for SignalR connections, the default Authorization header does not work,
+                    // because the WebSockets JS API doesn't allow setting custom parameters.
+                    // To work around this limitation, the access token is retrieved from the query string.
+                    OnRetrieveToken = context =>
+                    {
+                        context.Token = context.Request.Query["access_token"];
+                        return Task.CompletedTask;
+                    }
+                };
+            });
 
             services.AddResponseCompression(options =>
             {
@@ -205,7 +235,12 @@ namespace ImperaPlus.Web
                 });
 
             services
-                .AddMiniProfiler()
+                .AddMiniProfiler(config =>
+                {
+                    (config.Storage as MemoryCacheStorage).CacheDuration = TimeSpan.FromMinutes(60);
+
+                    config.RouteBasePath = "/admin/profiler";
+                })
                 .AddEntityFramework();
 
             services.AddMemoryCache();
@@ -223,20 +258,43 @@ namespace ImperaPlus.Web
             });
 
             // Hangire
-            services.AddHangfire(x =>
+            services.AddHangfire(x => {
                 x.UseNLogLogProvider()
                  .UseFilter(new JobExpirationTimeAttribute())
-                 .UseSqlServerStorage(Configuration["DBConnection"])
-                 .UseConsole());
+                 .UseConsole();
+
+                if (Startup.RunningUnderTest)
+                {
+                    x.UseMemoryStorage();
+                }
+                else
+                {
+                    x.UseSqlServerStorage(Configuration["DBConnection"]);
+                }
+            });
 
             services.AddSingleton(_ => new JsonSerializer
             {
                 DateTimeZoneHandling = DateTimeZoneHandling.Utc,
-                DateFormatHandling = DateFormatHandling.IsoDateFormat,
-                ContractResolver = new SignalRContractResolver()
+                DateFormatHandling = DateFormatHandling.IsoDateFormat
             });
 
-            services.AddSignalR(options => options.Hubs.EnableDetailedErrors = true);
+            services
+                .AddSignalR(options =>
+                {
+                    options.EnableDetailedErrors = true;
+                })
+                .AddJsonProtocol(options =>
+                {
+                    options.PayloadSerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                    options.PayloadSerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
+                    options.PayloadSerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
+                });
+
+            // Have SignalR use the name claim as user id
+            services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
+
+            services.AddOpenApiDocument();
 
             return this.RegisterDependencies(services);
         }
@@ -249,11 +307,6 @@ namespace ImperaPlus.Web
             ImperaContext dbContext,
             DbSeed dbSeed)
         {
-            loggerFactory.AddNLog();
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
-
-            app.AddNLogWeb();
             NLog.LogManager.Configuration.Variables["configDir"] = Configuration["LogDir"];
 
             //if (env.IsDevelopment())
@@ -264,49 +317,17 @@ namespace ImperaPlus.Web
 
             // Enable Cors
             app.UseCors(b => b
-                .AllowAnyOrigin()
+                .WithOrigins("http://localhost:8080", "https://dev.imperaonline.de", "https://imperaonline.de", "https://www.imperaonline.de")
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .WithExposedHeaders("X-MiniProfiler-Ids")
-                .DisallowCredentials()
-                .Build());
+                .AllowCredentials());
 
             // Auth
-            app.UseIdentity();
+            app.UseAuthentication();
 
-            /*app.UseFacebookAuthentication(new FacebookOptions
-            {
-                AppId = Configuration["Authentication:Facebook:AppId"],
-                AppSecret = Configuration["Authentication:Facebook:AppSecret"]
-            });
-
-            app.UseMicrosoftAccountAuthentication(new MicrosoftAccountOptions
-            {
-                ClientId = Configuration["Authentication:MicrosoftAccount:ClientId"],
-                ClientSecret = Configuration["Authentication:MicrosoftAccount:ClientSecret"]
-            });*/
-
-            app.UseOAuthValidation(options =>
-            {
-                options.Events = new AspNet.Security.OAuth.Validation.OAuthValidationEvents
-                {
-                    // Note: for SignalR connections, the default Authorization header does not work,
-                    // because the WebSockets JS API doesn't allow setting custom parameters.
-                    // To work around this limitation, the access token is retrieved from the query string.
-                    OnRetrieveToken = context =>
-                    {
-                        context.Token = context.Request.Query["bearer_token"];
-
-                        if (string.IsNullOrEmpty(context.Token))
-                        {
-                            context.Token = context.Request.Cookies["bearer_token"];
-                        }
-
-                        return Task.FromResult(0);
-                    }
-                };
-            });
-            app.UseOpenIddict();
+            // TODO: Fix, how does this work?
+            //app.UseOpenIddict();
 
             // Enable serving client and static assets
             app.UseResponseCompression();
@@ -323,24 +344,11 @@ namespace ImperaPlus.Web
                 }
             });
 
-            app.UseMiniProfiler(new StackExchange.Profiling.MiniProfilerOptions
-            {
-                RouteBasePath = "~/admin/profiler",
+            app.UseMiniProfiler();
 
-                SqlFormatter = new StackExchange.Profiling.SqlFormatters.InlineFormatter(),
-
-                // Control storage
-                Storage = new MemoryCacheStorage(TimeSpan.FromMinutes(60))
-            });
-
-            app.UseSwaggerUi(typeof(Startup).Assembly, settings =>
-            {
-                // settings.UseJsonEditor = true;
-                settings.GeneratorSettings.DefaultEnumHandling = NJsonSchema.EnumHandling.String;
-                settings.GeneratorSettings.IsAspNetCore = true;
-                settings.GeneratorSettings.DefaultPropertyNameHandling = NJsonSchema.PropertyNameHandling.CamelCase;
-                settings.GeneratorSettings.OperationProcessors.Add(new SwaggerFormOperationProcessor());
-            });
+            // Configure swagger generation & UI
+            app.UseOpenApi();
+            app.UseSwaggerUi3();
 
             app.UseMvc(routes =>
             {
@@ -351,7 +359,11 @@ namespace ImperaPlus.Web
             });
 
             app.UseWebSockets();
-            app.UseSignalR();            
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<Hubs.MessagingHub>("/chat");
+                routes.MapHub<Hubs.GameHub>("/game");
+            });
 
             // Initialize database
             Log.Info("Initializing database...").Write();
@@ -361,8 +373,10 @@ namespace ImperaPlus.Web
                 {
                     dbContext.Database.EnsureDeleted();
                 }
-
-                dbContext.Database.Migrate();
+                else
+                {
+                    dbContext.Database.Migrate();
+                }
             }
             else
             {
@@ -375,8 +389,6 @@ namespace ImperaPlus.Web
             Log.Info("Seeding database...").Write();
             dbSeed.Seed(dbContext).Wait();
             Log.Info("...done.").Write();
-
-            AutoMapperConfig.Configure();
 
             // Hangfire
             app.UseHangfireServer(new BackgroundJobServerOptions
@@ -403,6 +415,27 @@ namespace ImperaPlus.Web
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             var builder = TestContainerBuilder ?? new ContainerBuilder();
+
+            // Register AutoMapper
+            var assemblyNames = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
+            var assembliesTypes = assemblyNames
+                .Where(a => a.Name.Contains("ImperaPlus", StringComparison.OrdinalIgnoreCase))
+                .SelectMany(an => Assembly.Load(an).GetTypes())
+                .Where(p => typeof(Profile).IsAssignableFrom(p) && p.IsPublic && !p.IsAbstract)
+                .Distinct();
+
+            var autoMapperProfiles = assembliesTypes
+                .Select(p => (Profile)Activator.CreateInstance(p)).ToList();
+
+            builder.Register(ctx => new MapperConfiguration(cfg =>
+            {
+                foreach (var profile in autoMapperProfiles)
+                {
+                    cfg.AddProfile(profile);
+                }
+            }));
+
+            builder.Register(ctx => ctx.Resolve<MapperConfiguration>().CreateMapper()).As<IMapper>().InstancePerLifetimeScope();
 
             // Messaging
             if (Environment.IsDevelopment())
@@ -431,7 +464,7 @@ namespace ImperaPlus.Web
 
             // Register Domain services
             builder.RegisterAssemblyTypes(Assembly.GetAssembly(typeof(IGameRepository)))
-                .Where(x => x.Name.EndsWith("Service") && !x.IsInterface).As(x => x.GetInterfaces());
+                .Where(x => x.Name.EndsWith("Service", StringComparison.OrdinalIgnoreCase) && !x.IsInterface).As(x => x.GetInterfaces());
 
             // Notification
             builder.RegisterType<GamePushNotificationService>().AsImplementedInterfaces();
@@ -440,8 +473,7 @@ namespace ImperaPlus.Web
             var jsonSettings = new JsonSerializerSettings()
             {
                 DateTimeZoneHandling = Newtonsoft.Json.DateTimeZoneHandling.Utc,
-                DateFormatHandling = Newtonsoft.Json.DateFormatHandling.IsoDateFormat,
-                ContractResolver = new SignalRContractResolver()
+                DateFormatHandling = Newtonsoft.Json.DateFormatHandling.IsoDateFormat
             };
             jsonSettings.Converters.Add(new StringEnumConverter
             {
@@ -456,13 +488,13 @@ namespace ImperaPlus.Web
 
             builder.RegisterType<BackgroundJobClient>().AsImplementedInterfaces();
 
-
             builder.Populate(services);
 
             IContainer container = builder.Build();
             Startup.Container = container;
 
-            return container.Resolve<IServiceProvider>();
+            // return container.Resolve<IServiceProvider>();
+            return new AutofacServiceProvider(Startup.Container);
         }
     }
 }

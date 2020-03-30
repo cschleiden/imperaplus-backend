@@ -29,8 +29,8 @@ namespace ImperaPlus.Application.Chat
     {
         private readonly RoleManager<IdentityRole> roleManager;
 
-        public ChatService(IUnitOfWork unitOfWork, IUserProvider userProvider, RoleManager<IdentityRole> roleManager) 
-            : base(unitOfWork, userProvider)
+        public ChatService(IUnitOfWork unitOfWork, IMapper mapper, IUserProvider userProvider, RoleManager<IdentityRole> roleManager) 
+            : base(unitOfWork, mapper, userProvider)
         {
             this.roleManager = roleManager;
         }

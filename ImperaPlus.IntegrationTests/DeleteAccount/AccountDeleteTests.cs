@@ -5,11 +5,10 @@ using Autofac;
 using ImperaPlus.Backend.Areas.Admin.Helpers;
 using ImperaPlus.DTO.Account;
 using ImperaPlus.GeneratedClient;
-using ImperaPlus.Integration.Tests;
 using ImperaPlus.Web;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ImperaPlus.IntegrationTests.DeleteAccount
+namespace ImperaPlus.IntegrationTests
 {
     [TestClass]
     public class AccountDeleteTests : BaseIntegrationTest
@@ -25,7 +24,8 @@ namespace ImperaPlus.IntegrationTests.DeleteAccount
         {
             base.Initialize();
 
-            this.defaultAccountClient = ApiClient.GetAuthenticatedClientDefaultUser<AccountClient>().Result;
+            TestSetup.RegisterClient(99);
+            this.defaultAccountClient = ApiClient.GetAuthenticatedClient<AccountClient>(99).Result;
             this.otherAccountClient = ApiClient.GetAuthenticatedClient<AccountClient>(1).Result;
 
             this.defaultUser = this.defaultAccountClient.GetUserInfoAsync().Result;
@@ -47,7 +47,7 @@ namespace ImperaPlus.IntegrationTests.DeleteAccount
             // Act
             await this.defaultAccountClient.DeleteAccountAsync(new DeleteAccountBindingModel
             {
-                Password = ApiClient.GetUserPassword(0)
+                Password = ApiClient.GetUserPassword(99)
             });
 
             await new Application.Jobs.UserCleanupJob(Startup.Container).Handle();            

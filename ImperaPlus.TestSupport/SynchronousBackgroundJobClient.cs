@@ -1,8 +1,8 @@
-﻿using Hangfire;
-using System;
+﻿using System;
+using Autofac;
+using Hangfire;
 using Hangfire.Common;
 using Hangfire.States;
-using Autofac;
 
 namespace ImperaPlus.TestSupport
 {

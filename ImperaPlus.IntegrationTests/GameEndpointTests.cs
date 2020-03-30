@@ -10,7 +10,7 @@ using ImperaPlus.DTO.Games.Play;
 using ImperaPlus.GeneratedClient;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ImperaPlus.Integration.Tests
+namespace ImperaPlus.IntegrationTests
 {
     [TestClass]
     public class GameEndpointTests : BaseIntegrationTest
@@ -169,20 +169,25 @@ namespace ImperaPlus.Integration.Tests
                 this.Log("\tCurrent player:{0} - {1}", currentPlayerId, currentTeamId);
 
                 PlayClient playClient;
+                GameClient gameClient;
                 var player = gameClients.FirstOrDefault(x => x.Item3 == gameDefault.CurrentPlayer.Name);
                 if (player == null)
                 {
+                    gameClient = this.clientDefault;
                     playClient = defaultPlayClient;
                 }
                 else
                 {
+                    gameClient = player.Item1;
                     playClient = player.Item2;
                 }
+
+                var gameState = await gameClient.GetAsync(gameDefault.Id);
 
                 {
                     // Place units
                     this.Log("Placing units - player {0} - {1}", currentPlayerId, gameDefault.UnitsToPlace);
-                    var ownCountries = gameDefault.Map.Countries.Where(x => x.TeamId == currentTeamId);
+                    var ownCountries = gameState.Map.Countries.Where(x => x.TeamId == currentTeamId);
                     Country ownCountry;
                     if (ownCountries.Count() == 1)
                     {
@@ -207,12 +212,12 @@ namespace ImperaPlus.Integration.Tests
                         new PlaceUnitsOptions
                         {
                             CountryIdentifier = ownCountry.Identifier,
-                            NumberOfUnits = gameDefault.UnitsToPlace
+                            NumberOfUnits = gameState.UnitsToPlace
                         }
                     };
 
                     var placeResponse = await playClient.PostPlaceAsync(gameDefault.Id, placeOptions);
-                    this.ApplyMapUpdates(gameDefault.Map, placeResponse.CountryUpdates);
+                    this.ApplyMapUpdates(gameState.Map, placeResponse.CountryUpdates);
 
                     if (placeResponse.State != GameState.Active)
                     {
@@ -227,16 +232,16 @@ namespace ImperaPlus.Integration.Tests
                 }
 
                 // Attack
-                if (gameDefault.TurnCounter > 3)
+                if (gameState.TurnCounter > 3)
                 {
                     bool breakExecution = false;
 
-                    for (int a = 0; a < gameDefault.Options.AttacksPerTurn; ++a)
+                    for (int a = 0; a < gameState.Options.AttacksPerTurn; ++a)
                     {
-                        var ownCountries = gameDefault.Map.Countries.Where(x => x.TeamId == currentTeamId);
+                        var ownCountries = gameState.Map.Countries.Where(x => x.TeamId == currentTeamId);
                         var ownCountry = ownCountries.FirstOrDefault(x =>
-                            x.Units > gameDefault.Options.MinUnitsPerCountry
-                            && gameDefault.Map.Countries.Any(y => y.TeamId != currentTeamId
+                            x.Units > gameState.Options.MinUnitsPerCountry
+                            && gameState.Map.Countries.Any(y => y.TeamId != currentTeamId
                                                 && mapTemplate
                                                 .Connections
                                                 .Any(c => c.Origin == x.Identifier && c.Destination == y.Identifier)));
@@ -249,7 +254,7 @@ namespace ImperaPlus.Integration.Tests
                         }
 
                         // Find enemy country
-                        var enemyCountries = gameDefault.Map.Countries.Where(x => x.TeamId != currentTeamId);
+                        var enemyCountries = gameState.Map.Countries.Where(x => x.TeamId != currentTeamId);
                         var enemyCountry = enemyCountries.FirstOrDefault(x => mapTemplate
                                                 .Connections.Any(c =>
                                                 c.Origin == ownCountry.Identifier
@@ -259,7 +264,7 @@ namespace ImperaPlus.Integration.Tests
                             Assert.Fail("Cannot find enemy country connected to selected own country");
                         }
 
-                        var numberOfUnits = ownCountry.Units - gameDefault.Options.MinUnitsPerCountry;
+                        var numberOfUnits = ownCountry.Units - gameState.Options.MinUnitsPerCountry;
                         if (playClient != defaultPlayClient)
                         {
                             numberOfUnits = 1;
@@ -277,7 +282,7 @@ namespace ImperaPlus.Integration.Tests
                             attackOptions.DestinationCountryIdentifier,
                             attackOptions.NumberOfUnits);
 
-                        var attackResult = await playClient.PostAttackAsync(gameDefault.Id, attackOptions);
+                        var attackResult = await playClient.PostAttackAsync(gameState.Id, attackOptions);
 
                         if (attackResult.ActionResult == Result.Successful)
                         {
@@ -288,7 +293,7 @@ namespace ImperaPlus.Integration.Tests
                             this.Log("\tAttack failed");
                         }
 
-                        this.ApplyMapUpdates(gameDefault.Map, attackResult.CountryUpdates);
+                        this.ApplyMapUpdates(gameState.Map, attackResult.CountryUpdates);
 
                         if (attackResult.State != GameState.Active)
                         {
@@ -310,11 +315,11 @@ namespace ImperaPlus.Integration.Tests
                 if (!placeOnlyTurn)
                 {
                     // Record turn 
-                    gameHistory.Add(gameDefault.TurnCounter, await this.clientDefault.GetAsync(gameSummary.Id));
+                    gameHistory.Add(gameState.TurnCounter, await gameClient.GetAsync(gameSummary.Id));
 
                     // End turn
                     this.Log("End turn");
-                    await playClient.PostEndTurnAsync(gameDefault.Id);
+                    await playClient.PostEndTurnAsync(gameState.Id);
                 }
 
                 gameDefault = await this.clientDefault.GetAsync(gameSummary.Id);

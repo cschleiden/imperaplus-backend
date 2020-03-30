@@ -67,13 +67,14 @@ namespace ImperaPlus.Application.Games
         private readonly IRandomGenProvider randomGenProvider;
 
         public GameService(
-            IUnitOfWork unitOfWork, 
+            IUnitOfWork unitOfWork,
+            IMapper mapper,
             Domain.IUserProvider userProvider, 
             Domain.Services.IGameService gameService, 
             IMapTemplateProvider mapTemplateProvider,
             IVisibilityModifierFactory visibilityModifierFactory, 
             IRandomGenProvider randomGenProvider)
-            : base(unitOfWork, userProvider, mapTemplateProvider, visibilityModifierFactory)
+            : base(unitOfWork, mapper, userProvider, mapTemplateProvider, visibilityModifierFactory)
         {
             this.gameService = gameService;
             this.randomGenProvider = randomGenProvider;

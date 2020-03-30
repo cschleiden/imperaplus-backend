@@ -6,6 +6,7 @@ using ImperaPlus.Domain.Repositories;
 using ImperaPlus.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 
 namespace ImperaPlus.Backend.Controllers
 {
@@ -17,8 +18,8 @@ namespace ImperaPlus.Backend.Controllers
     {
         private IMessageService messageService;
 
-        public MessageController(IUnitOfWork unitOfWork, IMessageService messageService)
-            : base(unitOfWork)
+        public MessageController(IUnitOfWork unitOfWork, IMapper mapper, IMessageService messageService)
+            : base(unitOfWork, mapper)
         {
             this.messageService = messageService;   
         }

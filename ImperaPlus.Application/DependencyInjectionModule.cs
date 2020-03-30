@@ -18,7 +18,10 @@ namespace ImperaPlus.Application
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<MapTemplateProvider>().As<Domain.Services.IMapTemplateProvider>().SingleInstance();        
+            builder.RegisterType<MapTemplateProvider>()                
+                .As<Domain.Services.IMapTemplateProvider>()
+                .IfNotRegistered(typeof(Domain.Services.IMapTemplateProvider))
+                .SingleInstance();
 
             builder.RegisterType<GameService>().As<IGameService>();
             builder.RegisterType<PlayService>().As<IPlayService>();

@@ -22,8 +22,9 @@ namespace ImperaPlus.Application.News
     {
         public NewsService(
             IUnitOfWork unitOfWork,
+            IMapper mapper,
             IUserProvider userProvider)
-            : base(unitOfWork, userProvider)
+            : base(unitOfWork, mapper, userProvider)
         {            
         }
 
@@ -49,14 +50,14 @@ namespace ImperaPlus.Application.News
             var newsEntry = this.UnitOfWork.News.FindById(id);
             if (newsEntry != null)
             {
-                this.UnitOfWork.News.Remove(newsEntry);                
+                this.UnitOfWork.News.Remove(newsEntry);
                 this.UnitOfWork.Commit();
             }
         }
 
         public IEnumerable<NewsItem> GetNews()
         {
-            return Mapper.Map<NewsEntry[], IEnumerable<NewsItem>>(this.UnitOfWork.News.GetOrdered(10).ToArray());
+            return Mapper.Map<IEnumerable<NewsItem>>(this.UnitOfWork.News.GetOrdered(10).ToArray());
         }
     }
 }

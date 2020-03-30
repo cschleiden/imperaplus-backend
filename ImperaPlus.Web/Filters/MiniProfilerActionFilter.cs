@@ -11,7 +11,7 @@ namespace ImperaPlus.Web.Filters
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            MiniProfiler.Start();
+            MiniProfiler.StartNew();
 
             if (MiniProfiler.Current != null)
             {
@@ -47,7 +47,7 @@ namespace ImperaPlus.Web.Filters
                 }
             }
 
-            MiniProfiler.Stop();
+            MiniProfiler.Current.Stop();
         }
     }
 }

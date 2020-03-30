@@ -37,7 +37,11 @@ namespace ImperaPlus.GeneratedClient
     {
         public static TClientType GetClient<TClientType>(string baseUri, string authToken = null, HttpMessageHandler messageHandler = null) where TClientType : ImperaHttpClient
         {
-            var client = (TClientType)Activator.CreateInstance(typeof(TClientType), baseUri);
+            var client = (TClientType)Activator.CreateInstance(typeof(TClientType));
+
+            var type = client.GetType();
+            var propertyInfo = type.GetProperty("BaseUrl");
+            propertyInfo.SetValue(client, baseUri);
 
             if (!string.IsNullOrEmpty(authToken))
             {

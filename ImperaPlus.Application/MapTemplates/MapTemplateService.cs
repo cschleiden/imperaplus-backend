@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using ImperaPlus.Domain;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Services;
@@ -19,15 +18,15 @@ namespace ImperaPlus.Application
     {
         private IMapTemplateProvider mapTemplateProvider;
 
-        public MapTemplateService(IUnitOfWork unitOfWork, IUserProvider userProvider, IMapTemplateProvider mapTemplateProvider) 
-            : base(unitOfWork, userProvider)
+        public MapTemplateService(IUnitOfWork unitOfWork, IMapper mapper, IUserProvider userProvider, IMapTemplateProvider mapTemplateProvider) 
+            : base(unitOfWork, mapper, userProvider)
         {
             this.mapTemplateProvider = mapTemplateProvider;
         }
 
         public IQueryable<MapTemplateDescriptor> QuerySummary()
         {
-            return this.UnitOfWork.MapTemplateDescriptors.Query().Project().To<MapTemplateDescriptor>();
+            return this.Mapper.ProjectTo<MapTemplateDescriptor>(this.UnitOfWork.MapTemplateDescriptors.Query());
         }
 
         public MapTemplate Get(string name)

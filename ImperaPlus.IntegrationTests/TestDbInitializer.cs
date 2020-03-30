@@ -6,9 +6,8 @@ using ImperaPlus.DataAccess;
 using ImperaPlus.Domain;
 using ImperaPlus.Domain.News;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
-namespace ImperaPlus.Integration.Tests
+namespace ImperaPlus.IntegrationTests
 {
     public class TestDbSeed : DbSeed
     {

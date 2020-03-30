@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using AutoMapper;
+using System.Collections.Generic;
 using ImperaPlus.Application.Games;
 using ImperaPlus.Application.Play;
 using ImperaPlus.DTO.Games.Play;
@@ -21,8 +22,8 @@ namespace ImperaPlus.Backend.Controllers
         private readonly IPlayService playService;
         private IGameService gameService;
 
-        public PlayController(IUnitOfWork unitOfWork, IGameService gameService, IPlayService playService)
-            : base(unitOfWork)
+        public PlayController(IUnitOfWork unitOfWork, IMapper mapper, IGameService gameService, IPlayService playService)
+            : base(unitOfWork, mapper)
         {
             this.gameService = gameService;
             this.playService = playService;

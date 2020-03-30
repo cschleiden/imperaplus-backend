@@ -6,17 +6,18 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Autofac;
 using ImperaPlus.Application.Games;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.AspNetCore.SignalR.Hubs;
 
 namespace ImperaPlus.Web.Hubs
 {
-    public interface INotificationHubContext : IHub
+    public interface INotificationHubContext
     {
     }
 
-    [HubName("game")]
+    // TODO: Fix
+    //[HubName("game")]
     [Authorize]
     public class GameHub : Hub, INotificationHubContext
     {
@@ -51,7 +52,7 @@ namespace ImperaPlus.Web.Hubs
             base.Dispose(disposing);
         }
 
-        public override async Task OnConnected()
+        public override async Task OnConnectedAsync()
         {
             // Track connection
             string userId = this.GetUserId();
@@ -62,10 +63,10 @@ namespace ImperaPlus.Web.Hubs
 
             await this.AddGroup(userId);
 
-            await base.OnConnected();
+            await base.OnConnectedAsync();
         }
 
-        public override Task OnDisconnected(bool stopCalled)
+        public override Task OnDisconnectedAsync(Exception exception)
         {
             string userId;
             IEnumerable<string> channels;
@@ -83,18 +84,7 @@ namespace ImperaPlus.Web.Hubs
                 }
             }
 
-            return base.OnDisconnected(stopCalled);
-        }
-
-        public override Task OnReconnected()
-        {
-            string userId = this.GetUserId();
-            if (!Connections.GetConnections(userId).Contains(Context.ConnectionId))
-            {
-                Connections.Add(userId, Context.ConnectionId);
-            }
-
-            return base.OnReconnected();
+            return base.OnDisconnectedAsync(exception);
         }
 
         /// <summary>
@@ -174,7 +164,7 @@ namespace ImperaPlus.Web.Hubs
 
             // Relay to clients
             var groupName = isPublic ? GameGroup(gameId) : GameTeamGroup(gameId, message.TeamId);
-            await this.Clients.Group(groupName).notification(new ImperaPlus.DTO.Notifications.GameChatMessageNotification
+            await this.Clients.Group(groupName).SendAsync("notification", new ImperaPlus.DTO.Notifications.GameChatMessageNotification
             {
                 GameId = message.GameId,
                 Message = message
@@ -185,7 +175,7 @@ namespace ImperaPlus.Web.Hubs
         {
             string userId = this.GetUserId();
 
-            await this.Groups.Add(this.Context.ConnectionId, groupName);
+            await this.Groups.AddToGroupAsync(this.Context.ConnectionId, groupName);
             Connections.JoinGroup(userId, groupName);
         }
 
@@ -193,7 +183,7 @@ namespace ImperaPlus.Web.Hubs
         {
             string userId = this.GetUserId();
 
-            await this.Groups.Remove(this.Context.ConnectionId, groupName);
+            await this.Groups.RemoveFromGroupAsync(this.Context.ConnectionId, groupName);
             Connections.LeaveGroup(userId, groupName);
         }
 

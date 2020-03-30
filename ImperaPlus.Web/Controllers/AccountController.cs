@@ -17,14 +17,15 @@ using ImperaPlus.Web;
 using ImperaPlus.Web.Resources;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Fluent;
+using OpenIddict.Abstractions;
 using OpenIddict.Core;
-using OpenIddict.Models;
+using OpenIddict.EntityFrameworkCore.Models;
 
 namespace ImperaPlus.Backend.Controllers
 {
@@ -125,7 +126,8 @@ namespace ImperaPlus.Backend.Controllers
             else if (request.IsRefreshTokenGrantType())
             {
                 // Retrieve the claims principal stored in the refresh token.
-                var info = await HttpContext.Authentication.GetAuthenticateInfoAsync(OpenIdConnectServerDefaults.AuthenticationScheme);
+                var info = await HttpContext.AuthenticateAsync(OpenIdConnectServerDefaults.AuthenticationScheme);
+                // var info = await HttpContext.GetAuthenticateInfoAsync(OpenIdConnectServerDefaults.AuthenticationScheme);
 
                 // Retrieve the user profile corresponding to the refresh token.
                 var user = await userManager.GetUserAsync(info.Principal);
@@ -150,7 +152,7 @@ namespace ImperaPlus.Backend.Controllers
             return BadRequest(new ErrorResponse(Application.ErrorCode.GenericApplicationError, "Grant type is not supported."));
         }
 
-        private async Task<AuthenticationTicket> CreateTicketAsync(OpenIdConnectRequest request, User user, AuthenticationProperties properties = null)
+        private async Task<AuthenticationTicket> CreateTicketAsync(OpenIdConnectRequest request, User user, Microsoft.AspNetCore.Authentication.AuthenticationProperties properties = null)
         {
             // Set the list of scopes granted to the client application.
             // Note: the offline_access scope must be granted
@@ -332,7 +334,7 @@ namespace ImperaPlus.Backend.Controllers
                 LocalLoginProvider = LocalLoginProvider,
                 UserName = user.UserName,
                 Logins = logins.ToArray(),
-                ExternalLoginProviders = this.GetExternalLogins().ToArray()
+                ExternalLoginProviders = (await this.GetExternalLogins()).ToArray()
             });
         }
 
@@ -529,15 +531,15 @@ namespace ImperaPlus.Backend.Controllers
         [Route("ExternalLogins")]
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<ExternalLoginViewModel>), 200)]
-        public IEnumerable<ExternalLoginViewModel> GetExternalLogins()
+        public async Task<IEnumerable<ExternalLoginViewModel>> GetExternalLogins()
         {
-            var descriptions = this.signInManager.GetExternalAuthenticationSchemes();
+            var descriptions = await this.signInManager.GetExternalAuthenticationSchemesAsync();
 
             return descriptions
                 .Select(description => new ExternalLoginViewModel
                 {
                     Name = description.DisplayName,
-                    AuthenticationScheme = description.AuthenticationScheme
+                    AuthenticationScheme = description.Name
                 })
                 .ToList();
         }

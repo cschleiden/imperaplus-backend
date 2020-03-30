@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ImperaPlus.Domain.Alliances;
 using ImperaPlus.Domain.Games;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace ImperaPlus.Domain
 {
@@ -36,6 +36,16 @@ namespace ImperaPlus.Domain
         public bool IsDeleted { get; set; }
 
         public DateTime LastLogin { get; set; }
+
+        /// <summary>
+        /// Navigation property for this users login accounts.
+        /// </summary>
+        public virtual ICollection<IdentityUserLogin<string>> Logins { get; } = new List<IdentityUserLogin<string>>();
+
+        /// <summary>
+        /// Navigation property for this users login accounts.
+        /// </summary>
+        public virtual ICollection<IdentityUserRole<string>> Roles { get; } = new List<IdentityUserRole<string>>();
 
         /// <summary>
         /// Hash of Impera V1 password for migration

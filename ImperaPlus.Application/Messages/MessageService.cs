@@ -28,8 +28,8 @@ namespace ImperaPlus.Application.Messages
     {
         private IUserNotificationService userNotificationService;
 
-        public MessageService(IUnitOfWork unitOfWork, IUserProvider userProvider, IUserNotificationService userNotificationService)
-            : base(unitOfWork, userProvider)
+        public MessageService(IUnitOfWork unitOfWork, IMapper mapper, IUserProvider userProvider, IUserNotificationService userNotificationService)
+            : base(unitOfWork, mapper, userProvider)
         {
             this.userNotificationService = userNotificationService;
         }

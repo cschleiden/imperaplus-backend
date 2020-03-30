@@ -126,7 +126,7 @@ namespace ImperaPlus.Domain.Bots
 
         private void Move()
         {
-            // TODO: CS:
+            // Not supported.
         }
 
         private void EndTurn()

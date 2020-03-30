@@ -185,3 +185,5 @@ src/modules/**/*.js
 /.vs/ImperaPlus/v15/sqlite3
 *.sqlite
 /.vs
+
+ImperaPlus.Web/internal-nlog.txt
