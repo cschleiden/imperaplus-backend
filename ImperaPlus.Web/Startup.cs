@@ -9,6 +9,7 @@ using AutoMapper;
 using DataTables.AspNet.AspNetCore;
 using Hangfire;
 using Hangfire.Console;
+using Hangfire.MemoryStorage;
 using ImperaPlus.Application;
 using ImperaPlus.Application.Jobs;
 using ImperaPlus.DataAccess;
@@ -95,10 +96,17 @@ namespace ImperaPlus.Web
             {
                 string connection = Configuration["DBConnection"];
 
-                options.UseSqlServer(connection,
-                    b => b
-                        .MigrationsAssembly("ImperaPlus.Web")
-                        .EnableRetryOnFailure());
+                if (Startup.RunningUnderTest)
+                {
+                    options.UseInMemoryDatabase(databaseName: "impera-test");
+                }
+                else
+                {
+                    options.UseSqlServer(connection,
+                        b => b
+                            .MigrationsAssembly("ImperaPlus.Web")
+                            .EnableRetryOnFailure());
+                }
 
                 options.UseOpenIddict();
             });
@@ -250,11 +258,20 @@ namespace ImperaPlus.Web
             });
 
             // Hangire
-            services.AddHangfire(x =>
+            services.AddHangfire(x => {
                 x.UseNLogLogProvider()
                  .UseFilter(new JobExpirationTimeAttribute())
-                 .UseSqlServerStorage(Configuration["DBConnection"])
-                 .UseConsole());
+                 .UseConsole();
+
+                if (Startup.RunningUnderTest)
+                {
+                    x.UseMemoryStorage();
+                }
+                else
+                {
+                    x.UseSqlServerStorage(Configuration["DBConnection"]);
+                }
+            });
 
             services.AddSingleton(_ => new JsonSerializer
             {
@@ -309,18 +326,6 @@ namespace ImperaPlus.Web
             // Auth
             app.UseAuthentication();
 
-            /*app.UseFacebookAuthentication(new FacebookOptions
-            {
-                AppId = Configuration["Authentication:Facebook:AppId"],
-                AppSecret = Configuration["Authentication:Facebook:AppSecret"]
-            });
-
-            app.UseMicrosoftAccountAuthentication(new MicrosoftAccountOptions
-            {
-                ClientId = Configuration["Authentication:MicrosoftAccount:ClientId"],
-                ClientSecret = Configuration["Authentication:MicrosoftAccount:ClientSecret"]
-            });*/
-
             // TODO: Fix, how does this work?
             //app.UseOpenIddict();
 
@@ -368,8 +373,10 @@ namespace ImperaPlus.Web
                 {
                     dbContext.Database.EnsureDeleted();
                 }
-
-                dbContext.Database.Migrate();
+                else
+                {
+                    dbContext.Database.Migrate();
+                }
             }
             else
             {

@@ -12,7 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.9.4" />
-    <PackageReference Include="Hangfire" Version="1.7.6" />
+    <PackageReference Include="Hangfire" Version="1.7.9" />
     <PackageReference Include="Hangfire.Autofac" Version="2.3.1" />
   </ItemGroup>
 </Project>

@@ -7,11 +7,11 @@ using System.Collections.Generic;
 
 namespace ImperaPlus.Application
 {
-    public sealed class MapTemplateProvider : IMapTemplateProvider
+    public class MapTemplateProvider : IMapTemplateProvider
     {
         private readonly Dictionary<string, Func<MapTemplate>> mapTemplateFactory = new Dictionary<string, Func<MapTemplate>>();
         private readonly ConcurrentDictionary<string, MapTemplate> mapTemplates = new ConcurrentDictionary<string, MapTemplate>();
-        
+
         public MapTemplateProvider()
         {
             var type = typeof(Maps);
@@ -20,20 +20,25 @@ namespace ImperaPlus.Application
             foreach(var method in methods)
             {
                 var mapName = method.Name.ToLowerInvariant();
-                if (mapName == "testmap")
+                if (!this.IncludeMap(mapName))
                 {
                     continue;
                 }
 
                 this.mapTemplateFactory.Add(mapName, () => (MapTemplate)method.Invoke(null, null));
             }
-        }
+        }        
 
         public MapTemplate GetTemplate(string name)
         {
             Domain.Utilities.Require.NotNullOrEmpty(name, nameof(name));
 
             return this.mapTemplates.GetOrAdd(name, this.GetTemplateFromStore);
+        }
+
+        protected virtual bool IncludeMap(string mapName)
+        {
+            return mapName != "testmap";
         }
 
         private MapTemplate GetTemplateFromStore(string name)
@@ -46,6 +51,6 @@ namespace ImperaPlus.Application
             }
 
             return this.mapTemplateFactory[transformedName]();
-        }        
+        }
     }
 }

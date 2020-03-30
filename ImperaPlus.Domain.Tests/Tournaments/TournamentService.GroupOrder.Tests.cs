@@ -115,13 +115,13 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             }, g2);
         }
 
-        private void AssertArray<T>(T[] exepected, T[] v)
+        private void AssertArray<T>(T[] expected, T[] v)
         {
-            Assert.AreEqual(exepected.Length, v.Length);
+            Assert.AreEqual(expected.Length, v.Length);
 
-            for (int i = 0; i < exepected.Length; ++i)
+            for (int i = 0; i < expected.Length; ++i)
             {
-                Assert.AreEqual(exepected[i], v[i]);
+                Assert.AreEqual(expected[i], v[i]);
             }
         }
 

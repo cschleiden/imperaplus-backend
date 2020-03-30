@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Http;
 
-namespace ImperaPlus.Integration.Tests.Support
+namespace ImperaPlus.IntegrationTests.Support
 {
     public static class HttpResponseMessageExtensions
     {

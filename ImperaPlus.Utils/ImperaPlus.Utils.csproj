@@ -6,6 +6,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.0.180" />
-    <PackageReference Include="NLog" Version="4.6.6" />
+    <PackageReference Include="NLog" Version="4.7.0" />
   </ItemGroup>
 </Project>

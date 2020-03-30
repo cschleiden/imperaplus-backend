@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using ImperaPlus.GeneratedClient;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ImperaPlus.Integration.Tests
+namespace ImperaPlus.IntegrationTests
 {
     [TestClass]    
     public class NewsTests : BaseIntegrationTest

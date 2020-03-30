@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace ImperaPlus.Integration.Tests
+namespace ImperaPlus.IntegrationTests
 {
     [TestClass]
     public class BaseIntegrationTest

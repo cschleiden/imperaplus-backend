@@ -1,7 +1,8 @@
+using System;
 using System.Threading.Tasks;
 using ImperaPlus.GeneratedClient;
 
-namespace ImperaPlus.Integration.Tests
+namespace ImperaPlus.IntegrationTests
 {
     public enum TestUser
     {
@@ -25,13 +26,21 @@ namespace ImperaPlus.Integration.Tests
         public static async Task<TClientType> GetAuthenticatedClient<TClientType>(string username, string password) where TClientType : ImperaHttpClient
         {
             // Login
-            var accountClient = await GetClient<AccountClient>();
-            var signinResult = await accountClient.LoginAsync("password", username, password, null, null);
+            try
+            {
+                var accountClient = await GetClient<AccountClient>();
+                var signinResult = await accountClient.LoginAsync("password", username, password, null, null);
 
-            // Create requested client
-            var client = await ApiClient.GetClient<TClientType>();
-            client.AuthToken = signinResult.Access_token;
-            return client;
+                // Create requested client
+                var client = await ApiClient.GetClient<TClientType>();
+                client.AuthToken = signinResult.Access_token;
+                return client;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         public static async Task<TClientType> GetAuthenticatedClientAdminUser<TClientType>() where TClientType : ImperaHttpClient

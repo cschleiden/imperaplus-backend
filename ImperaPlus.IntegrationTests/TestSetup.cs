@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using Autofac;
 using ImperaPlus.DataAccess;
+using ImperaPlus.Domain.Services;
 using ImperaPlus.DTO.Account;
 using ImperaPlus.GeneratedClient;
 using ImperaPlus.TestSupport;
@@ -16,7 +17,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 
-namespace ImperaPlus.Integration.Tests
+namespace ImperaPlus.IntegrationTests
 {
     [TestClass]
     public static class TestSetup
@@ -48,36 +49,42 @@ namespace ImperaPlus.Integration.Tests
                 .ConfigureServices(services => TestSetup.RegisterTypes(services))
                 .UseStartup<Startup>());
             TestSetup.TestServer.BaseAddress = new Uri("http://localhost", UriKind.Absolute);
-
-            var client = ApiClient.GetClient<AccountClient>().Result;
+            
             for (int i = 0; i < 4; ++i)
             {
-                var model = new RegisterBindingModel();
+                TestSetup.RegisterClient(i);
+            }
+        }
 
-                model.CallbackUrl = client.BaseUrl.ToString();
-                model.Language = "de";
-                model.Email = i + "test@localhost";
-                model.UserName = "TestUser" + i;
-                model.Password = "TestPassword" + i;
-                model.ConfirmPassword = "TestPassword" + i;
+        public static void RegisterClient(int i)
+        {
+            var client = ApiClient.GetClient<AccountClient>().Result;
+            var model = new RegisterBindingModel
+            {
+                CallbackUrl = client.BaseUrl.ToString(),
+                Language = "de",
+                Email = i + "test@localhost",
+                UserName = "TestUser" + i,
+                Password = "TestPassword" + i,
+                ConfirmPassword = "TestPassword" + i
+            };
 
-                try
+            try
+            {
+                client.RegisterAsync(model).Wait();
+            }
+            catch (AggregateException e)
+            {
+                if (e.InnerExceptions != null && e.InnerExceptions.Count > 0 && e.InnerExceptions[0] is ImperaPlusException)
                 {
-                    client.RegisterAsync(model).Wait();
+                    if ((e.InnerExceptions[0] as ImperaPlusException).StatusCode == 400)
+                    {
+                        // ignore
+                    }
                 }
-                catch (AggregateException e)
+                else
                 {
-                    if (e.InnerExceptions != null && e.InnerExceptions.Count > 0 && e.InnerExceptions[0] is ImperaPlusException)
-                    {
-                        if ((e.InnerExceptions[0] as ImperaPlusException).StatusCode == 400)
-                        {
-                            // ignore
-                        }
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
             }
         }
@@ -93,6 +100,7 @@ namespace ImperaPlus.Integration.Tests
             builder.RegisterType<FakeEmailService>().AsImplementedInterfaces();
            
             builder.RegisterType<ImperaPlus.IntegrationTests.TestUserProvider>().AsImplementedInterfaces();
+            builder.RegisterType<ImperaPlus.IntegrationTests.TestMapTemplateProvider>().As<IMapTemplateProvider>();
         }
 
         public static string GetProjectPath(string solutionRelativePath, Assembly assembly)
