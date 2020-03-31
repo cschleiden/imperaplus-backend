@@ -361,8 +361,8 @@ namespace ImperaPlus.Web
             app.UseWebSockets();
             app.UseSignalR(routes =>
             {
-                routes.MapHub<Hubs.MessagingHub>("/chat");
-                routes.MapHub<Hubs.GameHub>("/game");
+                routes.MapHub<Hubs.MessagingHub>("/signalr/chat");
+                routes.MapHub<Hubs.GameHub>("/signalr/game");
             });
 
             // Initialize database
