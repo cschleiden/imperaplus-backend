@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyTitle>ImperaPlus.TestSupport</AssemblyTitle>
     <Product>ImperaPlus.TestSupport</Product>
   </PropertyGroup>
@@ -12,7 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.9.4" />
-    <PackageReference Include="Hangfire" Version="1.7.9" />
+    <PackageReference Include="Hangfire" Version="1.7.10" />
     <PackageReference Include="Hangfire.Autofac" Version="2.3.1" />
   </ItemGroup>
 </Project>

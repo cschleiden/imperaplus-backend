@@ -248,7 +248,7 @@ namespace ImperaPlus.DataAccess
             modelBuilder.Entity<Tournament>().HasMany(x => x.Teams).WithOne(x => x.Tournament).HasForeignKey(x => x.TournamentId).IsRequired().OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Tournament>().HasMany(x => x.Groups).WithOne(x => x.Tournament).HasForeignKey(x => x.TournamentId).IsRequired().OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Tournament>().HasMany(x => x.Pairings).WithOne(x => x.Tournament).HasForeignKey(x => x.TournamentId).IsRequired().OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<Tournament>().HasOne(x => x.Winner).WithOne().IsRequired(false);
+            modelBuilder.Entity<Tournament>().HasOne(x => x.Winner).WithOne().HasForeignKey<Tournament>(x => x.WinnerId).IsRequired(false);
 
             modelBuilder.Entity<TournamentTeam>()
                 .HasMany(x => x.Participants)

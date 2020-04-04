@@ -19,7 +19,7 @@ namespace ImperaPlus.Domain.Tournaments
         /// <summary>
         /// Only use to support automatic form generation
         /// </summary>
-        /// <returns>Empty tuornament instance</returns>
+        /// <returns>Empty tournament instance</returns>
         public static Tournament CreateEmpty()
         {
             return new Tournament()

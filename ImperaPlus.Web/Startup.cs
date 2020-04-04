@@ -96,11 +96,7 @@ namespace ImperaPlus.Web
             {
                 string connection = Configuration["DBConnection"];
 
-                if (Startup.RunningUnderTest)
-                {
-                    options.UseInMemoryDatabase(databaseName: "impera-test");
-                }
-                else
+                if (!Startup.RunningUnderTest)
                 {
                     options.UseSqlServer(connection,
                         b => b
@@ -219,10 +215,11 @@ namespace ImperaPlus.Web
 
             services.AddMvc(config =>
                 {
+                    config.EnableEndpointRouting = false;
                     config.Filters.Add(new CheckModelForNull());
                     config.Filters.Add(typeof(ApiExceptionFilterAttribute));
                 })
-                .AddJsonOptions(opt =>
+                .AddNewtonsoftJson(opt =>
                 {
                     opt.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
                     opt.SerializerSettings.DateFormatHandling = DateFormatHandling.IsoDateFormat;
@@ -258,7 +255,8 @@ namespace ImperaPlus.Web
             });
 
             // Hangire
-            services.AddHangfire(x => {
+            services.AddHangfire(x =>
+            {
                 x.UseNLogLogProvider()
                  .UseFilter(new JobExpirationTimeAttribute())
                  .UseConsole();
@@ -284,7 +282,7 @@ namespace ImperaPlus.Web
                 {
                     options.EnableDetailedErrors = true;
                 })
-                .AddJsonProtocol(options =>
+                .AddNewtonsoftJsonProtocol(options =>
                 {
                     options.PayloadSerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                     options.PayloadSerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;

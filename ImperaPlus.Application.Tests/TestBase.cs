@@ -89,7 +89,7 @@ namespace ImperaPlus.TestSupport
 
             this.Container = builder.Build();
 
-            dbOptionsBuilder.UseInMemoryDatabase().UseInternalServiceProvider(new AutofacServiceProvider(this.Container));            
+            dbOptionsBuilder.UseInMemoryDatabase("impera_test").UseInternalServiceProvider(new AutofacServiceProvider(this.Container));            
 
             this.Scope = Container.BeginLifetimeScope("AutofacWebRequest");
             this.Context = this.Scope.Resolve<ImperaContext>();
