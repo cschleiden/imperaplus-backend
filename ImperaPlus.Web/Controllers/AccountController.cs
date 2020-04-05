@@ -405,7 +405,8 @@ namespace ImperaPlus.Backend.Controllers
         [HttpPatch]        
         public async Task<IActionResult> SetLanguage(LanguageModel model)
         {
-            // await this._userManager.SetLanguageAsync(this.User.Identity.GetUserId(), model.Language);
+            var user = await GetCurrentUserAsync();
+            this.userService.SetLanguage(user, model.Language);
 
             return Ok();
         }
