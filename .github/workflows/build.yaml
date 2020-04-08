@@ -29,7 +29,7 @@ jobs:
 #       with:
 #         name: build
 #         path: ImperaPlus.Web/drop.zip
-    - run: ./scripts/deployBackend.ps1 -Source "${env:GITHUB_WORKSPACE}/ImperaPlus.Web/drop.zip" -Destination "${env:Website}/${env:DestFolder}" -DestinationComputer "https://imperaonline.de:8172/msdeploy.axd?site=${env:Website}" -AdditionalArguments "-verbose -setParam:'IIS Web Application Name'=${env:Website} -enableRule:AppOffline -skip:objectName=filePath,absolutePath='appsettings..*.json' -skip:skipaction='Delete',objectname='filePath',absolutepath='.*\\wwwroot\\.*' -skip:skipaction='Delete',objectname='dirPath',absolutepath='.*\\wwwroot\\assets'" -Username ${env:Login} -Password ${env:Password} -AuthType "basic"
+    - run: ./scripts/deployBackend.ps1 -Source "${env:GITHUB_WORKSPACE}/ImperaPlus.Web/drop.zip" -Destination "${env:Website}/${env:DestFolder}" -DestinationComputer "https://imperaonline.de:8172/msdeploy.axd?site=${env:Website}" -AdditionalArguments "-verbose -setParam:'IIS Web Application Name'=${env:Website}/${env:DestFolder} -enableRule:AppOffline -skip:objectName=filePath,absolutePath='appsettings..*.json'" -Username ${env:Login} -Password ${env:Password} -AuthType "basic"
 #    -preSync:runCommand='C:\Windows\System32\inetsrv\appcmd stop APPPOOL ${env:AppPool}'  -postSync:runCommand='C:\Windows\System32\inetsrv\appcmd start APPPOOL ${env:AppPool}'" 
       env:      
         Login: ${{ secrets.Login }}
