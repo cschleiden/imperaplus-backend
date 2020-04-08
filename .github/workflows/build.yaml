@@ -35,3 +35,4 @@ jobs:
         Login: ${{ secrets.Login }}
         Password: ${{ secrets.Password }}
         AppPool: dev.imperaonline.de(domain)(4.0)(pool)
+        DestFolder: api
