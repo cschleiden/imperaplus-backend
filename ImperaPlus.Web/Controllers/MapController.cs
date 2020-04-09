@@ -7,7 +7,7 @@ using ImperaPlus.DTO;
 
 namespace ImperaPlus.Backend.Controllers
 {
-    [Route("api/map")]
+    [Route("map")]
     [ProducesResponseType(typeof(ErrorResponse), 400)]
     [ProducesResponseType(typeof(void), 200)]
     public class MapController : Controller

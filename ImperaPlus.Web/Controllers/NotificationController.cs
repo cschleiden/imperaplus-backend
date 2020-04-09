@@ -9,7 +9,7 @@ using AutoMapper;
 namespace ImperaPlus.Backend.Controllers
 {
     [Authorize]
-    [Route("api/notifications")]
+    [Route("notifications")]
     [ProducesResponseType(typeof(ErrorResponse), 400)]
     [ProducesResponseType(typeof(void), 200)]
     public class NotificationController : BaseController

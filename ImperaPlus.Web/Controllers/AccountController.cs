@@ -29,7 +29,7 @@ using OpenIddict.EntityFrameworkCore.Models;
 namespace ImperaPlus.Backend.Controllers
 {
     [Authorize]
-    [Route("api/Account")]
+    [Route("Account")]
     [ProducesResponseType(typeof(ErrorResponse), 400)]
     [ProducesResponseType(typeof(void), 200)]
     public class AccountController : Controller
@@ -287,7 +287,7 @@ namespace ImperaPlus.Backend.Controllers
             });
         }
 
-        // POST api/Account/Logout
+        // POST Account/Logout
         [Route("Logout")]
         [HttpPost]
         public async Task<IActionResult> Logout()
@@ -296,7 +296,7 @@ namespace ImperaPlus.Backend.Controllers
             return Ok();
         }
 
-        // GET api/Account/ManageInfo?returnUrl=%2F&generateState=true
+        // GET Account/ManageInfo?returnUrl=%2F&generateState=true
         [Route("ManageInfo")]
         [HttpGet]
         [ProducesResponseType(typeof(ManageInfoViewModel), 200)]
@@ -411,7 +411,7 @@ namespace ImperaPlus.Backend.Controllers
             return Ok();
         }
 
-        // POST api/Account/AddExternalLogin
+        // POST Account/AddExternalLogin
         /*[Route("AddExternalLogin")]
         [HttpPost]        
         public async Task<IActionResult> AddExternalLogin(AddExternalLoginBindingModel model)
@@ -442,7 +442,7 @@ namespace ImperaPlus.Backend.Controllers
             return Ok();
         }*/
 
-        // POST api/Account/RemoveLogin
+        // POST Account/RemoveLogin
         [Route("RemoveLogin")]
         [HttpPost]       
         public async Task<IActionResult> RemoveLogin([FromBody] RemoveLoginBindingModel model)
@@ -474,7 +474,7 @@ namespace ImperaPlus.Backend.Controllers
             return this.CheckResult(result);
         }
 
-        // GET api/Account/ExternalLogin
+        // GET Account/ExternalLogin
         //[OverrideAuthentication]
         //[HostAuthentication(DefaultAuthenticationTypes.ExternalCookie)]
         /*[AllowAnonymous]
@@ -526,7 +526,7 @@ namespace ImperaPlus.Backend.Controllers
             return Ok();
         }*/
 
-        // GET api/Account/ExternalLogins?returnUrl=%2F&generateState=true
+        // GET Account/ExternalLogins?returnUrl=%2F&generateState=true
         [AllowAnonymous]
         [Route("ExternalLogins")]
         [HttpGet]
@@ -544,7 +544,7 @@ namespace ImperaPlus.Backend.Controllers
                 .ToList();
         }
 
-        // POST api/Account/Register
+        // POST Account/Register
         [AllowAnonymous]
         [Route("Register")]
         [HttpPost]
@@ -687,7 +687,7 @@ namespace ImperaPlus.Backend.Controllers
             return this.CheckResult(result);
         }
 
-        // POST api/Account/RegisterExternal
+        // POST Account/RegisterExternal
         /// <summary>
         /// Create user accout for an external login
         /// </summary>

@@ -17,7 +17,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task<LoginResponseModel> LoginAsync(string grant_type, string username, string password, string scope, string refresh_token, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl).Append("/api/Account/token");
+            urlBuilder_.Append(BaseUrl).Append("/Account/token");
 
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try

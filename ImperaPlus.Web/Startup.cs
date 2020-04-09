@@ -182,7 +182,7 @@ namespace ImperaPlus.Web
 
                         c.AllowPasswordFlow();
                         c.AllowRefreshTokenFlow();
-                        c.EnableTokenEndpoint("/api/Account/Token");
+                        c.EnableTokenEndpoint("/Account/Token");
 
                         c.RegisterScopes(OpenIddictConstants.Scopes.Roles);
 

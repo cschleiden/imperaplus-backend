@@ -8,7 +8,7 @@ using ImperaPlus.DTO;
 namespace ImperaPlus.Backend.Controllers
 {
     [Authorize]
-    [Route("api/tournaments")]
+    [Route("tournaments")]
     [ProducesResponseType(typeof(ErrorResponse), 400)]
     [ProducesResponseType(typeof(void), 200)]
     public class TournamentController : Controller

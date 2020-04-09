@@ -10,7 +10,7 @@ using AutoMapper;
 namespace ImperaPlus.Backend.Controllers
 {
     [Authorize]
-    [Route("api/users")]
+    [Route("users")]
     [ProducesResponseType(typeof(ErrorResponse), 400)]
     [ProducesResponseType(typeof(void), 200)]
     public class UserController : BaseController

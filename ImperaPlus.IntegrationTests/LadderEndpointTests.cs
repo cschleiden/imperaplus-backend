@@ -30,13 +30,13 @@ namespace ImperaPlus.IntegrationTests
                 NumberOfTeams = 2,
                 NumberOfPlayers = 1                
             };
-            var createResponse = await this.HttpClientAdmin.PostAsJsonAsync("api/admin/ladder", ladderCreationOptions);
+            var createResponse = await this.HttpClientAdmin.PostAsJsonAsync("admin/ladder", ladderCreationOptions);
             createResponse.AssertIsSuccessful();
             var ladderSummary = await createResponse.Content.ReadAsAsync<LadderSummary>();
             this.Log(" Done.");
 
             this.Log("Admin: Set game options");
-            (await this.HttpClientAdmin.PutAsJsonAsync("api/admin/ladder/" + ladderSummary.Id + "/gameOptions", new DTO.Games.GameOptions
+            (await this.HttpClientAdmin.PutAsJsonAsync("admin/ladder/" + ladderSummary.Id + "/gameOptions", new DTO.Games.GameOptions
                 {
                     NumberOfPlayersPerTeam = 1,
                     NumberOfTeams = 2,
@@ -55,7 +55,7 @@ namespace ImperaPlus.IntegrationTests
             this.Log(" Done.");
 
             this.Log("Admin: Set map template");
-            (await this.HttpClientAdmin.PutAsJsonAsync("api/admin/ladder/" + ladderSummary.Id + "/mapTemplates", new DTO.Ladder.Admin.MapTemplateUpdate
+            (await this.HttpClientAdmin.PutAsJsonAsync("admin/ladder/" + ladderSummary.Id + "/mapTemplates", new DTO.Ladder.Admin.MapTemplateUpdate
             {
                 MapTemplateNames = new[] 
                 {
@@ -65,27 +65,27 @@ namespace ImperaPlus.IntegrationTests
             this.Log(" Done.");
 
             this.Log("Admin: Activate");
-            (await this.HttpClientAdmin.PutAsJsonAsync("api/admin/ladder/" + ladderSummary.Id + "/active", true)).AssertIsSuccessful();
+            (await this.HttpClientAdmin.PutAsJsonAsync("admin/ladder/" + ladderSummary.Id + "/active", true)).AssertIsSuccessful();
             this.Log(" Done.");
 
             this.Log("Player 1 - Get all ladders with standings");
-            var ladderResp = await this.HttpClientDefault.GetAsync("api/ladder");
+            var ladderResp = await this.HttpClientDefault.GetAsync("ladder");
             var player1Ladders = await ladderResp.Content.ReadAsAsync<IEnumerable<LadderSummary>>();
             Assert.IsNotNull(player1Ladders, "Ladders should not be null");
             Assert.IsNull(player1Ladders.First().Standing, "Player should not have standing in new ladder");
 
             this.Log("Player 1 - Join Ladder");
-            var joinResponse = await this.HttpClientDefault.PostAsync("api/ladder/" + ladderSummary.Id + "/queue", null);
+            var joinResponse = await this.HttpClientDefault.PostAsync("ladder/" + ladderSummary.Id + "/queue", null);
             joinResponse.AssertIsSuccessful();
             this.Log(" Done.");
 
             this.Log("Player 2 - Join Ladder");            
-            var joinResponse2 = await player2HttpClient.PostAsync("api/ladder/" + ladderSummary.Id + "/queue", null);
+            var joinResponse2 = await player2HttpClient.PostAsync("ladder/" + ladderSummary.Id + "/queue", null);
             joinResponse2.AssertIsSuccessful();
             this.Log(" Done.");
 
             this.Log("Force game generation");
-            await this.HttpClientAdmin.PostAsync("api/admin/ladder/forceCreate", null);
+            await this.HttpClientAdmin.PostAsync("admin/ladder/forceCreate", null);
 
             this.Log("Player 1 - Has game");
             var games1 = await player1Client.GetMyGames();        
@@ -105,13 +105,13 @@ namespace ImperaPlus.IntegrationTests
             await player2Client.Surrender(games2.Last().Id);
 
             this.Log("Player 1 - Get all ladders with standings");
-            ladderResp = await this.HttpClientDefault.GetAsync("api/ladder");
+            ladderResp = await this.HttpClientDefault.GetAsync("ladder");
             player1Ladders = await ladderResp.Content.ReadAsAsync<IEnumerable<LadderSummary>>();
             var player1Standing = player1Ladders.First(x => x.Id == ladderSummary.Id).Standing;
             Assert.IsNotNull(player1Standing, "Player should have standing now");
 
             this.Log("Player 2 - Get all ladders with standings");
-            ladderResp = await player2HttpClient.GetAsync("api/ladder");
+            ladderResp = await player2HttpClient.GetAsync("ladder");
             var player2Ladders = await ladderResp.Content.ReadAsAsync<IEnumerable<LadderSummary>>();
             var player2Standing = player2Ladders.First(x => x.Id == ladderSummary.Id).Standing;
             Assert.IsNotNull(player2Standing, "Player should have standing now");

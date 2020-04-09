@@ -12,7 +12,7 @@ namespace ImperaPlus.Backend.Controllers
     /// General management of games
     /// </summary>
     [Authorize]
-    [Route("api/games")]
+    [Route("games")]
     [ProducesResponseType(typeof(ErrorResponse), 400)]
     [ProducesResponseType(typeof(void), 200)]
     public class GameController : Controller

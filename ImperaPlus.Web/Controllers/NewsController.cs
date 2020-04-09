@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace ImperaPlus.Backend.Controllers
 {
-    [Route("api/news")]
+    [Route("news")]
     [Authorize]
     [ProducesResponseType(typeof(ErrorResponse), 400)]
     [ProducesResponseType(typeof(void), 200)]

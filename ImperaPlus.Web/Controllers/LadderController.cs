@@ -12,7 +12,7 @@ namespace ImperaPlus.Backend.Controllers
     /// Ladder interaction
     /// </summary>
     [Authorize]
-    [Route("api/ladder")]
+    [Route("ladder")]
     [ProducesResponseType(typeof(ErrorResponse), 400)]
     [ProducesResponseType(typeof(void), 200)]
     public class LadderController : Controller

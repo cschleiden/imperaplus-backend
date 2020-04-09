@@ -11,7 +11,7 @@ namespace ImperaPlus.Backend.Controllers
     /// Provides actions to play the game. 
     /// </summary>
     [Authorize]
-    [Route("api/games/{gameId:long:min(1)}/history")]
+    [Route("games/{gameId:long:min(1)}/history")]
     [ProducesResponseType(typeof(ErrorResponse), 400)]
 
     public class HistoryController : BaseController

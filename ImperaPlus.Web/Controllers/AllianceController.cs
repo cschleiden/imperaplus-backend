@@ -12,7 +12,7 @@ namespace ImperaPlus.Backend.Controllers
     /// General management of alliances
     /// </summary>
     [Authorize]
-    [Route("api/alliances")]
+    [Route("alliances")]
     [ProducesResponseType(typeof(ErrorResponse), 400)]
     [ProducesResponseType(typeof(void), 200)]
     public class AllianceController : BaseController

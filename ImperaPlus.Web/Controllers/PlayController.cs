@@ -14,7 +14,7 @@ namespace ImperaPlus.Backend.Controllers
     /// Provides actions to play the game. 
     /// </summary>
     [Authorize]
-    [Route("api/games/{gameId:long:min(1)}/play")]
+    [Route("games/{gameId:long:min(1)}/play")]
     [ProducesResponseType(typeof(ErrorResponse), 400)]
     [ProducesResponseType(typeof(void), 200)]
     public class PlayController : BaseController

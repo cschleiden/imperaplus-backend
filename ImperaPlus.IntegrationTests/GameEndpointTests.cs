@@ -15,7 +15,7 @@ namespace ImperaPlus.IntegrationTests
     [TestClass]
     public class GameEndpointTests : BaseIntegrationTest
     {       
-        private const string BaseMapTemplate = "api/map/";
+        private const string BaseMapTemplate = "map/";
         private GameClient clientDefault;
 
         [TestInitialize]

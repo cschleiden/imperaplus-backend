@@ -11,7 +11,7 @@ using AutoMapper;
 namespace ImperaPlus.Backend.Controllers
 {
     [Authorize]
-    [Route("api/messages")]
+    [Route("messages")]
     [ProducesResponseType(typeof(ErrorResponse), 400)]
     [ProducesResponseType(typeof(void), 200)]
     public class MessageController : BaseController

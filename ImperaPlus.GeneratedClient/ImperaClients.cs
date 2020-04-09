@@ -67,7 +67,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task<LoginResponseModel> ExchangeAsync(string grant_type, string username, string password, string scope, string refresh_token, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Account/token");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Account/token");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -179,7 +179,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task GetUserNameAvailableAsync(string userName, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Account/UserNameAvailable?");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Account/UserNameAvailable?");
             if (userName != null) urlBuilder_.Append("userName=").Append(System.Uri.EscapeDataString(ConvertToString(userName, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             urlBuilder_.Length--;
     
@@ -263,7 +263,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task<UserInfo> GetUserInfoAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Account/UserInfo");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Account/UserInfo");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -358,7 +358,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task<UserInfo> GetExternalUserInfoAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Account/ExternalUserInfo");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Account/ExternalUserInfo");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -451,7 +451,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task LogoutAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Account/Logout");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Account/Logout");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -532,7 +532,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task<ManageInfoViewModel> GetManageInfoAsync(string returnUrl, bool? generateState, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Account/ManageInfo?");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Account/ManageInfo?");
             if (returnUrl != null) urlBuilder_.Append("returnUrl=").Append(System.Uri.EscapeDataString(ConvertToString(returnUrl, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             if (generateState != null) urlBuilder_.Append("generateState=").Append(System.Uri.EscapeDataString(ConvertToString(generateState, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             urlBuilder_.Length--;
@@ -628,7 +628,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task ChangePasswordAsync(ChangePasswordBindingModel model, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Account/ChangePassword");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Account/ChangePassword");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -711,7 +711,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task SetPasswordAsync(SetPasswordBindingModel model, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Account/SetPassword");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Account/SetPassword");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -794,7 +794,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task DeleteAccountAsync(DeleteAccountBindingModel model, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Account/Delete");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Account/Delete");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -877,7 +877,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task SetLanguageAsync(string language, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Account/Language?");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Account/Language?");
             if (language != null) urlBuilder_.Append("Language=").Append(System.Uri.EscapeDataString(ConvertToString(language, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             urlBuilder_.Length--;
     
@@ -960,7 +960,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task RemoveLoginAsync(RemoveLoginBindingModel model, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Account/RemoveLogin");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Account/RemoveLogin");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -1043,7 +1043,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<ExternalLoginViewModel>> GetExternalLoginsAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Account/ExternalLogins");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Account/ExternalLogins");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -1136,7 +1136,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task RegisterAsync(RegisterBindingModel model, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Account/Register");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Account/Register");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -1221,7 +1221,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task ResendConfirmationCodeAsync(ResendConfirmationModel model, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Account/ResendConfirmation");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Account/ResendConfirmation");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -1308,7 +1308,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task ConfirmEmailAsync(ConfirmationModel model, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Account/ConfirmEmail");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Account/ConfirmEmail");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -1393,7 +1393,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task ForgotPasswordAsync(ForgotPasswordViewModel model, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Account/ForgotPassword");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Account/ForgotPassword");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -1478,7 +1478,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task ResetPasswordAsync(ResetPasswordViewModel model, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Account/ResetPassword");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Account/ResetPassword");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -1563,7 +1563,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task RegisterExternalAsync(RegisterExternalBindingModel model, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/Account/RegisterExternal");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Account/RegisterExternal");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -1710,7 +1710,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<AllianceSummary>> GetAllAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/alliances");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/alliances");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -1807,7 +1807,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task<AllianceSummary> PostAsync(AllianceCreationOptions creationOptions, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/alliances");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/alliances");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -1910,7 +1910,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("allianceId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/alliances/{allianceId}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/alliances/{allianceId}");
             urlBuilder_.Replace("{allianceId}", System.Uri.EscapeDataString(ConvertToString(allianceId, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
@@ -2068,7 +2068,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<GameSummary>> GetAllAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/games/open");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/games/open");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -2163,7 +2163,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<GameSummary>> GetMyAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/games/my");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/games/my");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -2258,7 +2258,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<GameSummary>> GetMyTurnAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/games/myturn");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/games/myturn");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -2355,7 +2355,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task<GameSummary> PostAsync(GameCreationOptions creationOptions, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/games");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/games");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -2458,7 +2458,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("gameId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/games/{gameId}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/games/{gameId}");
             urlBuilder_.Replace("{gameId}", System.Uri.EscapeDataString(ConvertToString(gameId, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
@@ -2559,7 +2559,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("gameId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/games/{gameId}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/games/{gameId}");
             urlBuilder_.Replace("{gameId}", System.Uri.EscapeDataString(ConvertToString(gameId, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
@@ -2649,7 +2649,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("gameId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/games/{gameId}/messages?");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/games/{gameId}/messages?");
             urlBuilder_.Replace("{gameId}", System.Uri.EscapeDataString(ConvertToString(gameId, System.Globalization.CultureInfo.InvariantCulture)));
             if (isPublic != null) urlBuilder_.Append("isPublic=").Append(System.Uri.EscapeDataString(ConvertToString(isPublic, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             urlBuilder_.Length--;
@@ -2754,7 +2754,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("gameId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/games/{gameId}/join?");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/games/{gameId}/join?");
             urlBuilder_.Replace("{gameId}", System.Uri.EscapeDataString(ConvertToString(gameId, System.Globalization.CultureInfo.InvariantCulture)));
             if (password != null) urlBuilder_.Append("password=").Append(System.Uri.EscapeDataString(ConvertToString(password, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             urlBuilder_.Length--;
@@ -2847,7 +2847,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("gameId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/games/{gameId}/leave");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/games/{gameId}/leave");
             urlBuilder_.Replace("{gameId}", System.Uri.EscapeDataString(ConvertToString(gameId, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
@@ -2938,7 +2938,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("gameId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/games/{gameId}/surrender");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/games/{gameId}/surrender");
             urlBuilder_.Replace("{gameId}", System.Uri.EscapeDataString(ConvertToString(gameId, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
@@ -3040,7 +3040,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("gameId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/games/{gameId}/hide");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/games/{gameId}/hide");
             urlBuilder_.Replace("{gameId}", System.Uri.EscapeDataString(ConvertToString(gameId, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
@@ -3124,7 +3124,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task PatchHideAllAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/games/hide");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/games/hide");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -3275,7 +3275,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("turnId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/games/{gameId}/history/{turnId}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/games/{gameId}/history/{turnId}");
             urlBuilder_.Replace("{gameId}", System.Uri.EscapeDataString(ConvertToString(gameId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{turnId}", System.Uri.EscapeDataString(ConvertToString(turnId, System.Globalization.CultureInfo.InvariantCulture)));
     
@@ -3434,7 +3434,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<LadderSummary>> GetAllAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ladder");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/ladder");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -3534,7 +3534,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("ladderId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ladder/{ladderId}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/ladder/{ladderId}");
             urlBuilder_.Replace("{ladderId}", System.Uri.EscapeDataString(ConvertToString(ladderId, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
@@ -3635,7 +3635,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("ladderId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ladder/{ladderId}/queue");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/ladder/{ladderId}/queue");
             urlBuilder_.Replace("{ladderId}", System.Uri.EscapeDataString(ConvertToString(ladderId, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
@@ -3724,7 +3724,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("ladderId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/ladder/{ladderId}/queue");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/ladder/{ladderId}/queue");
             urlBuilder_.Replace("{ladderId}", System.Uri.EscapeDataString(ConvertToString(ladderId, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
@@ -3867,7 +3867,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<MapTemplateDescriptor>> GetAllSummaryAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/map");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/map");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -3965,7 +3965,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("name");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/map/{name}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/map/{name}");
             urlBuilder_.Replace("{name}", System.Uri.EscapeDataString(ConvertToString(name, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
@@ -4124,7 +4124,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("messageFolder");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/messages/folder/{messageFolder}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/messages/folder/{messageFolder}");
             urlBuilder_.Replace("{messageFolder}", System.Uri.EscapeDataString(ConvertToString(messageFolder, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
@@ -4221,7 +4221,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("messageId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/messages/{messageId}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/messages/{messageId}");
             urlBuilder_.Replace("{messageId}", System.Uri.EscapeDataString(ConvertToString(messageId, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
@@ -4318,7 +4318,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("messageId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/messages/{messageId}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/messages/{messageId}");
             urlBuilder_.Replace("{messageId}", System.Uri.EscapeDataString(ConvertToString(messageId, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
@@ -4402,7 +4402,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("messageId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/messages/{messageId}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/messages/{messageId}");
             urlBuilder_.Replace("{messageId}", System.Uri.EscapeDataString(ConvertToString(messageId, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
@@ -4484,7 +4484,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<FolderInformation>> GetFolderInformationAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/messages/folders");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/messages/folders");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -4577,7 +4577,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task PostSendAsync(SendMessage message, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/messages");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/messages");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -4724,7 +4724,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<NewsItem>> GetAllAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/news");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/news");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -4881,7 +4881,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task<NotificationSummary> GetSummaryAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/notifications/summary");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/notifications/summary");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -5045,7 +5045,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("gameId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/games/{gameId}/play/place");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/games/{gameId}/play/place");
             urlBuilder_.Replace("{gameId}", System.Uri.EscapeDataString(ConvertToString(gameId, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
@@ -5146,7 +5146,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task<GameActionResult> PostExchangeAsync(long gameId, System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/games/{gameId}/play/exchange");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/games/{gameId}/play/exchange");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -5257,7 +5257,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("gameId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/games/{gameId}/play/attack");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/games/{gameId}/play/attack");
             urlBuilder_.Replace("{gameId}", System.Uri.EscapeDataString(ConvertToString(gameId, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
@@ -5361,7 +5361,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("gameId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/games/{gameId}/play/endattack");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/games/{gameId}/play/endattack");
             urlBuilder_.Replace("{gameId}", System.Uri.EscapeDataString(ConvertToString(gameId, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
@@ -5467,7 +5467,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("gameId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/games/{gameId}/play/move");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/games/{gameId}/play/move");
             urlBuilder_.Replace("{gameId}", System.Uri.EscapeDataString(ConvertToString(gameId, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
@@ -5571,7 +5571,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("gameId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/games/{gameId}/play/endturn");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/games/{gameId}/play/endturn");
             urlBuilder_.Replace("{gameId}", System.Uri.EscapeDataString(ConvertToString(gameId, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
@@ -5730,7 +5730,7 @@ namespace ImperaPlus.GeneratedClient
         public async System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<TournamentSummary>> GetAllAsync(System.Threading.CancellationToken cancellationToken)
         {
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/tournaments");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/tournaments");
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -5830,7 +5830,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("tournamentId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/tournaments/{tournamentId}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/tournaments/{tournamentId}");
             urlBuilder_.Replace("{tournamentId}", System.Uri.EscapeDataString(ConvertToString(tournamentId, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
@@ -5931,7 +5931,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("tournamentId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/tournaments/{tournamentId}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/tournaments/{tournamentId}");
             urlBuilder_.Replace("{tournamentId}", System.Uri.EscapeDataString(ConvertToString(tournamentId, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
@@ -6033,7 +6033,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("tournamentId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/tournaments/{tournamentId}/teams");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/tournaments/{tournamentId}/teams");
             urlBuilder_.Replace("{tournamentId}", System.Uri.EscapeDataString(ConvertToString(tournamentId, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
@@ -6138,7 +6138,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("tournamentId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/tournaments/{tournamentId}/teams?");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/tournaments/{tournamentId}/teams?");
             urlBuilder_.Replace("{tournamentId}", System.Uri.EscapeDataString(ConvertToString(tournamentId, System.Globalization.CultureInfo.InvariantCulture)));
             if (name != null) urlBuilder_.Append("name=").Append(System.Uri.EscapeDataString(ConvertToString(name, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
             if (password != null) urlBuilder_.Append("password=").Append(System.Uri.EscapeDataString(ConvertToString(password, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
@@ -6243,7 +6243,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("pairingId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/tournaments/pairings/{pairingId}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/tournaments/pairings/{pairingId}");
             urlBuilder_.Replace("{pairingId}", System.Uri.EscapeDataString(ConvertToString(pairingId, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
@@ -6351,7 +6351,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("teamId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/tournaments/{tournamentId}/teams/{teamId}?");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/tournaments/{tournamentId}/teams/{teamId}?");
             urlBuilder_.Replace("{tournamentId}", System.Uri.EscapeDataString(ConvertToString(tournamentId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{teamId}", System.Uri.EscapeDataString(ConvertToString(teamId, System.Globalization.CultureInfo.InvariantCulture)));
             if (password != null) urlBuilder_.Append("password=").Append(System.Uri.EscapeDataString(ConvertToString(password, System.Globalization.CultureInfo.InvariantCulture))).Append("&");
@@ -6461,7 +6461,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("teamId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/tournaments/{tournamentId}/teams/{teamId}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/tournaments/{tournamentId}/teams/{teamId}");
             urlBuilder_.Replace("{tournamentId}", System.Uri.EscapeDataString(ConvertToString(tournamentId, System.Globalization.CultureInfo.InvariantCulture)));
             urlBuilder_.Replace("{teamId}", System.Uri.EscapeDataString(ConvertToString(teamId, System.Globalization.CultureInfo.InvariantCulture)));
     
@@ -6550,7 +6550,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("tournamentId");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/tournaments/{tournamentId}/teams/me");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/tournaments/{tournamentId}/teams/me");
             urlBuilder_.Replace("{tournamentId}", System.Uri.EscapeDataString(ConvertToString(tournamentId, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
@@ -6700,7 +6700,7 @@ namespace ImperaPlus.GeneratedClient
                 throw new System.ArgumentNullException("query");
     
             var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/users/find/{query}");
+            urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/users/find/{query}");
             urlBuilder_.Replace("{query}", System.Uri.EscapeDataString(ConvertToString(query, System.Globalization.CultureInfo.InvariantCulture)));
     
             var client_ = await CreateHttpClientAsync(cancellationToken).ConfigureAwait(false);
