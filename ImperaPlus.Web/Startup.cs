@@ -30,6 +30,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -56,7 +57,7 @@ namespace ImperaPlus.Web
         public static ContainerBuilder TestContainerBuilder { get; set; }
         #endregion
 
-        public Startup(IHostingEnvironment env)
+        public Startup(IWebHostEnvironment env)
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
@@ -82,7 +83,7 @@ namespace ImperaPlus.Web
 
         public IConfigurationRoot Configuration { get; }
 
-        public IHostingEnvironment Environment { get; private set; }
+        public IWebHostEnvironment Environment { get; private set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
@@ -300,11 +301,15 @@ namespace ImperaPlus.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(
             IApplicationBuilder app,
-            IHostingEnvironment env,
+            IWebHostEnvironment env,
             ILoggerFactory loggerFactory,
             ImperaContext dbContext,
             DbSeed dbSeed)
         {
+            if (env.IsDevelopment()) {
+                app.UsePathBase("/api");
+            }
+
             NLog.LogManager.Configuration.Variables["configDir"] = Configuration["LogDir"];
 
             //if (env.IsDevelopment())
