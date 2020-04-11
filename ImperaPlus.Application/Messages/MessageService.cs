@@ -43,7 +43,7 @@ namespace ImperaPlus.Application.Messages
                 .Include(x => x.Owner)
                 .Include(x => x.Recipient)
                 .Include(x => x.From)
-                .Where(m => m.OwnerId == currentUserId)
+                .Where(m => m.OwnerId == currentUserId && m.Id == id)
                 .FirstOrDefault();
 
             if (message == null)
@@ -75,8 +75,23 @@ namespace ImperaPlus.Application.Messages
                 .Query()
                 .Where(m => m.OwnerId == currentUserId)
                 .GroupBy(m => m.Folder)
-                .Select(gr => new { Folder = gr.Key, Count = gr.Count(), UnreadCount = gr.Count(x => !x.IsRead) })
+                .Select(gr => new 
+                { 
+                    Folder = gr.Key, 
+                    Count = gr.Count()
+                })
                 .ToDictionary(x => x.Folder);
+
+            var unreadMessagesByFolder = this.UnitOfWork.Messages
+                .Query()
+                .Where(m => m.OwnerId == currentUserId && !m.IsRead)
+                .GroupBy(m => m.Folder)
+                .Select(gr => new
+                {
+                    Folder = gr.Key,
+                    Count = gr.Count()
+                })
+                .ToDictionary(x => x.Folder, x => x.Count);
 
             return new[] { Domain.Messages.MessageFolder.Inbox, Domain.Messages.MessageFolder.Sent }.Select(folder =>
             {
@@ -88,7 +103,7 @@ namespace ImperaPlus.Application.Messages
                     {
                         Folder = mappedFolder,
                         Count = messagesByFolder[folder].Count,
-                        UnreadCount = messagesByFolder[folder].UnreadCount
+                        UnreadCount = unreadMessagesByFolder.GetValueOrDefault(folder)
                     };
                 }
                 else
