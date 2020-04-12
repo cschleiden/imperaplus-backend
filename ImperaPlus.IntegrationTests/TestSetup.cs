@@ -94,7 +94,6 @@ namespace ImperaPlus.IntegrationTests
             serviceCollection.AddScoped<DbSeed, TestDbSeed>();
 
             var builder = new ContainerBuilder();
-            Startup.TestContainerBuilder = builder;
 
             builder.RegisterType<SynchronousBackgroundJobClient>().AsImplementedInterfaces();
             builder.RegisterType<FakeEmailService>().AsImplementedInterfaces();

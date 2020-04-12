@@ -5,7 +5,7 @@
     <Product>ImperaPlus.Utils</Product>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.0.180" />
+    <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.1.0" />
     <PackageReference Include="NLog" Version="4.7.0" />
   </ItemGroup>
 </Project>

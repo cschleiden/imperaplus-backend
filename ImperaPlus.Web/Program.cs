@@ -5,6 +5,7 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
 using System;
+using Microsoft.Extensions.Hosting;
 
 namespace ImperaPlus.Web
 {
@@ -17,7 +18,7 @@ namespace ImperaPlus.Web
 
             try
             {
-                BuildWebHost(args).Run();
+                CreateHostBuilder(args).Build().Run();
             }
             catch (Exception exception)
             {
@@ -29,28 +30,28 @@ namespace ImperaPlus.Web
             }
         }
 
-        public static IWebHost BuildWebHost(string[] args) => new WebHostBuilder()
-            .ConfigureLogging(logging =>
-            {
-                logging.ClearProviders();
-                logging.SetMinimumLevel(LogLevel.Trace);
-            })
-            .UseNLog()
+        public static IHostBuilder CreateHostBuilder(string[] args) {
+            return Host
+                .CreateDefaultBuilder(args)
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+                .ConfigureWebHostDefaults(webBuilder =>
+                webBuilder
+                    .ConfigureLogging(logging =>
+                    {
+                        logging.ClearProviders();
+                        logging.SetMinimumLevel(LogLevel.Trace);
+                    })
+                    .UseNLog()
 #if !DEBUG
-            .UseApplicationInsights()
+                    .UseApplicationInsights()
 #endif
-            .CaptureStartupErrors(true)
-            .UseSetting("detailedErrors", "true")
-            .UseContentRoot(Directory.GetCurrentDirectory())
-            .ConfigureLogging(logging =>
-            {
-                logging.ClearProviders();
-
-            })
-            .ConfigureServices(services => services.AddAutofac())
-            .UseIISIntegration()
-            .UseKestrel()
-            .UseStartup<Startup>()
-            .Build();
+                    .CaptureStartupErrors(true)
+                    .UseSetting("detailedErrors", "true")                    
+                    .ConfigureServices(services => services.AddAutofac())
+                    // .UseIISIntegration()
+                    // .UseKestrel()
+                    .UseStartup<Startup>()
+                );
+        }
     }
 }

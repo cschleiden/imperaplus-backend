@@ -17,8 +17,6 @@ namespace ImperaPlus.Web.Hubs
     {
     }
 
-    // TODO: FIX
-    //[HubName("chat")]
     [Authorize]
     public class MessagingHub : Hub, IMessagingHubContext
     {

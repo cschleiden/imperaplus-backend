@@ -45,6 +45,7 @@
     <ItemGroup>
         <Folder Include="Migrations\" />
         <Folder Include="logs\" />
+        <Folder Include="Areas/Admin/Views" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="DataTables.AspNet.AspNetCore" Version="2.0.2" />
@@ -59,13 +60,14 @@
         <PackageReference Include="NSwag.AspNetCore" Version="13.0.6" />
         <PackageReference Include="OpenIddict" Version="2.0.1" />
         <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="2.0.1" />
-        <PackageReference Include="MiniProfiler.EntityFrameworkCore" Version="4.0.180" />
-        <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.4.0" />
+        <PackageReference Include="MiniProfiler.EntityFrameworkCore" Version="4.1.0" />
+        <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.3" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.3" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.3" />
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.NewtonsoftJson" Version="3.1.3" />
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.3" />
+        <PackageReference Include="Autofac" Version="5.1.2" />
     </ItemGroup>
     <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
         <ItemGroup>

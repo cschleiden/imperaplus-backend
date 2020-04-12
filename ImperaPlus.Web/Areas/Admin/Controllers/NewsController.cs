@@ -8,14 +8,14 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
 {
     public class NewsController : BaseAdminController
     {
-        private INewsService newsService;
+        private readonly INewsService newsService;
 
         public NewsController(IUnitOfWork unitOfWork, INewsService newsService)
             : base(unitOfWork)
         {
             this.newsService = newsService;
         }
-        
+
         public ActionResult Index()
         {
             var news = this.unitOfWork.News.GetOrdered(10);

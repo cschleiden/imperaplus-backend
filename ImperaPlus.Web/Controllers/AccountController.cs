@@ -258,32 +258,11 @@ namespace ImperaPlus.Backend.Controllers
                 UserId = user.Id,
                 UserName = user.UserName,
                 HasRegistered = logins.Any(x => x.LoginProvider == "Local"),
-                LoginProvider = null, // TODO : CS: 
+                LoginProvider = null,
                 Language = user.Language,
                 Roles = roles.ToArray(),
                 AllianceAdmin = user.AllianceId.HasValue && user.AllianceId != Guid.Empty && user.IsAllianceAdmin, // Can only be admin if in an alliance
                 AllianceId = user.AllianceId
-            });
-        }
-
-        /// <summary>
-        /// Get user information for an external user (i.e., just logged in using an external provider)
-        /// </summary>
-        /// <returns></returns>
-        [Route("ExternalUserInfo")]
-        [HttpGet]
-        [ProducesResponseType(typeof(DTO.Account.UserInfo), 200)]
-        public async Task<IActionResult> GetExternalUserInfo()
-        {
-            var user = await this.GetCurrentUserAsync();
-            var externalLogin = await this.signInManager.GetExternalLoginInfoAsync();
-
-            return this.Ok(new DTO.Account.UserInfo
-            {
-                UserId = user.Id,
-                UserName = user.UserName,
-                HasRegistered = externalLogin == null,
-                LoginProvider = externalLogin != null ? externalLogin.LoginProvider : null
             });
         }
 

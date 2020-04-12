@@ -16,8 +16,6 @@ namespace ImperaPlus.Web.Hubs
     {
     }
 
-    // TODO: Fix
-    //[HubName("game")]
     [Authorize]
     public class GameHub : Hub, INotificationHubContext
     {
