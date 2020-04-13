@@ -189,3 +189,5 @@ src/modules/**/*.js
 ImperaPlus.Web/internal-nlog.txt
 dist
 ImperaPlus.Web/logs/
+ImperaPlus.Web/logs/log-own.0.txt
+ImperaPlus.Web/logs/logs/log.0.txt

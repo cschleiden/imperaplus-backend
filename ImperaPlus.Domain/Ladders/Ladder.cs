@@ -5,7 +5,6 @@ using System.Linq;
 using ImperaPlus.Domain.Games;
 using ImperaPlus.Domain.Utilities;
 using ImperaPlus.Domain.Exceptions;
-using ImperaPlus.Domain.Annotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using ImperaPlus.Domain.Services;
 
@@ -47,6 +46,7 @@ namespace ImperaPlus.Domain.Ladders
             }
         }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; private set; }
 
         public string Name { get; set; }
@@ -121,66 +121,5 @@ namespace ImperaPlus.Domain.Ladders
 
             this.IsActive = isActive;
         }
-    }
-
-    public class LadderQueueEntry : IChangeTrackedEntity
-    {
-        private Ladder ladder;
-
-        [UsedImplicitly]
-        protected LadderQueueEntry()
-        {
-        }
-
-        public LadderQueueEntry(Ladder ladder, User user)
-        {
-            this.ladder = ladder;
-
-            this.User = user;
-            this.UserId = user.Id;
-        }
-
-        public Guid LadderId { get; set; }
-
-        public string UserId { get; set; }
-        public virtual User User { get; set; }
-
-        public DateTime CreatedAt { get; set; }
-
-        public DateTime LastModifiedAt { get; set; }
-    }
-
-    public class LadderStanding
-    {
-        [UsedImplicitly]
-        protected LadderStanding()
-        {
-        }
-
-        public LadderStanding(Ladder ladder, User user)
-        {
-            this.LadderId = ladder.Id;
-            this.UserId = user.Id;
-        }
-
-        public Guid LadderId { get; set; }
-
-        public string UserId { get; set; }
-
-        public virtual User User { get; set; }
-
-        public int GamesPlayed { get; set; }
-
-        public int GamesWon { get; set; }
-
-        public int GamesLost { get; set; }
-
-        public DateTime LastGame { get; set; }
-
-        public double Rating { get; set; }
-
-        public double Vol { get; set; }
-
-        public double Rd { get; set; }
     }
 }

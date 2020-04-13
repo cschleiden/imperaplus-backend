@@ -22,7 +22,7 @@ namespace ImperaPlus.DataAccess
 {
     public class ImperaContext : IdentityDbContext<User>, IImperaContext
     {
-        private readonly Domain.IUserProvider userProvider;
+        private readonly IUserProvider userProvider;
         private readonly IEventAggregator eventAggregator;
 
         public ImperaContext(DbContextOptions<ImperaContext> options)
@@ -55,6 +55,8 @@ namespace ImperaPlus.DataAccess
         public virtual DbSet<Ladder> Ladders { get; set; }
 
         public virtual DbSet<GameOptions> GameOptions { get; set; }
+
+        public virtual DbSet<Tournament> Tournaments { get; set; }
         
         public override int SaveChanges()
         {

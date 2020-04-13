@@ -32,6 +32,7 @@ namespace ImperaPlus.Domain.Tournaments
             this.Number = number;
         }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; protected set; }
 
         public virtual ICollection<TournamentTeam> Teams { get; protected set; }

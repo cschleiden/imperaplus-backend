@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ImperaPlus.Domain.Tournaments
 {
@@ -19,6 +20,7 @@ namespace ImperaPlus.Domain.Tournaments
             this.User = user;
         }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
         
         public string UserId { get; protected set; }

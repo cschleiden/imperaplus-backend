@@ -40,6 +40,7 @@ namespace ImperaPlus.Domain.Tournaments
             this.NumberOfGames = numberOfGames;
         }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
 
         public Guid TournamentId { get; set; }

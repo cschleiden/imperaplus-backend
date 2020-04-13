@@ -115,9 +115,9 @@ namespace ImperaPlus.Application.Tournaments
 
             var tournament = this.GetTournament(tournamentId);
             var team = tournament.AddUser(this.CurrentUser);
-            
-            this.UnitOfWork.Commit();
 
+            this.UnitOfWork.Commit();
+            
             return Mapper.Map<TournamentTeam>(team);
         }
 

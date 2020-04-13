@@ -1,0 +1,4 @@
+{
+    "github-actions.workflows.pinned.workflows": [".github/workflows/build.yaml"],
+    "github-actions.workflows.pinned.refresh.enabled": true
+}

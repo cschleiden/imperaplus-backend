@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using ImperaPlus.Domain.Exceptions;
 
@@ -21,6 +22,7 @@ namespace ImperaPlus.Domain.Tournaments
             this.TournamentId = tournament.Id;
         }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
 
         public Guid TournamentId { get; set; }

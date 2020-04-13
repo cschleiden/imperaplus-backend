@@ -10,6 +10,7 @@ using ImperaPlus.Domain.Utilities;
 
 namespace ImperaPlus.Domain.Tournaments
 {
+    [Table("Tournament")]
     public class Tournament : Entity, IChangeTrackedEntity
     {
         public const int GroupSize = 4;
@@ -98,6 +99,7 @@ namespace ImperaPlus.Domain.Tournaments
             this.StartOfTournament = startOfTournament;
         }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; private set; }
 
         public string Name { get; private set; }
