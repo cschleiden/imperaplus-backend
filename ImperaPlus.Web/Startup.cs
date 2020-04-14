@@ -194,8 +194,12 @@ namespace ImperaPlus.Web
                         builder.AddEventHandler<OpenIddictValidationEvents.RetrieveToken>(
                             notification =>
                             {
-                                // notification.Context.Token = notification.Context.Request.Query["access_token"];
                                 notification.Context.Token = notification.Context.Request.Cookies["bearer_token"];
+
+                                if (string.IsNullOrEmpty(notification.Context.Token))
+                                {
+                                    notification.Context.Token = notification.Context.Request.Query["access_token"];
+                                }
 
                                 return Task.FromResult(OpenIddictValidationEventState.Handled);
                             });
@@ -284,7 +288,7 @@ namespace ImperaPlus.Web
             // Swagger document
             services.AddOpenApiDocument();
 
-            // Allow other parts to access the http context            
+            // Allow other parts to access the http context
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
