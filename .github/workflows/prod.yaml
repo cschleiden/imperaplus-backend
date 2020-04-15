@@ -1,17 +1,16 @@
-# Deploy any change to master to the dev environment
-name: Build & Test & Deploy to dev
+name: Prod Deployment
 
 on:
   push:
     branches:
-      - master
+      - production
 
 jobs:
   build:
     runs-on: windows-latest
 
     env:
-      Website: dev.imperaonline.de
+      Website: imperaonline.de
 
     steps:
     - uses: actions/checkout@v2
@@ -34,5 +33,5 @@ jobs:
       env:
         Login: ${{ secrets.Login }}
         Password: ${{ secrets.Password }}
-        AppPool: dev.imperaonline.de(domain)(4.0)(pool)
+        AppPool: imperaonline.de(domain)(4.0)(pool)
         DestFolder: api
