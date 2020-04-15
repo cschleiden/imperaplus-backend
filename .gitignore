@@ -170,8 +170,8 @@ node_modules/
 *.mdf
 *.ldf
 
-src/app/**/*.js 
-src/modules/**/*.js 
+src/app/**/*.js
+src/modules/**/*.js
 /ImperaPlus.Backend/App_Data/XmlDocument.xml
 /ImperaPlus.Backend/App_Data/XmlDocument.DTO.xml
 /ImperaPlus.sln.DotSettings
@@ -191,3 +191,5 @@ dist
 ImperaPlus.Web/logs/
 ImperaPlus.Web/logs/log-own.0.txt
 ImperaPlus.Web/logs/logs/log.0.txt
+
+db

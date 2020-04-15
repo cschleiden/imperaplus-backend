@@ -3,8 +3,13 @@ services:
   sql-server-db:
     container_name: sql-server-db
     image: microsoft/mssql-server-linux:2017-latest
+    volumes:
+      - mssql-server-linux-data:/var/opt/mssql/data
     ports:
       - "1433:1433"
     environment:
       SA_PASSWORD: "Passw0rd1"
       ACCEPT_EULA: "Y"
+
+volumes:
+  mssql-server-linux-data:
