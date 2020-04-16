@@ -264,6 +264,8 @@ namespace ImperaPlus.Web
                 }
             });
 
+            services.AddHangfireServer();
+
             services.AddSingleton(_ => new JsonSerializer
             {
                 DateTimeZoneHandling = DateTimeZoneHandling.Utc,
@@ -402,8 +404,7 @@ namespace ImperaPlus.Web
             {
                 Authorization = new[] { new HangfireAuthorizationFilter() }
             });
-
-            Hangfire.Common.JobHelper.SetSerializerSettings(new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
+            GlobalConfiguration.Configuration.UseSerializerSettings(new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
 
             // Configure Impera background jobs
             JobConfig.Configure();

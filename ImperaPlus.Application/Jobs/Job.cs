@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Hangfire.Console;
 using Hangfire.Server;
+using System;
 
 namespace ImperaPlus.Application.Jobs
 {
@@ -12,7 +13,7 @@ namespace ImperaPlus.Application.Jobs
 
         public Job(ILifetimeScope scope)
         {
-            this.LifetimeScope = scope.BeginLifetimeScope("AutofacWebRequest");
+            this.LifetimeScope = scope;
         }
 
         public virtual void Handle(PerformContext performContext)
@@ -27,7 +28,7 @@ namespace ImperaPlus.Application.Jobs
 
         public BackgroundJob(ILifetimeScope scope)
         {
-            this.LifetimeScope = scope.BeginLifetimeScope("AutofacWebRequest");
+            this.LifetimeScope = scope;
         }
     }
 
@@ -37,7 +38,7 @@ namespace ImperaPlus.Application.Jobs
 
         public AsyncJob(ILifetimeScope scope)
         {
-            this.LifetimeScope = scope.BeginLifetimeScope("AutofacWebRequest");
+            this.LifetimeScope = scope;
         }
 
         public abstract Task Handle();

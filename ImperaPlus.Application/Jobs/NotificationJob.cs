@@ -9,7 +9,7 @@ namespace ImperaPlus.Application.Jobs
     {
         public NotificationJob(ILifetimeScope scope)
             : base(scope)
-        {            
+        {
         }
 
         public void SendToUser(string userId, DTO.Notifications.Notification notification)

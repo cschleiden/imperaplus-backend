@@ -27,19 +27,20 @@ namespace ImperaPlus.Application.Jobs
 
             this.Log.Log(Domain.LogLevel.Info, "Processing timeouts");
 
-            var games = this.unitOfWork.Games.FindTimeoutGames().ToArray();
+            var gameIds = this.unitOfWork.Games.FindTimeoutGames().ToArray();
             
-            foreach(var game in games)
+            foreach(var gameId in gameIds)
             {
                 try
                 {
+                    var game = this.unitOfWork.Games.Find(gameId);
                     this.Log.Log(Domain.LogLevel.Info, "Processing timeout in game {0} {1}", game.Id, game.Name);
                     game.ProcessTimeouts();
                 }
                 catch (Exception e)
                 {
                     // Log and continue with next game
-                    this.Log.Log(Domain.LogLevel.Error, "Error while processing timeouts for game {0} {1}", game.Id, e.ToString());
+                    this.Log.Log(Domain.LogLevel.Error, "Error while processing timeouts for game {0} {1}", gameId, e.ToString());
                 }
 
                 try
@@ -48,7 +49,7 @@ namespace ImperaPlus.Application.Jobs
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    this.Log.Log(Domain.LogLevel.Error, "DbUpdateConcurrencyException for game {0}", game.Id);
+                    this.Log.Log(Domain.LogLevel.Error, "DbUpdateConcurrencyException for game {0}", gameId);
                 }
             }
         }

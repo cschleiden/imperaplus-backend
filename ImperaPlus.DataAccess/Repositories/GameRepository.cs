@@ -17,7 +17,7 @@ namespace ImperaPlus.DataAccess.Repositories
 
         public Game Find(long id)
         {
-            return this.FullGameSet.FirstOrDefault(x => x.Id == id);
+            return this.GameSet.FirstOrDefault(x => x.Id == id);
         }
 
         public Game FindWithHistory(long id)
@@ -70,11 +70,12 @@ namespace ImperaPlus.DataAccess.Repositories
                     && g.Teams.SelectMany(t => t.Players).All(p => p.UserId != userId));
         }
 
-        public IEnumerable<Game> FindTimeoutGames()
+        public IEnumerable<long> FindTimeoutGames()
         {            
-            return this.FullGameSet.Where(x =>
+            return this.DbSet.Where(x =>
                 x.State == GameState.Active
-                && x.LastTurnStartedAt <= DateTime.UtcNow.AddSeconds(-x.Options.TimeoutInSeconds));
+                && x.LastTurnStartedAt <= DateTime.UtcNow.AddSeconds(-x.Options.TimeoutInSeconds))
+                .Select(x => x.Id);
         }
 
         public IEnumerable<Game> FindUnscoredLadderGames()
@@ -110,7 +111,7 @@ namespace ImperaPlus.DataAccess.Repositories
                     .Include(x => x.CreatedBy)
                     .Include(x => x.Teams)
                         .ThenInclude(t => t.Players)
-                        .ThenInclude(p => p.User)
+                            .ThenInclude(p => p.User)
                     .Include(x => x.Options);
             }
         }        

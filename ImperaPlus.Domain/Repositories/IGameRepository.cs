@@ -32,7 +32,7 @@ namespace ImperaPlus.Domain.Repositories
 
         IQueryable<Game> FindOpen(string userId);
 
-        IEnumerable<Game> FindTimeoutGames();
+        IEnumerable<long> FindTimeoutGames();
 
         IEnumerable<Game> FindOpenPasswordFunGames();
     }

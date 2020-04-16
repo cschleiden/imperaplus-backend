@@ -134,7 +134,7 @@ namespace ImperaPlus.Domain.Tests
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Game> FindTimeoutGames()
+        public IEnumerable<long> FindTimeoutGames()
         {
             throw new NotImplementedException();
         }
