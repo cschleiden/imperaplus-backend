@@ -96,6 +96,13 @@ namespace ImperaPlus.DataAccess.Repositories
                 .Delete();
         }
 
+        public int DeleteEndedGames()
+        {
+            return this.DbSet
+                .Where(x => x.State == GameState.Ended && x.Type == GameType.Fun && x.LastModifiedAt <= DateTime.UtcNow.AddDays(-10))
+                .Delete();
+        }
+
         protected IQueryable<Game> FullGameSet
         {
             get

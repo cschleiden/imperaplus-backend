@@ -27,9 +27,13 @@ namespace ImperaPlus.Application.Jobs
             this.Log.Log(Domain.LogLevel.Info, "Cleaning up fun games...");
 
             int deletedCount = this.unitOfWork.Games.DeleteOpenPasswordFunGames();
+            this.Log.Log(Domain.LogLevel.Info, "Removed {0} fun games", deletedCount);
             this.unitOfWork.Commit();
 
-            this.Log.Log(Domain.LogLevel.Info, "Removed {0} games", deletedCount);
+            int deletedEndedCount = this.unitOfWork.Games.DeleteEndedGames();
+            this.Log.Log(Domain.LogLevel.Info, "Removed {0} ended games", deletedEndedCount);
+            this.unitOfWork.Commit();
+
             this.Log.Log(Domain.LogLevel.Info, "Done");
         }
     }
