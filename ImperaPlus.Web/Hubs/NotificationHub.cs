@@ -36,18 +36,7 @@ namespace ImperaPlus.Web.Hubs
         public GameHub(ILifetimeScope scope)
             : base()
         {
-            this.lifetimeScope = scope.BeginLifetimeScope();
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && this.lifetimeScope != null)
-            {
-                this.lifetimeScope.Dispose();
-                this.lifetimeScope = null;
-            }
-
-            base.Dispose(disposing);
+            this.lifetimeScope = scope;
         }
 
         public override async Task OnConnectedAsync()
@@ -115,7 +104,7 @@ namespace ImperaPlus.Web.Hubs
             {
                 return;
             }
-            
+
             string userId = this.GetUserId();
 
             var gameService = this.lifetimeScope.Resolve<IGameService>();
@@ -145,7 +134,7 @@ namespace ImperaPlus.Web.Hubs
 
             // Initialize for new game
             await this.JoinGame(newGameId);
-        } 
+        }
 
         /// <summary>
         /// Send message to given game. Message is relayed to other users in game chat.

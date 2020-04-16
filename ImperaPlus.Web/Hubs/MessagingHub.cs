@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
-    
+
 namespace ImperaPlus.Web.Hubs
 {
     public interface IMessagingHubContext
@@ -22,7 +22,7 @@ namespace ImperaPlus.Web.Hubs
     {
         private readonly static ConnectionMapping<string> Connections =
             new ConnectionMapping<string>();
-        
+
         private ILogger<MessagingHub> logger;
 
         private ILifetimeScope lifetimeScope;
@@ -32,19 +32,8 @@ namespace ImperaPlus.Web.Hubs
             ILogger<MessagingHub> logger)
             : base()
         {
-            this.lifetimeScope = lifetimeScope.BeginLifetimeScope();
+            this.lifetimeScope = lifetimeScope;
             this.logger = logger;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && this.lifetimeScope != null)
-            {
-                this.lifetimeScope.Dispose();
-                this.lifetimeScope = null;
-            }
-
-            base.Dispose(disposing);
         }
 
         public override async Task OnConnectedAsync()
@@ -56,7 +45,7 @@ namespace ImperaPlus.Web.Hubs
             await base.OnConnectedAsync();
         }
 
-        public async override Task OnDisconnectedAsync(Exception exception)        
+        public async override Task OnDisconnectedAsync(Exception exception)
         {
             string name;
             IEnumerable<string> channels;
@@ -109,7 +98,7 @@ namespace ImperaPlus.Web.Hubs
                             Name = x
                         }).ToArray();
             }
-            
+
             return new ChatInformation()
             {
                 Channels = channels.ToArray()
@@ -118,7 +107,7 @@ namespace ImperaPlus.Web.Hubs
 
         public void SendMessage(Guid channelId, string message)
         {
-            // Send to service for persistence            
+            // Send to service for persistence
             var chatService = this.lifetimeScope.Resolve<IChatService>();
             string userId = this.GetUserId();
             chatService.SendMessage(channelId, userId, message);
