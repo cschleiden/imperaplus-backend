@@ -10,7 +10,7 @@ namespace ImperaPlus.DataAccess.Repositories
 {
     public class TournamentRepository : GenericRepository<Tournament>, ITournamentRepository
     {
-        public TournamentRepository(DbContext context) 
+        public TournamentRepository(DbContext context)
             : base(context)
         {
         }
@@ -27,7 +27,7 @@ namespace ImperaPlus.DataAccess.Repositories
                 states = new[] { TournamentState.Open, TournamentState.Groups, TournamentState.Knockout, TournamentState.Closed };
             }
 
-            return this.Set.Where(x => states.Contains(x.State));
+            return this.SummarySet.Where(x => states.Contains(x.State));
         }
 
         public bool ExistsWithName(string name)
@@ -52,6 +52,16 @@ namespace ImperaPlus.DataAccess.Repositories
                     .FirstOrDefault(p => p.Id == pairingId);
 
             return pairing.Games;
+        }
+
+        private IQueryable<Tournament> SummarySet
+        {
+            get
+            {
+                // Include Games/Teams/Players so we can synchronize
+                return this.DbSet
+                    .Include(x => x.Options);
+            }
         }
 
         private IQueryable<Tournament> Set

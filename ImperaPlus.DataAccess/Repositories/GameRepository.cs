@@ -100,6 +100,7 @@ namespace ImperaPlus.DataAccess.Repositories
         {
             return this.DbSet
                 .Where(x => x.State == GameState.Ended && x.Type == GameType.Fun && x.LastModifiedAt <= DateTime.UtcNow.AddDays(-10))
+                .Take(200)
                 .Delete(x => x.BatchSize = 20);
         }
 
