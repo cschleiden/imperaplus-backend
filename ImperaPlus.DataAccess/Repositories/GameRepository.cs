@@ -5,12 +5,13 @@ using System.Linq;
 using ImperaPlus.Domain.Enums;
 using ImperaPlus.Domain.Games;
 using ImperaPlus.Domain.Repositories;
+using Z.EntityFramework.Plus;
 
 namespace ImperaPlus.DataAccess.Repositories
 {
     public class GameRepository : GenericRepository<Game>, IGameRepository
     {
-        public GameRepository(ImperaContext context) 
+        public GameRepository(ImperaContext context)
             : base(context)
         {
         }
@@ -55,9 +56,9 @@ namespace ImperaPlus.DataAccess.Repositories
         public IQueryable<Game> FindNotHiddenNotOutcomeForUser(string userId, PlayerOutcome outcome)
         {
             return this.GameSet
-                .Where(g => 
-                    g.Teams.Any(t => 
-                        t.Players.Any(p => 
+                .Where(g =>
+                    g.Teams.Any(t =>
+                        t.Players.Any(p =>
                             p.UserId == userId
                             && !p.IsHidden
                             && p.Outcome != outcome)));
@@ -71,7 +72,7 @@ namespace ImperaPlus.DataAccess.Repositories
         }
 
         public IEnumerable<long> FindTimeoutGames()
-        {            
+        {
             return this.DbSet.Where(x =>
                 x.State == GameState.Active
                 && x.LastTurnStartedAt <= DateTime.UtcNow.AddSeconds(-x.Options.TimeoutInSeconds))
@@ -81,17 +82,18 @@ namespace ImperaPlus.DataAccess.Repositories
         public IEnumerable<Game> FindUnscoredLadderGames()
         {
             return this.GameSet
-                .Where(x => 
+                .Where(x =>
                     x.State == GameState.Ended
-                    && x.LadderId != null 
+                    && x.LadderId != null
                     && (x.LadderScored == null || x.LadderScored == false))
                 .OrderByDescending(x => x.LastTurnStartedAt);
         }
 
-        public IEnumerable<Game> FindOpenPasswordFunGames()
+        public int DeleteOpenPasswordFunGames()
         {
-            return this.GameSet
-                .Where(x => x.State == GameState.Open && x.Password != null && x.CreatedAt <= DateTime.UtcNow.AddDays(-5));
+            return this.DbSet
+                .Where(x => x.State == GameState.Open && x.Password != null && x.CreatedAt <= DateTime.UtcNow.AddDays(-5))
+                .Delete();
         }
 
         protected IQueryable<Game> FullGameSet
@@ -114,6 +116,6 @@ namespace ImperaPlus.DataAccess.Repositories
                             .ThenInclude(p => p.User)
                     .Include(x => x.Options);
             }
-        }        
+        }
     }
 }

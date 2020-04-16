@@ -11,14 +11,14 @@ namespace ImperaPlus.Domain.Services
     {
         Game Create(
             GameType type,
-            User user, 
-            string name, 
+            User user,
+            string name,
             string password,
             int timeoutInSeconds,
-            string mapTemplate, 
-            int numberOfPlayersPerTeam, 
-            int numberOfTeams, 
-            IEnumerable<VictoryConditionType> victoryConditions, 
+            string mapTemplate,
+            int numberOfPlayersPerTeam,
+            int numberOfTeams,
+            IEnumerable<VictoryConditionType> victoryConditions,
             IEnumerable<VisibilityModifierType> visibilityModifier);
 
         Game Create(
@@ -28,8 +28,6 @@ namespace ImperaPlus.Domain.Services
             string password,
             string mapTemplate,
             GameOptions options);
-
-        void CleanupFunGames();
 
         void Delete(User currentUser, long gameId);
     }
@@ -45,23 +43,15 @@ namespace ImperaPlus.Domain.Services
             this.gameRepository = unitOfWork.Games;
         }
 
-        public void CleanupFunGames()
-        {
-            foreach (var game in this.gameRepository.FindOpenPasswordFunGames())
-            {
-                this.gameRepository.Remove(game);
-            }
-        }
-
         public Game Create(
             GameType type,
             User user,
             string name,
             string password,
             int timeoutInSeconds,
-            string mapTemplate, 
-            int numberOfPlayersPerTeam, 
-            int numberOfTeams, 
+            string mapTemplate,
+            int numberOfPlayersPerTeam,
+            int numberOfTeams,
             IEnumerable<VictoryConditionType> victoryConditions,
             IEnumerable<VisibilityModifierType> visibilityModifier)
         {

@@ -25,6 +25,7 @@ namespace ImperaPlus.Application
 
             // Manual
             RecurringJob.AddOrUpdate<LadderScorejob>(LadderScorejob.JobId, x => x.Handle(null), "0 0 31 2 0");
+            RecurringJob.AddOrUpdate<GameCleanupJob>(GameCleanupJob.JobId, x => x.Handle(null), "0 0 31 2 0");
         }
     }
 }

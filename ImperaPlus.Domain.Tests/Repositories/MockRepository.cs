@@ -12,7 +12,7 @@ namespace ImperaPlus.Domain.Tests
     public class MockRepository<T> : IGenericRepository<T> where T : class
     {
         private HashSet<T> data = new HashSet<T>();
-        
+
         public Func<T, object[], bool> FindSelector { get; set; }
 
         public void Add(T item)
@@ -129,7 +129,7 @@ namespace ImperaPlus.Domain.Tests
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Game> FindOpenPasswordFunGames()
+        public int DeleteOpenPasswordFunGames()
         {
             throw new NotImplementedException();
         }

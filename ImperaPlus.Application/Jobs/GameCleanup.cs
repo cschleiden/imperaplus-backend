@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Autofac;
+﻿using Autofac;
 using Hangfire;
 using Hangfire.Server;
-using ImperaPlus.Domain.Services;
+using ImperaPlus.Domain.Repositories;
 
 namespace ImperaPlus.Application.Jobs
 {
@@ -15,12 +10,14 @@ namespace ImperaPlus.Application.Jobs
     [AutomaticRetry(Attempts = 0)]
     public class GameCleanupJob : Job
     {
-        private IGameService gameService;
+        public const string JobId = "GameCleanup";
+
+        private IUnitOfWork unitOfWork;
 
         public GameCleanupJob(ILifetimeScope scope)
             : base(scope)
         {
-            this.gameService = this.LifetimeScope.Resolve<IGameService>();
+            this.unitOfWork = this.LifetimeScope.Resolve<IUnitOfWork>();
         }
 
         public override void Handle(PerformContext performContext)
@@ -29,8 +26,10 @@ namespace ImperaPlus.Application.Jobs
 
             this.Log.Log(Domain.LogLevel.Info, "Cleaning up fun games...");
 
-            this.gameService.CleanupFunGames();
+            int deletedCount = this.unitOfWork.Games.DeleteOpenPasswordFunGames();
+            this.unitOfWork.Commit();
 
+            this.Log.Log(Domain.LogLevel.Info, "Removed {0} games", deletedCount);
             this.Log.Log(Domain.LogLevel.Info, "Done");
         }
     }

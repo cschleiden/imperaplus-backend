@@ -34,6 +34,6 @@ namespace ImperaPlus.Domain.Repositories
 
         IEnumerable<long> FindTimeoutGames();
 
-        IEnumerable<Game> FindOpenPasswordFunGames();
+        int DeleteOpenPasswordFunGames();
     }
 }
