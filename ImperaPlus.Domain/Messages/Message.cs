@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using ImperaPlus.Domain.Annotations;
 
 namespace ImperaPlus.Domain.Messages
