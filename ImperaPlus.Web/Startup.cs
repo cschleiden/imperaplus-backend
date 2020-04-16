@@ -107,8 +107,8 @@ namespace ImperaPlus.Web
                     SupportsCredentials = false
                 };
 
-                policy.ExposedHeaders.Add("X-MiniProfiler-Ids");
-                policy.Headers.Add("X-MiniProfiler-Ids");
+                //policy.ExposedHeaders.Add("X-MiniProfiler-Ids");
+                //policy.Headers.Add("X-MiniProfiler-Ids");
 
                 opts.AddPolicy(
                     opts.DefaultPolicyName,
@@ -233,16 +233,16 @@ namespace ImperaPlus.Web
                 });
 
             // Miniprofiler
-            services
-                .AddMiniProfiler(config =>
-                {
-                    (config.Storage as MemoryCacheStorage).CacheDuration = TimeSpan.FromMinutes(60);
+            //services
+            //    .AddMiniProfiler(config =>
+            //    {
+            //        (config.Storage as MemoryCacheStorage).CacheDuration = TimeSpan.FromMinutes(60);
 
-                    config.RouteBasePath = "/admin/profiler";
-                })
-                .AddEntityFramework();
+            //        config.RouteBasePath = "/admin/profiler";
+            //    })
+            //    .AddEntityFramework();
 
-            services.AddMemoryCache();
+            //services.AddMemoryCache();
 
             // DataTables for the admin interface
             services.RegisterDataTables();
@@ -328,13 +328,13 @@ namespace ImperaPlus.Web
                 .WithOrigins("http://localhost:8080", "https://dev.imperaonline.de", "https://imperaonline.de", "https://www.imperaonline.de")
                 .AllowAnyMethod()
                 .AllowAnyHeader()
-                .WithExposedHeaders("X-MiniProfiler-Ids")
+                // .WithExposedHeaders("X-MiniProfiler-Ids")
                 .AllowCredentials());
 
             app.UseStaticFiles();
 
             // Add profiler support
-            app.UseMiniProfiler();
+            // app.UseMiniProfiler();
 
             // Configure swagger generation & UI
             app.UseOpenApi();
