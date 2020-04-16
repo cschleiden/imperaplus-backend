@@ -10,21 +10,21 @@ namespace ImperaPlus.Application
         /// </summary>
         public static void Configure()
         {
-            // // Game timeouts
-            // RecurringJob.AddOrUpdate<TimeoutJob>("Timeouts", x => x.Handle(null), "*/2 * * * *");
+            // Game timeouts
+            RecurringJob.AddOrUpdate<TimeoutJob>("Timeouts", x => x.Handle(null), "*/2 * * * *");
 
-            // // Ladders
-            // RecurringJob.AddOrUpdate<LadderJob>("Ladders", x => x.Handle(null), "*/2 * * * *");
+            // Ladders
+            RecurringJob.AddOrUpdate<LadderJob>("Ladders", x => x.Handle(null), "*/2 * * * *");
 
-            // // Tournaments
+            // Tournaments
             // RecurringJob.AddOrUpdate<TournamentStartJob>("TournamentsOpen", x => x.Handle(null), Cron.Hourly);
             // RecurringJob.AddOrUpdate<TournamentJob>("Tournaments", x => x.Handle(null), "*/5 * * * * *");
 
-            // // Cleanups
-            // RecurringJob.AddOrUpdate<UserCleanupJob>(UserCleanupJob.JobId, x => x.Handle(), Cron.Daily);
+            // Cleanups
+            RecurringJob.AddOrUpdate<UserCleanupJob>(UserCleanupJob.JobId, x => x.Handle(), Cron.Daily);
 
-            // // Manual
-            // RecurringJob.AddOrUpdate<LadderScorejob>(LadderScorejob.JobId, x => x.Handle(null), "0 0 31 2 0");
+            // Manual
+            RecurringJob.AddOrUpdate<LadderScorejob>(LadderScorejob.JobId, x => x.Handle(null), "0 0 31 2 0");
         }
     }
 }
