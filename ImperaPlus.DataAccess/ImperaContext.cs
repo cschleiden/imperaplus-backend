@@ -57,7 +57,7 @@ namespace ImperaPlus.DataAccess
         public virtual DbSet<GameOptions> GameOptions { get; set; }
 
         public virtual DbSet<Tournament> Tournaments { get; set; }
-        
+
         public override int SaveChanges()
         {
             var aggregatedEventQueue = new List<IDomainEvent>();
@@ -92,11 +92,12 @@ namespace ImperaPlus.DataAccess
                     entry.Entity.Serialize();
                 }
 
-                // Aggregate events                
+                // Aggregate events
                 foreach (var entry in this.ChangeTracker.Entries<Entity>())
                 {
                     aggregatedEventQueue.AddRange(entry.Entity.EventQueue.Events);
-                }                
+                    entry.Entity.EventQueue.Events.Clear();
+                }
             }
 
             if (this.eventAggregator != null)
@@ -144,7 +145,7 @@ namespace ImperaPlus.DataAccess
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Games            
+            // Games
             modelBuilder.Entity<Game>()
                 .HasMany(x => x.HistoryEntries)
                 .WithOne(x => x.Game)
@@ -198,7 +199,7 @@ namespace ImperaPlus.DataAccess
             // Game History
             modelBuilder.Entity<HistoryEntry>().HasOne(x => x.Actor).WithMany().IsRequired(false).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<HistoryEntry>().HasOne(x => x.OtherPlayer).WithMany().IsRequired(false).OnDelete(DeleteBehavior.Restrict);
-            
+
             // Chat
             modelBuilder.Entity<Channel>()
                 .HasOne(x => x.Game)
@@ -219,7 +220,7 @@ namespace ImperaPlus.DataAccess
             modelBuilder.Ignore<Country>();
             modelBuilder.Ignore<Connection>();
             modelBuilder.Ignore<MapTemplate>();
-             
+
             // Ladder
             modelBuilder.Entity<LadderStanding>().HasKey(x => new { x.LadderId, x.UserId });
             modelBuilder.Entity<LadderStanding>().HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
@@ -246,7 +247,7 @@ namespace ImperaPlus.DataAccess
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasForeignKey(x => x.ChannelId);
 
-            // Tournaments           
+            // Tournaments
             modelBuilder.Entity<Tournament>().HasMany(x => x.Teams).WithOne(x => x.Tournament).HasForeignKey(x => x.TournamentId).IsRequired().OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Tournament>().HasMany(x => x.Groups).WithOne(x => x.Tournament).HasForeignKey(x => x.TournamentId).IsRequired().OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Tournament>().HasMany(x => x.Pairings).WithOne(x => x.Tournament).HasForeignKey(x => x.TournamentId).IsRequired().OnDelete(DeleteBehavior.Cascade);
