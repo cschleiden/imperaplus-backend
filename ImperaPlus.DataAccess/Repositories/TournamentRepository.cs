@@ -60,6 +60,9 @@ namespace ImperaPlus.DataAccess.Repositories
             {
                 // Include Games/Teams/Players so we can synchronize
                 return this.DbSet
+                    .Include(x => x.Teams)
+                        .ThenInclude(t => t.Participants)
+                            .ThenInclude(p => p.User)
                     .Include(x => x.Options);
             }
         }
@@ -72,11 +75,11 @@ namespace ImperaPlus.DataAccess.Repositories
                 return this.DbSet
                     .Include(x => x.Teams)
                         .ThenInclude(t => t.Participants)
-                        .ThenInclude(p => p.User)
+                            .ThenInclude(p => p.User)
                     .Include(x => x.Pairings)
                         .ThenInclude(p => p.Games)
-                        .ThenInclude(g => g.Teams)
-                        .ThenInclude(t => t.Players)
+                            .ThenInclude(g => g.Teams)
+                                .ThenInclude(t => t.Players)
                     .Include(x => x.Groups)
                     .Include(x => x.Options);
             }
