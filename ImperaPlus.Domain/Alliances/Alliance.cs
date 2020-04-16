@@ -26,6 +26,7 @@ namespace ImperaPlus.Domain.Alliances
             this.Channel = new Channel(name, Enums.ChannelType.Alliance);
         }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; protected set; }
 
         public string Name { get; set; }
@@ -54,12 +55,12 @@ namespace ImperaPlus.Domain.Alliances
             if (isMemberAlready)
             {
                 throw new DomainException(
-                    ErrorCode.UserAlreadyInAlliance, 
+                    ErrorCode.UserAlreadyInAlliance,
                     "User {0} is already a member of alliance {1}", user.Id, this.Id);
             }
 
             this.Members.Add(user);
-            
+
             // Ensure newly added member are not added as admin
             user.IsAllianceAdmin = false;
         }
@@ -96,7 +97,7 @@ namespace ImperaPlus.Domain.Alliances
 
             user.IsAllianceAdmin = false;
         }
-        
+
         public bool IsAdmin(User currentAdmin)
         {
             Require.NotNull(currentAdmin, nameof(currentAdmin));

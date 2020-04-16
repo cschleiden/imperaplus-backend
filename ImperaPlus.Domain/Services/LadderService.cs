@@ -31,7 +31,7 @@ namespace ImperaPlus.Domain.Services
         private IMapTemplateProvider mapTemplateProvider;
         private IEventAggregator eventAggregator;
 
-        private Object createGamesLock = new Object();
+        private static Object CreateGamesLock = new Object();
 
         public LadderService(IUnitOfWork unitOfWork, IGameService gameService, IMapTemplateProvider mapTemplateProvider, IEventAggregator eventAggregator)
         {
@@ -48,7 +48,7 @@ namespace ImperaPlus.Domain.Services
         {
             Log.Info().Message("Entering CheckAndCreateMatches").Write();
 
-            lock (this.createGamesLock)
+            lock (CreateGamesLock)
             {
                 var ladders = this.unitOfWork.Ladders.GetActive().ToList();
 
@@ -95,7 +95,7 @@ namespace ImperaPlus.Domain.Services
         /// Create new ladeder
         /// </summary>
         public Ladder Create(string name, int numberOfTeams, int numberOfPlayers)
-        {            
+        {
             var ladder = new Ladder(name, numberOfTeams, numberOfPlayers);
 
             this.unitOfWork.Ladders.Add(ladder);
@@ -105,7 +105,7 @@ namespace ImperaPlus.Domain.Services
 
         /// <summary>
         /// Queue player for ladder
-        /// </summary>        
+        /// </summary>
         public void Queue(Guid ladderId, User user)
         {
             Ladder ladder = this.unitOfWork.Ladders.Query().First(l => l.Id == ladderId);
@@ -134,7 +134,7 @@ namespace ImperaPlus.Domain.Services
 
         /// <summary>
         /// Create a game for the given ladder
-        /// </summary>        
+        /// </summary>
         protected virtual Games.Game CreateGame(Ladder ladder, IRandomGen random)
         {
             var systemUser = this.unitOfWork.Users.FindByName("System");
@@ -147,7 +147,7 @@ namespace ImperaPlus.Domain.Services
                 ladder.GetGameName(),
                 null,
                 mapTemplate,
-                ladder.Options);            
+                ladder.Options);
 
             game.Ladder = ladder;
             game.LadderId = ladder.Id;

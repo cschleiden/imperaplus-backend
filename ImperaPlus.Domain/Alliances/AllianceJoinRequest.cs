@@ -4,9 +4,9 @@ namespace ImperaPlus.Domain.Alliances
 {
     public enum AllianceJoinRequestState
     {
-        Active, 
+        Active,
 
-        Approved, 
+        Approved,
 
         Denied
     }
@@ -30,6 +30,7 @@ namespace ImperaPlus.Domain.Alliances
             this.State = AllianceJoinRequestState.Active;
         }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; private set; }
 
         public Guid AllianceId { get; private set; }

@@ -29,6 +29,7 @@ namespace ImperaPlus.Domain.Messages
             this.Folder = folder;
         }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
 
         public DateTime CreatedAt { get; set; }

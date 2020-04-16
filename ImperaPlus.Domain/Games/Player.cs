@@ -39,6 +39,7 @@ namespace ImperaPlus.Domain.Games
             this.IsHidden = false;
         }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
 
         public Game Game { get; set; }
@@ -210,12 +211,12 @@ namespace ImperaPlus.Domain.Games
             this.Team.Game.CheckForVictory(this.Team.Game.CurrentPlayer);
 
             this.EventQueue.Raise(new PlayerSurrenderedEvent(this.Team.Game, this));
-            
+
             if (this.Game.CurrentPlayer == this)
             {
                 // Player was the current player, advance turn
                 this.Game.EndTurn();
             }
-        }        
+        }
     }
 }

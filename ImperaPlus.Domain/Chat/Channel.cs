@@ -26,6 +26,7 @@ namespace ImperaPlus.Domain.Chat
             }
         }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
 
         public string Name { get; set; }
