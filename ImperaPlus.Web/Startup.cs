@@ -262,9 +262,17 @@ namespace ImperaPlus.Web
                 {
                     x.UseSqlServerStorage(Configuration["DBConnection"]);
                 }
-            });
 
-            services.AddHangfireServer();
+                x.UseSerializerSettings(new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
+            });
+            services.AddHangfireServer(options =>
+            {
+                options.Queues = new[] { JobQueues.Critical, JobQueues.Normal };
+                options.WorkerCount = 2;
+                options.SchedulePollingInterval = TimeSpan.FromSeconds(30);
+                options.ServerCheckInterval = TimeSpan.FromSeconds(60);
+                options.HeartbeatInterval = TimeSpan.FromSeconds(60);
+            });
 
             services.AddSingleton(_ => new JsonSerializer
             {
@@ -392,19 +400,10 @@ namespace ImperaPlus.Web
             Log.Info("...done.").Write();
 
             // Hangfire
-            app.UseHangfireServer(new BackgroundJobServerOptions
-            {
-                Queues = new[] { JobQueues.Critical, JobQueues.Normal },
-                WorkerCount = 2,
-                SchedulePollingInterval = TimeSpan.FromSeconds(30),
-                ServerCheckInterval = TimeSpan.FromSeconds(60),
-                HeartbeatInterval = TimeSpan.FromSeconds(60)
-            });
             app.UseHangfireDashboard("/Admin/Hangfire", new DashboardOptions
             {
                 Authorization = new[] { new HangfireAuthorizationFilter() }
             });
-            GlobalConfiguration.Configuration.UseSerializerSettings(new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
 
             // Configure Impera background jobs
             JobConfig.Configure();
