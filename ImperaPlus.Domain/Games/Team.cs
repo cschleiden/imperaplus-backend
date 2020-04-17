@@ -4,6 +4,7 @@ using ImperaPlus.Domain.Exceptions;
 using ImperaPlus.Domain.Utilities;
 using System;
 using ImperaPlus.Domain.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ImperaPlus.Domain.Games
 {
@@ -22,6 +23,7 @@ namespace ImperaPlus.Domain.Games
             this.PlayOrder = game.Teams.Count();
         }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
 
         public virtual ICollection<Player> Players { get; private set; }
