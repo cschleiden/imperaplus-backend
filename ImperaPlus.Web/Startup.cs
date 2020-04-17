@@ -43,7 +43,6 @@ namespace ImperaPlus.Web
 
     public class Startup
     {
-        #region TestSupport
         /// <summary>
         /// Test support: Require user confirmation
         /// </summary>
@@ -51,8 +50,9 @@ namespace ImperaPlus.Web
 
         public static bool RunningUnderTest = false;
 
+#if DEBUG
         public static ILifetimeScope Container { get; private set; }
-        #endregion
+#endif
 
         public Startup(IWebHostEnvironment env)
         {
