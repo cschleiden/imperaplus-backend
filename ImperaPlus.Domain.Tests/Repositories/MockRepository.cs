@@ -166,7 +166,7 @@ namespace ImperaPlus.Domain.Tests
             return false;
         }
 
-        public IEnumerable<Tournament> Get(params TournamentState[] states)
+        public IQueryable<Tournament> Get(params TournamentState[] states)
         {
             return this.Query().Where(x => states.Contains(x.State));
         }
