@@ -165,6 +165,9 @@ namespace ImperaPlus.DataAccess
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.SetNull);
 
+            modelBuilder.Entity<Game>()
+                .HasIndex(g => new{ g.State, g.CurrentPlayerId });
+
             modelBuilder.Entity<Team>()
                 .HasMany(x => x.Players)
                 .WithOne(x => x.Team)
@@ -177,6 +180,9 @@ namespace ImperaPlus.DataAccess
                 .WithMany()
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Player>()
+                .HasIndex(p => new { p.UserId, p.IsHidden });
 
             modelBuilder.Entity<Player>()
                 .HasOne(x => x.Game)
@@ -199,6 +205,9 @@ namespace ImperaPlus.DataAccess
             // Game History
             modelBuilder.Entity<HistoryEntry>().HasOne(x => x.Actor).WithMany().IsRequired(false).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<HistoryEntry>().HasOne(x => x.OtherPlayer).WithMany().IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+            // SQL Server recommended this...
+            // modelBuilder.Entity<HistoryEntry>()
+            //     .HasIndex(g => new { g.Action, g.ActorId, g.DateTime, g.DestinationIdentifier, g.OriginIdentifier, g.OtherPlayerId, g.Result, g.TurnNo, g.Units, g.UnitsLost, g.UnitsLostOther });
 
             // Chat
             modelBuilder.Entity<Channel>()
