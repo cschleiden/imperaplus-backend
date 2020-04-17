@@ -34,7 +34,7 @@ namespace ImperaPlus.DataAccess.Repositories
                 states = new[] { TournamentState.Open, TournamentState.Groups, TournamentState.Knockout, TournamentState.Closed };
             }
 
-            return this.SummarySet.Where(x => states.Contains(x.State));
+            return this.SummarySet.Where(x => states.Contains(x.State) && (!x.EndOfTournament.HasValue || x.EndOfTournament >= DateTime.UtcNow.AddDays(-90)));
         }
 
         public bool ExistsWithName(string name)
