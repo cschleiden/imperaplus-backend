@@ -10,6 +10,7 @@ namespace ImperaPlus.Backend.Controllers
     [Route("map")]
     [ProducesResponseType(typeof(ErrorResponse), 400)]
     [ProducesResponseType(typeof(void), 200)]
+    [ResponseCache(Duration = 2592000)]
     public class MapController : Controller
     {
         private readonly IMapTemplateService mapTemplateService;
@@ -43,7 +44,7 @@ namespace ImperaPlus.Backend.Controllers
                 {
                     return this.NotFound();
                 }
-                
+
                 throw;
             }
         }
