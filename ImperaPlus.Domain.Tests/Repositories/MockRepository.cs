@@ -176,7 +176,7 @@ namespace ImperaPlus.Domain.Tests
             return this.Query();
         }
 
-        public Tournament GetById(Guid id)
+        public Tournament GetById(Guid id, bool includeGames = false)
         {
             return this.FindById(id);
         }

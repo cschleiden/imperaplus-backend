@@ -20,7 +20,7 @@ namespace ImperaPlus.Application.Tournaments
 
         IEnumerable<Tournament> GetAllFull();
 
-        Tournament Get(Guid tournamentId);
+        Tournament Get(Guid tournamentId, bool includeGames = false);
 
         IEnumerable<TournamentTeam> GetTeams(Guid tournamentId);
 
@@ -29,7 +29,7 @@ namespace ImperaPlus.Application.Tournaments
         TournamentTeam Join(Guid tournamentId);
 
         TournamentTeam JoinTeam(Guid tournamentId, Guid teamId, string password);
-        
+
         void DeleteTeam(Guid tournamentId, Guid teamId);
 
         void Leave(Guid tournamentId);
@@ -59,7 +59,7 @@ namespace ImperaPlus.Application.Tournaments
             var team = tournament.CreateTeam(this.CurrentUser, name, password);
 
             this.UnitOfWork.Commit();
-           
+
             return Mapper.Map<TournamentTeam>(team);
         }
 
@@ -76,14 +76,14 @@ namespace ImperaPlus.Application.Tournaments
             this.UnitOfWork.GetGenericRepository<Domain.Tournaments.TournamentParticipant>().Remove(team.Participants.First());
             this.UnitOfWork.GetGenericRepository<Domain.Tournaments.TournamentTeam>().Remove(team);
 
-            this.UnitOfWork.Commit();            
+            this.UnitOfWork.Commit();
         }
 
-        public Tournament Get(Guid tournamentId)
+        public Tournament Get(Guid tournamentId, bool includeGames = false)
         {
             Require.NotEmpty(tournamentId, nameof(tournamentId));
 
-            Domain.Tournaments.Tournament tournament = GetTournament(tournamentId);
+            Domain.Tournaments.Tournament tournament = GetTournament(tournamentId, includeGames);
 
             return Mapper.Map<Tournament>(tournament);
         }
@@ -96,7 +96,7 @@ namespace ImperaPlus.Application.Tournaments
         }
 
         public IEnumerable<TournamentSummary> GetAll()
-        {            
+        {
             return Mapper.Map<IEnumerable<TournamentSummary>>(this.UnitOfWork.Tournaments.Get());
         }
 
@@ -117,7 +117,7 @@ namespace ImperaPlus.Application.Tournaments
             var team = tournament.AddUser(this.CurrentUser);
 
             this.UnitOfWork.Commit();
-            
+
             return Mapper.Map<TournamentTeam>(team);
         }
 
@@ -148,11 +148,11 @@ namespace ImperaPlus.Application.Tournaments
             this.UnitOfWork.Commit();
         }
 
-        private Domain.Tournaments.Tournament GetTournament(Guid tournamentId)
+        private Domain.Tournaments.Tournament GetTournament(Guid tournamentId, bool includeGames = false)
         {
             Require.NotEmpty(tournamentId, nameof(tournamentId));
 
-            var tournament = this.UnitOfWork.Tournaments.GetById(tournamentId);
+            var tournament = this.UnitOfWork.Tournaments.GetById(tournamentId, includeGames);
             if (tournament == null)
             {
                 throw new Exceptions.ApplicationException("Cannot find tournament", ErrorCode.TournamentNotFound);
@@ -184,7 +184,7 @@ namespace ImperaPlus.Application.Tournaments
             var gameOptions = Mapper.Map<Domain.Games.GameOptions>(tournament.Options);
 
             var newTournament = new Domain.Tournaments.Tournament(
-                tournament.Name, tournament.NumberOfTeams, tournament.NumberOfGroupGames, tournament.NumberOfKnockoutGames, 
+                tournament.Name, tournament.NumberOfTeams, tournament.NumberOfGroupGames, tournament.NumberOfKnockoutGames,
                 tournament.NumberOfFinalGames, tournament.StartOfRegistration, tournament.StartOfTournament, gameOptions);
 
             foreach (var mapTemplateName in tournament.MapTemplates)

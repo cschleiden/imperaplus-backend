@@ -33,7 +33,7 @@ namespace ImperaPlus.Domain.Services
         private IUnitOfWork unitOfWork;
         private IGameService gameService;
         private IMapTemplateProvider mapTemplateProvider;
-            
+
         public TournamentService(
             IUserProvider userProvider,
             IUnitOfWork unitOfWork,
@@ -77,12 +77,15 @@ namespace ImperaPlus.Domain.Services
         /// </summary>
         public void CheckTournaments(ILogger log, IRandomGen random)
         {
-            var tournaments = this.unitOfWork.Tournaments.Get(Tournament.ActiveStates);
 
-            foreach (var tournament in tournaments)
+            var tournamentIds = this.unitOfWork.Tournaments.Get(Tournament.ActiveStates).Select(t => t.Id);
+
+            foreach (var tournamentId in tournamentIds)
             {
                 try
                 {
+                    var tournament = this.unitOfWork.Tournaments.GetById(tournamentId);
+
                     log.Log(LogLevel.Info, "Synchronizing games for tournament {0}", tournament.Id);
 
                     this.SynchronizeGamesToPairings(log, tournament);
@@ -112,7 +115,7 @@ namespace ImperaPlus.Domain.Services
                 }
                 catch (Exception ex)
                 {
-                    log.Log(LogLevel.Error, "Error while handling tournament {0}: {1}", tournament.Id, ex);
+                    log.Log(LogLevel.Error, "Error while handling tournament {0}: {1}", tournamentId, ex);
 
                     // Rethrow exception, we have to cancel the job
                     throw;
@@ -156,7 +159,7 @@ namespace ImperaPlus.Domain.Services
                     if (tournament.State == TournamentState.Knockout)
                     {
                         // If the tournament is in knockout mode, losing a pairing means losing the tournament, so update
-                        // the loser's team. 
+                        // the loser's team.
                         pairing.Loser.State = TournamentTeamState.InActive;
 
                         // TODO: Generate domain event for winner
@@ -184,13 +187,13 @@ namespace ImperaPlus.Domain.Services
                     }
                 }
 
-                // Sort by: 
+                // Sort by:
                 // - won pairings
                 // - then number of won games
                 // - then look at the pairing of the two teams (if it exists)
                 // - then fall back to Id (basically random in this context)
                 // Note: this is a bit timing dependent, pairings might be won before all games have been played
-                // so order could change later after the group phase. This seems acceptable for now. 
+                // so order could change later after the group phase. This seems acceptable for now.
                 var orderedTeams = group.Teams
                     .OrderByDescending(t => wonPairingsByTeam[t.Id])
                     .ThenByDescending(t => wonGamesByTeam[t.Id])

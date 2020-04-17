@@ -15,12 +15,19 @@ namespace ImperaPlus.DataAccess.Repositories
         {
         }
 
-        public Tournament GetById(Guid id)
+        public Tournament GetById(Guid id, bool includeGames)
         {
-            return this.Set.First(x => x.Id == id);
+            if (includeGames)
+            {
+                return this.SetWithGames.First(x => x.Id == id);
+            }
+            else
+            {
+                return this.Set.First(x => x.Id == id);
+            }
         }
 
-        public IEnumerable<Tournament> Get(params TournamentState[] states)
+        public IQueryable<Tournament> Get(params TournamentState[] states)
         {
             if (states == null || states.Length == 0)
             {
@@ -68,6 +75,20 @@ namespace ImperaPlus.DataAccess.Repositories
         }
 
         private IQueryable<Tournament> Set
+        {
+            get
+            {
+                return this.DbSet
+                    .Include(x => x.Teams)
+                        .ThenInclude(t => t.Participants)
+                            .ThenInclude(p => p.User)
+                    .Include(x => x.Pairings)
+                    .Include(x => x.Groups)
+                    .Include(x => x.Options);
+            }
+        }
+
+        private IQueryable<Tournament> SetWithGames
         {
             get
             {
