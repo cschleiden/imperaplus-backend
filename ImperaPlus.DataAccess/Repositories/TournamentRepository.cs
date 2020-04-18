@@ -30,7 +30,7 @@ namespace ImperaPlus.DataAccess.Repositories
 
             if (readOnly)
             {
-                source = source.AsNoTracking();
+                // source = source.AsNoTracking();
             }
 
             return source.FirstOrDefault(x => x.Id == id);
