@@ -97,6 +97,8 @@ namespace ImperaPlus.Web
                             .EnableRetryOnFailure());
                 }
 
+                options.UseLazyLoadingProxies();
+
                 options.UseOpenIddict();
             });
 
