@@ -26,7 +26,7 @@ namespace ImperaPlus.DataAccess.Repositories
         public Game FindWithHistory(long id, long turnNo)
         {
             var game = this.GameSet.FirstOrDefault(x => x.Id == id);
-            base.Context.Set<HistoryEntry>().Where(x => x.TurnNo >= turnNo).Load();
+            base.Context.Set<HistoryEntry>().Where(x => x.GameId == id && x.TurnNo >= turnNo).Load();
             return this.WithTeamsAndPlayers(game);
         }
 
