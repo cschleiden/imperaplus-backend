@@ -50,9 +50,7 @@ namespace ImperaPlus.Web
 
         public static bool RunningUnderTest = false;
 
-#if DEBUG
         public static ILifetimeScope Container { get; private set; }
-#endif
 
         public Startup(IWebHostEnvironment env)
         {
@@ -323,9 +321,10 @@ namespace ImperaPlus.Web
             ImperaContext dbContext,
             DbSeed dbSeed)
         {
-#if DEBUG
-            Container = app.ApplicationServices.GetAutofacRoot();
-#endif
+            if (RunningUnderTest)
+            {
+                Container = app.ApplicationServices.GetAutofacRoot();
+            }
 
             if (env.IsDevelopment())
             {
