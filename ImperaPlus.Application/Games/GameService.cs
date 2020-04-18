@@ -316,9 +316,18 @@ namespace ImperaPlus.Application.Games
         public IEnumerable<GameChatMessage> GetMessages(long gameId, bool isPublic)
         {
             var user = this.CurrentUser;
-            var game = this.GetGameMessages(gameId);
+            var messages = this.UnitOfWork.GetGenericRepository<Domain.Games.Chat.GameChatMessage>()
+                .Query()
+                .Where(x => x.GameId == gameId);
 
-            var messages = game.GetMessages(user, isPublic);
+            if (isPublic)
+            {
+                 messages = messages.Where(x => x.TeamId == null);
+            }
+            else
+            {
+                messages = messages.Where(x => x.Team.Players.Any(p => p.UserId == user.Id));
+            }
 
             return Mapper.Map<IEnumerable<GameChatMessage>>(messages);
         }

@@ -49,17 +49,6 @@ namespace ImperaPlus.Application
             return game;
         }
 
-        protected Game GetGameMessages(long gameId)
-        {
-            var game = this.UnitOfWork.Games.FindWithMessages(gameId);
-            if (game == null)
-            {
-                throw new ApplicationException("Cannot find game", ErrorCode.CannotFindGame);
-            }
-
-            return game;
-        }
-
         protected DTO.Games.Game MapAndApplyModifiers(Game game)
         {
             var currentUserId = this.CurrentUserId;
