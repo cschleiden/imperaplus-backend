@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ImperaPlus.DTO;
 using ImperaPlus.Domain.Repositories;
-using ImperaPlus.Domain.Tournaments;
 
 namespace ImperaPlus.Backend.Controllers
 {
@@ -16,12 +15,12 @@ namespace ImperaPlus.Backend.Controllers
     public class TournamentController : Controller
     {
         private ITournamentService tournamentService;
-        private ITournamentRepository tournamentRepository;
+        private readonly IUnitOfWork unitOfWork;
 
-        public TournamentController(ITournamentService tournamentService, ITournamentRepository tournamentRepository)
+        public TournamentController(ITournamentService tournamentService, IUnitOfWork unitOfWork)
         {
             this.tournamentService = tournamentService;
-            this.tournamentRepository = tournamentRepository;
+            this.unitOfWork = unitOfWork;
         }
 
         /// <summary>
@@ -32,7 +31,7 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(IEnumerable<DTO.Tournaments.TournamentSummary>), 200)]
         public IActionResult GetAll()
         {
-            return this.Ok(this.tournamentRepository.GetReadOnly());
+            return this.Ok(this.unitOfWork.Tournaments.GetReadOnly());
         }
 
         /// <summary>
@@ -43,7 +42,7 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(DTO.Tournaments.Tournament), 200)]
         public IActionResult GetById(Guid tournamentId)
         {
-            return this.Ok(this.tournamentRepository.GetByIdReadOnly(tournamentId));
+            return this.Ok(this.unitOfWork.Tournaments.GetByIdReadOnly(tournamentId));
         }
 
         /// <summary>
