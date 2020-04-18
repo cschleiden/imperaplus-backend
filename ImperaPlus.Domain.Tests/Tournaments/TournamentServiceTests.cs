@@ -58,7 +58,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             // Arrange
             var mockUnitOfWork = TestUtils.GetUnitOfWorkMock();
             mockUnitOfWork.SetupGet(x => x.Tournaments).Returns(new Mock<ITournamentRepository>().Object);
-            mockUnitOfWork.SetupGet(x => x.Games).Returns(new MockGamesRepository());
+            mockUnitOfWork.SetupGet(x => x.Games).Returns(new Mock<IGameRepository>().Object);
             var unitOfWork = mockUnitOfWork.Object;
 
             var gameServiceMock = new Mock<IGameService>();
