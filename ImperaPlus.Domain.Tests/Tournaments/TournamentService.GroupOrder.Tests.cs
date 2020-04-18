@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using ImperaPlus.Domain.Games;
+using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Services;
 using ImperaPlus.Domain.Tournaments;
 using ImperaPlus.TestSupport;
@@ -17,7 +18,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
         {
             // Arrange
             var mockUnitOfWork = TestUtils.GetUnitOfWorkMock();
-            mockUnitOfWork.SetupGet(x => x.Tournaments).Returns(new MockTournamentRepository());
+            mockUnitOfWork.SetupGet(x => x.Tournaments).Returns(new Mock<ITournamentRepository>().Object);
             mockUnitOfWork.SetupGet(x => x.Games).Returns(new MockGamesRepository());
             var unitOfWork = mockUnitOfWork.Object;
 
@@ -26,13 +27,13 @@ namespace ImperaPlus.Domain.Tests.Tournaments
 
             const int GroupGames = 3;
             var tournament = new Tournament(
-                "T", 
-                numberOfTeams: 8, 
-                numberOfGroupGames: GroupGames, 
-                numberOfKnockoutGames: 1, 
-                numberOfFinalGames: 1, 
-                startOfRegistration: DateTime.UtcNow, 
-                startOfTournament: DateTime.UtcNow, 
+                "T",
+                numberOfTeams: 8,
+                numberOfGroupGames: GroupGames,
+                numberOfKnockoutGames: 1,
+                numberOfFinalGames: 1,
+                startOfRegistration: DateTime.UtcNow,
+                startOfTournament: DateTime.UtcNow,
                 options: new GameOptions { NumberOfPlayersPerTeam = 1 });
 
             for (int i = 0; i < 8; ++i)
@@ -56,9 +57,9 @@ namespace ImperaPlus.Domain.Tests.Tournaments
 
             // Expected:
             // T1 3
-            // T2 2 
+            // T2 2
             // T3 1
-            // T4 0         
+            // T4 0
 
             // T1
             SetWins(tournament, teams1[0], teams1[1], GroupGames, 0);
@@ -87,12 +88,12 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             // T3 0 - 1
 
             // T1
-            SetWins(tournament, teams2[0], teams2[1], GroupGames, 0); // T1 3 - 0 T2 
-            SetWins(tournament, teams2[0], teams2[2], GroupGames - 1, 1); // T1 2 - 1 T3 
-            SetWins(tournament, teams2[0], teams2[3], 0, GroupGames); // T1 0 - 3 T4 
+            SetWins(tournament, teams2[0], teams2[1], GroupGames, 0); // T1 3 - 0 T2
+            SetWins(tournament, teams2[0], teams2[2], GroupGames - 1, 1); // T1 2 - 1 T3
+            SetWins(tournament, teams2[0], teams2[3], 0, GroupGames); // T1 0 - 3 T4
 
             // T2
-            SetWins(tournament, teams2[1], teams2[2], GroupGames, 0); // T2 3 - 0 T3  
+            SetWins(tournament, teams2[1], teams2[2], GroupGames, 0); // T2 3 - 0 T3
             SetWins(tournament, teams2[1], teams2[3], GroupGames, 0); // T2 3 - 0 T4
 
             // T3

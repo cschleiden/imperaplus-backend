@@ -49,7 +49,7 @@ namespace ImperaPlus.IntegrationTests
                 .ConfigureServices(services => TestSetup.RegisterTypes(services))
                 .UseStartup<Startup>());
             TestSetup.TestServer.BaseAddress = new Uri("http://localhost", UriKind.Absolute);
-            
+
             for (int i = 0; i < 4; ++i)
             {
                 TestSetup.RegisterClient(i);
@@ -97,7 +97,7 @@ namespace ImperaPlus.IntegrationTests
 
             builder.RegisterType<SynchronousBackgroundJobClient>().AsImplementedInterfaces();
             builder.RegisterType<FakeEmailService>().AsImplementedInterfaces();
-           
+
             builder.RegisterType<ImperaPlus.IntegrationTests.TestUserProvider>().AsImplementedInterfaces();
             builder.RegisterType<ImperaPlus.IntegrationTests.TestMapTemplateProvider>().As<IMapTemplateProvider>();
         }

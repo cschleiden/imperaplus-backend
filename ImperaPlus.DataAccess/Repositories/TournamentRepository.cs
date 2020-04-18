@@ -27,6 +27,16 @@ namespace ImperaPlus.DataAccess.Repositories
             }
         }
 
+        public Tournament GetByIdReadOnly(Guid tournamentId)
+        {
+            return this.Set.AsNoTracking().FirstOrDefault(x => x.Id == tournamentId);
+        }
+
+        public IQueryable<Tournament> GetReadOnly(params TournamentState[] states)
+        {
+            return this.Get(states).AsNoTracking();
+        }
+
         public IQueryable<Tournament> Get(params TournamentState[] states)
         {
             if (states == null || states.Length == 0)

@@ -119,6 +119,11 @@ namespace ImperaPlus.Domain.Tests
             throw new NotImplementedException();
         }
 
+        public IEnumerable<Game> FindForUserAtTurnReadOnly(string userId)
+        {
+            throw new NotImplementedException();
+        }
+
         public IQueryable<Game> FindNotHiddenNotOutcomeForUser(string userId, PlayerOutcome outcome)
         {
             throw new NotImplementedException();
@@ -156,34 +161,6 @@ namespace ImperaPlus.Domain.Tests
         public Game FindWithMessages(long gameId)
         {
             throw new NotImplementedException();
-        }
-    }
-
-    public class MockTournamentRepository : MockRepository<Tournament>, ITournamentRepository
-    {
-        public bool ExistsWithName(string name)
-        {
-            return false;
-        }
-
-        public IQueryable<Tournament> Get(params TournamentState[] states)
-        {
-            return this.Query().Where(x => states.Contains(x.State));
-        }
-
-        public IEnumerable<Tournament> GetAllFull()
-        {
-            return this.Query();
-        }
-
-        public Tournament GetById(Guid id, bool includeGames = false)
-        {
-            return this.FindById(id);
-        }
-
-        public IEnumerable<Game> GetGamesForPairing(Guid pairingId)
-        {
-            return Enumerable.Empty<Game>();
         }
     }
 }

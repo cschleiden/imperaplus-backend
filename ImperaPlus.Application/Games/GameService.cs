@@ -8,6 +8,7 @@ using ImperaPlus.DTO.Games;
 using ImperaPlus.DTO.Games.Chat;
 using ImperaPlus.DTO.Games.History;
 using ImperaPlus.Utils;
+using Microsoft.EntityFrameworkCore;
 
 namespace ImperaPlus.Application.Games
 {
@@ -39,8 +40,8 @@ namespace ImperaPlus.Application.Games
 
         IEnumerable<GameSummary> GetOpen();
 
-        IEnumerable<GameSummary> GetForCurrentUser();
-        
+        IEnumerable<GameSummary> GetForCurrentUserReadOnly();
+
         IEnumerable<GameSummary> GetForCurrentUserTurn();
 
         /// <summary>
@@ -69,10 +70,10 @@ namespace ImperaPlus.Application.Games
         public GameService(
             IUnitOfWork unitOfWork,
             IMapper mapper,
-            Domain.IUserProvider userProvider, 
-            Domain.Services.IGameService gameService, 
+            Domain.IUserProvider userProvider,
+            Domain.Services.IGameService gameService,
             IMapTemplateProvider mapTemplateProvider,
-            IVisibilityModifierFactory visibilityModifierFactory, 
+            IVisibilityModifierFactory visibilityModifierFactory,
             IRandomGenProvider randomGenProvider)
             : base(unitOfWork, mapper, userProvider, mapTemplateProvider, visibilityModifierFactory)
         {
@@ -104,7 +105,7 @@ namespace ImperaPlus.Application.Games
             {
                 throw new Exceptions.ApplicationException("Timouts has to be at least 300 seconds", ErrorCode.GenericApplicationError);
             }
-            
+
             var password = creationOptions.Password;
             if (password != null)
             {
@@ -118,29 +119,29 @@ namespace ImperaPlus.Application.Games
 
             var game = this.gameService.Create(
                 Domain.Enums.GameType.Fun,
-                user,                 
+                user,
                 creationOptions.Name,
                 password,
                 creationOptions.TimeoutInSeconds,
                 mapTemplate.Name,
-                creationOptions.NumberOfPlayersPerTeam, 
+                creationOptions.NumberOfPlayersPerTeam,
                 creationOptions.NumberOfTeams,
                 Mapper.Map<IEnumerable<Domain.Enums.VictoryConditionType>>(creationOptions.VictoryConditions),
                 Mapper.Map<IEnumerable<Domain.Enums.VisibilityModifierType>>(creationOptions.VisibilityModifier));
 
             game.Options.MapDistribution = Mapper.Map<Domain.Enums.MapDistribution>(creationOptions.MapDistribution);
-            
+
             game.Options.AttacksPerTurn = creationOptions.AttacksPerTurn;
             game.Options.MovesPerTurn = creationOptions.MovesPerTurn;
             game.Options.InitialCountryUnits = creationOptions.InitialCountryUnits;
             game.Options.MinUnitsPerCountry = creationOptions.MinUnitsPerCountry;
             game.Options.NewUnitsPerTurn = creationOptions.NewUnitsPerTurn;
-            
+
             game.Options.MaximumNumberOfCards = creationOptions.MaximumNumberOfCards;
 
             // Add player, use the given password
             game.AddPlayer(user, password);
-            
+
             if (creationOptions.AddBot)
             {
                 using (TraceContext.Trace("Add Bot"))
@@ -172,14 +173,14 @@ namespace ImperaPlus.Application.Games
         {
             this.gameService.Delete(this.CurrentUser, gameId);
 
-            this.UnitOfWork.Commit();            
+            this.UnitOfWork.Commit();
         }
 
         public void Join(long gameId, string password)
         {
             var game = this.GetGame(gameId);
             var user = this.CurrentUser;
-            
+
             game.AddPlayer(user, password);
 
             // Ensure all Ids are generated
@@ -190,7 +191,7 @@ namespace ImperaPlus.Application.Games
             if (game.CanStart)
             {
                 game.Start(mapTemplate, this.randomGenProvider.GetRandomGen());
-            } 
+            }
 
             this.UnitOfWork.Commit();
         }
@@ -282,18 +283,22 @@ namespace ImperaPlus.Application.Games
             return Mapper.Map<IEnumerable<GameSummary>>(this.UnitOfWork.Games.FindOpen(userId));
         }
 
-        public IEnumerable<GameSummary> GetForCurrentUser()
+        public IEnumerable<GameSummary> GetForCurrentUserReadOnly()
         {
             var userId = this.CurrentUserId;
 
-            return Mapper.Map<IEnumerable<GameSummary>>(this.UnitOfWork.Games.FindForUser(userId));
+            return Mapper.Map<IEnumerable<GameSummary>>(
+                this.UnitOfWork.Games.FindForUser(userId).AsNoTracking()
+                );
         }
 
         public IEnumerable<GameSummary> GetForCurrentUserTurn()
         {
             var userId = this.CurrentUserId;
 
-            return Mapper.Map<IEnumerable<GameSummary>>(this.UnitOfWork.Games.FindForUserAtTurn(userId));
+            return Mapper.Map<IEnumerable<GameSummary>>(
+                    this.UnitOfWork.Games.FindForUserAtTurnReadOnly(userId)
+                );
         }
 
         public GameChatMessage SendMessage(long gameId, string text, bool isPublic)
@@ -316,6 +321,6 @@ namespace ImperaPlus.Application.Games
             var messages = game.GetMessages(user, isPublic);
 
             return Mapper.Map<IEnumerable<GameChatMessage>>(messages);
-        }        
+        }
     }
 }

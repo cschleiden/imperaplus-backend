@@ -47,7 +47,7 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(IEnumerable<GameSummary>), 200)]
         public IEnumerable<GameSummary> GetMy()
         {
-            return this.gameService.GetForCurrentUser();
+            return this.gameService.GetForCurrentUserReadOnly();
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace ImperaPlus.Backend.Controllers
         }
 
         /// <summary>
-        /// Cancel/delete the requested game, if possible. 
+        /// Cancel/delete the requested game, if possible.
         /// </summary>
         /// <remarks>
         /// This is only posssible, if the requested game is in a state that

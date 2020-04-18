@@ -48,6 +48,15 @@ namespace ImperaPlus.DataAccess.Repositories
                 this.GameSet.Where(g => g.Teams.SelectMany(t => t.Players).FirstOrDefault(p => p.Id == g.CurrentPlayerId).UserId == userId && g.State == GameState.Active);
         }
 
+        public IEnumerable<Game> FindForUserAtTurnReadOnly(string userId)
+        {
+            return this.GameSet
+                        .AsNoTracking()
+                        .Where(g => g.Teams
+                            .SelectMany(t => t.Players)
+                            .FirstOrDefault(p => p.Id == g.CurrentPlayerId).UserId == userId && g.State == GameState.Active);
+        }
+
         public int CountForUserAtTurn(string userId)
         {
             return this.DbSet.Count(g => g.Teams.SelectMany(t => t.Players).FirstOrDefault(p => p.Id == g.CurrentPlayerId).UserId == userId && g.State == GameState.Active);
@@ -68,7 +77,8 @@ namespace ImperaPlus.DataAccess.Repositories
         {
             return this.GameSet
                 .Where(g => g.State == GameState.Open
-                    && g.Teams.SelectMany(t => t.Players).All(p => p.UserId != userId));
+                    && g.Teams.SelectMany(t => t.Players).All(p => p.UserId != userId))
+                .AsNoTracking();
         }
 
         public IEnumerable<long> FindTimeoutGames()

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using ImperaPlus.Domain.Games;
+using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Services;
 using ImperaPlus.Domain.Tournaments;
 using ImperaPlus.TestSupport;
@@ -17,20 +18,20 @@ namespace ImperaPlus.Domain.Tests.Tournaments
         {
             // Arrange
             var mockUnitOfWork = TestUtils.GetUnitOfWorkMock();
-            var tournamentRepository = new MockTournamentRepository();
+            var tournamentRepository = new Mock<ITournamentRepository>().Object;
             mockUnitOfWork.SetupGet(x => x.Tournaments).Returns(tournamentRepository);
             var unitOfWork = mockUnitOfWork.Object;
             var gameServiceMock = new Mock<IGameService>();
             var service = new TournamentService(TestUtils.MockUserProvider(), unitOfWork, gameServiceMock.Object, TestUtils.MockMapTemplateProvider());
 
             var openTournament = new Tournament(
-                "Tournament", 
-                8, 
-                3, 
-                3, 
-                3, 
+                "Tournament",
+                8,
+                3,
+                3,
+                3,
                 DateTime.UtcNow.AddDays(-1),
-                DateTime.UtcNow, 
+                DateTime.UtcNow,
                 new Domain.Games.GameOptions
                 {
                     NumberOfPlayersPerTeam = 1
@@ -49,17 +50,17 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             Assert.IsTrue(started);
             Assert.AreEqual(TournamentState.Groups, openTournament.State);
             Assert.AreEqual(12, openTournament.Pairings.Count());
-        }        
+        }
 
         [TestMethod]
         public void SynchronizeGames()
         {
             // Arrange
             var mockUnitOfWork = TestUtils.GetUnitOfWorkMock();
-            mockUnitOfWork.SetupGet(x => x.Tournaments).Returns(new MockTournamentRepository());
+            mockUnitOfWork.SetupGet(x => x.Tournaments).Returns(new Mock<ITournamentRepository>().Object);
             mockUnitOfWork.SetupGet(x => x.Games).Returns(new MockGamesRepository());
             var unitOfWork = mockUnitOfWork.Object;
-                        
+
             var gameServiceMock = new Mock<IGameService>();
             var service = new TournamentService(TestUtils.MockUserProvider(), unitOfWork, gameServiceMock.Object, TestUtils.MockMapTemplateProvider());
 
@@ -86,7 +87,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
 
             game.State = Enums.GameState.Ended;
 
-            var team1 = new Team(game);            
+            var team1 = new Team(game);
             team1.Players.Add(new Player(game, user1, team1)
             {
                 Outcome = Enums.PlayerOutcome.Won
