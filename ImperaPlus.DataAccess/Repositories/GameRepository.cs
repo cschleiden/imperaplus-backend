@@ -7,6 +7,7 @@ using ImperaPlus.Domain.Games;
 using ImperaPlus.Domain.Repositories;
 using Z.EntityFramework.Plus;
 using ImperaPlus.Domain.Games.History;
+using ImperaPlus.Domain.Games.Chat;
 
 namespace ImperaPlus.DataAccess.Repositories
 {
@@ -27,11 +28,6 @@ namespace ImperaPlus.DataAccess.Repositories
             var game = this.GameSet.FirstOrDefault(x => x.Id == id);
             base.Context.Set<HistoryEntry>().Where(x => x.TurnNo >= turnNo).Load();
             return game;
-        }
-
-        public Game FindWithMessages(long id)
-        {
-            return this.GameSet.Include(x => x.ChatMessages).FirstOrDefault(x => x.Id == id);
         }
 
         public Game FindByName(string name)
@@ -115,6 +111,23 @@ namespace ImperaPlus.DataAccess.Repositories
                 .Where(x => x.State == GameState.Ended && x.Type == GameType.Fun && x.LastModifiedAt <= DateTime.UtcNow.AddDays(-10))
                 .Take(500)
                 .Delete(x => x.BatchSize = 100);
+        }
+
+        public IEnumerable<GameChatMessage> GetGameMessages(long gameId, bool isPublic, string userId)
+        {
+            var messages = this.Context.Set<Domain.Games.Chat.GameChatMessage>()
+                .Where(x => x.GameId == gameId);
+
+            if (isPublic)
+            {
+                messages = messages.Where(x => x.TeamId == null);
+            }
+            else
+            {
+                messages = messages.Where(x => x.Team.Players.Any(p => p.UserId == userId));
+            }
+
+            return messages;
         }
 
         protected IQueryable<Game> GameSet

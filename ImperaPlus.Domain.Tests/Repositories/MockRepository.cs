@@ -3,9 +3,6 @@ using ImperaPlus.Domain.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ImperaPlus.Domain.Games;
-using ImperaPlus.Domain.Enums;
-using ImperaPlus.Domain.Tournaments;
 
 namespace ImperaPlus.Domain.Tests
 {
@@ -89,78 +86,6 @@ namespace ImperaPlus.Domain.Tests
         IEnumerable<Ladder> ILadderRepository.GetActive()
         {
             return this.Query().Where(x => x.IsActive);
-        }
-    }
-
-    public class MockGamesRepository : MockRepository<Game>, IGameRepository
-    {
-        public int CountForUserAtTurn(string userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Game Find(long gameId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Game FindByName(string name)
-        {
-            return this.Query().FirstOrDefault(x => x.Name == name);
-        }
-
-        public IQueryable<Game> FindForUser(string userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<Game> FindForUserAtTurn(string userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<Game> FindForUserAtTurnReadOnly(string userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IQueryable<Game> FindNotHiddenNotOutcomeForUser(string userId, PlayerOutcome outcome)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IQueryable<Game> FindOpen(string userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int DeleteOpenPasswordFunGames()
-        {
-            throw new NotImplementedException();
-        }
-
-        public int DeleteEndedGames(){
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<long> FindTimeoutGames()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<Game> FindUnscoredLadderGames()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Game FindWithHistory(long gameId, long turnNo)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Game FindWithMessages(long gameId)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -7,6 +7,7 @@ using Moq;
 using System.Linq;
 using System.Threading;
 using ImperaPlus.TestSupport;
+using ImperaPlus.Domain.Repositories;
 
 namespace ImperaPlus.Domain.Tests.Ladders
 {
@@ -100,7 +101,7 @@ namespace ImperaPlus.Domain.Tests.Ladders
             {
                 var user1 = TestUtils.CreateUser("1");
                 var ladder = new Ladder("Default", 2, 1);
-                
+
                 ladder.QueueLeaveUser(user1);
             }
         }
@@ -108,7 +109,7 @@ namespace ImperaPlus.Domain.Tests.Ladders
 
     [TestClass]
     public class LadderServiceTests
-    {       
+    {
         [TestClass]
         public class CreateGames
         {
@@ -117,7 +118,7 @@ namespace ImperaPlus.Domain.Tests.Ladders
             {
                 // Arrange
                 var mockUnitOfWork = TestUtils.GetUnitOfWorkMock();
-                mockUnitOfWork.SetupGet(x => x.Games).Returns(new MockGamesRepository());
+                mockUnitOfWork.SetupGet(x => x.Games).Returns(new Mock<IGameRepository>().Object);
                 mockUnitOfWork.SetupGet(x => x.Ladders).Returns(new MockLadderRepository());
                 var unitOfWork = mockUnitOfWork.Object;
 
@@ -135,7 +136,7 @@ namespace ImperaPlus.Domain.Tests.Ladders
 
                 var mapTemplate = TestUtils.GetMapTemplate();
 
-                var ladder = new Ladder("Default", 2, 1);                
+                var ladder = new Ladder("Default", 2, 1);
 
                 ladder.MapTemplates.Add(mapTemplate.Name);
 

@@ -9,8 +9,6 @@ namespace ImperaPlus.Domain.Repositories
     {
         Game Find(long gameId);
 
-        Game FindWithMessages(long gameId);
-
         // Game will be returned not tracked
         Game FindWithHistory(long gameId, long turnNo);
 
@@ -40,5 +38,7 @@ namespace ImperaPlus.Domain.Repositories
         int DeleteOpenPasswordFunGames();
 
         int DeleteEndedGames();
+
+        IEnumerable<Games.Chat.GameChatMessage> GetGameMessages(long gameId, bool isPublic, string userId);
     }
 }
