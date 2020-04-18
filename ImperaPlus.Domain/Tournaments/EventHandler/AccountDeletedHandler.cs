@@ -19,7 +19,7 @@ namespace ImperaPlus.Domain.Tournaments.EventHandler
         public void Handle(AccountDeleted evt)
         {
             // Try to leave open tournaments
-            var openTournaments = this.unitOfWork.Tournaments.Get(TournamentState.Open);
+            var openTournaments = this.unitOfWork.Tournaments.Get(false, TournamentState.Open);
             foreach (var tournament in openTournaments)
             {
                 try

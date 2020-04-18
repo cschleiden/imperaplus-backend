@@ -15,36 +15,43 @@ namespace ImperaPlus.DataAccess.Repositories
         {
         }
 
-        public Tournament GetById(Guid id, bool includeGames)
+        public Tournament GetById(Guid id, bool includeGames, bool readOnly)
         {
+            IQueryable<Tournament> source;
+
             if (includeGames)
             {
-                return this.SetWithGames.First(x => x.Id == id);
+                source = this.SetWithGames;
             }
             else
             {
-                return this.Set.First(x => x.Id == id);
+                source = this.Set;
             }
+
+            if (readOnly)
+            {
+                source = source.AsNoTracking();
+            }
+
+            return source.FirstOrDefault(x => x.Id == id);
         }
 
-        public Tournament GetByIdReadOnly(Guid tournamentId)
-        {
-            return this.Set.AsNoTracking().FirstOrDefault(x => x.Id == tournamentId);
-        }
-
-        public IQueryable<Tournament> GetReadOnly(params TournamentState[] states)
-        {
-            return this.Get(states).AsNoTracking();
-        }
-
-        public IQueryable<Tournament> Get(params TournamentState[] states)
+        public IQueryable<Tournament> Get(bool readOnly, params TournamentState[] states)
         {
             if (states == null || states.Length == 0)
             {
                 states = new[] { TournamentState.Open, TournamentState.Groups, TournamentState.Knockout, TournamentState.Closed };
             }
 
-            return this.SummarySet.Where(x => states.Contains(x.State) && (!x.EndOfTournament.HasValue || x.EndOfTournament >= DateTime.UtcNow.AddDays(-90)));
+            var result = this.SummarySet
+                        .Where(x => states.Contains(x.State) && (!x.EndOfTournament.HasValue || x.EndOfTournament >= DateTime.UtcNow.AddDays(-90)));
+
+            if (readOnly)
+            {
+                result = result.AsNoTracking();
+            }
+
+            return result;
         }
 
         public bool ExistsWithName(string name)

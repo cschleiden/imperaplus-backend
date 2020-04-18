@@ -36,7 +36,7 @@ namespace ImperaPlus.Backend.Controllers
         {
             return this.Ok(
                 this.mapper.Map<IEnumerable<DTO.Tournaments.Tournament>>(
-                    this.unitOfWork.Tournaments.GetReadOnly()
+                    this.unitOfWork.Tournaments.Get(true)
                 )
             );
         }
@@ -51,7 +51,7 @@ namespace ImperaPlus.Backend.Controllers
         {
             return this.Ok(
                 this.mapper.Map<DTO.Tournaments.Tournament>(
-                    this.unitOfWork.Tournaments.GetByIdReadOnly(tournamentId)
+                    this.unitOfWork.Tournaments.GetById(tournamentId, readOnly: true)
                 )
             );
         }

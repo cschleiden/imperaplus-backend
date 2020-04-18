@@ -8,13 +8,9 @@ namespace ImperaPlus.Domain.Repositories
 {
     public interface ITournamentRepository : IGenericRepository<Tournament>
     {
-        Tournament GetById(Guid id, bool includeGames = false);
+        Tournament GetById(Guid id, bool includeGames = false, bool readOnly = false);
 
-        Tournament GetByIdReadOnly(Guid tournamentId);
-
-        IQueryable<Tournament> Get(params TournamentState[] states);
-
-        IQueryable<Tournament> GetReadOnly(params TournamentState[] states);
+        IQueryable<Tournament> Get(bool readOnly, params TournamentState[] states);
 
         bool ExistsWithName(string name);
 

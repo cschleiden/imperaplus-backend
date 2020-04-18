@@ -20,7 +20,7 @@ namespace ImperaPlus.Application.Tournaments
 
         IEnumerable<Tournament> GetAllFull();
 
-        Tournament Get(Guid tournamentId, bool includeGames = false);
+        Tournament Get(Guid tournamentId, bool includeGames = false, bool readOnly = false);
 
         IEnumerable<TournamentTeam> GetTeams(Guid tournamentId);
 
@@ -79,11 +79,11 @@ namespace ImperaPlus.Application.Tournaments
             this.UnitOfWork.Commit();
         }
 
-        public Tournament Get(Guid tournamentId, bool includeGames = false)
+        public Tournament Get(Guid tournamentId, bool includeGames = false, bool readOnly = false)
         {
             Require.NotEmpty(tournamentId, nameof(tournamentId));
 
-            Domain.Tournaments.Tournament tournament = GetTournament(tournamentId, includeGames);
+            Domain.Tournaments.Tournament tournament = GetTournament(tournamentId, includeGames, readOnly);
 
             return Mapper.Map<Tournament>(tournament);
         }
@@ -92,12 +92,12 @@ namespace ImperaPlus.Application.Tournaments
         {
             var domainState = Mapper.Map<Domain.Tournaments.TournamentState>(state);
 
-            return Mapper.Map<IEnumerable<TournamentSummary>>(this.UnitOfWork.Tournaments.Get(domainState));
+            return Mapper.Map<IEnumerable<TournamentSummary>>(this.UnitOfWork.Tournaments.Get(true, domainState));
         }
 
         public IEnumerable<TournamentSummary> GetAll()
         {
-            return Mapper.Map<IEnumerable<TournamentSummary>>(this.UnitOfWork.Tournaments.Get());
+            return Mapper.Map<IEnumerable<TournamentSummary>>(this.UnitOfWork.Tournaments.Get(true));
         }
 
         public IEnumerable<TournamentTeam> GetTeams(Guid tournamentId)
@@ -148,7 +148,7 @@ namespace ImperaPlus.Application.Tournaments
             this.UnitOfWork.Commit();
         }
 
-        private Domain.Tournaments.Tournament GetTournament(Guid tournamentId, bool includeGames = false)
+        private Domain.Tournaments.Tournament GetTournament(Guid tournamentId, bool includeGames = false, bool readOnly = false)
         {
             Require.NotEmpty(tournamentId, nameof(tournamentId));
 
