@@ -258,7 +258,7 @@ namespace ImperaPlus.Application.Games
 
         public HistoryTurn Get(long gameId, long turnNo)
         {
-            var game = this.GetGameWithHistory(gameId);
+            var game = this.GetGameWithHistory(gameId, turnNo);
 
             var historyTurn = game.GameHistory.GetTurn(turnNo);
 

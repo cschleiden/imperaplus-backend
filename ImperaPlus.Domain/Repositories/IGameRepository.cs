@@ -11,7 +11,8 @@ namespace ImperaPlus.Domain.Repositories
 
         Game FindWithMessages(long gameId);
 
-        Game FindWithHistory(long gameId);
+        // Game will be returned not tracked
+        Game FindWithHistory(long gameId, long turnNo);
 
         Game FindByName(string name);
 

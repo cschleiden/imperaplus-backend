@@ -21,9 +21,16 @@ namespace ImperaPlus.DataAccess.Repositories
             return this.GameSet.FirstOrDefault(x => x.Id == id);
         }
 
-        public Game FindWithHistory(long id)
+        public Game FindWithHistory(long id, long turnNo)
         {
-            return this.FullGameSet.FirstOrDefault(x => x.Id == id);
+            return this.GameSet
+                    .AsNoTracking()
+                    // Only include the required history entries
+                    .IncludeFilter(x => x.HistoryEntries
+                        .Where(he => he.TurnNo >= turnNo)
+                        .OrderByDescending(x => x.TurnNo)
+                    )
+                    .FirstOrDefault(x => x.Id == id);
         }
 
         public Game FindWithMessages(long id)
@@ -112,15 +119,6 @@ namespace ImperaPlus.DataAccess.Repositories
                 .Where(x => x.State == GameState.Ended && x.Type == GameType.Fun && x.LastModifiedAt <= DateTime.UtcNow.AddDays(-10))
                 .Take(500)
                 .Delete(x => x.BatchSize = 100);
-        }
-
-        protected IQueryable<Game> FullGameSet
-        {
-            get
-            {
-                return this.GameSet
-                    .Include(x => x.HistoryEntries);
-            }
         }
 
         protected IQueryable<Game> GameSet

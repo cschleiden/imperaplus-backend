@@ -153,7 +153,7 @@ namespace ImperaPlus.Domain.Tests
             throw new NotImplementedException();
         }
 
-        public Game FindWithHistory(long gameId)
+        public Game FindWithHistory(long gameId, long turnNo)
         {
             throw new NotImplementedException();
         }

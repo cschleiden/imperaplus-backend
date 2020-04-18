@@ -33,14 +33,14 @@ namespace ImperaPlus.Application
             if (game == null)
             {
                 throw new ApplicationException("Cannot find game", ErrorCode.CannotFindGame);
-            }        
+            }
 
             return game;
         }
 
-        protected Game GetGameWithHistory(long gameId)
+        protected Game GetGameWithHistory(long gameId, long turnNo)
         {
-            var game = this.UnitOfWork.Games.FindWithHistory(gameId);
+            var game = this.UnitOfWork.Games.FindWithHistory(gameId, turnNo);
             if (game == null)
             {
                 throw new ApplicationException("Cannot find game", ErrorCode.CannotFindGame);
@@ -63,9 +63,9 @@ namespace ImperaPlus.Application
         protected DTO.Games.Game MapAndApplyModifiers(Game game)
         {
             var currentUserId = this.CurrentUserId;
-            
+
             var mappedGame = Mapper.Map<DTO.Games.Game>(game, this.GetMapperOptions());
-            
+
             // Apply visibility modifications
             foreach (var visibilityModifier in game.Options.VisibilityModifier)
             {
