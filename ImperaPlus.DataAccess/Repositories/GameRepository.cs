@@ -6,6 +6,7 @@ using ImperaPlus.Domain.Enums;
 using ImperaPlus.Domain.Games;
 using ImperaPlus.Domain.Repositories;
 using Z.EntityFramework.Plus;
+using ImperaPlus.Domain.Games.History;
 
 namespace ImperaPlus.DataAccess.Repositories
 {
@@ -23,14 +24,9 @@ namespace ImperaPlus.DataAccess.Repositories
 
         public Game FindWithHistory(long id, long turnNo)
         {
-            return this.GameSet
-                    .AsNoTracking()
-                    // Only include the required history entries
-                    .IncludeFilter(x => x.HistoryEntries
-                        .Where(he => he.TurnNo >= turnNo)
-                        .OrderByDescending(x => x.TurnNo)
-                    )
-                    .FirstOrDefault(x => x.Id == id);
+            var game = this.GameSet.FirstOrDefault(x => x.Id == id);
+            base.Context.Set<HistoryEntry>().Where(x => x.TurnNo >= turnNo).Load();
+            return game;
         }
 
         public Game FindWithMessages(long id)
