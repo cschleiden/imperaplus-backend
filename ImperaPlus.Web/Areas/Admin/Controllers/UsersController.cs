@@ -11,7 +11,7 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
     {
         private readonly IUserService userService;
 
-        public UsersController(IUnitOfWork unitOfWork, IUserService userService) 
+        public UsersController(IUnitOfWork unitOfWork, IUserService userService)
             : base(unitOfWork)
         {
             this.userService = userService;
@@ -55,6 +55,7 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
                     u.Id,
                     Name = u.UserName,
                     u.Email,
+                    u.EmailConfirmed,
                     u.IsDeleted
                 });
 
