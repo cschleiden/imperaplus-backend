@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using ImperaPlus.Application.Games;
 using ImperaPlus.Domain.Utilities;
 using ImperaPlus.DTO;
@@ -58,7 +59,9 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(IEnumerable<GameSummary>), 200)]
         public IEnumerable<GameSummary> GetMyTurn()
         {
-            return this.gameService.GetForCurrentUserTurn();
+            // TODO: Re-enable
+            return Enumerable.Empty<GameSummary>();
+            // return this.gameService.GetForCurrentUserTurn();
         }
 
         /// <summary>
