@@ -10,7 +10,7 @@ namespace ImperaPlus.DTO.Games
         /// <summary>
         /// Identifier for game
         /// </summary>
-        public long Id { get; set; }        
+        public long Id { get; set; }
 
         /// <summary>
         /// Type of the game
@@ -63,7 +63,7 @@ namespace ImperaPlus.DTO.Games
         public GameOptions Options { get; set; }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public DateTime LastModifiedAt { get; set; }
 

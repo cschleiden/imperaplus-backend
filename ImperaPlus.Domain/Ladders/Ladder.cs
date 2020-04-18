@@ -59,7 +59,7 @@ namespace ImperaPlus.Domain.Ladders
         [Timestamp]
         public byte[] RowVersion { get; set; }
 
-        public Games.GameOptions Options { get; private set; }
+        public virtual Games.GameOptions Options { get; private set; }
 
         [NotMapped]
         public SerializedCollection<string> MapTemplates { get; private set; }
@@ -90,7 +90,7 @@ namespace ImperaPlus.Domain.Ladders
             {
                 throw new DomainException(ErrorCode.LadderUserNotInQueue, "User is not queued for ladder");
             }
-            
+
             this.Queue.Remove(entryForUser);
         }
 

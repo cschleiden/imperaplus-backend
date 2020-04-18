@@ -8,16 +8,16 @@ namespace ImperaPlus.Domain.Games.History
     {
         public long TurnNo { get; set; }
 
-        public Game Game { get; set; }
+        public virtual Game Game { get; set; }
 
         public IEnumerable<HistoryEntry> Actions { get; set; }
     }
-   
+
     public class GameHistory
     {
-        private GameHistory()
+        protected GameHistory()
         {
-            
+
         }
 
         public GameHistory(Game game)
@@ -97,7 +97,7 @@ namespace ImperaPlus.Domain.Games.History
         public void RecordOwnershipChange(Player oldOwner, Player newOwner, string countryIdentifier)
         {
             this.AddEntry(new HistoryEntry(this.Game, oldOwner, HistoryAction.OwnerChange, this.Game.TurnCounter)
-            {                
+            {
                 OriginIdentifier = countryIdentifier,
                 OtherPlayer = newOwner
             });
@@ -188,7 +188,7 @@ namespace ImperaPlus.Domain.Games.History
                         }
                 }
             }
-        }        
+        }
 
         /// <summary>
         /// Applies general actions to the game

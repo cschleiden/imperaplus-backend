@@ -69,8 +69,7 @@ namespace ImperaPlus.DataAccess.Repositories
         {
             return this.GameSet
                 .Where(g => g.State == GameState.Open
-                    && g.Teams.SelectMany(t => t.Players).All(p => p.UserId != userId))
-                .AsNoTracking();
+                    && g.Teams.SelectMany(t => t.Players).All(p => p.UserId != userId));
         }
 
         public IEnumerable<long> FindTimeoutGames()

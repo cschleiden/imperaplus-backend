@@ -4,7 +4,7 @@ namespace ImperaPlus.Domain.Games.Chat
 {
     public class GameChatMessage : IIdentifiableEntity
     {
-        internal GameChatMessage()
+        protected GameChatMessage()
         {
         }
 

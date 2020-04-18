@@ -10,7 +10,7 @@ namespace ImperaPlus.Domain.Games
 {
     public class Player : Entity
     {
-        private Player()
+        protected Player()
         {
             this.Id = Guid.NewGuid();
 
@@ -42,14 +42,14 @@ namespace ImperaPlus.Domain.Games
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
 
-        public Game Game { get; set; }
+        public virtual Game Game { get; set; }
         public long? GameId { get; set; }
 
         public string UserId { get; private set; }
-        public User User { get; private set; }
+        public virtual User User { get; private set; }
 
         public Guid TeamId { get; internal set; }
-        public Team Team { get; internal set; }
+        public virtual Team Team { get; internal set; }
 
         public int PlayOrder { get; set; }
 

@@ -72,7 +72,7 @@ namespace ImperaPlus.DTO.Games.History
     /// Represents a single action in the game history
     /// </summary>
     public class HistoryEntry
-    {               
+    {
         /// <summary>
         /// Unique id of this history entry
         /// </summary>
@@ -87,7 +87,7 @@ namespace ImperaPlus.DTO.Games.History
         /// Date and time the action was performed
         /// </summary>
         public DateTime DateTime { get; set; }
-        
+
         /// <summary>
         /// Id of acting player
         /// </summary>
@@ -157,6 +157,6 @@ namespace ImperaPlus.DTO.Games.History
         /// <summary>
         /// State of the game at the end of the turn
         /// </summary>
-        public Game Game { get; set; }
+        public virtual Game Game { get; set; }
     }
 }

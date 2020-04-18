@@ -4,7 +4,7 @@ namespace ImperaPlus.Domain.Games.History
 {
     public class HistoryEntry : IIdentifiableEntity
     {
-        private HistoryEntry()
+        protected HistoryEntry()
         {
 
         }

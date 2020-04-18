@@ -48,7 +48,7 @@ namespace ImperaPlus.DataAccess.Repositories
 
             if (readOnly)
             {
-                result = result.AsNoTracking();
+                // result = result.AsNoTracking();
             }
 
             return result;

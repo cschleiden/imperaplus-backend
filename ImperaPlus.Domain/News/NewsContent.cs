@@ -2,8 +2,8 @@
 {
     public class NewsContent : IIdentifiableEntity
     {
-        private NewsContent()
-        {            
+        protected NewsContent()
+        {
         }
 
         internal NewsContent(string language, string title, string text)
@@ -16,7 +16,7 @@
         public long Id { get; set; }
 
         public string Language { get; set; }
-        
+
         public string Title { get; set; }
 
         public string Text { get; set; }

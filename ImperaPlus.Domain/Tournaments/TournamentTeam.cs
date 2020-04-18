@@ -26,7 +26,7 @@ namespace ImperaPlus.Domain.Tournaments
         public Guid Id { get; set; }
 
         public Guid TournamentId { get; set; }
-        public Tournament Tournament { get; set; }
+        public virtual Tournament Tournament { get; set; }
 
         public virtual ICollection<TournamentParticipant> Participants { get; private set; }
 
@@ -45,7 +45,7 @@ namespace ImperaPlus.Domain.Tournaments
         public TournamentTeamState State { get; set; }
 
         public string CreatedById { get; set; }
-        public User CreatedBy { get; set; }
+        public virtual User CreatedBy { get; set; }
 
         public void AddUser(User user)
         {

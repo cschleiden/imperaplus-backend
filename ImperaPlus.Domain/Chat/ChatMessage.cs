@@ -9,7 +9,7 @@ namespace ImperaPlus.Domain.Chat
         /// DataLayer constructor
         /// </summary>
         [UsedImplicitly]
-        private ChatMessage()
+        protected ChatMessage()
         {
         }
 
@@ -26,15 +26,15 @@ namespace ImperaPlus.Domain.Chat
         public long Id { get; set; }
 
         public string Text { get; private set; }
-        
+
         public Guid ChannelId { get; set; }
         public virtual Channel Channel { get; private set; }
-        
+
         public string CreatedById { get; set; }
         public User CreatedBy { get; set; }
-        
+
         public DateTime CreatedAt { get; set; }
-        
+
         public DateTime LastModifiedAt { get; set; }
     }
 }

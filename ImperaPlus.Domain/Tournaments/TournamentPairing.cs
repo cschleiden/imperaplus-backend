@@ -57,7 +57,7 @@ namespace ImperaPlus.Domain.Tournaments
         public int TeamAWon { get; set; }
 
         public Guid TeamBId { get; set; }
-        public TournamentTeam TeamB { get; set; }
+        public virtual TournamentTeam TeamB { get; set; }
         public int TeamBWon { get; set; }
 
         public int NumberOfGames { get; set; }

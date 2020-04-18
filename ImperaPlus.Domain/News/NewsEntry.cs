@@ -7,7 +7,7 @@ namespace ImperaPlus.Domain.News
 {
     public class NewsEntry : IOwnedEntity, IChangeTrackedEntity, IIdentifiableEntity
     {
-        private NewsEntry()
+        protected NewsEntry()
         {
             this.Content = new HashSet<NewsContent>();
         }

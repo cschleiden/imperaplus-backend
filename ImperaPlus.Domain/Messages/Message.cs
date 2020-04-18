@@ -52,12 +52,12 @@ namespace ImperaPlus.Domain.Messages
         /// Message shows up in owner's folders
         /// </summary>
         public string OwnerId { get; internal set; }
-        public User Owner { get; internal set; }
+        public virtual User Owner { get; internal set; }
 
         public string FromId { get; internal set; }
-        public User From { get; internal set; }
+        public virtual User From { get; internal set; }
 
         public string RecipientId { get; internal set; }
-        public User Recipient { get; internal set; }
+        public virtual User Recipient { get; internal set; }
     }
 }

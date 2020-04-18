@@ -27,10 +27,10 @@ namespace ImperaPlus.Domain.Games
         public Guid Id { get; set; }
 
         public virtual ICollection<Player> Players { get; private set; }
-       
+
         public long GameId { get; set; }
-        public Game Game { get; set; }
-        
+        public virtual Game Game { get; set; }
+
         public int PlayOrder { get; set; }
 
         /// <summary>

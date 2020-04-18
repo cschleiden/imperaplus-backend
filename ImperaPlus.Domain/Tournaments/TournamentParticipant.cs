@@ -22,11 +22,11 @@ namespace ImperaPlus.Domain.Tournaments
 
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
-        
+
         public string UserId { get; protected set; }
-        public User User { get; protected set; }
+        public virtual User User { get; protected set; }
 
         public Guid TeamId { get; protected set; }
-        public TournamentTeam Team { get; protected set; }
+        public virtual TournamentTeam Team { get; protected set; }
     }
 }

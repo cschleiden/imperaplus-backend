@@ -111,9 +111,9 @@ namespace ImperaPlus.Domain.Tournaments
 
         public long OptionsId { get; protected set; }
 
-        public GameOptions Options { get; protected set; }
+        public virtual GameOptions Options { get; protected set; }
 
-        public ICollection<TournamentGroup> Groups { get; set; }
+        public virtual ICollection<TournamentGroup> Groups { get; set; }
 
         public DateTime CreatedAt { get; set; }
 
@@ -153,7 +153,7 @@ namespace ImperaPlus.Domain.Tournaments
         /// </summary>
         public DateTime? EndOfTournament { get; protected set; }
 
-        public TournamentTeam Winner { get; protected set; }
+        public virtual TournamentTeam Winner { get; protected set; }
 
         public Guid? WinnerId { get; protected set; }
 
