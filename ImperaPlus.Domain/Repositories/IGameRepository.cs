@@ -16,9 +16,7 @@ namespace ImperaPlus.Domain.Repositories
 
         IQueryable<Game> FindForUser(string userId);
 
-        IEnumerable<Game> FindForUserAtTurn(string userId);
-
-        IEnumerable<Game> FindForUserAtTurnReadOnly(string userId);
+        IQueryable<Game> FindForUserAtTurnReadOnly(string userId);
 
         /// <summary>
         /// Get number of games where it's the user's turn

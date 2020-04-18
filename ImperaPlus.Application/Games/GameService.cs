@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using ImperaPlus.Application.Visibility;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Services;
@@ -236,7 +237,7 @@ namespace ImperaPlus.Application.Games
             var hiddenGameIds = new List<long>();
 
             var games = this.UnitOfWork.Games.FindNotHiddenNotOutcomeForUser(this.CurrentUserId, Domain.Enums.PlayerOutcome.None);
-            foreach(var game in games)
+            foreach (var game in games)
             {
                 var player = game.GetPlayerForUser(this.CurrentUserId);
                 player.Hide();
@@ -287,18 +288,14 @@ namespace ImperaPlus.Application.Games
         {
             var userId = this.CurrentUserId;
 
-            return Mapper.Map<IEnumerable<GameSummary>>(
-                this.UnitOfWork.Games.FindForUser(userId).AsNoTracking()
-                );
+            return Mapper.Map<IEnumerable<GameSummary>>(this.UnitOfWork.Games.FindForUser(userId));
         }
 
         public IEnumerable<GameSummary> GetForCurrentUserTurn()
         {
             var userId = this.CurrentUserId;
 
-            return Mapper.Map<IEnumerable<GameSummary>>(
-                    this.UnitOfWork.Games.FindForUserAtTurnReadOnly(userId)
-                );
+            return Mapper.ProjectTo<GameSummary>(this.UnitOfWork.Games.FindForUserAtTurnReadOnly(userId)).ToList();
         }
 
         public GameChatMessage SendMessage(long gameId, string text, bool isPublic)

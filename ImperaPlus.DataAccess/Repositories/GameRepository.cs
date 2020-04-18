@@ -20,19 +20,19 @@ namespace ImperaPlus.DataAccess.Repositories
 
         public Game Find(long id)
         {
-            return this.GameSet.FirstOrDefault(x => x.Id == id);
+            return this.WithTeamsAndPlayers(this.GameSet.FirstOrDefault(x => x.Id == id));
         }
 
         public Game FindWithHistory(long id, long turnNo)
         {
             var game = this.GameSet.FirstOrDefault(x => x.Id == id);
             base.Context.Set<HistoryEntry>().Where(x => x.TurnNo >= turnNo).Load();
-            return game;
+            return this.WithTeamsAndPlayers(game);
         }
 
         public Game FindByName(string name)
         {
-            return this.DbSet.FirstOrDefault(x => x.Name == name);
+            return this.WithTeamsAndPlayers(this.DbSet.FirstOrDefault(x => x.Name == name));
         }
 
         public IQueryable<Game> FindForUser(string userId)
@@ -41,15 +41,9 @@ namespace ImperaPlus.DataAccess.Repositories
                     g => g.Teams.Any(t => t.Players.Any(p => !p.IsHidden && p.UserId == userId)));
         }
 
-        public IEnumerable<Game> FindForUserAtTurn(string userId)
+        public IQueryable<Game> FindForUserAtTurnReadOnly(string userId)
         {
-            return
-                this.GameSet.Where(g => g.Teams.SelectMany(t => t.Players).FirstOrDefault(p => p.Id == g.CurrentPlayerId).UserId == userId && g.State == GameState.Active);
-        }
-
-        public IEnumerable<Game> FindForUserAtTurnReadOnly(string userId)
-        {
-            return this.GameSet
+            return this.DbSet
                         .AsNoTracking()
                         .Where(g => g.Teams
                             .SelectMany(t => t.Players)
@@ -136,11 +130,22 @@ namespace ImperaPlus.DataAccess.Repositories
             {
                 return base.DbSet
                     .Include(x => x.CreatedBy)
-                    .Include(x => x.Teams)
-                        .ThenInclude(t => t.Players)
-                            .ThenInclude(p => p.User)
                     .Include(x => x.Options);
             }
+        }
+
+        protected Game WithTeamsAndPlayers(Game game)
+        {
+            if (game != null)
+            {
+                // Load related entity in separate query
+                this.Context.Set<Team>().Where(t => t.GameId == game.Id)
+                    .Include(t => t.Players)
+                        .ThenInclude(p => p.User)
+                    .Load();
+            }
+
+            return game;
         }
     }
 }
