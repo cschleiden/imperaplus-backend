@@ -323,7 +323,9 @@ namespace ImperaPlus.Web
             ImperaContext dbContext,
             DbSeed dbSeed)
         {
+#if DEBUG
             Container = app.ApplicationServices.GetAutofacRoot();
+#endif
 
             if (env.IsDevelopment())
             {
