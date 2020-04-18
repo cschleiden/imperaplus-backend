@@ -295,7 +295,7 @@ namespace ImperaPlus.Application.Games
         {
             var userId = this.CurrentUserId;
 
-            return Mapper.ProjectTo<GameSummary>(this.UnitOfWork.Games.FindForUserAtTurnReadOnly(userId)).ToList();
+            return Mapper.Map<IEnumerable<GameSummary>>(this.UnitOfWork.Games.FindForUserAtTurnReadOnly(userId));
         }
 
         public GameChatMessage SendMessage(long gameId, string text, bool isPublic)
