@@ -130,6 +130,8 @@ namespace ImperaPlus.Web
                     options.SignIn.RequireConfirmedEmail = true;
                     options.SignIn.RequireConfirmedPhoneNumber = false;
 
+                    options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider;
+
                     if (this.Environment.IsDevelopment())
                     {
                         options.SignIn.RequireConfirmedEmail = false;
