@@ -339,7 +339,10 @@ namespace ImperaPlus.Domain.Games
             this.StartedAt = DateTime.UtcNow;
             this.State = GameState.Active;
 
-            TraceContext.Trace("Create Map from Template", () => Map.CreateFromTemplate(this, mapTemplate));
+            TraceContext.Trace("Create Map from Template", () =>
+            {
+                this.Map = Map.CreateFromTemplate(this, mapTemplate);
+            });
             TraceContext.Trace("Distribute countries to teams", () => this.Map.Distribute(this.Teams, mapTemplate, this.Options.MapDistribution, random));
 
             // Determine player order
