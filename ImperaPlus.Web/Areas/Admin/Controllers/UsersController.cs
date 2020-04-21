@@ -37,6 +37,20 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        public ActionResult Confirm(string userId)
+        {
+            var user = this.unitOfWork.Users.FindById(userId);
+            if (user != null)
+            {
+                this.userService.ConfirmEmail(user);
+
+                return this.Ok();
+            }
+
+            return this.NotFound();
+        }
+
+        [HttpPost]
         public DataTablesJsonResult Data(IDataTablesRequest request)
         {
             var data = this.unitOfWork.Users.Query();

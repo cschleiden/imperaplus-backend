@@ -8,6 +8,8 @@ namespace ImperaPlus.Domain.Services
     public interface IUserService
     {
         void DeleteAccount(User user, bool force);
+
+        void ConfirmEmail(User user);
     }
 
     public class UserService : IUserService
@@ -32,6 +34,13 @@ namespace ImperaPlus.Domain.Services
 
             // Mark as deleted, will be cleaned up by a job
             user.IsDeleted = true;
+        }
+
+        public void ConfirmEmail(User user)
+        {
+            Require.NotNull(user, nameof(user));
+
+            user.EmailConfirmed = true;
         }
     }
 }

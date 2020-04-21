@@ -19,6 +19,8 @@ namespace ImperaPlus.Application.Users
         void DeleteAccount(User user, bool force = false);
 
         void SetLanguage(User user, string language);
+
+        void ConfirmEmail(User user);
     }
 
     public class UserService : BaseService, IUserService
@@ -50,7 +52,13 @@ namespace ImperaPlus.Application.Users
             this.UnitOfWork.Commit();
         }
 
-        public void SetLanguage(User user, string language) 
+        public void ConfirmEmail(User user)
+        {
+            this.userService.ConfirmEmail(user);
+            this.UnitOfWork.Commit();
+        }
+
+        public void SetLanguage(User user, string language)
         {
             user.Language = language;
             this.UnitOfWork.Commit();

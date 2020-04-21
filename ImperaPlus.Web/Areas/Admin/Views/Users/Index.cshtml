@@ -39,7 +39,7 @@
     {
     'data': "id",
     'render': function (data, type, row, meta) {
-    return '<button onclick="deleteUser(\'' + data + '\')">Delete</button>';
+    return '<button onclick="deleteUser(\'' + data + '\')">Delete</button>&nbsp;<button onclick="confirmUser(\'' + data + '\')">Confirm</button>';
     }
     }
     ],
@@ -56,6 +56,17 @@
     contentType: 'application/json',
     success: function(result) {
     alert("Removed");
+    }
+    });
+    }
+
+    function confirmUser(id) {
+    $.ajax({
+    url: '@Url.Action("Confirm", "Users")' + '?userId=' + id,
+    type: 'POST',
+    contentType: 'application/json',
+    success: function(result) {
+    alert("Confirmed");
     }
     });
     }
