@@ -20,19 +20,19 @@ namespace ImperaPlus.DataAccess.Repositories
 
         public Game Find(long id)
         {
-            return this.WithTeamsAndPlayers(this.GameSet.FirstOrDefault(x => x.Id == id));
+            return this.GameSet.FirstOrDefault(x => x.Id == id);
         }
 
         public Game FindWithHistory(long id, long turnNo)
         {
             var game = this.GameSet.FirstOrDefault(x => x.Id == id);
             base.Context.Set<HistoryEntry>().Where(x => x.GameId == id && x.TurnNo >= turnNo).Load();
-            return this.WithTeamsAndPlayers(game);
+            return game;
         }
 
         public Game FindByName(string name)
         {
-            return this.WithTeamsAndPlayers(this.DbSet.FirstOrDefault(x => x.Name == name));
+            return this.GameSet.FirstOrDefault(x => x.Name == name);
         }
 
         public IQueryable<Game> FindForUser(string userId)
@@ -127,23 +127,12 @@ namespace ImperaPlus.DataAccess.Repositories
             get
             {
                 return base.DbSet
+                    .Include(g => g.Teams)
+                        .ThenInclude(t => t.Players)
+                            .ThenInclude(p => p.User)
                     .Include(x => x.CreatedBy)
                     .Include(x => x.Options);
             }
-        }
-
-        protected Game WithTeamsAndPlayers(Game game)
-        {
-            if (game != null)
-            {
-                // Load related entity in separate query
-                this.Context.Set<Team>().Where(t => t.GameId == game.Id)
-                    .Include(t => t.Players)
-                        .ThenInclude(p => p.User)
-                    .Load();
-            }
-
-            return game;
         }
     }
 }
