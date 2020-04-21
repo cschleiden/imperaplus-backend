@@ -66,10 +66,5 @@ namespace ImperaPlus.DTO.Tournaments
         /// End of tournament
         /// </summary>
         public DateTime EndOfTournament { get; set; }
-
-        /// <summary>
-        /// Completion of tournament in percent
-        /// </summary>
-        public int Completion { get; set; }
     }
 }
