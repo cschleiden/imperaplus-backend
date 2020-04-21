@@ -19,7 +19,7 @@ using NLog.Fluent;
 
 namespace ImperaPlus.Domain.Games
 {
-    public class Game : Entity, IIdentifiableEntity, IChangeTrackedEntity, IOwnedEntity, ISerializedEntity
+    public class Game : Entity, IIdentifiableEntity, IChangeTrackedEntity, IOwnedEntity
     {
         [UsedImplicitly]
         protected Game()
@@ -27,7 +27,6 @@ namespace ImperaPlus.Domain.Games
             this.ChatMessages = new HashSet<GameChatMessage>();
             this.HistoryEntries = new List<HistoryEntry>();
             this.GameHistory = new GameHistory(this);
-            this.Countries = new SerializedCollection<Country>();
             this.Teams = new HashSet<Team>();
         }
 
@@ -82,29 +81,6 @@ namespace ImperaPlus.Domain.Games
             this.PlayState = PlayState.None;
         }
 
-        public void Serialize()
-        {
-            this.countriesSerialized = this.Countries.Serialize();
-        }
-
-        /// <summary>
-        /// Has to have a different name than the property, want to force EF to use the property
-        /// </summary>
-        private string countriesSerialized;
-        public string SerializedCountries
-        {
-            get
-            {
-                return this.countriesSerialized;
-            }
-
-            set
-            {
-                this.countriesSerialized = value;
-                this.Countries = new SerializedCollection<Country>(this.countriesSerialized);
-            }
-        }
-
         public long Id { get; set; }
 
         /// <summary>
@@ -140,27 +116,7 @@ namespace ImperaPlus.Domain.Games
 
         public string Password { get; private set; }
 
-        /// <summary>
-        /// Use the property
-        /// </summary>
-        private Map map;
-
-        [NotMapped]
-        public Map Map
-        {
-            get
-            {
-                if (this.map == null)
-                {
-                    this.map = new Map(this, this.Countries);
-                }
-
-                return this.map;
-            }
-        }
-
-        [NotMapped]
-        public SerializedCollection<Country> Countries { get; private set; }
+        public virtual Map Map { get; set; }
 
         public virtual ICollection<Team> Teams { get; private set; }
 
@@ -842,7 +798,7 @@ namespace ImperaPlus.Domain.Games
 
         private void DeterminePlayOrder(IRandomGen random)
         {
-            // Desired outcome: 
+            // Desired outcome:
             // t1: p1 - 0
             // t2: p1 - 1
             // t1: p2 - 2

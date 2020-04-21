@@ -64,9 +64,7 @@ namespace ImperaPlus.DataAccess
 
             using (MiniProfiler.Current.Step("Context: Update change tracked entitites"))
             {
-                var changeTrackedEntities = this.ChangeTracker.Entries<IChangeTrackedEntity>().ToArray();
-
-                foreach (var entry in changeTrackedEntities)
+                foreach (var entry in this.ChangeTracker.Entries<IChangeTrackedEntity>().ToArray())
                 {
                     if (entry.State == EntityState.Added && entry.Entity.CreatedAt == default(DateTime))
                     {
@@ -164,9 +162,18 @@ namespace ImperaPlus.DataAccess
                 .HasForeignKey(x => x.CreatedById)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.SetNull);
-
             modelBuilder.Entity<Game>()
                 .HasIndex(g => new{ g.State, g.CurrentPlayerId });
+            modelBuilder.Entity<Game>(x =>
+            {
+                x.HasOne(g => g.Map)
+                 .WithOne(m => m.Game)
+                 .IsRequired(false)
+                 .HasForeignKey<Map>(m => m.GameId)
+                 .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<Map>();
 
             modelBuilder.Entity<Team>()
                 .HasMany(x => x.Players)

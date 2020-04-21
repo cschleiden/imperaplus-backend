@@ -1,4 +1,15 @@
 {
     "github-actions.workflows.pinned.workflows": [".github/workflows/prod.yaml"],
-    "github-actions.workflows.pinned.refresh.enabled": true
+    "github-actions.workflows.pinned.refresh.enabled": true,
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/obj": true,
+        "**/dist": true,
+        "**/bin": true,
+        "**/.vs": true,
+    }
 }
