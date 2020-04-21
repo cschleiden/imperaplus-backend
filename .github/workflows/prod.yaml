@@ -1,9 +1,8 @@
 name: Prod Deployment
 
 on:
-  push:
-    branches:
-      - production
+  repository_dispatch:
+    types: [prod_deployment]
 
 jobs:
   build:
