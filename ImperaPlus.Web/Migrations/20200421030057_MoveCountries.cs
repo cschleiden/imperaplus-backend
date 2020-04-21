@@ -33,7 +33,16 @@ namespace ImperaPlus.Web.Migrations
                 unique: true);
 
             migrationBuilder.Sql(
-                "INSERT INTO Map (GameId, SerializedCountries) SELECT Id, SerializedCountries FROM Games"
+@"
+DECLARE @Count int
+SET @Count = 1
+WHILE @Count > 0
+   BEGIN
+        INSERT INTO Map (GameId, SerializedCountries)
+        SELECT TOP (1000) Id, SerializedCountries FROM Games WHERE NOT EXISTS (SELECT 1 FROM Map WHERE Map.GameId = Games.Id) ORDER BY Games.Id
+        SET @Count = @@ROWCOUNT
+   END
+"
             );
 
             migrationBuilder.DropColumn(
