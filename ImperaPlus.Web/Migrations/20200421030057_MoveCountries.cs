@@ -32,8 +32,7 @@ namespace ImperaPlus.Web.Migrations
                 column: "GameId",
                 unique: true);
 
-            migrationBuilder.Sql(
-@"
+            migrationBuilder.Sql(@"
 DECLARE @Count int
 SET @Count = 1
 WHILE @Count > 0
@@ -42,8 +41,8 @@ WHILE @Count > 0
         SELECT TOP (1000) Id, SerializedCountries FROM Games WHERE NOT EXISTS (SELECT 1 FROM Map WHERE Map.GameId = Games.Id) ORDER BY Games.Id
         SET @Count = @@ROWCOUNT
    END
-"
-            );
+",
+            true);
 
             migrationBuilder.DropColumn(
                 name: "SerializedCountries",
