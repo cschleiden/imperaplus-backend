@@ -12,7 +12,7 @@
         <div class="panel-heading clearfix" role="tab">
             <h4 class="panel-title pull-left">
                 <a class="collapsed" role="button" data-toggle="collapse" href="#tournament-@tournament.Id">
-                    @tournament.Name
+                    @tournament.Name - @tournament.Id
                 </a>
             </h4>
 
@@ -20,12 +20,11 @@
                 @using (Html.BeginForm("Delete", "Tournaments", FormMethod.Post))
                 {
                     @Html.Hidden("id", tournament.Id);
-
                     <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                 }
             </div>
 
-            @if (tournament.State == ImperaPlus.DTO.Tournaments.TournamentState.Open)
+            @* @if (tournament.State == ImperaPlus.DTO.Tournaments.TournamentState.Open)
                 {
                 <div class="pull-right">
                     @using (Html.BeginForm("PostStart", "Tournaments", FormMethod.Post))
@@ -35,7 +34,7 @@
                         <button type="submit" class="btn btn-sm btn-success">Start</button>
                     }
                 </div>
-            }
+            } *@
         </div>
 
         @using (Html.BeginForm("PostUpdate", "Tournaments", FormMethod.Post))
