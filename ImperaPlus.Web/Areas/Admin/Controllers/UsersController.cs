@@ -57,7 +57,7 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
 
             if (request.Search != null && !string.IsNullOrWhiteSpace(request.Search.Value))
             {
-                data = data.Where(x => x.UserName.Contains(request.Search.Value));
+                data = data.Where(x => x.UserName.Contains(request.Search.Value) || x.Email.Contains(request.Search.Value));
             }
 
             var dataPage = data
