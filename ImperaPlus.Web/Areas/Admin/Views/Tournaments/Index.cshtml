@@ -11,7 +11,7 @@
     <div class="panel panel-default">
         <div class="panel-heading clearfix" role="tab">
             <h4 class="panel-title pull-left">
-                <a class="collapsed" role="button" data-toggle="collapse" href="#ladder-@tournament.Id">
+                <a class="collapsed" role="button" data-toggle="collapse" href="#tournament-@tournament.Id">
                     @tournament.Name
                 </a>
             </h4>
@@ -42,7 +42,7 @@
         {
             @Html.HiddenFor(x => tournament.Id)
 
-            <div class="panel-collapse collapse" id="ladder-@tournament.Id">
+            <div class="panel-collapse collapse" id="tournament-@tournament.Id">
                 <div class="panel-body form-horizontal">
                     <div class="form-group">
                         @Html.LabelFor(x => tournament.MapTemplates, htmlAttributes: new { @class = "control-label col-md-3" })
@@ -65,7 +65,7 @@
                     @Html.EditorFor(x => tournament.Options, "../Shared/GameOptions")
                 </div>
 
-                <div class="panel-footer clearfix">                    
+                <div class="panel-footer clearfix">
                     <div class="pull-right">
                         <button type="submit" class="btn btn-sm btn-info">Update</button>
                     </div>
