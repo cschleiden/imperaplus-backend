@@ -32,9 +32,9 @@ namespace ImperaPlus.Application.Play
         private IRandomGen randomGen;
         private IAttackService attackService;
 
-        public PlayService(IUnitOfWork unitOfWork, IMapper mapper, IUserProvider userProvider, IVisibilityModifierFactory visibilityModifierFactory, 
+        public PlayService(IUnitOfWork unitOfWork, IMapper mapper, IUserProvider userProvider, IVisibilityModifierFactory visibilityModifierFactory,
             IAttackService attackService,
-            IMapTemplateProvider mapTemplateProvider, 
+            IMapTemplateProvider mapTemplateProvider,
             IRandomGen randomGen)
             : base(unitOfWork, mapper, userProvider, mapTemplateProvider, visibilityModifierFactory)
         {
@@ -47,8 +47,6 @@ namespace ImperaPlus.Application.Play
             var game = this.GetGame(gameId);
             this.CheckPermission(game);
 
-            game.ResetTracking();
-
             game.PlaceUnits(
                 this.GetMapTemplate(game), places.Select(x => Tuple.Create(x.CountryIdentifier, x.NumberOfUnits)).ToList());
 
@@ -59,8 +57,6 @@ namespace ImperaPlus.Application.Play
         {
             var game = this.GetGame(gameId);
             this.CheckPermission(game);
-
-            game.ResetTracking();
 
             game.Attack(this.attackService, this.randomGen, this.GetMapTemplate(game), originCountryIdentifier, destinationCountryIdentifier, numberOfUnits);
 
@@ -79,8 +75,6 @@ namespace ImperaPlus.Application.Play
         {
             var game = this.GetGame(gameId);
             this.CheckPermission(game);
-
-            game.ResetTracking();
 
             game.Move(this.GetMapTemplate(game), originCountryIdentifier, destinationCountryIdentifier, numberOfUnits);
 
@@ -103,7 +97,7 @@ namespace ImperaPlus.Application.Play
             this.CheckPermission(game);
 
             game.ExchangeCards();
-            
+
             return this.CommitAndGetGameActionResult(game);
         }
 
@@ -128,7 +122,7 @@ namespace ImperaPlus.Application.Play
         }
 
         private DTO.Games.GameActionResult CommitAndGetGameActionResult(Game game)
-        {            
+        {
             var gameActionResult = Mapper.Map<Domain.Games.Game, DTO.Games.GameActionResult>(game, opts => opts.Items.Add("userId", this.CurrentUserId));
 
             var changedCountries = game.Map.ChangedCountries.ToList();
@@ -145,8 +139,8 @@ namespace ImperaPlus.Application.Play
             this.UnitOfWork.Commit();
 
             return gameActionResult;
-        }   
-        
+        }
+
         private MapTemplate GetMapTemplate(Game game)
         {
             return this.mapTemplateProvider.GetTemplate(game.MapTemplateName);

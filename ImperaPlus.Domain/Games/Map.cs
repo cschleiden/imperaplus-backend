@@ -57,6 +57,7 @@ namespace ImperaPlus.Domain.Games
             {
                 this.countriesSerialized = value;
                 this.Countries = Jil.JSON.Deserialize<List<Country>>(this.countriesSerialized);
+                this.ResetTracking();
             }
         }
 
