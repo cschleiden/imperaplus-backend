@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace ImperaPlus.Domain
 {
-    public class User : IdentityUser
+    public class User : IdentityUser, IChangeTrackedEntity
     {
         public User()
         {
@@ -36,6 +36,10 @@ namespace ImperaPlus.Domain
         public bool IsDeleted { get; set; }
 
         public DateTime LastLogin { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
+        public DateTime LastModifiedAt { get; set; }
 
         /// <summary>
         /// Navigation property for this users login accounts.
