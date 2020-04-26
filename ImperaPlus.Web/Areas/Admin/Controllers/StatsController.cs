@@ -23,6 +23,8 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
             ViewBag.Games120 = this.unitOfWork.Games.Query().Count(x => x.LastTurnStartedAt >= DateTime.UtcNow.AddMinutes(-120));
             ViewBag.ActiveGames = this.unitOfWork.Games.Query().Count(x => x.State == GameState.Active);
 
+            ViewBag.UnconfirmedUsers = this.unitOfWork.Users.Query().Count(x => !x.EmailConfirmed);
+
             return View();
         }
     }
