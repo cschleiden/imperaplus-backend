@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Hangfire;
 using Hangfire.Server;
+using ImperaPlus.DataAccess;
 using OpenIddict.Core;
 using OpenIddict.EntityFrameworkCore.Models;
 
@@ -16,12 +17,14 @@ namespace ImperaPlus.Application.Jobs
         private OpenIddictTokenManager<OpenIddictToken> tokenManager;
 
         private OpenIddictAuthorizationManager<OpenIddictAuthorization> authorizationManager;
+        private ImperaContext dbContext;
 
         public TokenCleanupJob(ILifetimeScope scope)
             : base(scope)
         {
             this.tokenManager = this.LifetimeScope.Resolve<OpenIddictTokenManager<OpenIddictToken>>();
             this.authorizationManager = this.LifetimeScope.Resolve<OpenIddictAuthorizationManager<OpenIddictAuthorization>>();
+            this.dbContext = this.LifetimeScope.Resolve<ImperaContext>();
         }
 
         public override void Handle(PerformContext performContext)
@@ -30,9 +33,15 @@ namespace ImperaPlus.Application.Jobs
 
             this.Log.Log(Domain.LogLevel.Info, "Cleaning up tokens...");
 
-            this.tokenManager.PruneAsync().Wait();
+            var strategy = dbContext.Database.CreateExecutionStrategy();
+            strategy.Execute<object, object>(null, (context, state) =>
+            {
+                this.tokenManager.PruneAsync().Wait();
 
-            this.authorizationManager.PruneAsync().Wait();
+                this.authorizationManager.PruneAsync().Wait();
+
+                return null;
+            }, null);
 
             this.Log.Log(Domain.LogLevel.Info, "Done");
         }
