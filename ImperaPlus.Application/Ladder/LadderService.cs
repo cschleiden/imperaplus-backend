@@ -24,6 +24,8 @@ namespace ImperaPlus.Application.Ladder
 
         void Delete(Guid ladderId);
 
+        void UpdateName(Guid id, string name);
+
         void UpdateMapTemplates(Guid id, IEnumerable<string> mapTemplateNames);
 
         void ToggleActive(Guid ladderId, bool isActive);
@@ -55,6 +57,15 @@ namespace ImperaPlus.Application.Ladder
             var ladder = this.GetLadder(ladderId);
 
             this.UnitOfWork.Ladders.Remove(ladder);
+
+            this.UnitOfWork.Commit();
+        }
+
+        public void UpdateName(Guid id, string name)
+        {
+            Domain.Ladders.Ladder ladder = GetLadder(id);
+
+            ladder.Name = name;
 
             this.UnitOfWork.Commit();
         }
@@ -110,9 +121,9 @@ namespace ImperaPlus.Application.Ladder
         }
 
         public DTO.Ladder.Ladder Get(Guid ladderId)
-        {           
+        {
             Domain.Ladders.Ladder ladder = GetLadder(ladderId);
-            
+
             var mappedLadder = Mapper.Map<DTO.Ladder.Ladder>(ladder);
 
             // Fill in standings here for now

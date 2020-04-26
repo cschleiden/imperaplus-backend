@@ -23,6 +23,15 @@
                 <div class="form-group">
                     <div class="col-md-push-3 col-md-6 text-left">
                         <label>
+                            @Html.LabelFor(x => ladder.Name, htmlAttributes: new { @class = "control-label col-md-3" })
+                            @Html.EditorFor(model => ladder.Name)
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-push-3 col-md-6 text-left">
+                        <label>
                             @Html.EditorFor(model => ladder.IsActive) Is Active
                         </label>
                     </div>

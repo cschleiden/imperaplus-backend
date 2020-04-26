@@ -11,7 +11,7 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
 
         public LaddersController(IUnitOfWork unitOfWork, ILadderService ladderService)
             : base(unitOfWork)
-        {            
+        {
             this.ladderService = ladderService;
         }
 
@@ -38,6 +38,7 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult PostUpdate(DTO.Ladder.Ladder ladder)
         {
+            this.ladderService.UpdateName(ladder.Id, ladder.Name);
             this.ladderService.ToggleActive(ladder.Id, ladder.IsActive);
             this.ladderService.UpdateGameOptions(ladder.Id, ladder.Options);
             this.ladderService.UpdateMapTemplates(ladder.Id, ladder.MapTemplates);
@@ -60,7 +61,7 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
             this.ladderService.ToggleActive(summary.Id, ladder.IsActive);
 
             return this.RedirectToAction("Index");
-        }        
+        }
 
         [HttpPost]
         public ActionResult PostDelete(Guid id)
