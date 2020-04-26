@@ -30,9 +30,9 @@ namespace ImperaPlus.Application.Jobs
 
             this.Log.Log(Domain.LogLevel.Info, "Cleaning up tokens...");
 
-            this.tokenManager.PruneAsync().RunSynchronously();
+            this.tokenManager.PruneAsync().Wait();
 
-            this.authorizationManager.PruneAsync().RunSynchronously();
+            this.authorizationManager.PruneAsync().Wait();
 
             this.Log.Log(Domain.LogLevel.Info, "Done");
         }
