@@ -3,12 +3,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Autofac;
 using Hangfire;
+using Hangfire.Server;
 using ImperaPlus.Domain;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using NLog.Fluent;
 
 namespace ImperaPlus.Application.Jobs
 {
@@ -29,8 +29,10 @@ namespace ImperaPlus.Application.Jobs
         }
 
         [AutomaticRetry(Attempts = 0)]
-        public override async Task Handle()
+        public override async Task Handle(PerformContext performContex)
         {
+            await base.Handle(performContex);
+
             await TraceContext.TraceAsync("Processing user cleanup", async () =>
             {
                 try
@@ -44,25 +46,21 @@ namespace ImperaPlus.Application.Jobs
                     var users = this.unitOfWork.Users.FindUsersToDelete(days).ToArray();
                     foreach (var user in users)
                     {
-                        Log.Info().Message("Deleting user {0} '{1}'", user.Id, user.UserName).Write();
+                        this.Log.Log(LogLevel.Info, "Deleting user {0} '{1}'", user.Id, user.UserName);
 
                         await this.userManager.DeleteAsync(user);
                         this.unitOfWork.Commit();
 
-                        Log.Info().Message("Deleted user {0} '{1}'", user.Id, user.UserName).Write();
+                        this.Log.Log(LogLevel.Info, "Deleted user {0} '{1}'", user.Id, user.UserName);
                     }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    Log.Warn().Message("DbUpdateConcurrencyException while processing ladders").Write();
+                    this.Log.Log(LogLevel.Error, "DbUpdateConcurrencyException while deleting users");
                 }
                 catch (Exception ex)
                 {
-                    Log
-                        .Error()
-                        .Message("Error while deleting user")
-                        .Exception(ex)
-                        .Write();
+                    this.Log.Log(LogLevel.Error, "Error while deleting user {0}", ex);
                 }
             });
         }

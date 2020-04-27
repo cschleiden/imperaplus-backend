@@ -35,13 +35,19 @@ namespace ImperaPlus.Application.Jobs
     public abstract class AsyncJob
     {
         protected ILifetimeScope LifetimeScope { get; private set; }
+        protected JobLogger Log { get; private set; }
 
         public AsyncJob(ILifetimeScope scope)
         {
             this.LifetimeScope = scope;
         }
 
-        public abstract Task Handle();
+        public virtual Task Handle(PerformContext performContext)
+        {
+            this.Log = new JobLogger(performContext);
+
+            return Task.CompletedTask;
+        }
     }
 
     public class JobLogger : Domain.ILogger
