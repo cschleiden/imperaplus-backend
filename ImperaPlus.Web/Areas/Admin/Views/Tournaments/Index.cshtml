@@ -61,6 +61,15 @@
                         </div>
                     </div>
 
+                    <div class="form-group">
+                        @Html.LabelFor(x => tournament.Phase, htmlAttributes: new { @class = "control-label col-md-3" })
+                        <div class="col-md-6">
+                            <div class="form-control-static">
+                                @Html.DisplayTextFor(x => tournament.Phase)
+                            </div>
+                        </div>
+                    </div>
+
                     @Html.EditorFor(x => tournament.Options, "../Shared/GameOptions")
                 </div>
 

@@ -140,7 +140,7 @@ namespace ImperaPlus.Domain.Services
         {
             var activePairings = tournament.Pairings.Where(x => x.State == PairingState.Active).ToList();
 
-            log.Log(LogLevel.Info, "Checking {0} active pairings or {1} total", activePairings.Count, tournament.Pairings.Count);
+            log.Log(LogLevel.Info, "Checking {0} active pairings of {1} total", activePairings.Count, tournament.Pairings.Count);
 
             foreach (var pairing in activePairings)
             {
@@ -165,6 +165,10 @@ namespace ImperaPlus.Domain.Services
                         // TODO: Generate domain event for winner
                         // TODO: Generate domain event for loser
                     }
+                }
+                else
+                {
+                    log.Log(LogLevel.Info, "Cannot find winner for pairing {0}", pairing.Id);
                 }
             }
         }

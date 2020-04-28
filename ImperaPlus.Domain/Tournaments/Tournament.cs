@@ -535,10 +535,13 @@ namespace ImperaPlus.Domain.Tournaments
             }
             else
             {
+                // Knockout
+                log.Log(LogLevel.Info, "Creating knockout pairings");
                 this.CreateNextRoundPairings(this.Pairings
                     .Where(p => p.Phase == this.Phase - 1)
                     .OrderBy(p => p.Order)
-                    .Select(p => p.Winner));
+                    .Select(p => p.Winner)
+                );
             }
         }
 
