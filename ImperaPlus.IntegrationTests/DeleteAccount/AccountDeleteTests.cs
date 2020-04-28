@@ -50,7 +50,7 @@ namespace ImperaPlus.IntegrationTests
                 Password = ApiClient.GetUserPassword(99)
             });
 
-            await new Application.Jobs.UserCleanupJob(Startup.Container).Handle();            
+            await new Application.Jobs.UserCleanupJob(Startup.Container).Handle(null);
         }
 
         private async Task SetupAccount()

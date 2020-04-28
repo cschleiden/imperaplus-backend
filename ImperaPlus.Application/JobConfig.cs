@@ -21,7 +21,7 @@ namespace ImperaPlus.Application
             RecurringJob.AddOrUpdate<TournamentJob>("Tournaments", x => x.Handle(null), "*/5 * * * * *");
 
             // Cleanups
-            RecurringJob.AddOrUpdate<UserCleanupJob>(UserCleanupJob.JobId, x => x.Handle(), Cron.Daily);
+            RecurringJob.AddOrUpdate<UserCleanupJob>(UserCleanupJob.JobId, x => x.Handle(null), Cron.Daily);
             RecurringJob.AddOrUpdate<GameCleanupJob>(GameCleanupJob.JobId, x => x.Handle(null), Cron.Hourly);
             RecurringJob.AddOrUpdate<TokenCleanupJob>(TokenCleanupJob.JobId, x => x.Handle(null), Cron.Daily);
 
