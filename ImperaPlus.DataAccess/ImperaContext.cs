@@ -273,13 +273,13 @@ namespace ImperaPlus.DataAccess
                 .HasOne(x => x.ApprovedByUser)
                 .WithMany()
                 .IsRequired(false)
-                .OnDelete(DeleteBehavior.SetNull)
+                .OnDelete(DeleteBehavior.NoAction)
                 .HasForeignKey(x => x.ApprovedByUserId);
             modelBuilder.Entity<AllianceJoinRequest>()
                 .HasOne(x => x.DeniedByUser)
                 .WithMany()
                 .IsRequired(false)
-                .OnDelete(DeleteBehavior.SetNull)
+                .OnDelete(DeleteBehavior.NoAction)
                 .HasForeignKey(x => x.DeniedByUserId);
 
             // Tournaments
