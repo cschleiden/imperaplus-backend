@@ -381,7 +381,7 @@ namespace ImperaPlus.Backend.Controllers
         }
 
         [Route("Language")]
-        [HttpPatch]        
+        [HttpPatch]
         public async Task<IActionResult> SetLanguage(LanguageModel model)
         {
             var user = await GetCurrentUserAsync();
@@ -390,40 +390,9 @@ namespace ImperaPlus.Backend.Controllers
             return Ok();
         }
 
-        // POST Account/AddExternalLogin
-        /*[Route("AddExternalLogin")]
-        [HttpPost]        
-        public async Task<IActionResult> AddExternalLogin(AddExternalLoginBindingModel model)
-        {           
-            this.AuthenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
-
-            AuthenticationTicket ticket = AccessTokenFormat.Unprotect(model.ExternalAccessToken);
-
-            if (ticket == null || ticket.Identity == null || (ticket.Properties != null
-                && ticket.Properties.ExpiresUtc.HasValue
-                && ticket.Properties.ExpiresUtc.Value < DateTimeOffset.UtcNow))
-            {
-                return BadRequest(Application.ErrorCode.ExternalLoginFailure.ToString());
-            }
-
-            ExternalLoginData externalData = ExternalLoginData.FromIdentity(ticket.Identity);
-
-            if (externalData == null)
-            {
-                return BadRequest(Application.ErrorCode.UserWithExternalLoginExists.ToString());
-            }
-
-            IdentityResult result = await _userManager.AddLoginAsync(User.Identity.GetUserId(),
-                new UserLoginInfo(externalData.LoginProvider, externalData.ProviderKey));
-
-            this.CheckResult(result, null);
-
-            return Ok();
-        }*/
-
         // POST Account/RemoveLogin
         [Route("RemoveLogin")]
-        [HttpPost]       
+        [HttpPost]
         public async Task<IActionResult> RemoveLogin([FromBody] RemoveLoginBindingModel model)
         {
             var user = await this.GetCurrentUserAsync();
@@ -435,13 +404,13 @@ namespace ImperaPlus.Backend.Controllers
             IdentityResult result;
             if (model.LoginProvider == LocalLoginProvider)
             {
-                result = await userManager.RemovePasswordAsync(user);                
+                result = await userManager.RemovePasswordAsync(user);
             }
             else
             {
                 result = await userManager.RemoveLoginAsync(
                     user,
-                    model.LoginProvider, 
+                    model.LoginProvider,
                     model.ProviderKey);
             }
 
@@ -452,58 +421,6 @@ namespace ImperaPlus.Backend.Controllers
 
             return this.CheckResult(result);
         }
-
-        // GET Account/ExternalLogin
-        //[OverrideAuthentication]
-        //[HostAuthentication(DefaultAuthenticationTypes.ExternalCookie)]
-        /*[AllowAnonymous]
-        [Route("ExternalLogin", Name = "ExternalLogin")]
-        [HttpGet]
-        public async Task<IActionResult> GetExternalLogin(string provider)
-        {
-            // If not authenticated, redirect to provider            
-            if (!User.Identity.IsAuthenticated)
-            {
-                return new ChallengeResult(provider, this);
-            }
-
-            var externalLogin = await this._signInManager.GetExternalLoginInfoAsync();
-            if (externalLogin == null)
-            {               
-                return this.BadRequest();
-            }
-
-            if (externalLogin.LoginProvider != provider)
-            {
-                // Redirect to correct provider
-                this._signInManager.SignOutAsync()
-                this.AuthenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
-                return new ChallengeResult(provider, this);
-            }
-
-            User user = await _userManager.FindAsync(new UserLoginInfo(externalLogin.LoginProvider, externalLogin.ProviderKey));
-
-            bool hasRegistered = user != null;
-
-            if (hasRegistered)
-            {
-                this.AuthenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
-                ClaimsIdentity oAuthIdentity = await _userManager.CreateIdentityAsync(user,
-                    OAuthDefaults.AuthenticationType);
-                ClaimsIdentity cookieIdentity = await _userManager.CreateIdentityAsync(user,
-                    CookieAuthenticationDefaults.AuthenticationType);
-                AuthenticationProperties properties = await ApplicationOAuthProvider.CreateProperties(_userManager, user);
-                this.AuthenticationManager.SignIn(properties, oAuthIdentity, cookieIdentity);
-            }
-            else
-            {
-                IEnumerable<Claim> claims = externalLogin.GetClaims(); // .Claims;
-                ClaimsIdentity identity = new ClaimsIdentity(claims, OAuthDefaults.AuthenticationType);
-                this.AuthenticationManager.SignIn(identity);
-            }
-
-            return Ok();
-        }*/
 
         // GET Account/ExternalLogins?returnUrl=%2F&generateState=true
         [AllowAnonymous]
@@ -535,7 +452,8 @@ namespace ImperaPlus.Backend.Controllers
             {
                 UserName = model.UserName,
                 Email = model.Email,
-                Language = model.Language
+                Language = model.Language,
+                CreatedAt = DateTime.UtcNow
             };
 
             var result = await userManager.CreateAsync(user, model.Password);
@@ -550,7 +468,7 @@ namespace ImperaPlus.Backend.Controllers
 
             return this.CheckResult(result);
         }
-        
+
         /// <summary>
         /// Resend the email confirmation account to the given user account
         /// </summary>
@@ -610,7 +528,7 @@ namespace ImperaPlus.Backend.Controllers
 
             return this.CheckResult(result);
         }
-        
+
         /// <summary>
         /// Request password reset link
         /// </summary>
@@ -618,11 +536,11 @@ namespace ImperaPlus.Backend.Controllers
         /// <returns></returns>
         [AllowAnonymous]
         [Route("ForgotPassword")]
-        [HttpPost]        
+        [HttpPost]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordViewModel model)
         {
             var user = await userManager.FindByNameAsync(model.UserName);
-            if (user == null 
+            if (user == null
                 || !(await userManager.IsEmailConfirmedAsync(user))
                 || !string.Equals(user.Email, model.Email, StringComparison.InvariantCultureIgnoreCase))
             {
@@ -630,7 +548,7 @@ namespace ImperaPlus.Backend.Controllers
             }
 
             var code = await userManager.GeneratePasswordResetTokenAsync(user);
-            
+
             var callbackUrl = model.CallbackUrl;
             callbackUrl = callbackUrl.Replace("userId", user.Id);
             callbackUrl = callbackUrl.Replace("code", WebUtility.UrlEncode(code));
@@ -638,8 +556,8 @@ namespace ImperaPlus.Backend.Controllers
             this.SetCulture(model.Language);
 
             await this.emailSender.SendMail(
-                user.Email, 
-                Resources.ResetPasswordSubject, 
+                user.Email,
+                Resources.ResetPasswordSubject,
                 string.Format(Resources.ResetPasswordBody, callbackUrl));
 
             return this.Ok();
@@ -652,7 +570,7 @@ namespace ImperaPlus.Backend.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("ResetPassword")]
-        [AllowAnonymous]        
+        [AllowAnonymous]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordViewModel model)
         {
             var user = await userManager.FindByIdAsync(model.UserId);
@@ -662,7 +580,7 @@ namespace ImperaPlus.Backend.Controllers
             }
 
             var result = await userManager.ResetPasswordAsync(user, model.Code, model.Password);
-            
+
             return this.CheckResult(result);
         }
 
@@ -675,7 +593,7 @@ namespace ImperaPlus.Backend.Controllers
         //[OverrideAuthentication]
         //[HostAuthentication(DefaultAuthenticationTypes.ExternalBearer)]
         [Route("RegisterExternal")]
-        [HttpPost]        
+        [HttpPost]
         public async Task<IActionResult> RegisterExternal([FromBody] RegisterExternalBindingModel model)
         {
             var externalLoginInfo = await this.signInManager.GetExternalLoginInfoAsync();
@@ -705,7 +623,7 @@ namespace ImperaPlus.Backend.Controllers
             return this.CheckResult(result);
         }
 
-        #region Helpers        
+        #region Helpers
 
         private IActionResult CheckResult(IdentityResult result)
         {
@@ -713,10 +631,10 @@ namespace ImperaPlus.Backend.Controllers
             {
                 // No error code
                 return BadRequest();
-            }            
-            
+            }
+
             if (!result.Succeeded)
-            {                
+            {
                 var errors = result.Errors.Select(x => this.TransformError(x.Code));
 
                 var error = new ErrorResponse(errors.First().Item1, errors.First().Item2.ToString());
