@@ -2,6 +2,7 @@
 using ImperaPlus.Domain.Alliances;
 using ImperaPlus.Domain.Events;
 using ImperaPlus.Domain.Services;
+using ImperaPlus.Domain.Users;
 
 namespace ImperaPlus.Domain
 {
@@ -22,9 +23,9 @@ namespace ImperaPlus.Domain
             // Notifications
             builder.RegisterAssemblyTypes(typeof(DependencyInjectionModule).Assembly).AsClosedTypesOf(typeof(IEventHandler<>));
 
-            //builder.RegisterType<Tournaments.EventHandler.AccountDeletedHandler>().As<IEventHandler<AccountDeleted>>();
-            //builder.RegisterType<Games.EventHandler.AccountDeletedHandler>().As<IEventHandler<AccountDeleted>>();
-            // builder.RegisterType<Messages.EventHandler.AccountDeletedHandler>().As<IEventHandler<AccountDeleted>>();
+            builder.RegisterType<Tournaments.EventHandler.AccountDeletedHandler>().As<IEventHandler<AccountDeleted>>();
+            builder.RegisterType<Games.EventHandler.AccountDeletedHandler>().As<IEventHandler<AccountDeleted>>();
+            builder.RegisterType<Messages.EventHandler.AccountDeletedHandler>().As<IEventHandler<AccountDeleted>>();
         }
     }
 }

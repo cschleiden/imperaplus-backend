@@ -263,6 +263,25 @@ namespace ImperaPlus.DataAccess
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasForeignKey(x => x.ChannelId);
 
+            modelBuilder.Entity<AllianceJoinRequest>()
+                .HasOne(x => x.RequestedByUser)
+                .WithMany()
+                .IsRequired(true)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasForeignKey(x => x.RequestedByUserId);
+            modelBuilder.Entity<AllianceJoinRequest>()
+                .HasOne(x => x.ApprovedByUser)
+                .WithMany()
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasForeignKey(x => x.ApprovedByUserId);
+            modelBuilder.Entity<AllianceJoinRequest>()
+                .HasOne(x => x.DeniedByUser)
+                .WithMany()
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasForeignKey(x => x.DeniedByUserId);
+
             // Tournaments
             modelBuilder.Entity<Tournament>().HasMany(x => x.Teams).WithOne(x => x.Tournament).HasForeignKey(x => x.TournamentId).IsRequired().OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Tournament>().HasMany(x => x.Groups).WithOne(x => x.Tournament).HasForeignKey(x => x.TournamentId).IsRequired().OnDelete(DeleteBehavior.Cascade);
