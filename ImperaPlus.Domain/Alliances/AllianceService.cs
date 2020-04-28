@@ -33,7 +33,7 @@ namespace ImperaPlus.Domain.Alliances
 
         AllianceJoinRequest RequestToJoin(Guid allianceId, string reason);
 
-        AllianceJoinRequest UpdateRequest(Guid allianceId, Guid requestId, AllianceJoinRequestState state);        
+        AllianceJoinRequest UpdateRequest(Guid allianceId, Guid requestId, AllianceJoinRequestState state);
     }
 
     public class AllianceService : BaseDomainService, IAllianceService
@@ -68,7 +68,7 @@ namespace ImperaPlus.Domain.Alliances
             }
 
             var allianceWithSameName = this.UnitOfWork.Alliances.FindByName(name);
-            if (allianceWithSameName != null)           
+            if (allianceWithSameName != null)
             {
                 throw new DomainException(ErrorCode.AllianceWithNameAlreadyExists, "Alliance with that name already exists");
             }
@@ -97,7 +97,7 @@ namespace ImperaPlus.Domain.Alliances
             Require.NotEmpty(allianceId, nameof(allianceId));
             Require.NotNullOrEmpty(userId, nameof(userId));
 
-            var alliance = this.GetAlliance(allianceId);            
+            var alliance = this.GetAlliance(allianceId);
 
             if (string.Equals(this.CurrentUser.Id, userId, StringComparison.InvariantCultureIgnoreCase))
             {
@@ -106,7 +106,7 @@ namespace ImperaPlus.Domain.Alliances
             else
             {
                 // Users can remove themselves from an alliance, if the user to be removed is not the calling user, check for admin rights
-                this.CheckAdmin();
+                this.CheckAdmin(alliance);
 
                 var user = this.GetUser(userId);
                 alliance.RemoveMember(user);
@@ -150,7 +150,7 @@ namespace ImperaPlus.Domain.Alliances
             if (!alliance.IsMember(user))
             {
                 throw new DomainException(
-                    ErrorCode.UserNotAMemberOfAlliance, 
+                    ErrorCode.UserNotAMemberOfAlliance,
                     "User {0} is not a member of the alliance {1}", user.Id, allianceId);
             }
 
@@ -190,20 +190,20 @@ namespace ImperaPlus.Domain.Alliances
             if (alliance == null)
             {
                 throw new DomainException(
-                    ErrorCode.AllianceNotFound, 
+                    ErrorCode.AllianceNotFound,
                     "Alliance {0} not found", allianceId);
             }
 
             return alliance;
         }
-        
+
         private void CheckAdmin(Alliance alliance)
         {
             bool isAdmin = alliance.IsAdmin(this.CurrentUser);
             if (!isAdmin)
             {
                 throw new DomainException(
-                    ErrorCode.AllianceUserIsNotAdmin, 
+                    ErrorCode.AllianceUserIsNotAdmin,
                     "User {0} is not an admin of alliance {1}", this.CurrentUser.Id, alliance.Id);
             }
         }
