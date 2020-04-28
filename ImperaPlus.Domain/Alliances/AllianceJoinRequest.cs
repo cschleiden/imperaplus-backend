@@ -16,6 +16,7 @@ namespace ImperaPlus.Domain.Alliances
     {
         protected AllianceJoinRequest()
         {
+            this.Id = Guid.NewGuid();
         }
 
         public AllianceJoinRequest(Alliance alliance, User requestedBy, string reason)
