@@ -42,6 +42,8 @@ namespace ImperaPlus.Application.Jobs
             {
                 this.Log.Log(LogLevel.Error, "Error: {0}", e);
             }
+
+            this.Log.Log(LogLevel.Info, "Done");
         }
     }
 }

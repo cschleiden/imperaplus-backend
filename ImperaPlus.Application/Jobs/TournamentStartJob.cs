@@ -32,7 +32,9 @@ namespace ImperaPlus.Application.Jobs
             {
                 if (this.tournamentService.CheckOpenTournaments(this.Log, this.randomGenProvider.GetRandomGen()))
                 {
+                    this.Log.Log(Domain.LogLevel.Info, "Found changes, saving...");
                     this.unitOfWork.Commit();
+                    this.Log.Log(Domain.LogLevel.Info, "done.");
                 }
             }
             catch (Exception e)
