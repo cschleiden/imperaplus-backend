@@ -20,9 +20,16 @@ namespace ImperaPlus.Application.Jobs
     {
         public const string JobId = "UserCleanup";
 
+        private readonly UserManager<User> userManager;
+        private readonly IEventAggregator eventAggregator;
+        private IUnitOfWork unitOfWork;
+
         public UserCleanupJob(ILifetimeScope scope)
             : base(scope)
         {
+            this.unitOfWork = this.LifetimeScope.Resolve<IUnitOfWork>();
+            this.userManager = this.LifetimeScope.Resolve<UserManager<User>>();
+            this.eventAggregator = this.LifetimeScope.Resolve<IEventAggregator>();
         }
 
         [AutomaticRetry(Attempts = 0)]
@@ -38,41 +45,29 @@ namespace ImperaPlus.Application.Jobs
                     days = 1;
                 }
 
-                string[] userIds;
-
-                using (var unitOfWork = this.LifetimeScope.Resolve<IUnitOfWork>())
+                var users = this.unitOfWork.Users.FindUsersToDelete(days).ToArray();
+                foreach (var user in users)
                 {
-                    userIds = unitOfWork.Users.FindUsersToDelete(days).ToArray().Select(x => x.Id).ToArray();
-                }
-
-                foreach (var userId in userIds)
-                {
-                    using (var unitOfWork = this.LifetimeScope.Resolve<IUnitOfWork>())
-                    using (var userManager = this.LifetimeScope.Resolve<UserManager<User>>())
+                    try
                     {
-                        var eventAggregator = this.LifetimeScope.Resolve<IEventAggregator>();
+                        this.Log.Log(LogLevel.Info, "Deleting user {0} '{1}'", user.Id, user.UserName);
 
-                        try
-                        {
-                            var user = unitOfWork.Users.FindById(userId);
+                        // Ensure sub-systems know about this
+                        this.eventAggregator.Raise(new AccountDeleted(user, true));
+                        this.unitOfWork.Commit();
 
-                            this.Log.Log(LogLevel.Info, "Deleting user {0} '{1}'", user.Id, user.UserName);
+                        await this.userManager.DeleteAsync(user);
+                        this.unitOfWork.Commit();
 
-                            // Ensure sub-systems know about this
-                            eventAggregator.Raise(new AccountDeleted(user, true));
-                            await userManager.DeleteAsync(user);
-                            unitOfWork.Commit();
-
-                            this.Log.Log(LogLevel.Info, "Deleted user {0} '{1}'", user.Id, user.UserName);
-                        }
-                        catch (DbUpdateConcurrencyException)
-                        {
-                            this.Log.Log(LogLevel.Error, "DbUpdateConcurrencyException while deleting users");
-                        }
-                        catch (Exception ex)
-                        {
-                            this.Log.Log(LogLevel.Error, "Error while deleting user {0}", ex);
-                        }
+                        this.Log.Log(LogLevel.Info, "Deleted user {0} '{1}'", user.Id, user.UserName);
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        this.Log.Log(LogLevel.Error, "DbUpdateConcurrencyException while deleting users");
+                    }
+                    catch (Exception ex)
+                    {
+                        this.Log.Log(LogLevel.Error, "Error while deleting user {0}", ex);
                     }
                 }
             });
