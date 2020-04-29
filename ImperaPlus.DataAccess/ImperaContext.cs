@@ -244,6 +244,12 @@ namespace ImperaPlus.DataAccess
             modelBuilder.Entity<LadderQueueEntry>().HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<NewsEntry>().HasMany(x => x.Content).WithOne().IsRequired().OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<NewsEntry>()
+                .HasOne(x => x.CreatedBy)
+                .WithMany()
+                .HasForeignKey(x => x.CreatedById)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
 
             // Aliiance mapping
             modelBuilder.Entity<Alliance>()

@@ -54,7 +54,6 @@ namespace ImperaPlus.Application.Jobs
 
                         // Ensure sub-systems know about this
                         this.eventAggregator.Raise(new AccountDeleted(user, true));
-                        this.unitOfWork.Commit();
 
                         await this.userManager.DeleteAsync(user);
                         this.unitOfWork.Commit();
