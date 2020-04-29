@@ -294,6 +294,12 @@ namespace ImperaPlus.DataAccess
                 .HasForeignKey(x => x.TeamId)
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<TournamentTeam>()
+                .HasOne(x => x.CreatedBy)
+                .WithMany()
+                .HasForeignKey(x => x.CreatedById)
+                    .IsRequired(false)
+                    .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<TournamentParticipant>()
                 .HasOne(x => x.User)
