@@ -635,6 +635,8 @@ namespace ImperaPlus.Backend.Controllers
 
             if (!result.Succeeded)
             {
+                Log.Error().Message($"Error: {string.Join(" ", result.Errors.Select(x => x.Description))}").Write();
+
                 var errors = result.Errors.Select(x => this.TransformError(x.Code));
 
                 var error = new ErrorResponse(errors.First().Item1, errors.First().Item2.ToString());
