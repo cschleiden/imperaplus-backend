@@ -2,7 +2,7 @@
 
 namespace ImperaPlus.Web.Migrations
 {
-    public partial class UpdateAllianceJoinRequestLogic2 : Migration
+    public partial class UpdateAllianceJoinRequestLogic : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,6 +13,18 @@ namespace ImperaPlus.Web.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_AllianceJoinRequest_AspNetUsers_DeniedByUserId",
                 table: "AllianceJoinRequest");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_AllianceJoinRequest_AspNetUsers_RequestedByUserId",
+                table: "AllianceJoinRequest");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "RequestedByUserId",
+                table: "AllianceJoinRequest",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(450)",
+                oldNullable: true);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_AllianceJoinRequest_AspNetUsers_ApprovedByUserId",
@@ -27,6 +39,14 @@ namespace ImperaPlus.Web.Migrations
                 column: "DeniedByUserId",
                 principalTable: "AspNetUsers",
                 principalColumn: "Id");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AllianceJoinRequest_AspNetUsers_RequestedByUserId",
+                table: "AllianceJoinRequest",
+                column: "RequestedByUserId",
+                principalTable: "AspNetUsers",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -39,13 +59,24 @@ namespace ImperaPlus.Web.Migrations
                 name: "FK_AllianceJoinRequest_AspNetUsers_DeniedByUserId",
                 table: "AllianceJoinRequest");
 
+            migrationBuilder.DropForeignKey(
+                name: "FK_AllianceJoinRequest_AspNetUsers_RequestedByUserId",
+                table: "AllianceJoinRequest");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "RequestedByUserId",
+                table: "AllianceJoinRequest",
+                type: "nvarchar(450)",
+                nullable: true,
+                oldClrType: typeof(string));
+
             migrationBuilder.AddForeignKey(
                 name: "FK_AllianceJoinRequest_AspNetUsers_ApprovedByUserId",
                 table: "AllianceJoinRequest",
                 column: "ApprovedByUserId",
                 principalTable: "AspNetUsers",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.SetNull);
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_AllianceJoinRequest_AspNetUsers_DeniedByUserId",
@@ -53,7 +84,15 @@ namespace ImperaPlus.Web.Migrations
                 column: "DeniedByUserId",
                 principalTable: "AspNetUsers",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.SetNull);
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_AllianceJoinRequest_AspNetUsers_RequestedByUserId",
+                table: "AllianceJoinRequest",
+                column: "RequestedByUserId",
+                principalTable: "AspNetUsers",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
         }
     }
 }

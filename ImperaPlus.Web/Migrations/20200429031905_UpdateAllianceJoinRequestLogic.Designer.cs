@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ImperaPlus.Web.Migrations
 {
     [DbContext(typeof(ImperaContext))]
-    [Migration("20200428042131_UpdateAllianceJoinRequestLogic")]
+    [Migration("20200429031905_UpdateAllianceJoinRequestLogic")]
     partial class UpdateAllianceJoinRequestLogic
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1286,12 +1286,12 @@ namespace ImperaPlus.Web.Migrations
                     b.HasOne("ImperaPlus.Domain.User", "ApprovedByUser")
                         .WithMany()
                         .HasForeignKey("ApprovedByUserId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("ImperaPlus.Domain.User", "DeniedByUser")
                         .WithMany()
                         .HasForeignKey("DeniedByUserId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("ImperaPlus.Domain.User", "RequestedByUser")
                         .WithMany()
