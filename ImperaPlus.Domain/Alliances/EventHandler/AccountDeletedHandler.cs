@@ -1,4 +1,5 @@
-﻿using ImperaPlus.Domain.Events;
+﻿using System.Linq;
+using ImperaPlus.Domain.Events;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Users;
 
@@ -24,6 +25,13 @@ namespace ImperaPlus.Domain.Alliances.EventHandler
             {
                 this.allianceService.Leave(user.AllianceId.Value);
             }
+
+            // Remove alliance join requests
+            this.unitOfWork.GetGenericRepository<AllianceJoinRequest>()
+                .Query()
+                .Where(x => x.ApprovedByUserId == user.Id || x.DeniedByUserId == user.Id)
+                .ToList()
+                .ForEach(x => this.unitOfWork.GetGenericRepository<AllianceJoinRequest>().Remove(x));
         }
     }
 }
