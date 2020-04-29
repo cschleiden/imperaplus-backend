@@ -72,7 +72,7 @@ namespace ImperaPlus.DataAccess
         {
             get
             {
-                return this.userRepository ?? (this.userRepository = new UserRepository(this.context));                
+                return this.userRepository ?? (this.userRepository = new UserRepository(this.context));
             }
         }
 
