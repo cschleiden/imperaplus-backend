@@ -34,15 +34,6 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
                 })
                 .ToList();
 
-            ViewBag.Signedup7d = Enumerable.Range(0, 10)
-            .Select(x => new
-            {
-                Count = 12,
-                Confirmed = 1,
-                Day = DateTime.Now
-            }.ToExpando())
-            .ToList();
-
             ViewBag.UnconfirmedUsers = this.unitOfWork.Users.Query().Count(x => !x.EmailConfirmed);
 
             return View();
