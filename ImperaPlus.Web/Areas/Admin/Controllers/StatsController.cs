@@ -31,7 +31,7 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
                     Count = x.Count(),
                     Confirmed = x.Sum(y => y.EmailConfirmed ? 1 : 0),
                     Day = x.Key
-                })
+                }.ToExpando())
                 .ToList();
 
             ViewBag.UnconfirmedUsers = this.unitOfWork.Users.Query().Count(x => !x.EmailConfirmed);
