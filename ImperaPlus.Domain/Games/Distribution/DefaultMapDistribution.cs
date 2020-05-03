@@ -8,7 +8,7 @@ namespace ImperaPlus.Domain.Games.Distribution
 {
     public class DefaultMapDistribution : IMapDistribution
     {
-        public void Distribute(IEnumerable<Team> teams, MapTemplate mapTemplate, Map map, IRandomGen random)
+        public void Distribute(GameOptions gameOptions, IEnumerable<Team> teams, MapTemplate mapTemplate, Map map, IRandomGen random)
         {
             var shuffledCountries = map.Countries.Shuffle(random).ToArray();
 

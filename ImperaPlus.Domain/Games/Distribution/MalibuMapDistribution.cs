@@ -10,9 +10,7 @@ namespace ImperaPlus.Domain.Games.Distribution
 {
     public class MalibuMapDistribution : IMapDistribution
     {
-        public const int START_UNITS = 5;
-
-        public void Distribute(IEnumerable<Team> teams, MapTemplate mapTemplate, Map map, IRandomGen random)
+        public void Distribute(GameOptions gameOptions, IEnumerable<Team> teams, MapTemplate mapTemplate, Map map, IRandomGen random)
         {
             var players = teams.SelectMany(x => x.Players).ToArray();
             var numberOfPlayers = players.Count();
@@ -30,7 +28,7 @@ namespace ImperaPlus.Domain.Games.Distribution
                     var connectedCountryIdentifiers = mapTemplate.GetConnectedCountries(country.CountryIdentifier);
                     bool tryNext = false;
                     foreach(var connectedCountry in connectedCountryIdentifiers.Select(x => map.GetCountry(x)))
-                    {                        
+                    {
                         if (connectedCountry.IsNeutral)
                         {
                             // Try again with another country
@@ -46,7 +44,7 @@ namespace ImperaPlus.Domain.Games.Distribution
 
                     // All connected countries are without a player, claim this one.
                     map.UpdateOwnership(player, country);
-                    country.Units = START_UNITS;
+                    country.Units = gameOptions.InitialCountryUnits;
                     countryDistributed = true;
                     break;
                 }
@@ -57,8 +55,8 @@ namespace ImperaPlus.Domain.Games.Distribution
                     if (backupCountry != null)
                     {
                         // Reached here because we couldn't find a country in the number of allowed iterations. Just take this one
-                        map.UpdateOwnership(player, backupCountry);    
-                        backupCountry.Units = START_UNITS;
+                        map.UpdateOwnership(player, backupCountry);
+                        backupCountry.Units = gameOptions.InitialCountryUnits;
                     }
                     else
                     {

@@ -6,6 +6,6 @@ namespace ImperaPlus.Domain.Games.Distribution
 {
     public interface IMapDistribution
     {
-        void Distribute(IEnumerable<Team> teams, MapTemplate mapTemplate, Map map, IRandomGen random);
+        void Distribute(GameOptions gameOptions, IEnumerable<Team> teams, MapTemplate mapTemplate, Map map, IRandomGen random);
     }
 }

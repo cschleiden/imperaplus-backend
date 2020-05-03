@@ -343,7 +343,7 @@ namespace ImperaPlus.Domain.Games
             {
                 this.Map = Map.CreateFromTemplate(this, mapTemplate);
             });
-            TraceContext.Trace("Distribute countries to teams", () => this.Map.Distribute(this.Teams, mapTemplate, this.Options.MapDistribution, random));
+            TraceContext.Trace("Distribute countries to teams", () => this.Map.Distribute(this.Options, this.Teams, mapTemplate, this.Options.MapDistribution, random));
 
             // Determine player order
             this.DeterminePlayOrder(random);

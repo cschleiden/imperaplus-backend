@@ -5,24 +5,24 @@ namespace ImperaPlus.Domain.Games.Distribution
 {
     public class TeamClusterDistribution : IMapDistribution
     {
-        public void Distribute(IEnumerable<Team> teams, Domain.Map.MapTemplate mapTemplate, Map map, IRandomGen random)
+        public void Distribute(GameOptions gameOptions, IEnumerable<Team> teams, Domain.Map.MapTemplate mapTemplate, Map map, IRandomGen random)
         {
             // var players = teams.SelectMany(x => x.Players).ToArray();
             // var numberOfPlayers = players.Count();
-            // 
+            //
             // var shuffledCountries = map.Countries.Shuffle().ToArray();
             // var countryIdx = 0;
-            // 
+            //
             // foreach (var team in teams)
             // {
             //     // Pick team starting country
             //     Country teamCountry = null;
             //     var teamCountries = new List<Country>();
-            // 
+            //
             //     for (int i = 0; i < 10; ++i)
             //     {
             //         var country = shuffledCountries[countryIdx++];
-            // 
+            //
             //         var connectedCountryIdentifiers = mapTemplate.GetConnectedCountries(country.CountryIdentifier);
             //         bool tryNext = false;
             //         foreach (var connectedCountry in connectedCountryIdentifiers.Select(x => map.GetCountry(x)))
@@ -34,16 +34,16 @@ namespace ImperaPlus.Domain.Games.Distribution
             //                 break;
             //             }
             //         }
-            // 
+            //
             //         if (tryNext)
             //         {
             //             continue;
             //         }
-            // 
+            //
             //         teamCountry = country;
             //         break;
             //     }
-            // 
+            //
             //     if (teamCountry == null)
             //     {
             //         Log.Fatal().Message("Could not distribute countries to all players for TeamCluster").Write();

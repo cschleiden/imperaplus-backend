@@ -19,7 +19,7 @@ namespace ImperaPlus.Domain.Tests.Map.Distribution
             game.Start(TestUtils.GetMapTemplate(), new TestRandomGen());
 
             // Assert
-            Assert.AreEqual(MalibuMapDistribution.START_UNITS, game.Map.Countries.First(x => !x.IsNeutral).Units, "Units do not match");
+            Assert.AreEqual(game.Options.InitialCountryUnits, game.Map.Countries.First(x => !x.IsNeutral).Units, "Units do not match");
         }
     }
 }
