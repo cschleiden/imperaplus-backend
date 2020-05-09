@@ -59,9 +59,7 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(IEnumerable<GameSummary>), 200)]
         public IEnumerable<GameSummary> GetMyTurn()
         {
-            // TODO: Re-enable
-            return Enumerable.Empty<GameSummary>();
-            // return this.gameService.GetForCurrentUserTurn();
+            return this.gameService.GetForCurrentUserTurn();
         }
 
         /// <summary>
