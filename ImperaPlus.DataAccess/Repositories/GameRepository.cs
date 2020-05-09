@@ -43,8 +43,11 @@ namespace ImperaPlus.DataAccess.Repositories
 
         public IQueryable<Game> FindForUserAtTurnReadOnly(string userId)
         {
-            return this.DbSet
-                        .Where(g => g.State == GameState.Active && g.CurrentPlayer.UserId == userId);
+            return this.GameSet
+                        .Where(g => g.Teams
+                            .SelectMany(t => t.Players)
+                            .First(p => p.Id == g.CurrentPlayerId)
+                            .UserId == userId && g.State == GameState.Active);
         }
 
         public int CountForUserAtTurn(string userId)
