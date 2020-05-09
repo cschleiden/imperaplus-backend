@@ -26,8 +26,6 @@ namespace ImperaPlus.Domain.Games.Distribution
             }
 
             var players = teams.SelectMany(x => x.Players).ToArray();
-            var numberOfPlayers = players.Count();
-
             var shuffledCountries = map.Countries.Shuffle(random).ToArray();
             var countryIdx = 0;
 
@@ -36,14 +34,16 @@ namespace ImperaPlus.Domain.Games.Distribution
                 foreach (var player in players)
                 {
                     bool countryDistributed = false;
-                    for (int i = 0; i < 10; ++i)
+
+                    // Try to find a country that is not next to another player
+                    for (int i = 0; i < shuffledCountries.Length; ++i)
                     {
                         // Get a random country
                         var country = shuffledCountries[countryIdx++ % shuffledCountries.Count()];
 
                         // Check all connected countries
                         var connectedCountryIdentifiers = mapTemplate.GetConnectedCountries(country.CountryIdentifier);
-                        if (connectedCountryIdentifiers.Select(x => map.GetCountry(x)).Any(c => !c.IsNeutral && c.PlayerId != player.Id)) {
+                        if (connectedCountryIdentifiers.Select(x => map.GetCountry(x)).Any(c => !c.IsNeutral && c.TeamId != player.TeamId)) {
                             // One of the connected countries already belongs to another player, try the next country
                             continue;
                         }
