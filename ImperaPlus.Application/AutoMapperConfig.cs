@@ -16,7 +16,7 @@ namespace ImperaPlus.Application
     //{
     //    public DTO.Games.VisibilityModifierType[] Resolve(Domain.Games.GameOptions source, DTO.Games.GameOptions destination, SerializedCollection<Domain.Enums.VisibilityModifierType> sourceMember, DTO.Games.VisibilityModifierType[] destMember, ResolutionContext context)
     //    {
-    //        return sourceMember.Select(x => context.Mapper.Map<DTO.Games.VisibilityModifierType>(x)).ToArray(); 
+    //        return sourceMember.Select(x => context.Mapper.Map<DTO.Games.VisibilityModifierType>(x)).ToArray();
     //    }
     //}
 
@@ -135,7 +135,8 @@ namespace ImperaPlus.Application
                 .ForMember(x => x.Units, c => c.MapFrom(x => x.Units))
                 .ForMember(x => x.Identifier, c => c.MapFrom(x => x.CountryIdentifier))
                 .ForMember(x => x.PlayerId, c => c.MapFrom(x => x.PlayerId))
-                .ForMember(x => x.TeamId, c => c.MapFrom(x => x.TeamId));
+                .ForMember(x => x.TeamId, c => c.MapFrom(x => x.TeamId))
+                .ForMember(x => x.Flags, c => c.MapFrom(x => (DTO.Games.CountryFlags)x.Flags));
 
             this.CreateMap<Domain.Games.Player, DTO.Games.Player>()
                 .ForMember(x => x.UserId, c => c.MapFrom(x => x.UserId))

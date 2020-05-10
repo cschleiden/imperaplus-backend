@@ -34,5 +34,10 @@ namespace ImperaPlus.DTO.Games.Map
         /// Number of units in the country
         /// </summary>
         public int Units { get; set; }
+
+        /// <summary>
+        /// Flags for this country, e.g., if it's a capital
+        /// </summary>
+        public CountryFlags Flags { get; set; }
     }
 }
