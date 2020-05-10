@@ -1,6 +1,9 @@
 {
     "github-actions.workflows.pinned.workflows": [".github/workflows/prod.yaml"],
     "github-actions.workflows.pinned.refresh.enabled": true,
+    "csharp.format.enable": true,
+    "omnisharp.useEditorFormattingSettings": true,
+    "editor.tabSize": 4,
     "files.exclude": {
         "**/.git": true,
         "**/.svn": true,
@@ -11,5 +14,7 @@
         "**/dist": true,
         "**/bin": true,
         "**/.vs": true,
-    }
+    },
+    "omnisharp.enableRoslynAnalyzers": true,
+    "editor.formatOnSave": true,
 }
