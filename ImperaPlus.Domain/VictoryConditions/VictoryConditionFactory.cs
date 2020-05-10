@@ -14,7 +14,10 @@ namespace ImperaPlus.Domain.VictoryConditions
 
                 case VictoryConditionType.ControlContinent:
                     return new ControlContinentVictoryCondition();
-                
+
+                case VictoryConditionType.Capitals:
+                    return new CapitalsVictoryCondition();
+
                 default:
                     throw new ArgumentOutOfRangeException("victoryCondition");
             }

@@ -1,4 +1,5 @@
 ﻿using System;
+using ImperaPlus.Domain.Enums;
 using ImperaPlus.Domain.Games;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -31,7 +32,15 @@ namespace ImperaPlus.Domain.Tests.Games
             Assert.IsTrue(this._country.IsUpdated);
         }
 
+        [TestMethod]
+        public void UpdatingOwnershipRemovesCapitals()
+        {
+            this._country.Flags |= CountryFlags.Capital;
 
+            this._country.PlayerId = Guid.NewGuid();
+
+            Assert.IsFalse(this._country.Flags.HasFlag(CountryFlags.Capital));
+        }
 
         [TestMethod]
         public void UpdatingTeamSetsFlag()

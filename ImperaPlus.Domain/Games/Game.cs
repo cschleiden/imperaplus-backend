@@ -343,7 +343,10 @@ namespace ImperaPlus.Domain.Games
             {
                 this.Map = Map.CreateFromTemplate(this, mapTemplate);
             });
-            TraceContext.Trace("Distribute countries to teams", () => this.Map.Distribute(this.Options, this.Teams, mapTemplate, this.Options.MapDistribution, random));
+            TraceContext.Trace(
+                "Distribute countries to teams",
+                () => this.Map.Distribute(this.Options, this.Teams, mapTemplate, this.Options.MapDistribution, random)
+            );
 
             // Determine player order
             this.DeterminePlayOrder(random);
@@ -353,6 +356,13 @@ namespace ImperaPlus.Domain.Games
             var currentPlayer = currentTeam.Players.First();
 
             this.CurrentPlayerId = currentPlayer.Id;
+
+            // Allow victory conditions to modify the game state
+            foreach (var victoryCondition in this.Options.VictoryConditions)
+            {
+                var victoryConditionImpl = VictoryConditionFactory.Create(victoryCondition);
+                victoryConditionImpl.Initialize(this, random);
+            }
 
             // Record in history
             this.GameHistory.RecordStart();

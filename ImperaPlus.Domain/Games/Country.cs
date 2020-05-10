@@ -1,12 +1,21 @@
-﻿using ImperaPlus.Domain.Exceptions;
+﻿using ImperaPlus.Domain.Enums;
+using ImperaPlus.Domain.Exceptions;
 using ImperaPlus.Domain.Map;
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 
 namespace ImperaPlus.Domain.Games
 {
     public class Country
     {
+        public static Country CreateFromTemplate(Map map, CountryTemplate countryTemplate, int units)
+        {
+            return new Country(countryTemplate.Identifier, units);
+        }
+
+        private CountryFlags flags;
+
         private int units;
 
         private Guid playerId;
@@ -36,6 +45,9 @@ namespace ImperaPlus.Domain.Games
             {
                 if (this.playerId != value)
                 {
+                    // Capitals fall when the ownership changes.
+                    this.Flags &= ~CountryFlags.Capital;
+
                     this.IsUpdated = true;
                 }
 
@@ -78,18 +90,35 @@ namespace ImperaPlus.Domain.Games
             }
         }
 
+        public CountryFlags Flags
+        {
+            get => this.flags;
+            set
+            {
+                if (this.flags != value)
+                {
+                    this.flags = value;
+                    this.IsUpdated = true;
+                }
+            }
+        }
+
+        [NotMapped]
+        public bool IsNeutral
+        {
+            get
+            {
+                return this.PlayerId == Guid.Empty;
+            }
+        }
+
         public string CountryIdentifier { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether this country has been updated in the current turn
         /// </summary>
-        [IgnoreDataMember]
+        [NotMapped]
         public bool IsUpdated { get; internal set; }
-
-        public static Country CreateFromTemplate(Map map, CountryTemplate countryTemplate, int units)
-        {
-            return new Country(countryTemplate.Identifier, units);
-        }
 
         public void PlaceUnits(int units)
         {
@@ -99,14 +128,6 @@ namespace ImperaPlus.Domain.Games
             }
 
             this.Units += units;
-        }
-
-        public bool IsNeutral
-        {
-            get
-            {
-                return this.PlayerId == Guid.Empty;
-            }
         }
     }
 }

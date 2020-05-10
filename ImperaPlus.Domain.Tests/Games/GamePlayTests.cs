@@ -92,7 +92,7 @@ namespace ImperaPlus.Domain.Tests.Games
 
             var countries = new List<Tuple<string, int>>
             {
-                Tuple.Create(currentPlayer.Countries.First().CountryIdentifier, 
+                Tuple.Create(currentPlayer.Countries.First().CountryIdentifier,
                     unitsToPlace)
             };
 
@@ -120,7 +120,7 @@ namespace ImperaPlus.Domain.Tests.Games
 
             var countries = new List<Tuple<string, int>>
             {
-                Tuple.Create(country.CountryIdentifier, 
+                Tuple.Create(country.CountryIdentifier,
                     unitsToPlace)
             };
 
@@ -144,7 +144,7 @@ namespace ImperaPlus.Domain.Tests.Games
 
             var countries = new List<Tuple<string, int>>
             {
-                Tuple.Create(currentPlayer.Countries.First().CountryIdentifier, 
+                Tuple.Create(currentPlayer.Countries.First().CountryIdentifier,
                 game.GetUnitsToPlace(TestUtils.GetMapTemplate(), currentPlayer) - 1)
             };
 
@@ -198,7 +198,7 @@ namespace ImperaPlus.Domain.Tests.Games
         {
             // Arrange
             var mapTemplate = TestUtils.GetMapTemplate();
-            var game = TestUtils.CreateStartedGameWithMapAndPlayersUnitsPlaced();            
+            var game = TestUtils.CreateStartedGameWithMapAndPlayersUnitsPlaced();
 
             var currentPlayer = game.CurrentPlayer;
 
@@ -224,7 +224,7 @@ namespace ImperaPlus.Domain.Tests.Games
             var currentPlayer = game.CurrentPlayer;
 
             var source = Helper.TestHelper.GetCountryWithEnemyConnection(game, currentPlayer, mapTemplate);
-            game.PlaceUnits(TestUtils.GetMapTemplate(),  new[] { Tuple.Create(source.CountryIdentifier, game.GetUnitsToPlace(TestUtils.GetMapTemplate(), currentPlayer)) });
+            game.PlaceUnits(TestUtils.GetMapTemplate(), new[] { Tuple.Create(source.CountryIdentifier, game.GetUnitsToPlace(TestUtils.GetMapTemplate(), currentPlayer)) });
 
             var destination = Helper.TestHelper.GetConnectedEnemyCountry(game, currentPlayer, source, mapTemplate);
             destination.PlayerId = Guid.Empty;
@@ -357,7 +357,7 @@ namespace ImperaPlus.Domain.Tests.Games
 
             game.PlayState = PlayState.Move;
 
-            // Act           
+            // Act
             game.Move(mapTemplate, source.CountryIdentifier, destination.CountryIdentifier, 1);
 
             // Assert
@@ -403,6 +403,59 @@ namespace ImperaPlus.Domain.Tests.Games
             }
 
             game.Move(TestUtils.GetMapTemplate(), source, destination, 1);
+        }
+
+        [TestMethod]
+        public void GamesWithCapitalsVictoryConditionGetCapitals()
+        {
+            var game = TestUtils.CreateGameWithMapAndPlayers();
+            game.Options.VictoryConditions.Add(VictoryConditionType.Capitals);
+
+            // Act
+            game.Start(TestUtils.GetMapTemplate(), new TestRandomGen());
+
+            // Assert
+            Assert.AreEqual(2, game.Map.Countries.Count(x => x.Flags.HasFlag(CountryFlags.Capital)));
+            Assert.IsTrue(game.Teams.First().Players.First().Countries.Any(x => x.Flags.HasFlag(CountryFlags.Capital)));
+        }
+
+        [TestMethod]
+        public void LosingCapitalDefeatsPlayer()
+        {
+            var game = TestUtils.CreateGameWithMapAndPlayers();
+            game.Options.VictoryConditions.Add(VictoryConditionType.Capitals);
+            game.Start(TestUtils.GetMapTemplate(), new TestRandomGen());
+            TestUtils.PlaceUnits(game);
+
+            var player = game.CurrentPlayer;
+            var otherCapital = game.Teams
+                    .SelectMany(t => t.Players)
+                    .Single(p => p.Id != game.CurrentPlayerId).Countries
+                        .Single(x => x.Flags.HasFlag(CountryFlags.Capital));
+            var origin = TestUtils.GetMapTemplate().GetConnectedCountries(otherCapital.CountryIdentifier)
+                .Select(c => game.Map.GetCountry(c))
+                .Where(c => c.PlayerId == game.CurrentPlayerId)
+                .First();
+
+            game.PlaceUnits(TestUtils.GetMapTemplate(), new[]
+            {
+                Tuple.Create(origin.CountryIdentifier, game.GetUnitsToPlace(TestUtils.GetMapTemplate(), game.CurrentPlayer))
+            }.AsEnumerable());
+
+            // Act
+            game.Attack(
+                new AttackService(
+                    new AttackerWinsRandomGen()
+                ),
+                new TestRandomGen(),
+                TestUtils.GetMapTemplate(),
+                origin.CountryIdentifier,
+                otherCapital.CountryIdentifier,
+            1);
+
+            // Assert
+            Assert.AreEqual(GameState.Ended, game.State);
+            Assert.AreEqual(PlayerOutcome.Won, player.Outcome);
         }
     }
 }

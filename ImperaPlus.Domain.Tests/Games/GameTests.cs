@@ -9,18 +9,18 @@ namespace ImperaPlus.Domain.Tests.Games
 {
     [TestClass]
     public class GameTests
-    {       
+    {
         [TestMethod]
         public void CreateGameShouldSucceed()
         {
-            // Arrange            
+            // Arrange
 
             // Act
             var game = TestUtils.CreateGame();
 
             // Assert
             Assert.AreEqual("NewGame", game.Name);
-        }       
+        }
 
         [TestMethod]
         public void CanStartGame()
@@ -50,7 +50,7 @@ namespace ImperaPlus.Domain.Tests.Games
 
             game.AddPlayer(user1);
             game.AddPlayer(user2);
-            
+
             // Act
             game.Start(TestUtils.GetMapTemplate(), new TestRandomGen());
 
@@ -85,7 +85,7 @@ namespace ImperaPlus.Domain.Tests.Games
             // Act
             game.Start(TestUtils.GetMapTemplate(), new TestRandomGen());
 
-            // Assert            
+            // Assert
         }
 
         [TestMethod]
@@ -116,6 +116,23 @@ namespace ImperaPlus.Domain.Tests.Games
         }
 
         [TestMethod]
+        public void StartGamePlayersGetCapitals()
+        {
+            // Arrange
+            var game = TestUtils.CreateGameWithMapAndPlayers();
+            game.Options.VictoryConditions.Add(VictoryConditionType.Capitals);
+
+            // Act
+            game.Start(TestUtils.GetMapTemplate(), new TestRandomGen());
+
+            // Assert
+            Assert.AreEqual(
+                game.Options.NumberOfPlayersPerTeam * game.Options.NumberOfTeams,
+                game.Map.Countries.Count(x => x.Flags.HasFlag(CountryFlags.Capital))
+            );
+        }
+
+        [TestMethod]
         public void JoinGameSuccess()
         {
             // Arrange
@@ -124,7 +141,7 @@ namespace ImperaPlus.Domain.Tests.Games
 
             // Act
             game.AddPlayer(user);
-            
+
             // Assert
             Assert.IsTrue(game.Teams.SelectMany(x => x.Players).Select(x => x.User).Contains(user));
         }
@@ -140,7 +157,7 @@ namespace ImperaPlus.Domain.Tests.Games
 
             // Act
             game.Leave(user);
-            
+
             // Assert
             Assert.IsFalse(game.Teams.SelectMany(x => x.Players).Select(x => x.User).Contains(user));
         }
@@ -152,7 +169,7 @@ namespace ImperaPlus.Domain.Tests.Games
             var game = TestUtils.CreateGame(2, 2);
 
             // Act
-            for(int i = 0; i < 4; ++i)
+            for (int i = 0; i < 4; ++i)
             {
                 var user = TestUtils.CreateUser("test" + i);
                 game.AddPlayer(user);
@@ -175,7 +192,7 @@ namespace ImperaPlus.Domain.Tests.Games
             // Act
             game.AddPlayer(user1);
             game.AddPlayer(user2);
-            game.AddPlayer(user3);  
+            game.AddPlayer(user3);
 
             // Assert
         }
@@ -259,7 +276,7 @@ namespace ImperaPlus.Domain.Tests.Games
 
             // Assert
             var messages = game.GetMessages(user, true);
-            
+
             Assert.AreEqual(1, messages.Count());
 
             var message = messages.First();
@@ -293,7 +310,7 @@ namespace ImperaPlus.Domain.Tests.Games
             var game = TestUtils.CreateStartedGameWithMapAndPlayersUnitsPlaced();
             var player = game.Teams.First().Players.First();
 
-            // Act 
+            // Act
             player.Surrender();
 
             // Assert
@@ -315,7 +332,7 @@ namespace ImperaPlus.Domain.Tests.Games
 
             var ownedCountry = player.Countries.First();
 
-            // Act 
+            // Act
             player.Surrender();
 
             // Assert
@@ -335,7 +352,7 @@ namespace ImperaPlus.Domain.Tests.Games
             var player = game.Teams.First().Players.First();
             player.Surrender();
 
-            // Act 
+            // Act
             player.Surrender();
         }
 

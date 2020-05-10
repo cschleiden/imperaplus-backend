@@ -4,6 +4,8 @@
     {
         Survival = 0,
 
-        ControlContinent
+        ControlContinent = 1,
+
+        Capitals = 2
     }
 }

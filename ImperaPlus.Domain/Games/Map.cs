@@ -63,7 +63,7 @@ namespace ImperaPlus.Domain.Games
 
         public long GameId { get; set; }
 
-        public virtual Game Game { get; set;}
+        public virtual Game Game { get; set; }
 
         [NotMapped]
         public IList<Country> Countries { get; private set; }
@@ -95,7 +95,7 @@ namespace ImperaPlus.Domain.Games
         /// </summary>
         public void ResetTracking()
         {
-            foreach(var country in this.Countries)
+            foreach (var country in this.Countries)
             {
                 country.IsUpdated = false;
             }
@@ -205,7 +205,7 @@ namespace ImperaPlus.Domain.Games
 
         private void ResetChanges()
         {
-            foreach(var country in this.ChangedCountries.ToArray())
+            foreach (var country in this.ChangedCountries.ToArray())
             {
                 country.IsUpdated = false;
             }

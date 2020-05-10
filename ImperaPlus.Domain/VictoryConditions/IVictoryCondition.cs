@@ -1,4 +1,5 @@
 ﻿using ImperaPlus.Domain.Games;
+using ImperaPlus.Domain.Services;
 
 namespace ImperaPlus.Domain.VictoryConditions
 {
@@ -13,6 +14,8 @@ namespace ImperaPlus.Domain.VictoryConditions
 
     public interface IVictoryCondition
     {
+        void Initialize(Games.Game game, IRandomGen random);
+
         VictoryConditionResult Evaluate(Player player, Games.Map map);
     }
 }

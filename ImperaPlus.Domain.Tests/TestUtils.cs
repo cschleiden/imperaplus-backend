@@ -119,12 +119,12 @@ namespace ImperaPlus.Domain.Tests
             var game = new Game(
                 CreateUser("Test"),
                 type,
-                "NewGame", 
+                "NewGame",
                 null,
-                mapTemplate.Name, 
-                60 * 10, 
+                mapTemplate.Name,
+                60 * 10,
                 teams,
-                playerPerTeam, 
+                playerPerTeam,
                 new[] { VictoryConditionType.Survival },
                 new[] { VisibilityModifierType.None });
 
@@ -145,7 +145,7 @@ namespace ImperaPlus.Domain.Tests
                 {
                     team.AddPlayer(users[t * playerPerTeam + player]);
                 }
-            }          
+            }
 
             return game;
         }
@@ -163,8 +163,15 @@ namespace ImperaPlus.Domain.Tests
         {
             var game = CreateStartedGameWithMapAndPlayers(teams, playerPerTeam);
 
+            PlaceUnits(game);
+
+            return game;
+        }
+
+        public static void PlaceUnits(Game game)
+        {
             // Place units
-            for (int i = 0; i < teams * playerPerTeam; ++i)
+            for (int i = 0; i < game.Options.NumberOfTeams * game.Options.NumberOfPlayersPerTeam; ++i)
             {
                 var currentPlayer = game.CurrentPlayer;
 
@@ -175,8 +182,6 @@ namespace ImperaPlus.Domain.Tests
 
                 game.PlaceUnits(TestUtils.GetMapTemplate(), countries);
             }
-
-            return game;
         }
     }
 }
