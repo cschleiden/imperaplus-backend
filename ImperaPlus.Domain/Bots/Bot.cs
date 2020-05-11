@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ImperaPlus.Domain.Services;
+using ImperaPlus.Domain.Enums;
 
 namespace ImperaPlus.Domain.Bots
 {
@@ -19,7 +20,7 @@ namespace ImperaPlus.Domain.Bots
 
         public Bot(
             ILogger log,
-            Game game, 
+            Game game,
             MapTemplate mapTemplate,
             IAttackService attackService,
             IRandomGen randomGen)
@@ -34,7 +35,7 @@ namespace ImperaPlus.Domain.Bots
         public void PlayTurn()
         {
             this.ownTeam = game.CurrentPlayer.Team;
-            this.ownPlayer = game.CurrentPlayer;;
+            this.ownPlayer = game.CurrentPlayer; ;
 
             if (this.Place())
             {
@@ -85,8 +86,14 @@ namespace ImperaPlus.Domain.Bots
         {
             for (int a = 0; a < this.game.Options.AttacksPerTurn; ++a)
             {
+                if (this.game.State != GameState.Active)
+                {
+                    // Probably won, don't try to attack.
+                    break;
+                }
+
                 var ownCountries = this.game.Map.GetCountriesForTeam(this.ownTeam.Id);
-                
+
                 // Find own country, connected to an enemy one
                 var ownCountry = ownCountries.FirstOrDefault(x =>
                     x.Units > this.game.Options.MinUnitsPerCountry
@@ -131,7 +138,10 @@ namespace ImperaPlus.Domain.Bots
 
         private void EndTurn()
         {
-            this.game.EndTurn();
+            if (this.game.State == GameState.Active)
+            {
+                this.game.EndTurn();
+            }
         }
     }
 }
