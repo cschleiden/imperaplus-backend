@@ -20,7 +20,7 @@ namespace ImperaPlus.Domain.Games.Distribution
         public void Distribute(GameOptions gameOptions, IEnumerable<Team> teams, MapTemplate mapTemplate, Map map, IRandomGen random)
         {
             // Default all countries to 1 unit
-            foreach(var country in map.Countries)
+            foreach (var country in map.Countries)
             {
                 country.Units = 1;
             }
@@ -40,10 +40,15 @@ namespace ImperaPlus.Domain.Games.Distribution
                     {
                         // Get a random country
                         var country = shuffledCountries[countryIdx++ % shuffledCountries.Count()];
+                        if (country.PlayerId != Guid.Empty)
+                        {
+                            continue;
+                        }
 
                         // Check all connected countries
                         var connectedCountryIdentifiers = mapTemplate.GetConnectedCountries(country.CountryIdentifier);
-                        if (connectedCountryIdentifiers.Select(x => map.GetCountry(x)).Any(c => !c.IsNeutral && c.TeamId != player.TeamId)) {
+                        if (connectedCountryIdentifiers.Select(x => map.GetCountry(x)).Any(c => !c.IsNeutral && c.TeamId != player.TeamId))
+                        {
                             // One of the connected countries already belongs to another player, try the next country
                             continue;
                         }
