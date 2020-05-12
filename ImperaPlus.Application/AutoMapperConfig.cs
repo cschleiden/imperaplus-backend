@@ -241,7 +241,8 @@ namespace ImperaPlus.Application
             this.CreateMap<Domain.Tournaments.Tournament, DTO.Tournaments.Tournament>();
 
             this.CreateMap<Domain.Tournaments.TournamentTeam, DTO.Tournaments.TournamentTeam>();
-            this.CreateMap<Domain.Tournaments.TournamentTeam, DTO.Tournaments.TournamentTeamSummary>();
+            this.CreateMap<Domain.Tournaments.TournamentTeam, DTO.Tournaments.TournamentTeamSummary>()
+                .ForMember(x => x.RequiresPassword, x => x.MapFrom(t => !string.IsNullOrWhiteSpace(t.Password)));
 
             this.CreateMap<Domain.Tournaments.TournamentGroup, DTO.Tournaments.TournamentGroup>();
             this.CreateMap<Domain.Tournaments.TournamentParticipant, DTO.Users.UserReference>()

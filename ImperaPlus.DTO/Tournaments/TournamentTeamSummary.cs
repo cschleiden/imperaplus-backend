@@ -18,6 +18,11 @@ namespace ImperaPlus.DTO.Tournaments
         public string Name { get; set; }
 
         /// <summary>
+        /// If joining this team requires a password
+        /// </summary>
+        public bool RequiresPassword { get; set; }
+
+        /// <summary>
         /// Id of player who created the team
         /// </summary>
         public string CreatedById { get; set; }
