@@ -198,7 +198,10 @@ namespace ImperaPlus.Domain.Games
 
         public void ResetMapTracking()
         {
-            this.Map.ResetTracking();
+            if (this.Map != null)
+            {
+                this.Map.ResetTracking();
+            }
         }
 
         /// <summary>
