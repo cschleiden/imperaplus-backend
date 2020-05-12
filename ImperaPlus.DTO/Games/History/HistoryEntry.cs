@@ -62,6 +62,11 @@ namespace ImperaPlus.DTO.Games.History
         OwnerChange = 10,
 
         /// <summary>
+        /// Capital was lost
+        /// </summary
+        CapitalLost = 13,
+
+        /// <summary>
         /// Turn has ended
         /// TODO: CS: Required?
         /// </summary>

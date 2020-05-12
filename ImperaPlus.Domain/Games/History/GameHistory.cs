@@ -1,4 +1,5 @@
-﻿using ImperaPlus.Domain.Exceptions;
+﻿using ImperaPlus.Domain.Enums;
+using ImperaPlus.Domain.Exceptions;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -103,6 +104,14 @@ namespace ImperaPlus.Domain.Games.History
             });
         }
 
+        public void RecordCapitalLost(Player player, string countryIdentifier)
+        {
+            this.AddEntry(new HistoryEntry(this.Game, player, HistoryAction.CapitalLost, this.Game.TurnCounter)
+            {
+                OriginIdentifier = countryIdentifier,
+            });
+        }
+
         public void RecordPlayerDefeated(Player player)
         {
             this.AddEntry(new HistoryEntry(this.Game, player, HistoryAction.PlayerLost, this.Game.TurnCounter));
@@ -186,6 +195,13 @@ namespace ImperaPlus.Domain.Games.History
 
                             break;
                         }
+
+                    case HistoryAction.CapitalLost:
+                        {
+                            var country = map.GetCountry(action.OriginIdentifier);
+                            country.Flags |= CountryFlags.Capital;
+                            break;
+                        }
                 }
             }
         }
@@ -220,6 +236,7 @@ namespace ImperaPlus.Domain.Games.History
                     case HistoryAction.Attack:
                     case HistoryAction.Move:
                     case HistoryAction.OwnerChange:
+                    case HistoryAction.CapitalLost:
                         {
                             ApplyActionsToMap(this.Game.Map, new[] { action });
                             break;

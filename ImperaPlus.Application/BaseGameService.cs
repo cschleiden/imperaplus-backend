@@ -35,6 +35,8 @@ namespace ImperaPlus.Application
                 throw new ApplicationException("Cannot find game", ErrorCode.CannotFindGame);
             }
 
+            game.ResetMapTracking();
+
             return game;
         }
 
@@ -88,7 +90,7 @@ namespace ImperaPlus.Application
             // Fix game stats, we want them to reflect the history turn's state, not the current game's turn
             foreach (var team in mappedTurn.Game.Teams)
             {
-                foreach( var player in team.Players)
+                foreach (var player in team.Players)
                 {
                     var countriesForPlayerInTurnMap = previousTurnMap.GetCountriesForPlayer(player.Id);
                     player.NumberOfCountries = countriesForPlayerInTurnMap.Count();

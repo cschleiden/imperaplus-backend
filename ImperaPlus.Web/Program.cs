@@ -30,7 +30,8 @@ namespace ImperaPlus.Web
             }
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) {
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
             return Host
                 .CreateDefaultBuilder(args)
                 .UseServiceProviderFactory(new AutofacServiceProviderFactory())
@@ -46,10 +47,8 @@ namespace ImperaPlus.Web
                     .UseApplicationInsights()
 #endif
                     .CaptureStartupErrors(true)
-                    .UseSetting("detailedErrors", "true")                    
+                    .UseSetting("detailedErrors", "true")
                     .ConfigureServices(services => services.AddAutofac())
-                    // .UseIISIntegration()
-                    // .UseKestrel()
                     .UseStartup<Startup>()
                 );
         }

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using ImperaPlus.DataAccess;
 using ImperaPlus.Domain.Services;
 using ImperaPlus.DTO.Account;
@@ -37,8 +38,10 @@ namespace ImperaPlus.IntegrationTests
 
             JsonConvert.DefaultSettings = () =>
             {
-                var settings = new JsonSerializerSettings();
-                settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                var settings = new JsonSerializerSettings
+                {
+                    ContractResolver = new CamelCasePropertyNamesContractResolver()
+                };
                 settings.Converters.Add(new StringEnumConverter(new CamelCaseNamingStrategy(), false));
                 return settings;
             };
@@ -46,14 +49,26 @@ namespace ImperaPlus.IntegrationTests
             TestSetup.TestServer = new TestServer(new WebHostBuilder()
                 .UseEnvironment(EnvironmentName.Development)
                 .UseContentRoot(contentRoot)
-                .ConfigureServices(services => TestSetup.RegisterTypes(services))
-                .UseStartup<Startup>());
-            TestSetup.TestServer.BaseAddress = new Uri("http://localhost", UriKind.Absolute);
+                .ConfigureServices(services => services.AddAutofac())
+                .ConfigureTestContainer((ContainerBuilder container) => TestSetup.ConfigureContainer(container))
+                .UseStartup<Startup>())
+            {
+                BaseAddress = new Uri("http://localhost", UriKind.Absolute)
+            };
 
             for (int i = 0; i < 4; ++i)
             {
                 TestSetup.RegisterClient(i);
             }
+        }
+
+        public static void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.RegisterType<SynchronousBackgroundJobClient>().AsImplementedInterfaces();
+            builder.RegisterType<FakeEmailService>().AsImplementedInterfaces();
+
+            builder.RegisterType<ImperaPlus.IntegrationTests.TestUserProvider>().AsImplementedInterfaces();
+            builder.RegisterType<ImperaPlus.IntegrationTests.TestMapTemplateProvider>().As<IMapTemplateProvider>();
         }
 
         public static void RegisterClient(int i)
@@ -92,14 +107,6 @@ namespace ImperaPlus.IntegrationTests
         public static void RegisterTypes(IServiceCollection serviceCollection)
         {
             serviceCollection.AddScoped<DbSeed, TestDbSeed>();
-
-            var builder = new ContainerBuilder();
-
-            builder.RegisterType<SynchronousBackgroundJobClient>().AsImplementedInterfaces();
-            builder.RegisterType<FakeEmailService>().AsImplementedInterfaces();
-
-            builder.RegisterType<ImperaPlus.IntegrationTests.TestUserProvider>().AsImplementedInterfaces();
-            builder.RegisterType<ImperaPlus.IntegrationTests.TestMapTemplateProvider>().As<IMapTemplateProvider>();
         }
 
         public static string GetProjectPath(string solutionRelativePath, Assembly assembly)

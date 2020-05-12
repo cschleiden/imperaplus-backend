@@ -1,4 +1,5 @@
 using System;
+using ImperaPlus.Domain.Enums;
 
 namespace ImperaPlus.Domain.Games.History
 {
@@ -54,7 +55,5 @@ namespace ImperaPlus.Domain.Games.History
         public int? UnitsLostOther { get; set; }
 
         public bool? Result { get; set; }
-
-        // TODO: CS: What about other country properties here?
     }
 }

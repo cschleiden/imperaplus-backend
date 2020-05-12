@@ -85,7 +85,7 @@ namespace ImperaPlus.Domain.Games
                 {
                     PlayerId = country.PlayerId,
                     TeamId = country.TeamId,
-                    IsUpdated = country.IsUpdated
+                    IsUpdated = false
                 }).ToList()
             };
         }

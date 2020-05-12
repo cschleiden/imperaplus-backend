@@ -62,6 +62,11 @@ namespace ImperaPlus.Domain.Games.History
         /// <summary>
         /// Player has surrendered
         /// </summary>
-        PlayerSurrender = 12
+        PlayerSurrender = 12,
+
+        /// <summary>
+        /// Capital was lost
+        /// </summary
+        CapitalLost = 13,
     }
 }

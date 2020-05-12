@@ -196,6 +196,11 @@ namespace ImperaPlus.Domain.Games
             }
         }
 
+        public void ResetMapTracking()
+        {
+            this.Map.ResetTracking();
+        }
+
         /// <summary>
         /// Adds a new team
         /// </summary>
@@ -551,14 +556,19 @@ namespace ImperaPlus.Domain.Games
 
             var otherPlayer = this.GetPlayerById(destCountry.PlayerId);
 
-            int attackerUnitsLost = 0;
-            int defenderUnitsLost = 0;
-            var result = attackService.Attack(numberOfUnits, destCountry.Units, out attackerUnitsLost, out defenderUnitsLost);
+            var result = attackService.Attack(
+                numberOfUnits, destCountry.Units, out int attackerUnitsLost, out int defenderUnitsLost);
 
             if (result)
             {
                 // Attack was successful
                 destCountry.Units = numberOfUnits - attackerUnitsLost;
+
+                // Changing ownership removes capitals
+                if (destCountry.Flags.HasFlag(CountryFlags.Capital))
+                {
+                    this.GameHistory.RecordCapitalLost(this.CurrentPlayer, destCountry.CountryIdentifier);
+                }
 
                 this.Map.UpdateOwnership(otherPlayer, this.CurrentPlayer, destCountry);
 
