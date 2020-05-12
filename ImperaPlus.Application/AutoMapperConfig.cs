@@ -240,7 +240,8 @@ namespace ImperaPlus.Application
             this.CreateMap<Domain.Tournaments.Tournament, DTO.Tournaments.TournamentSummary>();
             this.CreateMap<Domain.Tournaments.Tournament, DTO.Tournaments.Tournament>();
 
-            this.CreateMap<Domain.Tournaments.TournamentTeam, DTO.Tournaments.TournamentTeam>();
+            this.CreateMap<Domain.Tournaments.TournamentTeam, DTO.Tournaments.TournamentTeam>()
+                .ForMember(x => x.RequiresPassword, x => x.MapFrom(t => !string.IsNullOrWhiteSpace(t.Password)));
             this.CreateMap<Domain.Tournaments.TournamentTeam, DTO.Tournaments.TournamentTeamSummary>()
                 .ForMember(x => x.RequiresPassword, x => x.MapFrom(t => !string.IsNullOrWhiteSpace(t.Password)));
 
