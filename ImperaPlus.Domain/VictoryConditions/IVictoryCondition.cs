@@ -9,7 +9,9 @@ namespace ImperaPlus.Domain.VictoryConditions
 
         Victory = 1,
 
-        Defeat = 2
+        Defeat = 2,
+
+        TeamDefeat = 3
     }
 
     public interface IVictoryCondition

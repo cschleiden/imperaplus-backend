@@ -6,9 +6,9 @@ using System.Linq;
 
 namespace ImperaPlus.Domain.VictoryConditions
 {
-    public class CapitalsVictoryCondition : IVictoryCondition
+    public class CapitalsVictoryCondition : SurvivalVictoryCondition
     {
-        public void Initialize(Games.Game game, IRandomGen random)
+        public override void Initialize(Games.Game game, IRandomGen random)
         {
             // Distribute capitals
             foreach (var team in game.Teams)
@@ -21,11 +21,18 @@ namespace ImperaPlus.Domain.VictoryConditions
             }
         }
 
-        public VictoryConditionResult Evaluate(Player player, Games.Map map)
+        public override VictoryConditionResult Evaluate(Player player, Games.Map map)
         {
-            if (!player.Countries.Any(x => x.Flags.HasFlag(CountryFlags.Capital)))
+            var result = base.Evaluate(player, map);
+            if (result != VictoryConditionResult.Inconclusive)
             {
-                return VictoryConditionResult.Defeat;
+                return result;
+            }
+
+            if (!map.GetCountriesForTeam(player.TeamId).Any(x => x.Flags.HasFlag(CountryFlags.Capital)))
+            {
+                // Team doesn't have any capitals anymore
+                return VictoryConditionResult.TeamDefeat;
             }
 
             return VictoryConditionResult.Inconclusive;

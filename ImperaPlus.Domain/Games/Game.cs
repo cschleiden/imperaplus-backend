@@ -637,13 +637,23 @@ namespace ImperaPlus.Domain.Games
                 // Check for passive player
                 if (passive != null)
                 {
-                    if (victoryConditionImpl.Evaluate(passive, this.Map) == VictoryConditionResult.Defeat)
+                    var passiveResult = victoryConditionImpl.Evaluate(passive, this.Map);
+                    if (passiveResult == VictoryConditionResult.Defeat)
                     {
                         passive.Outcome = PlayerOutcome.Defeated;
                         passive.State = PlayerState.InActive;
 
                         this.GameHistory.RecordPlayerDefeated(passive);
-                        // TODO: CS: Generate event
+                    }
+                    else if (passiveResult == VictoryConditionResult.TeamDefeat)
+                    {
+                        foreach (var player in passive.Team.Players)
+                        {
+                            player.Outcome = PlayerOutcome.Defeated;
+                            player.State = PlayerState.InActive;
+
+                            this.GameHistory.RecordPlayerDefeated(passive);
+                        }
                     }
                 }
 

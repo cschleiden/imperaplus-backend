@@ -6,11 +6,11 @@ namespace ImperaPlus.Domain.VictoryConditions
 {
     public class SurvivalVictoryCondition : IVictoryCondition
     {
-        public void Initialize(Games.Game game, IRandomGen random)
+        public virtual void Initialize(Games.Game game, IRandomGen random)
         {
         }
 
-        public VictoryConditionResult Evaluate(Player player, Games.Map map)
+        public virtual VictoryConditionResult Evaluate(Player player, Games.Map map)
         {
             if (!player.Countries.Any())
             {
