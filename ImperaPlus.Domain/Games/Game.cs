@@ -571,6 +571,7 @@ namespace ImperaPlus.Domain.Games
                 if (destCountry.Flags.HasFlag(CountryFlags.Capital))
                 {
                     this.GameHistory.RecordCapitalLost(this.CurrentPlayer, destCountry.CountryIdentifier);
+                    otherPlayer.ForfeitCountries();
                 }
 
                 this.Map.UpdateOwnership(otherPlayer, this.CurrentPlayer, destCountry);

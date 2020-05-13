@@ -200,12 +200,7 @@ namespace ImperaPlus.Domain.Games
             this.Outcome = PlayerOutcome.Surrendered;
             this.State = PlayerState.InActive;
 
-            // Change player's countries to neutral player
-            foreach (var country in this.Countries.ToArray())
-            {
-                game.Map.UpdateOwnership(this, null, country);
-                game.GameHistory.RecordOwnershipChange(this, null, country.CountryIdentifier);
-            }
+            this.ForfeitCountries();
 
             this.Team.Game.GameHistory.RecordPlayerSurrendered(this);
             this.Team.Game.CheckForVictory(this.Team.Game.CurrentPlayer);
@@ -216,6 +211,18 @@ namespace ImperaPlus.Domain.Games
             {
                 // Player was the current player, advance turn
                 this.Game.EndTurn();
+            }
+        }
+
+        public void ForfeitCountries()
+        {
+            var game = this.Team.Game;
+
+            // Change player's countries to neutral player
+            foreach (var country in this.Countries.ToArray())
+            {
+                game.Map.UpdateOwnership(this, null, country);
+                game.GameHistory.RecordOwnershipChange(this, null, country.CountryIdentifier);
             }
         }
     }
