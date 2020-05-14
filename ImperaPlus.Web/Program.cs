@@ -43,9 +43,7 @@ namespace ImperaPlus.Web
                         logging.SetMinimumLevel(LogLevel.Trace);
                     })
                     .UseNLog()
-#if !DEBUG
-                    .UseApplicationInsights()
-#endif
+                    .UseSentry()
                     .CaptureStartupErrors(true)
                     .UseSetting("detailedErrors", "true")
                     .ConfigureServices(services => services.AddAutofac())
