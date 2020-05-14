@@ -12,7 +12,6 @@ using ImperaPlus.Web;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -112,7 +111,7 @@ namespace ImperaPlus.IntegrationTests
         public static string GetProjectPath(string solutionRelativePath, Assembly assembly)
         {
             var projectName = assembly.GetName().Name;
-            var applicationBasePath = PlatformServices.Default.Application.ApplicationBasePath;
+            var applicationBasePath = System.AppContext.BaseDirectory;
 
             var directoryInfo = new DirectoryInfo(applicationBasePath);
             do
