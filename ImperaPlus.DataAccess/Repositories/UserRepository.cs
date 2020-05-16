@@ -32,8 +32,14 @@ namespace ImperaPlus.DataAccess.Repositories
 
         public IEnumerable<User> FindUsersToDelete(int days = -30)
         {
-            var cutoffDate = DateTime.UtcNow.AddDays(days);
-            return this.DbSet.Where(x => x.IsDeleted && x.LastLogin <= cutoffDate);
+            var deletedCutoffDate = DateTime.UtcNow.AddDays(days);
+            var cutoffDate = DateTime.UtcNow.AddDays(-90);
+            return this.DbSet.Where(x =>
+                // Delete deleted users sooner
+                (x.IsDeleted && x.LastLogin <= deletedCutoffDate)
+                // Delete users without logins in 90 days
+                || (x.LastLogin < cutoffDate)
+            );
         }
     }
 }
