@@ -34,12 +34,10 @@ namespace ImperaPlus.Domain.Services
 
     public class GameService : IGameService
     {
-        private readonly ILifetimeScope scope;
         private readonly IGameRepository gameRepository;
 
-        public GameService(ILifetimeScope scope, IUnitOfWork unitOfWork)
+        public GameService(IUnitOfWork unitOfWork)
         {
-            this.scope = scope;
             this.gameRepository = unitOfWork.Games;
         }
 

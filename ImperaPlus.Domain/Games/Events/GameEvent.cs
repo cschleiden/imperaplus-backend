@@ -4,7 +4,7 @@ namespace ImperaPlus.Domain.Games.Events
 {
     public class GameEvent : IDomainEvent
     {
-        private Game game;
+        private readonly Game game;
 
         public Game Game
         {

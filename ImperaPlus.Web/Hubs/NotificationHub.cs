@@ -144,8 +144,6 @@ namespace ImperaPlus.Web.Hubs
         /// <param name="isPublic">Value indicating whether message is inteded for all players or only team</param>
         public async Task SendGameMessage(long gameId, string text, bool isPublic)
         {
-            string userId = this.GetUserId();
-
             var gameService = this.lifetimeScope.Resolve<IGameService>();
             var message = gameService.SendMessage(gameId, text, isPublic);
 

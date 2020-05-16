@@ -6,7 +6,7 @@ namespace ImperaPlus.Domain.Messages.EventHandler
 {
     public class AccountDeletedHandler : IEventHandler<AccountDeleted>
     {
-        private IUnitOfWork unitOfWork;
+        private readonly IUnitOfWork unitOfWork;
 
         public AccountDeletedHandler(IUnitOfWork unitOfWork)
         {

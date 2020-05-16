@@ -21,7 +21,7 @@ namespace ImperaPlus.Domain.Tests.Alliance
         public void AddPlayerToAlliance()
         {
             var alliance = this.GetTestAlliance(TestUtils.CreateUser("admin"));
-            var user = TestUtils.CreateUser("test");            
+            var user = TestUtils.CreateUser("test");
 
             alliance.AddMember(user);
             this.unitOfWork.Commit();
