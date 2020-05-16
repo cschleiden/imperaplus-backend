@@ -35,7 +35,7 @@ namespace ImperaPlus.TestSupport
         {
             this.SetupScope();
 
-            this.TestData = new TestData(this.Context, this.Scope, new GameService(this.Scope, this.UnitOfWork));
+            this.TestData = new TestData(this.Context, this.Scope, new GameService(this.UnitOfWork));
 
             // Ensure a user does exist
             this.TestUser = new User
