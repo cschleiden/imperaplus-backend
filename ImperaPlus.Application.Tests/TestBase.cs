@@ -51,12 +51,10 @@ namespace ImperaPlus.TestSupport
                 UserName = "Bot"
             };
             this.Context.Users.Add(this.BotUser);
-            
+
             this.Context.SaveChanges();
 
             TestUserProvider.User = this.TestUser;
-
-            DomainDepsResolver.ScopeGen = () => this.Container;
         }
 
         [TestCleanup]
@@ -89,7 +87,7 @@ namespace ImperaPlus.TestSupport
 
             this.Container = builder.Build();
 
-            dbOptionsBuilder.UseInMemoryDatabase("impera_test").UseInternalServiceProvider(new AutofacServiceProvider(this.Container));            
+            dbOptionsBuilder.UseInMemoryDatabase("impera_test").UseInternalServiceProvider(new AutofacServiceProvider(this.Container));
 
             this.Scope = Container.BeginLifetimeScope("AutofacWebRequest");
             this.Context = this.Scope.Resolve<ImperaContext>();
