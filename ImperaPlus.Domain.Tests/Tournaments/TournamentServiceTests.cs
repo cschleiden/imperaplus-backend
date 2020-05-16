@@ -18,8 +18,8 @@ namespace ImperaPlus.Domain.Tests.Tournaments
         {
             // Arrange
             var mockUnitOfWork = TestUtils.GetUnitOfWorkMock();
-            var tournamentRepository = new Mock<ITournamentRepository>().Object;
-            mockUnitOfWork.SetupGet(x => x.Tournaments).Returns(tournamentRepository);
+            var tournamentRepositoryMock = new Mock<ITournamentRepository>();
+            mockUnitOfWork.SetupGet(x => x.Tournaments).Returns(tournamentRepositoryMock.Object);
             var unitOfWork = mockUnitOfWork.Object;
             var gameServiceMock = new Mock<IGameService>();
             var service = new TournamentService(TestUtils.MockUserProvider(), unitOfWork, gameServiceMock.Object, TestUtils.MockMapTemplateProvider());
@@ -36,7 +36,9 @@ namespace ImperaPlus.Domain.Tests.Tournaments
                 {
                     NumberOfPlayersPerTeam = 1
                 });
-            tournamentRepository.Add(openTournament);
+            tournamentRepositoryMock
+                .Setup(x => x.Get(It.IsAny<bool>(), TournamentState.Open))
+                .Returns(new Tournament[] { openTournament }.AsQueryable());
 
             for (int i = 0; i < 8; ++i)
             {
