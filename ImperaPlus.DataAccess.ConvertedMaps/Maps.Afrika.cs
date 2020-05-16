@@ -107,7 +107,7 @@ var country48 = new CountryTemplate("48", "Mosambik") { X = 795, Y = 773 };
 mapTemplate.Countries.Add(country48);
 var country49 = new CountryTemplate("49", "Madagaskar") { X = 929, Y = 770 };
 mapTemplate.Countries.Add(country49);
-var country50 = new CountryTemplate("50", "Aequatorialguinea") { X = 406, Y = 555 };
+var country50 = new CountryTemplate("50", "Äquatorialguinea") { X = 406, Y = 555 };
 mapTemplate.Countries.Add(country50);
 var continent1 = new Continent("1", 2);
 continent1.Countries.Add(country1);

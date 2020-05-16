@@ -57,7 +57,7 @@ var country23 = new CountryTemplate("23", "Magyar") { X = 769, Y = 404 };
 mapTemplate.Countries.Add(country23);
 var country24 = new CountryTemplate("24", "Banat") { X = 834, Y = 574 };
 mapTemplate.Countries.Add(country24);
-var country25 = new CountryTemplate("25", "Siebenb�rgen") { X = 1008, Y = 455 };
+var country25 = new CountryTemplate("25", "Siebenbürgen") { X = 1008, Y = 455 };
 mapTemplate.Countries.Add(country25);
 var country26 = new CountryTemplate("26", "Transkarpatien") { X = 910, Y = 234 };
 mapTemplate.Countries.Add(country26);

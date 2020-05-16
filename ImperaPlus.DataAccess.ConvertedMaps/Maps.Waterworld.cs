@@ -57,7 +57,7 @@ var country23 = new CountryTemplate("23", "GolfvonGuinea") { X = 577, Y = 415 };
 mapTemplate.Countries.Add(country23);
 var country24 = new CountryTemplate("24", "RiodelaPlata") { X = 417, Y = 544 };
 mapTemplate.Countries.Add(country24);
-var country25 = new CountryTemplate("25", "S�datlantik") { X = 565, Y = 525 };
+var country25 = new CountryTemplate("25", "Südatlantik") { X = 565, Y = 525 };
 mapTemplate.Countries.Add(country25);
 var country26 = new CountryTemplate("26", "westlMittelmeer") { X = 628, Y = 175 };
 mapTemplate.Countries.Add(country26);
