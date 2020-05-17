@@ -17,12 +17,12 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 3.1.201
-      - uses: actions/cache@master
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
+      # - uses: actions/cache@master
+      #   with:
+      #     path: ~/.nuget/packages
+      #     key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-nuget-
       - name: Restore
         run: dotnet restore
       - name: Build deployment package
