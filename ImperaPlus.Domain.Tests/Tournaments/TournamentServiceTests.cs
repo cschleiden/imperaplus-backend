@@ -37,7 +37,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
                     NumberOfPlayersPerTeam = 1
                 });
             tournamentRepositoryMock
-                .Setup(x => x.Get(It.IsAny<bool>(), TournamentState.Open))
+                .Setup(x => x.Get(TournamentState.Open))
                 .Returns(new Tournament[] { openTournament }.AsQueryable());
 
             for (int i = 0; i < 8; ++i)
