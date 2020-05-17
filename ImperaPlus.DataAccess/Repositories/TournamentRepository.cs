@@ -36,7 +36,7 @@ namespace ImperaPlus.DataAccess.Repositories
             return source.FirstOrDefault(x => x.Id == id);
         }
 
-        public IQueryable<Tournament> Get(bool readOnly, params TournamentState[] states)
+        public IQueryable<Tournament> Get(params TournamentState[] states)
         {
             if (states == null || states.Length == 0)
             {
@@ -45,11 +45,6 @@ namespace ImperaPlus.DataAccess.Repositories
 
             var result = this.SummarySet
                         .Where(x => states.Contains(x.State) && (!x.EndOfTournament.HasValue || x.EndOfTournament >= DateTime.UtcNow.AddDays(-90)));
-
-            if (readOnly)
-            {
-                // result = result.AsNoTracking();
-            }
 
             return result;
         }

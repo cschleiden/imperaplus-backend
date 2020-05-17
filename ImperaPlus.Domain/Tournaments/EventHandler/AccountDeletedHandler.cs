@@ -19,7 +19,7 @@ namespace ImperaPlus.Domain.Tournaments.EventHandler
         public void Handle(AccountDeleted evt)
         {
             // Try to leave open tournaments
-            var openTournaments = this.unitOfWork.Tournaments.Get(false, TournamentState.Open);
+            var openTournaments = this.unitOfWork.Tournaments.Get(TournamentState.Open);
             foreach (var tournament in openTournaments)
             {
                 try
@@ -35,7 +35,7 @@ namespace ImperaPlus.Domain.Tournaments.EventHandler
                     var ownedTeam = tournament.GetOwnedTeamForUser(evt.User);
                     tournament.DeleteTeam(evt.User, ownedTeam);
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     Log.Error().Message("Could not leave tournament {1} for user {0}", evt.User.Id, tournament.Id).Write();
                 }

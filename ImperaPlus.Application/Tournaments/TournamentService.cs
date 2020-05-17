@@ -92,12 +92,12 @@ namespace ImperaPlus.Application.Tournaments
         {
             var domainState = Mapper.Map<Domain.Tournaments.TournamentState>(state);
 
-            return Mapper.Map<IEnumerable<TournamentSummary>>(this.UnitOfWork.Tournaments.Get(true, domainState));
+            return Mapper.Map<IEnumerable<TournamentSummary>>(this.UnitOfWork.Tournaments.Get(domainState));
         }
 
         public IEnumerable<TournamentSummary> GetAll()
         {
-            return Mapper.Map<IEnumerable<TournamentSummary>>(this.UnitOfWork.Tournaments.Get(true));
+            return Mapper.Map<IEnumerable<TournamentSummary>>(this.UnitOfWork.Tournaments.Get());
         }
 
         public IEnumerable<TournamentTeam> GetTeams(Guid tournamentId)

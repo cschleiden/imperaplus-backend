@@ -54,7 +54,7 @@ namespace ImperaPlus.Domain.Services
         {
             bool tournamentStarted = false;
 
-            var tournaments = this.unitOfWork.Tournaments.Get(false, TournamentState.Open);
+            var tournaments = this.unitOfWork.Tournaments.Get(TournamentState.Open);
 
             foreach (var tournament in tournaments)
             {
@@ -78,7 +78,7 @@ namespace ImperaPlus.Domain.Services
         public void CheckTournaments(ILogger log, IRandomGen random)
         {
 
-            var tournamentIds = this.unitOfWork.Tournaments.Get(false, Tournament.ActiveStates).Select(t => t.Id);
+            var tournamentIds = this.unitOfWork.Tournaments.Get(Tournament.ActiveStates).Select(t => t.Id);
 
             foreach (var tournamentId in tournamentIds)
             {

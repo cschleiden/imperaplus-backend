@@ -10,7 +10,7 @@ namespace ImperaPlus.Domain.Repositories
     {
         Tournament GetById(Guid id, bool includeGames = false, bool readOnly = false);
 
-        IQueryable<Tournament> Get(bool readOnly, params TournamentState[] states);
+        IQueryable<Tournament> Get(params TournamentState[] states);
 
         bool ExistsWithName(string name);
 
