@@ -35,7 +35,7 @@ namespace ImperaPlus.Backend.Controllers
         public IActionResult GetAll()
         {
             return this.Ok(
-                this.mapper.Map<IEnumerable<DTO.Tournaments.Tournament>>(
+                this.mapper.Map<IEnumerable<DTO.Tournaments.TournamentSummary>>(
                     this.unitOfWork.Tournaments.Get()
                 )
             );
