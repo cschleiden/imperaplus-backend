@@ -38,7 +38,7 @@ namespace ImperaPlus.DataAccess.Repositories
                 // Delete deleted users sooner
                 (x.IsDeleted && x.LastLogin <= deletedCutoffDate)
                 // Delete users without logins in 90 days
-                || (x.LastLogin < cutoffDate)
+                || (x.LastLogin < cutoffDate && x.CreatedAt < cutoffDate)
             );
         }
     }
