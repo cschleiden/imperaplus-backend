@@ -339,7 +339,7 @@ namespace ImperaPlus.Web
 
             // Enable Cors
             app.UseCors(b => b
-                .WithOrigins("http://localhost:8080", "https://dev.imperaonline.de", "https://imperaonline.de", "https://www.imperaonline.de")
+                .WithOrigins("https://localhost:8080", "https://dev.imperaonline.de", "https://imperaonline.de", "https://www.imperaonline.de")
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .WithExposedHeaders("X-MiniProfiler-Ids")
@@ -351,8 +351,8 @@ namespace ImperaPlus.Web
             app.UseMiniProfiler();
 
             // Configure swagger generation & UI
-            // app.UseOpenApi();
-            // app.UseSwaggerUi3();
+            app.UseOpenApi();
+            app.UseSwaggerUi3();
 
             app.UseRouting();
 
