@@ -8,6 +8,8 @@
         <OutputType>Exe</OutputType>
         <PackageId>ImperaPlus.Web</PackageId>
         <UserSecretsId>aspnet-ImperaPlus.Web-20161015033223</UserSecretsId>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+        <RestoreLockedMode>true</RestoreLockedMode>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
       <NoWarn>1701;1702;1591</NoWarn>
