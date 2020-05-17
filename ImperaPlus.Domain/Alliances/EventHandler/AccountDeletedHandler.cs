@@ -23,7 +23,7 @@ namespace ImperaPlus.Domain.Alliances.EventHandler
             // Remove from alliance, if a member
             if (user.AllianceId.HasValue)
             {
-                this.allianceService.Leave(user.AllianceId.Value);
+                this.allianceService.Leave(user.AllianceId.Value, user);
             }
 
             // Remove alliance join requests

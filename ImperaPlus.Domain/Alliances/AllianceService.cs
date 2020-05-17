@@ -18,7 +18,7 @@ namespace ImperaPlus.Domain.Alliances
 
         void Delete(Guid allianceId);
 
-        void Leave(Guid allianceId);
+        void Leave(Guid allianceId, User user = null);
 
         void RemoveMember(Guid allianceId, string userId);
 
@@ -140,11 +140,14 @@ namespace ImperaPlus.Domain.Alliances
             return alliance.Requests;
         }
 
-        public void Leave(Guid allianceId)
+        public void Leave(Guid allianceId, User user = null)
         {
             Require.NotEmpty(allianceId, nameof(allianceId));
 
-            var user = this.CurrentUser;
+            if (user == null)
+            {
+                user = this.CurrentUser;
+            }
 
             Alliance alliance = this.GetAlliance(allianceId);
             if (!alliance.IsMember(user))
