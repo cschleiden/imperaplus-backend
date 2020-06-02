@@ -18,6 +18,8 @@
         /// <summary>
         ///
         /// </summary>
-        Capitals = 2
+        Capitals = 2,
+
+        Rush = 3,
     }
 }

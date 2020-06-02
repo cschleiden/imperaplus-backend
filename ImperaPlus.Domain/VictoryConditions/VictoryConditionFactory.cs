@@ -5,22 +5,13 @@ namespace ImperaPlus.Domain.VictoryConditions
 {
     internal static class VictoryConditionFactory
     {
-        public static IVictoryCondition Create(VictoryConditionType victoryCondition)
+        public static IVictoryCondition Create(VictoryConditionType victoryCondition) => victoryCondition switch
         {
-            switch (victoryCondition)
-            {
-                case VictoryConditionType.Survival:
-                    return new SurvivalVictoryCondition();
-
-                case VictoryConditionType.ControlContinent:
-                    return new ControlContinentVictoryCondition();
-
-                case VictoryConditionType.Capitals:
-                    return new CapitalsVictoryCondition();
-
-                default:
-                    throw new ArgumentOutOfRangeException("victoryCondition");
-            }
-        }
+            VictoryConditionType.Survival => new SurvivalVictoryCondition(),
+            VictoryConditionType.ControlContinent => new ControlContinentVictoryCondition(),
+            VictoryConditionType.Capitals => new CapitalsVictoryCondition(),
+            VictoryConditionType.Rush => new RushVictoryCondition(),
+            _ => throw new ArgumentOutOfRangeException("victoryCondition"),
+        };
     }
 }

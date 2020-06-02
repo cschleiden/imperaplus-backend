@@ -395,6 +395,13 @@ namespace ImperaPlus.Domain.Games
             this.GameHistory.RecordEndTurn();
             this.TurnCounter++;
 
+            this.CheckForVictory(this.CurrentPlayer);
+            if (this.State != GameState.Active)
+            {
+                // Game might have ended
+                return;
+            }
+
             // Go to next player
             Player nextPlayer = null;
             for (int i = 1; i < 2 * this.Options.PlayerCount && nextPlayer == null && nextPlayer != this.CurrentPlayer; ++i)

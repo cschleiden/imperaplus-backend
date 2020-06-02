@@ -4,6 +4,7 @@ using System.Linq;
 using ImperaPlus.Domain.Enums;
 using ImperaPlus.Domain.Exceptions;
 using ImperaPlus.Domain.Services;
+using ImperaPlus.Domain.VictoryConditions;
 using ImperaPlus.TestSupport;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using TestRandomGen = ImperaPlus.TestSupport.TestRandomGen;
@@ -403,6 +404,47 @@ namespace ImperaPlus.Domain.Tests.Games
             }
 
             game.Move(TestUtils.GetMapTemplate(), source, destination, 1);
+        }
+
+        [TestMethod]
+        public void RushVictoryCondition()
+        {
+            var game = TestUtils.CreateGameWithMapAndPlayers();
+            game.Options.VictoryConditions.Add(VictoryConditionType.Rush);
+            game.Start(TestUtils.GetMapTemplate(), new TestRandomGen());
+            TestUtils.PlaceUnits(game);
+
+            game.TurnCounter = 49;
+            var vc = new RushVictoryCondition();
+
+            foreach (var p in game.Teams.SelectMany(t => t.Players))
+            {
+                Assert.AreEqual(VictoryConditionResult.Inconclusive, vc.Evaluate(p, game.Map));
+            }
+
+            var player = game.CurrentPlayer;
+            var country = game.Teams
+                    .SelectMany(t => t.Players)
+                    .Single(p => p.Id != game.CurrentPlayerId).Countries.First();
+            var origin = TestUtils.GetMapTemplate().GetConnectedCountries(country.CountryIdentifier)
+                .Select(c => game.Map.GetCountry(c))
+                .Where(c => c.PlayerId == game.CurrentPlayerId)
+                .First();
+
+            game.PlaceUnits(TestUtils.GetMapTemplate(), new[]
+            {
+                Tuple.Create(
+                    origin.CountryIdentifier,
+                    game.GetUnitsToPlace(TestUtils.GetMapTemplate(), game.CurrentPlayer)
+                )
+            }.AsEnumerable());
+
+            // Act
+            game.EndTurn();
+
+            // Assert
+            Assert.AreEqual(GameState.Ended, game.State);
+            Assert.AreEqual(PlayerOutcome.Won, player.Outcome);
         }
 
         [TestMethod]
