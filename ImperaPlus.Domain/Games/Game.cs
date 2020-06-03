@@ -665,10 +665,37 @@ namespace ImperaPlus.Domain.Games
                 }
 
                 // Check for active player
-                if (victoryConditionImpl.Evaluate(active, this.Map) == VictoryConditionResult.Victory)
+                var result = victoryConditionImpl.Evaluate(active, this.Map);
+                if (result == VictoryConditionResult.Victory)
                 {
                     active.Outcome = PlayerOutcome.Won;
                     active.State = PlayerState.InActive;
+                }
+                else if (result == VictoryConditionResult.TeamVictory)
+                {
+                    // Player's team has won
+                    foreach (var player in active.Team.Players)
+                    {
+                        player.Outcome = PlayerOutcome.Won;
+                        player.State = PlayerState.InActive;
+                    }
+                }
+                else if (result == VictoryConditionResult.Defeat)
+                {
+                    active.Outcome = PlayerOutcome.Defeated;
+                    active.State = PlayerState.InActive;
+
+                    this.GameHistory.RecordPlayerDefeated(active);
+                }
+                else if (result == VictoryConditionResult.TeamDefeat)
+                {
+                    foreach (var player in active.Team.Players)
+                    {
+                        player.Outcome = PlayerOutcome.Defeated;
+                        player.State = PlayerState.InActive;
+
+                        this.GameHistory.RecordPlayerDefeated(player);
+                    }
                 }
             }
 

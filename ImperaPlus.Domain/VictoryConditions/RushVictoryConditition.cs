@@ -31,13 +31,14 @@ namespace ImperaPlus.Domain.VictoryConditions
                 .ThenByDescending(x => x.Units)
                 .ThenByDescending(x => x.Id);
 
-            if (player.TeamId != ranking.First().Id)
+            if (player.TeamId == ranking.First().Id)
             {
-                // Team is not first -> they have lost
-                return VictoryConditionResult.TeamDefeat;
+                // Player's team wins
+                return VictoryConditionResult.TeamVictory;
             }
 
-            return VictoryConditionResult.Inconclusive;
+            // Team is not first -> they have lost
+            return VictoryConditionResult.TeamDefeat;
         }
     }
 }
