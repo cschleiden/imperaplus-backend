@@ -395,7 +395,7 @@ namespace ImperaPlus.Domain.Games
             this.GameHistory.RecordEndTurn();
             this.TurnCounter++;
 
-            this.CheckForVictory(this.CurrentPlayer);
+            this.CheckForVictory();
             if (this.State != GameState.Active)
             {
                 // Game might have ended
@@ -604,7 +604,7 @@ namespace ImperaPlus.Domain.Games
             this.AttacksInCurrentTurn++;
 
             // Check for victory
-            this.CheckForVictory(this.CurrentPlayer, otherPlayer);
+            this.CheckForVictory();
 
             if (this.AttacksInCurrentTurn >= this.Options.AttacksPerTurn)
             {
@@ -635,73 +635,64 @@ namespace ImperaPlus.Domain.Games
             }
         }
 
-        internal void CheckForVictory(Player active, Player passive = null)
+        internal void CheckForVictory()
         {
             foreach (var victoryCondition in this.Options.VictoryConditions)
             {
                 var victoryConditionImpl = VictoryConditionFactory.Create(victoryCondition);
 
-                // Check for passive player
-                if (passive != null)
+                foreach (var player in this.Teams.SelectMany(t => t.Players).Where(p => p.State == PlayerState.Active))
                 {
-                    var passiveResult = victoryConditionImpl.Evaluate(passive, this.Map);
-                    if (passiveResult == VictoryConditionResult.Defeat)
+                    var result = victoryConditionImpl.Evaluate(player, this.Map);
+                    switch (result)
                     {
-                        passive.Outcome = PlayerOutcome.Defeated;
-                        passive.State = PlayerState.InActive;
+                        case VictoryConditionResult.Defeat:
+                            {
+                                player.Outcome = PlayerOutcome.Defeated;
+                                player.State = PlayerState.InActive;
 
-                        this.GameHistory.RecordPlayerDefeated(passive);
-                    }
-                    else if (passiveResult == VictoryConditionResult.TeamDefeat)
-                    {
-                        foreach (var player in passive.Team.Players)
-                        {
-                            player.Outcome = PlayerOutcome.Defeated;
-                            player.State = PlayerState.InActive;
+                                this.GameHistory.RecordPlayerDefeated(player);
+                                break;
+                            }
 
-                            this.GameHistory.RecordPlayerDefeated(passive);
-                        }
-                    }
-                }
+                        case VictoryConditionResult.TeamDefeat:
+                            {
+                                foreach (var teamPlayer in player.Team.Players)
+                                {
+                                    teamPlayer.Outcome = PlayerOutcome.Defeated;
+                                    teamPlayer.State = PlayerState.InActive;
 
-                // Check for active player
-                var result = victoryConditionImpl.Evaluate(active, this.Map);
-                if (result == VictoryConditionResult.Victory)
-                {
-                    active.Outcome = PlayerOutcome.Won;
-                    active.State = PlayerState.InActive;
-                }
-                else if (result == VictoryConditionResult.TeamVictory)
-                {
-                    // Player's team has won
-                    foreach (var player in active.Team.Players)
-                    {
-                        player.Outcome = PlayerOutcome.Won;
-                        player.State = PlayerState.InActive;
-                    }
-                }
-                else if (result == VictoryConditionResult.Defeat)
-                {
-                    active.Outcome = PlayerOutcome.Defeated;
-                    active.State = PlayerState.InActive;
+                                    this.GameHistory.RecordPlayerDefeated(teamPlayer);
+                                }
 
-                    this.GameHistory.RecordPlayerDefeated(active);
-                }
-                else if (result == VictoryConditionResult.TeamDefeat)
-                {
-                    foreach (var player in active.Team.Players)
-                    {
-                        player.Outcome = PlayerOutcome.Defeated;
-                        player.State = PlayerState.InActive;
+                                break;
+                            }
 
-                        this.GameHistory.RecordPlayerDefeated(player);
+                        case VictoryConditionResult.Victory:
+                            {
+                                player.Outcome = PlayerOutcome.Won;
+                                player.State = PlayerState.InActive;
+
+                                break;
+                            }
+
+                        case VictoryConditionResult.TeamVictory:
+                            {
+                                foreach (var teamPlayer in player.Team.Players)
+                                {
+                                    teamPlayer.Outcome = PlayerOutcome.Won;
+                                    teamPlayer.State = PlayerState.InActive;
+                                }
+
+                                break;
+                            }
                     }
                 }
             }
 
             // Update team status
             var activeTeams = this.Teams.Where(x => x.Players.Any(p => !p.HasLost));
-            if (activeTeams.Count() == 1)
+            if (activeTeams.Count() <= 1)
             {
                 // Only one team has survived, all players in this team have won
                 foreach (var player in activeTeams.Single().Players)
@@ -778,7 +769,7 @@ namespace ImperaPlus.Domain.Games
                         this.GameHistory.RecordOwnershipChange(this.CurrentPlayer, null, country.CountryIdentifier);
                     }
 
-                    this.CheckForVictory(this.CurrentPlayer);
+                    this.CheckForVictory();
                 }
 
                 this.EndTurn();

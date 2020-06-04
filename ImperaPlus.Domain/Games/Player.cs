@@ -203,7 +203,7 @@ namespace ImperaPlus.Domain.Games
             this.ForfeitCountries();
 
             this.Team.Game.GameHistory.RecordPlayerSurrendered(this);
-            this.Team.Game.CheckForVictory(this.Team.Game.CurrentPlayer);
+            this.Team.Game.CheckForVictory();
 
             this.EventQueue.Raise(new PlayerSurrenderedEvent(this.Team.Game, this));
 
