@@ -1,4 +1,4 @@
-﻿using Hangfire;
+using Hangfire;
 using ImperaPlus.Application.Jobs;
 
 namespace ImperaPlus.Application
