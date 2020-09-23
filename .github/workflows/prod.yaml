@@ -1,8 +1,7 @@
 name: Prod Deployment
 
 on:
-  repository_dispatch:
-    types: [prod_deployment]
+  workflow_dispatch:
 
 jobs:
   build:
