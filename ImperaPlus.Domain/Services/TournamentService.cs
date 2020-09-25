@@ -33,6 +33,7 @@ namespace ImperaPlus.Domain.Services
         private IUnitOfWork unitOfWork;
         private IGameService gameService;
         private IMapTemplateProvider mapTemplateProvider;
+        private User ghostUser;
 
         public TournamentService(
             IUserProvider userProvider,
@@ -44,6 +45,8 @@ namespace ImperaPlus.Domain.Services
             this.unitOfWork = unitOfWork;
             this.gameService = gameService;
             this.mapTemplateProvider = mapTemplateProvider;
+
+            this.ghostUser = unitOfWork.Users.FindByName("Ghost");
         }
 
         /// <summary>
@@ -292,13 +295,27 @@ namespace ImperaPlus.Domain.Services
                 var teamA = game.AddTeam();
                 foreach (var participant in pairing.TeamA.Participants)
                 {
-                    teamA.AddPlayer(participant.User);
+                    if (participant.User == null)
+                    {
+                        teamA.AddPlayer(this.ghostUser);
+                    }
+                    else
+                    {
+                        teamA.AddPlayer(participant.User);
+                    }
                 }
 
                 var teamB = game.AddTeam();
                 foreach (var participant in pairing.TeamB.Participants)
                 {
-                    teamB.AddPlayer(participant.User);
+                    if (participant.User == null)
+                    {
+                        teamB.AddPlayer(this.ghostUser);
+                    }
+                    else
+                    {
+                        teamB.AddPlayer(participant.User);
+                    }
                 }
 
                 game.Start(this.mapTemplateProvider.GetTemplate(game.MapTemplateName), random);

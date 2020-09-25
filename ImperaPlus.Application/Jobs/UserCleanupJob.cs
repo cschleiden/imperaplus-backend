@@ -48,6 +48,11 @@ namespace ImperaPlus.Application.Jobs
                 var users = this.unitOfWork.Users.FindUsersToDelete(days).ToArray();
                 foreach (var user in users)
                 {
+                    if (new string[] { "Ghost", "Bot", "System" }.Contains(user.UserName))
+                    {
+                        continue;
+                    }
+
                     try
                     {
                         this.Log.Log(LogLevel.Info, "Deleting user {0} '{1}'", user.Id, user.UserName);

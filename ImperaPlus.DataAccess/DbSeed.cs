@@ -14,7 +14,7 @@ namespace ImperaPlus.DataAccess
     public class DbSeed
     {
         protected UserManager<User> userManager;
-        protected RoleManager<IdentityRole> roleManager;        
+        protected RoleManager<IdentityRole> roleManager;
 
         public DbSeed(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
@@ -28,7 +28,7 @@ namespace ImperaPlus.DataAccess
             // if (System.Diagnostics.Debugger.IsAttached == false)
             //     System.Diagnostics.Debugger.Launch();
 
-            // Insert roles            
+            // Insert roles
             if (await this.roleManager.FindByNameAsync("admin") == null)
             {
                 await this.roleManager.CreateAsync(new IdentityRole("admin"));
@@ -44,7 +44,7 @@ namespace ImperaPlus.DataAccess
             if (systemUser == null)
             {
                 systemUser = new User
-                {                    
+                {
                     UserName = "System",
                     Email = "system@imperaonline.de",
                     EmailConfirmed = true,
@@ -74,6 +74,22 @@ namespace ImperaPlus.DataAccess
             }
 
             await this.userManager.AddToRoleAsync(botUser, "system");
+
+            // Insert ghost user
+            User ghostUser = await this.userManager.FindByNameAsync("Ghost");
+            if (ghostUser == null)
+            {
+                ghostUser = new User
+                {
+                    UserName = "Ghost",
+                    Email = "ghost@imperaonline.de",
+                    EmailConfirmed = true,
+                    GameSlots = int.MaxValue
+                };
+                await this.userManager.CreateAsync(ghostUser, Guid.NewGuid().ToString());
+            }
+
+            await this.userManager.AddToRoleAsync(ghostUser, "system");
 
 #if DEBUG
             // Insert test user
@@ -106,8 +122,8 @@ namespace ImperaPlus.DataAccess
             // News
             var newsEntry = Domain.News.NewsEntry.Create();
             newsEntry.CreatedBy = newsEntry.CreatedBy = testUser;
-            newsEntry.LastModifiedAt =newsEntry.CreatedAt = newsEntry.CreatedAt = DateTime.UtcNow;
-            newsEntry.AddContent("en", "Title", "This is a news entry.");            
+            newsEntry.LastModifiedAt = newsEntry.CreatedAt = newsEntry.CreatedAt = DateTime.UtcNow;
+            newsEntry.AddContent("en", "Title", "This is a news entry.");
             context.NewsEntries.Add(newsEntry);
 #endif
 
