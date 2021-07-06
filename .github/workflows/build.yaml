@@ -10,6 +10,9 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    
+    environment:
+      name: Dev
 
     env:
       Website: dev.imperaonline.de
@@ -30,16 +33,11 @@ jobs:
         run: dotnet restore
       - name: Build deployment package
         run: dotnet msbuild /p:Configuration=Release /p:DeployOnBuild=true /p:WebPublishMethod=FileSystem /p:SkipInvalidConfigurations=true /p:publishUrl="${env:GITHUB_WORKSPACE}/drop"
-      #     - name: run tests
-      #       run: dotnet test
-      #     - uses: actions/upload-artifact@v1
-      #       with:
-      #         name: build
-      #         path: ImperaPlus.Web/drop.zip
-#       - run: ./scripts/deployBackend.ps1 -Source "${env:GITHUB_WORKSPACE}/ImperaPlus.Web/drop.zip" -Destination "${env:Website}/${env:DestFolder}" -DestinationComputer "https://imperaonline.de:8172/msdeploy.axd?site=${env:Website}" -AdditionalArguments "-verbose -setParam:'IIS Web Application Name'=${env:Website}/${env:DestFolder} -enableRule:AppOffline -skip:objectName=filePath,absolutePath='appsettings..*.json'" -Username ${env:Login} -Password ${env:Password} -AuthType "basic"
-#         #    -preSync:runCommand='C:\Windows\System32\inetsrv\appcmd stop APPPOOL ${env:AppPool}'  -postSync:runCommand='C:\Windows\System32\inetsrv\appcmd start APPPOOL ${env:AppPool}'"
-#         env:
-#           Login: ${{ secrets.Login }}
-#           Password: ${{ secrets.Password }}
-#           AppPool: dev.imperaonline.de(domain)(4.0)(pool)
-#           DestFolder: api
+      - name: FTP Deploy
+        uses: SamKirkland/FTP-Deploy-Action@4.1.0
+        with:
+          server: dev.imperaonline.de
+          user: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          local-dir: '${{ github.workspace }}/drop'
+          server-dir: 'httpdocs/'
