@@ -32,7 +32,7 @@ jobs:
       - name: Restore
         run: dotnet restore
       - name: Build deployment package
-        run: dotnet msbuild /p:Configuration=Release /p:DeployOnBuild=true /p:WebPublishMethod=FileSystem /p:SkipInvalidConfigurations=true /p:publishUrl="${env:GITHUB_WORKSPACE}/drop"
+        run: dotnet msbuild /p:Configuration=Release /p:DeployOnBuild=true /p:WebPublishMethod=FileSystem /p:SkipInvalidConfigurations=true /p:publishUrl="${{ github.workspace }}/drop"
       - name: FTP Deploy
         uses: SamKirkland/FTP-Deploy-Action@4.1.0
         with:
