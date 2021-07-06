@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - master
+  workflow_dispatch:    
 
 jobs:
   build:
@@ -19,7 +20,7 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 3.1.201
-      - uses: actions/cache@v1
+      - uses: actions/cache@v2
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -28,17 +29,17 @@ jobs:
       - name: Restore
         run: dotnet restore
       - name: Build deployment package
-        run: dotnet msbuild /p:Configuration=Release /p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="drop.zip" /p:DeployTarget=Package /p:DeployIisAppPath=${env:Website}
+        run: dotnet msbuild /p:Configuration=Release /p:DeployOnBuild=true /p:WebPublishMethod=FileSystem /p:SkipInvalidConfigurations=true /p:publishUrl="${env:GITHUB_WORKSPACE}/drop"
       #     - name: run tests
       #       run: dotnet test
       #     - uses: actions/upload-artifact@v1
       #       with:
       #         name: build
       #         path: ImperaPlus.Web/drop.zip
-      - run: ./scripts/deployBackend.ps1 -Source "${env:GITHUB_WORKSPACE}/ImperaPlus.Web/drop.zip" -Destination "${env:Website}/${env:DestFolder}" -DestinationComputer "https://imperaonline.de:8172/msdeploy.axd?site=${env:Website}" -AdditionalArguments "-verbose -setParam:'IIS Web Application Name'=${env:Website}/${env:DestFolder} -enableRule:AppOffline -skip:objectName=filePath,absolutePath='appsettings..*.json'" -Username ${env:Login} -Password ${env:Password} -AuthType "basic"
-        #    -preSync:runCommand='C:\Windows\System32\inetsrv\appcmd stop APPPOOL ${env:AppPool}'  -postSync:runCommand='C:\Windows\System32\inetsrv\appcmd start APPPOOL ${env:AppPool}'"
-        env:
-          Login: ${{ secrets.Login }}
-          Password: ${{ secrets.Password }}
-          AppPool: dev.imperaonline.de(domain)(4.0)(pool)
-          DestFolder: api
+#       - run: ./scripts/deployBackend.ps1 -Source "${env:GITHUB_WORKSPACE}/ImperaPlus.Web/drop.zip" -Destination "${env:Website}/${env:DestFolder}" -DestinationComputer "https://imperaonline.de:8172/msdeploy.axd?site=${env:Website}" -AdditionalArguments "-verbose -setParam:'IIS Web Application Name'=${env:Website}/${env:DestFolder} -enableRule:AppOffline -skip:objectName=filePath,absolutePath='appsettings..*.json'" -Username ${env:Login} -Password ${env:Password} -AuthType "basic"
+#         #    -preSync:runCommand='C:\Windows\System32\inetsrv\appcmd stop APPPOOL ${env:AppPool}'  -postSync:runCommand='C:\Windows\System32\inetsrv\appcmd start APPPOOL ${env:AppPool}'"
+#         env:
+#           Login: ${{ secrets.Login }}
+#           Password: ${{ secrets.Password }}
+#           AppPool: dev.imperaonline.de(domain)(4.0)(pool)
+#           DestFolder: api
