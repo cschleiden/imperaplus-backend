@@ -30,7 +30,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
       - name: Restore
-        run: dotnet restore
+        run: dotnet restore --force-evaluate
       - name: Build deployment package
         run: dotnet publish -r linux-x64 -o "${{ github.workspace }}/drop"
       - name: FTP Deploy
