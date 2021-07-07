@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v2
         with:
           dotnet-version: 3.1.201
       - uses: actions/cache@v2
@@ -32,7 +32,7 @@ jobs:
       - name: Restore
         run: dotnet restore --force-evaluate
       - name: Build deployment package
-        run: dotnet publish -r linux-x64 -o "${{ github.workspace }}/drop"
+        run: dotnet publish -r linux-x64 -o "${{ github.workspace }}/drop" --force-evaluate
       - name: FTP Deploy
         uses: SamKirkland/FTP-Deploy-Action@4.1.0
         with:
