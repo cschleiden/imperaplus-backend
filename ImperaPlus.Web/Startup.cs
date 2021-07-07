@@ -21,6 +21,7 @@ using ImperaPlus.Web.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
@@ -336,6 +337,12 @@ namespace ImperaPlus.Web
             app.UseDeveloperExceptionPage();
             app.UseDatabaseErrorPage();
 #endif
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+
 
             // Enable Cors
             app.UseCors(b => b
