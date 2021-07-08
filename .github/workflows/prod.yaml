@@ -5,10 +5,10 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
-    env:
-      Website: imperaonline.de
+    environment:
+      name: Prod
 
     steps:
       - uses: actions/checkout@v2
@@ -16,26 +16,28 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 3.1.201
-      # - uses: actions/cache@master
+      # - uses: actions/cache@v2
       #   with:
       #     path: ~/.nuget/packages
       #     key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
       #     restore-keys: |
       #       ${{ runner.os }}-nuget-
       - name: Restore
-        run: dotnet restore
+        run: dotnet restore -r linux-x64 --force-evaluate
       - name: Build deployment package
-        run: dotnet msbuild /p:Configuration=Release /p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="drop.zip" /p:DeployTarget=Package /p:DeployIisAppPath=${env:Website}
-      #     - name: run tests
-      #       run: dotnet test
-      #     - uses: actions/upload-artifact@v1
-      #       with:
-      #         name: build
-      #         path: ImperaPlus.Web/drop.zip
-      - run: ./scripts/deployBackend.ps1 -Source "${env:GITHUB_WORKSPACE}/ImperaPlus.Web/drop.zip" -Destination "${env:Website}/${env:DestFolder}" -DestinationComputer "https://imperaonline.de:8172/msdeploy.axd?site=${env:Website}" -AdditionalArguments "-verbose -setParam:'IIS Web Application Name'=${env:Website}/${env:DestFolder} -enableRule:AppOffline -skip:objectName=filePath,absolutePath='appsettings..*.json'" -Username ${env:Login} -Password ${env:Password} -AuthType "basic"
-        #    -preSync:runCommand='C:\Windows\System32\inetsrv\appcmd stop APPPOOL ${env:AppPool}'  -postSync:runCommand='C:\Windows\System32\inetsrv\appcmd start APPPOOL ${env:AppPool}'"
-        env:
-          Login: ${{ secrets.Login }}
-          Password: ${{ secrets.Password }}
-          AppPool: imperaonline.de(domain)(4.0)(pool)
-          DestFolder: api
+        run: dotnet publish -r linux-x64 -o "/home/runner/drop"
+      - name: FTP Deploy
+        uses: SamKirkland/FTP-Deploy-Action@4.1.0
+        with:
+          server: imperaonline.de
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          local-dir: "/home/runner/drop/"
+          server-dir: "httpdocs/api/"
+      - name: Restart service
+        uses: garygrossgarten/github-action-ssh@2b10f41b5a33808f6d24eafd253296766308b7c4
+        with:
+          command: sudo /bin/systemctl restart impera
+          host: imperaonline.de
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASS }}
