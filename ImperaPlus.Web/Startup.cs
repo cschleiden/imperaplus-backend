@@ -326,10 +326,8 @@ namespace ImperaPlus.Web
                 Container = app.ApplicationServices.GetAutofacRoot();
             }
 
-            if (env.IsDevelopment())
-            {
-                app.UsePathBase("/api");
-            }
+            // App is hosted under [dev.]imperaonline.de/api, reverse-proxied via nginx
+            app.UsePathBase("/api");
 
             NLog.LogManager.Configuration.Variables["configDir"] = Configuration["LogDir"];
 
