@@ -40,4 +40,4 @@ jobs:
           username: ${{ secrets.FTP_USER }}
           password: ${{ secrets.FTP_PASS }}
           local-dir: "/home/runner/drop/"
-          server-dir: "httpdocs/"
+          server-dir: "dev.imperaonline.de/"
