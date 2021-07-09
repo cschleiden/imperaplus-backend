@@ -344,7 +344,7 @@ namespace ImperaPlus.Web
 
             // Enable Cors
             app.UseCors(b => b
-                .WithOrigins("http://localhost:8080", "https://dev.imperaonline.de", "https://imperaonline.de", "https://www.imperaonline.de")
+                .WithOrigins("http://localhost:8080", "https://dev.imperaonline.de", "https://imperaonline.de", "https://www.imperaonline.de", "https://new.imperaonline.de")
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .WithExposedHeaders("X-MiniProfiler-Ids")
