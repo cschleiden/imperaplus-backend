@@ -73,7 +73,6 @@
         <PackageReference Include="Autofac" Version="5.1.2" />
         <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
         <PackageReference Include="Hangfire" Version="1.7.11" />
-        <PackageReference Include="Sentry.AspNetCore" Version="2.1.1" />
     </ItemGroup>
     <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
         <ItemGroup>
