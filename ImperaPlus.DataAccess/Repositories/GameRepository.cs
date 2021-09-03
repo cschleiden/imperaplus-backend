@@ -94,14 +94,14 @@ namespace ImperaPlus.DataAccess.Repositories
         public int DeleteOpenPasswordFunGames()
         {
             return this.DbSet
-                .Where(x => x.State == GameState.Open && x.Password != null && x.CreatedAt <= DateTime.UtcNow.AddDays(-5))
+                .Where(x => x.State == GameState.Open && x.Type == GameType.Fun && x.Password != null && x.CreatedAt <= DateTime.UtcNow.AddDays(-5))
                 .Delete();
         }
 
         public int DeleteEndedGames()
         {
             return this.DbSet
-                .Where(x => x.State == GameState.Ended && x.Type == GameType.Fun && x.LastModifiedAt <= DateTime.UtcNow.AddDays(-10))
+                .Where(x => x.State == GameState.Ended && x.LastModifiedAt <= DateTime.UtcNow.AddDays(-10))
                 .Take(500)
                 .Delete(x => x.BatchSize = 100);
         }
