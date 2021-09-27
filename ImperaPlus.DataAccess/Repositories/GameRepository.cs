@@ -101,7 +101,11 @@ namespace ImperaPlus.DataAccess.Repositories
         public int DeleteEndedGames()
         {
             return this.DbSet
-                .Where(x => x.State == GameState.Ended && x.LastModifiedAt <= DateTime.UtcNow.AddDays(-10))
+                .Where(x =>
+                    // Ignore tournament games for now
+                    x.Type != GameType.Tournament
+                        && x.State == GameState.Ended
+                        && x.LastModifiedAt <= DateTime.UtcNow.AddDays(-10))
                 .Take(500)
                 .Delete(x => x.BatchSize = 100);
         }
