@@ -16,6 +16,8 @@ namespace ImperaPlus.Domain.Repositories
 
         IEnumerable<Tournament> GetAllFull();
 
+        IEnumerable<Tournament> GetRecentFull();
+
         IEnumerable<Game> GetGamesForPairing(Guid pairingId);
     }
 }
