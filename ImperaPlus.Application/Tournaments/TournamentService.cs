@@ -16,9 +16,12 @@ namespace ImperaPlus.Application.Tournaments
     public interface ITournamentService
     {
         IEnumerable<TournamentSummary> GetAll();
+        
         IEnumerable<TournamentSummary> GetAll(TournamentState state);
 
         IEnumerable<Tournament> GetAllFull();
+
+        IEnumerable<Tournament> GetRecentFull();
 
         Tournament Get(Guid tournamentId, bool includeGames = false, bool readOnly = false);
 
@@ -213,6 +216,13 @@ namespace ImperaPlus.Application.Tournaments
         public IEnumerable<Tournament> GetAllFull()
         {
             var tournaments = this.UnitOfWork.Tournaments.GetAllFull();
+
+            return Mapper.Map<IEnumerable<Tournament>>(tournaments);
+        }
+        
+        public IEnumerable<Tournament> GetRecentFull()
+        {
+            var tournaments = this.UnitOfWork.Tournaments.GetRecentFull();
 
             return Mapper.Map<IEnumerable<Tournament>>(tournaments);
         }

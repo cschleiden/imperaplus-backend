@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Domain.Tournaments;
 using ImperaPlus.Domain.Games;
@@ -57,6 +58,11 @@ namespace ImperaPlus.DataAccess.Repositories
         public IEnumerable<Tournament> GetAllFull()
         {
             return this.Set;
+        }
+
+        public IEnumerable<Tournament> GetRecentFull()
+        {
+            return this.Set.Where(x => x.LastModifiedAt >= DateTime.UtcNow.AddDays(-30));
         }
 
         public IEnumerable<Game> GetGamesForPairing(Guid pairingId)

@@ -22,7 +22,7 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
         {
             this.AddLookups();
 
-            var tournaments = this.tournamentService.GetAllFull();
+            var tournaments = this.tournamentService.GetRecentFull();
 
             return View(tournaments);
         }
