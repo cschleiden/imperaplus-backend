@@ -268,7 +268,7 @@ namespace ImperaPlus.Web
             services.AddHangfireServer(options =>
             {
                 options.Queues = new[] { JobQueues.Critical, JobQueues.Normal };
-                options.WorkerCount = 4;
+                options.WorkerCount = 3;
                 options.SchedulePollingInterval = TimeSpan.FromSeconds(30);
                 options.ServerCheckInterval = TimeSpan.FromSeconds(60);
                 options.HeartbeatInterval = TimeSpan.FromSeconds(60);
