@@ -23,9 +23,9 @@ jobs:
       #     restore-keys: |
       #       ${{ runner.os }}-nuget-
       - name: Restore
-        run: dotnet restore -r linux-x64 --force-evaluate
+        run: dotnet restore -r linux-x64 --force-evaluate -c Release
       - name: Build deployment package
-        run: dotnet publish -r linux-x64 -o "/home/runner/drop"
+        run: dotnet publish -r linux-x64 -o "/home/runner/drop" -c Release
       - name: FTP Deploy
         uses: SamKirkland/FTP-Deploy-Action@4.1.0
         with:
