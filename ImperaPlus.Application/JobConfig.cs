@@ -23,7 +23,9 @@ namespace ImperaPlus.Application
             // Cleanups
             RecurringJob.AddOrUpdate<UserCleanupJob>("Cleanup users", x => x.Handle(null), Cron.Daily);
             RecurringJob.AddOrUpdate<GameCleanupJob>("Cleanup games", x => x.Handle(null), Cron.Hourly);
-            RecurringJob.AddOrUpdate<TokenCleanupJob>("Cleanup tokens", x => x.Handle(null), Cron.Daily);
+            
+            // Disable for now
+            //RecurringJob.AddOrUpdate<TokenCleanupJob>("Cleanup tokens", x => x.Handle(null), Cron.Daily);
 
             // Manual
             RecurringJob.AddOrUpdate<LadderScorejob>("Score ladders", x => x.Handle(null), "0 0 31 2 0");
