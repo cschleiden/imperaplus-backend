@@ -37,5 +37,5 @@ namespace ImperaPlus.IntegrationTests
             Assert.IsNotNull(mapTemplate.Continents);
             Assert.IsTrue(mapTemplate.Continents.Any());
         }
-    }  
+    }
 }

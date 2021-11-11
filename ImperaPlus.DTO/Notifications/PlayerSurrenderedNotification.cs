@@ -3,7 +3,7 @@
     public class PlayerSurrenderedNotification : Notification
     {
         public PlayerSurrenderedNotification()
-            : base (NotificationType.PlayerSurrender)
+            : base(NotificationType.PlayerSurrender)
         {
         }
 
@@ -15,6 +15,6 @@
         /// <summary>
         /// Player who has surrendered
         /// </summary>
-        public DTO.Games.PlayerSummary Player { get; set; }
+        public Games.PlayerSummary Player { get; set; }
     }
 }

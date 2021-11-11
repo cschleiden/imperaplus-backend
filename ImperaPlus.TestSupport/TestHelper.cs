@@ -20,16 +20,18 @@ namespace ImperaPlus.TestSupport
         }
 
         public static Country GetCountryWithFriendlyConnection(Game game, Player player, MapTemplate mapTemplate)
-        {            
+        {
             return player.Countries.First(
-                    c => player.Countries.Any(c2 => mapTemplate.AreConnected(c.CountryIdentifier, c2.CountryIdentifier)));
+                c => player.Countries.Any(c2 => mapTemplate.AreConnected(c.CountryIdentifier, c2.CountryIdentifier)));
         }
 
-        public static Country GetConnectedFriendlyCountry(Game game, Player player, Country origin, MapTemplate mapTemplate)
+        public static Country GetConnectedFriendlyCountry(Game game, Player player, Country origin,
+            MapTemplate mapTemplate)
         {
             return game.Teams.Where(x => x.Players.Contains(player))
-                    .SelectMany(t => t.Players)
-                    .SelectMany(p => p.Countries).First(c => mapTemplate.AreConnected(origin.CountryIdentifier, c.CountryIdentifier));
+                .SelectMany(t => t.Players)
+                .SelectMany(p => p.Countries)
+                .First(c => mapTemplate.AreConnected(origin.CountryIdentifier, c.CountryIdentifier));
         }
 
         public static Country GetCountryWithEnemyConnection(Game game, Player player, MapTemplate mapTemplate)
@@ -37,14 +39,16 @@ namespace ImperaPlus.TestSupport
             var enemyCountries = GetEnemyCountries(game, player);
 
             return player.Countries.First(
-                    c => enemyCountries.Any(c2 => mapTemplate.AreConnected(c.CountryIdentifier, c2.CountryIdentifier)));
+                c => enemyCountries.Any(c2 => mapTemplate.AreConnected(c.CountryIdentifier, c2.CountryIdentifier)));
         }
 
-        public static Country GetConnectedEnemyCountry(Game game, Player player, Country origin, MapTemplate mapTemplate)
+        public static Country GetConnectedEnemyCountry(Game game, Player player, Country origin,
+            MapTemplate mapTemplate)
         {
             return game.Teams.Where(x => !x.Players.Contains(player))
-                    .SelectMany(t => t.Players)
-                    .SelectMany(p => p.Countries).First(c => mapTemplate.AreConnected(origin.CountryIdentifier, c.CountryIdentifier));
+                .SelectMany(t => t.Players)
+                .SelectMany(p => p.Countries)
+                .First(c => mapTemplate.AreConnected(origin.CountryIdentifier, c.CountryIdentifier));
         }
     }
 }

@@ -29,7 +29,8 @@ namespace ImperaPlus.Application.Users
 
         private Domain.Services.IUserService userService;
 
-        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IUserProvider userProvider, Domain.Services.IUserService userService)
+        public UserService(IUnitOfWork unitOfWork, IMapper mapper, IUserProvider userProvider,
+            Domain.Services.IUserService userService)
             : base(unitOfWork, mapper, userProvider)
         {
             this.userService = userService;
@@ -38,35 +39,35 @@ namespace ImperaPlus.Application.Users
         public void TrackLogin(User user)
         {
             user.LastLogin = DateTime.UtcNow;
-            this.UnitOfWork.Commit();
+            UnitOfWork.Commit();
         }
 
         public void DeleteAccount()
         {
-            this.DeleteAccount(this.CurrentUser);
+            DeleteAccount(CurrentUser);
         }
 
         public void DeleteAccount(User user, bool force = false)
         {
-            this.userService.DeleteAccount(user, force);
-            this.UnitOfWork.Commit();
+            userService.DeleteAccount(user, force);
+            UnitOfWork.Commit();
         }
 
         public void ConfirmEmail(User user)
         {
-            this.userService.ConfirmEmail(user);
-            this.UnitOfWork.Commit();
+            userService.ConfirmEmail(user);
+            UnitOfWork.Commit();
         }
 
         public void SetLanguage(User user, string language)
         {
             user.Language = language;
-            this.UnitOfWork.Commit();
+            UnitOfWork.Commit();
         }
 
         public IEnumerable<UserReference> FindUsers(string query)
         {
-            return Mapper.Map<IEnumerable<UserReference>>(this.UnitOfWork.Users
+            return Mapper.Map<IEnumerable<UserReference>>(UnitOfWork.Users
                 .Query()
                 .Where(x => !x.IsDeleted)
                 .Where(x => x.UserName.StartsWith(query))

@@ -1,11 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <AssemblyTitle>ImperaPlus.Utils</AssemblyTitle>
     <Product>ImperaPlus.Utils</Product>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.1.0" />
-    <PackageReference Include="NLog" Version="4.7.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0"/>
+    <PackageReference Include="MiniProfiler.AspNetCore.Mvc" Version="4.2.22"/>
+    <PackageReference Include="NLog" Version="4.7.11"/>
+    <PackageReference Include="System.Net.Http" Version="4.3.4"/>
   </ItemGroup>
 </Project>

@@ -18,8 +18,15 @@ namespace ImperaPlus.Domain.Utilities
 
         public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source, IRandomGen rng)
         {
-            if (source == null) throw new ArgumentNullException("source");
-            if (rng == null) throw new ArgumentNullException("rng");
+            if (source == null)
+            {
+                throw new ArgumentNullException("source");
+            }
+
+            if (rng == null)
+            {
+                throw new ArgumentNullException("rng");
+            }
 
             return source.ShuffleIterator(rng);
         }
@@ -28,9 +35,9 @@ namespace ImperaPlus.Domain.Utilities
             this IEnumerable<T> source, IRandomGen rng)
         {
             var buffer = source.ToList();
-            for (int i = 0; i < buffer.Count; i++)
+            for (var i = 0; i < buffer.Count; i++)
             {
-                int j = rng.GetNext(i, buffer.Count - 1);
+                var j = rng.GetNext(i, buffer.Count - 1);
                 yield return buffer[j];
 
                 buffer[j] = buffer[i];

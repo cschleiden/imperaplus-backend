@@ -4,7 +4,7 @@ namespace ImperaPlus.DTO.Notifications
 {
     public class TurnEndedNotification : Notification
     {
-        public TurnEndedNotification(): base (NotificationType.EndTurn)
+        public TurnEndedNotification() : base(NotificationType.EndTurn)
         {
         }
 

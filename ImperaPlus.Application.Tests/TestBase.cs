@@ -33,34 +33,26 @@ namespace ImperaPlus.TestSupport
         [TestInitialize]
         public virtual void TestInit()
         {
-            this.SetupScope();
+            SetupScope();
 
-            this.TestData = new TestData(this.Context, this.Scope, new GameService(this.UnitOfWork));
+            TestData = new TestData(Context, Scope, new GameService(UnitOfWork));
 
             // Ensure a user does exist
-            this.TestUser = new User
-            {
-                Id = Guid.NewGuid().ToString(),
-                UserName = "TestUser"
-            };
-            this.Context.Users.Add(this.TestUser);
+            TestUser = new User { Id = Guid.NewGuid().ToString(), UserName = "TestUser" };
+            Context.Users.Add(TestUser);
 
-            this.BotUser = new User
-            {
-                Id = Guid.NewGuid().ToString(),
-                UserName = "Bot"
-            };
-            this.Context.Users.Add(this.BotUser);
+            BotUser = new User { Id = Guid.NewGuid().ToString(), UserName = "Bot" };
+            Context.Users.Add(BotUser);
 
-            this.Context.SaveChanges();
+            Context.SaveChanges();
 
-            TestUserProvider.User = this.TestUser;
+            TestUserProvider.User = TestUser;
         }
 
         [TestCleanup]
         public virtual void TestCleanup()
         {
-            this.DisposeScope();
+            DisposeScope();
         }
 
         protected void SetupScope()
@@ -72,31 +64,33 @@ namespace ImperaPlus.TestSupport
                 cfg.AddProfile(new AutoMapperConfig());
             }));
 
-            builder.Register(ctx => ctx.Resolve<MapperConfiguration>().CreateMapper()).As<IMapper>().InstancePerLifetimeScope();
+            builder.Register(ctx => ctx.Resolve<MapperConfiguration>().CreateMapper()).As<IMapper>()
+                .InstancePerLifetimeScope();
 
             var serviceCollection = new ServiceCollection()
-                 .AddEntityFrameworkInMemoryDatabase();
+                .AddEntityFrameworkInMemoryDatabase();
 
             var dbOptionsBuilder = new DbContextOptionsBuilder<ImperaContext>();
 
             builder.Register(_ => dbOptionsBuilder.Options).As<DbContextOptions<ImperaContext>>();
 
-            this.RegisterDependencies(builder);
+            RegisterDependencies(builder);
 
             builder.Populate(serviceCollection);
 
-            this.Container = builder.Build();
+            Container = builder.Build();
 
-            dbOptionsBuilder.UseInMemoryDatabase("impera_test").UseInternalServiceProvider(new AutofacServiceProvider(this.Container));
+            dbOptionsBuilder.UseInMemoryDatabase("impera_test")
+                .UseInternalServiceProvider(new AutofacServiceProvider(Container));
 
-            this.Scope = Container.BeginLifetimeScope("AutofacWebRequest");
-            this.Context = this.Scope.Resolve<ImperaContext>();
-            this.UnitOfWork = new UnitOfWork(this.Context);
+            Scope = Container.BeginLifetimeScope("AutofacWebRequest");
+            Context = Scope.Resolve<ImperaContext>();
+            UnitOfWork = new UnitOfWork(Context);
         }
 
         protected void DisposeScope()
         {
-            this.Scope.Dispose();
+            Scope.Dispose();
         }
 
         public ILifetimeScope Scope { get; private set; }

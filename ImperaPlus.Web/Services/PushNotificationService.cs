@@ -17,12 +17,12 @@ namespace ImperaPlus.Web.Services
 
         public void SendNotification(long gameId, Notification notification)
         {
-            this.hubContext.Clients.Group(GameHub.GameGroup(gameId)).SendAsync("notification", notification);
+            hubContext.Clients.Group(GameHub.GameGroup(gameId)).SendAsync("notification", notification);
         }
 
         public void SendNotification(long gameId, Guid teamId, Notification notification)
         {
-            this.hubContext.Clients.Group(GameHub.GameTeamGroup(gameId, teamId)).SendAsync("notification", notification);
+            hubContext.Clients.Group(GameHub.GameTeamGroup(gameId, teamId)).SendAsync("notification", notification);
         }
     }
 
@@ -37,7 +37,7 @@ namespace ImperaPlus.Web.Services
 
         public void SendNotification(string userId, Notification notification)
         {
-            this.hubContext.Clients.Group(userId).SendAsync("notification", notification);
+            hubContext.Clients.Group(userId).SendAsync("notification", notification);
         }
     }
 }

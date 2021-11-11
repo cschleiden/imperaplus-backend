@@ -18,13 +18,12 @@ namespace ImperaPlus.Domain.Games.History
     {
         protected GameHistory()
         {
-
         }
 
         public GameHistory(Game game)
             : this()
         {
-            this.Game = game;
+            Game = game;
         }
 
         public long GameId { get; set; }
@@ -32,10 +31,9 @@ namespace ImperaPlus.Domain.Games.History
 
         public void RecordPlace(Player player, string countryIdentifier, int units)
         {
-            this.AddEntry(new HistoryEntry(this.Game, player, HistoryAction.PlaceUnits, this.Game.TurnCounter)
+            AddEntry(new HistoryEntry(Game, player, HistoryAction.PlaceUnits, Game.TurnCounter)
             {
-                OriginIdentifier = countryIdentifier,
-                Units = units
+                OriginIdentifier = countryIdentifier, Units = units
             });
         }
 
@@ -44,7 +42,7 @@ namespace ImperaPlus.Domain.Games.History
             string originCountryIdentifier, string destinationCountryIdentifier,
             int units, int unitsLost, int defendingUnitsLost, bool result)
         {
-            this.AddEntry(new HistoryEntry(this.Game, attackingPlayer, HistoryAction.Attack, this.Game.TurnCounter)
+            AddEntry(new HistoryEntry(Game, attackingPlayer, HistoryAction.Attack, Game.TurnCounter)
             {
                 OtherPlayer = defendingPlayer,
                 OriginIdentifier = originCountryIdentifier,
@@ -59,7 +57,7 @@ namespace ImperaPlus.Domain.Games.History
         public void RecordMove(
             Player movingPlayer, string originCountryIdentifier, string destinationCountryIdentifier, int units)
         {
-            this.AddEntry(new HistoryEntry(this.Game, movingPlayer, HistoryAction.Move, this.Game.TurnCounter)
+            AddEntry(new HistoryEntry(Game, movingPlayer, HistoryAction.Move, Game.TurnCounter)
             {
                 OriginIdentifier = originCountryIdentifier,
                 DestinationIdentifier = destinationCountryIdentifier,
@@ -69,27 +67,27 @@ namespace ImperaPlus.Domain.Games.History
 
         public void RecordStart()
         {
-            this.AddEntry(new HistoryEntry(this.Game, null, HistoryAction.StartGame, this.Game.TurnCounter));
+            AddEntry(new HistoryEntry(Game, null, HistoryAction.StartGame, Game.TurnCounter));
         }
 
         public void RecordEnd()
         {
-            this.AddEntry(new HistoryEntry(this.Game, null, HistoryAction.EndGame, this.Game.TurnCounter));
+            AddEntry(new HistoryEntry(Game, null, HistoryAction.EndGame, Game.TurnCounter));
         }
 
         public void RecordEndTurn()
         {
-            this.AddEntry(new HistoryEntry(this.Game, this.Game.CurrentPlayer, HistoryAction.EndTurn, this.Game.TurnCounter));
+            AddEntry(new HistoryEntry(Game, Game.CurrentPlayer, HistoryAction.EndTurn, Game.TurnCounter));
         }
 
         public void RecordTimeout()
         {
-            this.AddEntry(new HistoryEntry(this.Game, this.Game.CurrentPlayer, HistoryAction.PlayerTimeout, this.Game.TurnCounter));
+            AddEntry(new HistoryEntry(Game, Game.CurrentPlayer, HistoryAction.PlayerTimeout, Game.TurnCounter));
         }
 
         public void RecordCardExchange(Player exchangingPlayer, int unitsReceived)
         {
-            this.AddEntry(new HistoryEntry(this.Game, exchangingPlayer, HistoryAction.ExchangeCards, this.Game.TurnCounter)
+            AddEntry(new HistoryEntry(Game, exchangingPlayer, HistoryAction.ExchangeCards, Game.TurnCounter)
             {
                 Units = unitsReceived
             });
@@ -97,46 +95,46 @@ namespace ImperaPlus.Domain.Games.History
 
         public void RecordOwnershipChange(Player oldOwner, Player newOwner, string countryIdentifier)
         {
-            this.AddEntry(new HistoryEntry(this.Game, oldOwner, HistoryAction.OwnerChange, this.Game.TurnCounter)
+            AddEntry(new HistoryEntry(Game, oldOwner, HistoryAction.OwnerChange, Game.TurnCounter)
             {
-                OriginIdentifier = countryIdentifier,
-                OtherPlayer = newOwner
+                OriginIdentifier = countryIdentifier, OtherPlayer = newOwner
             });
         }
 
         public void RecordCapitalLost(Player player, string countryIdentifier)
         {
-            this.AddEntry(new HistoryEntry(this.Game, player, HistoryAction.CapitalLost, this.Game.TurnCounter)
+            AddEntry(new HistoryEntry(Game, player, HistoryAction.CapitalLost, Game.TurnCounter)
             {
-                OriginIdentifier = countryIdentifier,
+                OriginIdentifier = countryIdentifier
             });
         }
 
         public void RecordPlayerDefeated(Player player)
         {
-            this.AddEntry(new HistoryEntry(this.Game, player, HistoryAction.PlayerLost, this.Game.TurnCounter));
+            AddEntry(new HistoryEntry(Game, player, HistoryAction.PlayerLost, Game.TurnCounter));
         }
 
         public void RecordPlayerSurrendered(Player player)
         {
-            this.AddEntry(new HistoryEntry(this.Game, player, HistoryAction.PlayerSurrender, this.Game.TurnCounter));
+            AddEntry(new HistoryEntry(Game, player, HistoryAction.PlayerSurrender, Game.TurnCounter));
         }
 
         public void RecordPlayerWon(Player player)
         {
-            this.AddEntry(new HistoryEntry(this.Game, player, HistoryAction.PlayerWon, this.Game.TurnCounter));
+            AddEntry(new HistoryEntry(Game, player, HistoryAction.PlayerWon, Game.TurnCounter));
         }
 
         public Map GetMapForTurn(long turnNo)
         {
-            if (turnNo < 0 || turnNo > this.Game.TurnCounter)
+            if (turnNo < 0 || turnNo > Game.TurnCounter)
             {
                 throw new DomainException(ErrorCode.TurnDoesNotExist, "Invalid turn requested");
             }
 
-            var currentMap = this.Game.Map.Clone();
+            var currentMap = Game.Map.Clone();
 
-            var actions = this.Game.HistoryEntries.Where(x => x.TurnNo > turnNo).OrderByDescending(x => x.DateTime).OrderByDescending(x => x.Id);
+            var actions = Game.HistoryEntries.Where(x => x.TurnNo > turnNo).OrderByDescending(x => x.DateTime)
+                .OrderByDescending(x => x.Id);
 
             ApplyActionsToMap(currentMap, actions);
 
@@ -174,6 +172,7 @@ namespace ImperaPlus.Domain.Games.History
                                 originCountry.Units += (int)action.Units;
                                 destinationCountry.Units += (int)action.UnitsLostOther;
                             }
+
                             break;
                         }
 
@@ -214,12 +213,13 @@ namespace ImperaPlus.Domain.Games.History
         /// </remarks>
         public HistoryGameTurn GetTurn(long turnNo)
         {
-            if (turnNo < 0 || turnNo > this.Game.TurnCounter)
+            if (turnNo < 0 || turnNo > Game.TurnCounter)
             {
                 throw new DomainException(ErrorCode.TurnDoesNotExist, "Invalid turn requested");
             }
 
-            var actions = this.Game.HistoryEntries.Where(x => x.TurnNo > turnNo).OrderByDescending(x => x.DateTime).OrderByDescending(x => x.Id);
+            var actions = Game.HistoryEntries.Where(x => x.TurnNo > turnNo).OrderByDescending(x => x.DateTime)
+                .OrderByDescending(x => x.Id);
 
             foreach (var action in actions)
             {
@@ -238,7 +238,7 @@ namespace ImperaPlus.Domain.Games.History
                     case HistoryAction.OwnerChange:
                     case HistoryAction.CapitalLost:
                         {
-                            ApplyActionsToMap(this.Game.Map, new[] { action });
+                            ApplyActionsToMap(Game.Map, new[] { action });
                             break;
                         }
 
@@ -249,27 +249,27 @@ namespace ImperaPlus.Domain.Games.History
 
                     case HistoryAction.PlayerLost:
                         {
-                            var player = this.Game.GetPlayerById(action.Actor.Id);
+                            var player = Game.GetPlayerById(action.Actor.Id);
 
-                            player.State = Enums.PlayerState.Active;
-                            player.Outcome = Enums.PlayerOutcome.None;
+                            player.State = PlayerState.Active;
+                            player.Outcome = PlayerOutcome.None;
 
                             break;
                         }
 
                     case HistoryAction.PlayerWon:
                         {
-                            var player = this.Game.GetPlayerById(action.Actor.Id);
+                            var player = Game.GetPlayerById(action.Actor.Id);
 
-                            player.State = Enums.PlayerState.Active;
-                            player.Outcome = Enums.PlayerOutcome.None;
+                            player.State = PlayerState.Active;
+                            player.Outcome = PlayerOutcome.None;
 
                             break;
                         }
 
                     case HistoryAction.PlayerTimeout:
                         {
-                            var player = this.Game.GetPlayerById(action.Actor.Id);
+                            var player = Game.GetPlayerById(action.Actor.Id);
 
                             --player.Timeouts;
 
@@ -286,15 +286,15 @@ namespace ImperaPlus.Domain.Games.History
             return new HistoryGameTurn
             {
                 TurnNo = turnNo,
-                Game = this.Game,
-                Actions = this.Game.HistoryEntries.Where(x => x.TurnNo == turnNo).OrderBy(x => x.DateTime)
+                Game = Game,
+                Actions = Game.HistoryEntries.Where(x => x.TurnNo == turnNo).OrderBy(x => x.DateTime)
             };
         }
 
 
         private void AddEntry(HistoryEntry historyEntry)
         {
-            this.Game.HistoryEntries.Add(historyEntry);
+            Game.HistoryEntries.Add(historyEntry);
         }
     }
 }

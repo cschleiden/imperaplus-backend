@@ -22,7 +22,8 @@ namespace ImperaPlus.Backend.Controllers
         private readonly IPlayService playService;
         private IGameService gameService;
 
-        public PlayController(IUnitOfWork unitOfWork, IMapper mapper, IGameService gameService, IPlayService playService)
+        public PlayController(IUnitOfWork unitOfWork, IMapper mapper, IGameService gameService,
+            IPlayService playService)
             : base(unitOfWork, mapper)
         {
             this.gameService = gameService;
@@ -39,9 +40,9 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(DTO.Games.GameActionResult), 200)]
         public IActionResult PostPlace(long gameId, [FromBody] IEnumerable<PlaceUnitsOptions> placeUnitsOptions)
         {
-            var gameActionResult = this.playService.Place(gameId, placeUnitsOptions);
+            var gameActionResult = playService.Place(gameId, placeUnitsOptions);
 
-            return this.Ok(gameActionResult);
+            return Ok(gameActionResult);
         }
 
         /// <summary>
@@ -53,9 +54,9 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(DTO.Games.GameActionResult), 200)]
         public IActionResult PostExchange(long gameId)
         {
-            var gameResult = this.playService.Exchange(gameId);
+            var gameResult = playService.Exchange(gameId);
 
-            return this.Ok(gameResult);
+            return Ok(gameResult);
         }
 
         /// <summary>
@@ -68,9 +69,10 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(DTO.Games.GameActionResult), 200)]
         public IActionResult PostAttack(long gameId, [FromBody] AttackOptions options)
         {
-            var gameActionResult = this.playService.Attack(gameId, options.OriginCountryIdentifier, options.DestinationCountryIdentifier, options.NumberOfUnits);
+            var gameActionResult = playService.Attack(gameId, options.OriginCountryIdentifier,
+                options.DestinationCountryIdentifier, options.NumberOfUnits);
 
-            return this.Ok(gameActionResult);
+            return Ok(gameActionResult);
         }
 
         /// <summary>
@@ -82,9 +84,9 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(DTO.Games.GameActionResult), 200)]
         public IActionResult PostEndAttack(long gameId)
         {
-            var gameActionResult = this.playService.EndAttack(gameId);
+            var gameActionResult = playService.EndAttack(gameId);
 
-            return this.Ok(gameActionResult);
+            return Ok(gameActionResult);
         }
 
         /// <summary>
@@ -98,9 +100,10 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(DTO.Games.GameActionResult), 200)]
         public IActionResult PostMove(long gameId, [FromBody] MoveOptions options)
         {
-            var gameActionResult = this.playService.Move(gameId, options.OriginCountryIdentifier, options.DestinationCountryIdentifier, options.NumberOfUnits);
+            var gameActionResult = playService.Move(gameId, options.OriginCountryIdentifier,
+                options.DestinationCountryIdentifier, options.NumberOfUnits);
 
-            return this.Ok(gameActionResult);
+            return Ok(gameActionResult);
         }
 
         /// <summary>
@@ -112,9 +115,9 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(DTO.Games.Game), 200)]
         public IActionResult PostEndTurn(long gameId)
         {
-            var gameResult = this.playService.EndTurn(gameId);
+            var gameResult = playService.EndTurn(gameId);
 
-            return this.Ok(gameResult);
+            return Ok(gameResult);
         }
     }
 }

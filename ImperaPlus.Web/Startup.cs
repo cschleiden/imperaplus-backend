@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
-using AspNet.Security.OpenIdConnect.Primitives;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using AutoMapper;
@@ -16,13 +16,16 @@ using ImperaPlus.DataAccess;
 using ImperaPlus.Domain;
 using ImperaPlus.Domain.Repositories;
 using ImperaPlus.Web.Filters;
+using ImperaPlus.Web.Hubs;
 using ImperaPlus.Web.Providers;
 using ImperaPlus.Web.Services;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -31,41 +34,44 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
+using NLog;
 using NLog.Fluent;
 using OpenIddict.Abstractions;
+using OpenIddict.Server;
+using OpenIddict.Server.AspNetCore;
 using OpenIddict.Validation;
+using OpenIddict.Validation.AspNetCore;
 using StackExchange.Profiling.Storage;
+using DependencyInjectionModule = ImperaPlus.Application.DependencyInjectionModule;
 
 namespace ImperaPlus.Web
 {
-
     public class Startup
     {
         /// <summary>
-        /// Test support: Require user confirmation
+        ///     Test support: Require user confirmation
         /// </summary>
         public static bool RequireUserConfirmation = true;
 
         public static bool RunningUnderTest = false;
 
-        public static ILifetimeScope Container { get; private set; }
-
         public Startup(IWebHostEnvironment env)
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile("appsettings.json", true, true)
                 // Environment specific settings, i.e., setting db connection string. Do not create in version control repository.
-                .AddJsonFile($"appsettings.environment.json", optional: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddJsonFile("appsettings.environment.json", true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true)
                 .AddEnvironmentVariables();
 
-            if (Startup.RunningUnderTest)
+            if (RunningUnderTest)
             {
-                builder.AddJsonFile($"appsettings.test.json", optional: true);
+                builder.AddJsonFile("appsettings.test.json", true);
             }
 
             if (env.IsDevelopment())
@@ -73,22 +79,24 @@ namespace ImperaPlus.Web
                 builder.AddUserSecrets<Startup>();
             }
 
-            this.Configuration = builder.Build();
-            this.Environment = env;
+            Configuration = builder.Build();
+            Environment = env;
         }
+
+        public static ILifetimeScope Container { get; private set; }
 
         public IConfigurationRoot Configuration { get; }
 
-        public IWebHostEnvironment Environment { get; private set; }
+        public IWebHostEnvironment Environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ImperaContext>(options =>
             {
-                string connection = Configuration["DBConnection"];
+                var connection = Configuration["DBConnection"];
 
-                if (!Startup.RunningUnderTest)
+                if (!RunningUnderTest)
                 {
                     options.UseSqlServer(connection,
                         b => b
@@ -96,17 +104,15 @@ namespace ImperaPlus.Web
                             .EnableRetryOnFailure());
                 }
 
-                options.UseLazyLoadingProxies();
+                options.UseLazyLoadingProxies(true);
+                options.UseChangeTrackingProxies(false);
 
                 options.UseOpenIddict();
             });
 
             services.AddCors(opts =>
             {
-                var policy = new CorsPolicy()
-                {
-                    SupportsCredentials = false
-                };
+                var policy = new CorsPolicy { SupportsCredentials = false };
 
                 policy.ExposedHeaders.Add("X-MiniProfiler-Ids");
                 policy.Headers.Add("X-MiniProfiler-Ids");
@@ -118,28 +124,31 @@ namespace ImperaPlus.Web
 
             // Auth
             services
-                .AddIdentity<Domain.User, IdentityRole>(options =>
-                {
-                    options.User.RequireUniqueEmail = true;
-
-                    options.Password.RequireNonAlphanumeric = false;
-                    options.Password.RequireUppercase = false;
-                    options.Password.RequireDigit = false;
-
-                    options.SignIn.RequireConfirmedEmail = true;
-                    options.SignIn.RequireConfirmedPhoneNumber = false;
-
-                    if (this.Environment.IsDevelopment())
-                    {
-                        options.SignIn.RequireConfirmedEmail = false;
-                    }
-
-                    options.ClaimsIdentity.UserNameClaimType = OpenIdConnectConstants.Claims.Name;
-                    options.ClaimsIdentity.UserIdClaimType = OpenIdConnectConstants.Claims.Subject;
-                    options.ClaimsIdentity.RoleClaimType = OpenIdConnectConstants.Claims.Role;
-                })
+                .AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ImperaContext>()
                 .AddDefaultTokenProviders();
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.ClaimsIdentity.UserNameClaimType = OpenIddictConstants.Claims.Name;
+                options.ClaimsIdentity.UserIdClaimType = OpenIddictConstants.Claims.Subject;
+                options.ClaimsIdentity.RoleClaimType = OpenIddictConstants.Claims.Role;
+                options.ClaimsIdentity.EmailClaimType = OpenIddictConstants.Claims.Email;
+
+                options.User.RequireUniqueEmail = true;
+
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireDigit = false;
+
+                options.SignIn.RequireConfirmedEmail = true;
+                options.SignIn.RequireConfirmedPhoneNumber = false;
+
+                if (Environment.IsDevelopment())
+                {
+                    options.SignIn.RequireConfirmedEmail = false;
+                }
+            });
 
             services.ConfigureApplicationCookie(options =>
             {
@@ -147,70 +156,84 @@ namespace ImperaPlus.Web
                 // options.CookieManager
                 // Ensure that we never redirect when user is not authorized, but only return 401 response
                 // options.Cookies.ApplicationCookie.AutomaticChallenge = false;
-                options.Events = new Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationEvents
+                options.Events = new CookieAuthenticationEvents
                 {
                     OnRedirectToLogin = ctx =>
                     {
-                        ctx.Response.StatusCode = (int)System.Net.HttpStatusCode.Unauthorized;
+                        ctx.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
                         return Task.CompletedTask;
                     },
-
-                    OnValidatePrincipal = ctx =>
-                    {
-                        return Task.CompletedTask;
-                    }
+                    OnValidatePrincipal = ctx => Task.CompletedTask
                 };
             });
 
             services
-                .AddOpenIddict(options =>
+                .AddOpenIddict()
+                .AddCore(x =>
                 {
-                    options.AddCore(x =>
+                    x.UseEntityFrameworkCore().UseDbContext<ImperaContext>();
+                })
+                .AddServer(c =>
+                {
+                    c.SetTokenEndpointUris("/Account/token");
+
+                    c.AllowPasswordFlow();
+                    c.AllowRefreshTokenFlow();
+
+                    c.RegisterScopes(OpenIddictConstants.Scopes.Roles);
+
+                    // Don't require client_id
+                    c.AcceptAnonymousClients();
+
+                    if (Environment.IsDevelopment())
                     {
-                        x.UseEntityFrameworkCore(c => c.UseDbContext<ImperaContext>());
-                    });
+                        // c.DisableHttpsRequirement();
+                        // c.AddEphemeralSigningKey(); ??
+                        c.AddDevelopmentEncryptionCertificate().AddDevelopmentSigningCertificate();
+                    }
 
-                    options.AddServer(c =>
+                    c.UseAspNetCore()
+                        .EnableTokenEndpointPassthrough();
+                })
+                .AddValidation(builder =>
+                {
+                    builder.UseLocalServer();
+                    builder.UseAspNetCore();
+
+                    builder.AddEventHandler<OpenIddictValidationEvents.ProcessAuthenticationContext>(options =>
                     {
-                        if (this.Environment.IsDevelopment())
-                        {
-                            c.DisableHttpsRequirement();
-                            c.AddEphemeralSigningKey();
-                        }
-
-                        c.AllowPasswordFlow();
-                        c.AllowRefreshTokenFlow();
-                        c.EnableTokenEndpoint("/Account/Token");
-
-                        c.RegisterScopes(OpenIddictConstants.Scopes.Roles);
-
-                        // Don't require client_id
-                        c.AcceptAnonymousClients();
-
-                        c.UseMvc();
-                    });
-
-                    options.AddValidation(builder =>
-                    {
-                        builder.AddEventHandler<OpenIddictValidationEvents.RetrieveToken>(
-                            notification =>
+                        options.AddFilter<OpenIddictValidationAspNetCoreHandlerFilters.RequireHttpRequest>();
+                        options.SetOrder(OpenIddictValidationAspNetCoreHandlers.ExtractAccessTokenFromQueryString
+                            .Descriptor.Order + 1_000);
+                        options.UseInlineHandler(
+                            context =>
                             {
-                                notification.Context.Token = notification.Context.Request.Cookies["bearer_token"];
-
-                                if (string.IsNullOrEmpty(notification.Context.Token))
+                                var request = context.Transaction.GetHttpRequest();
+                                if (request is null)
                                 {
-                                    notification.Context.Token = notification.Context.Request.Query["access_token"];
+                                    throw new InvalidOperationException("Could not get HttpRequest");
                                 }
 
-                                return Task.FromResult(OpenIddictValidationEventState.Handled);
+                                if (string.IsNullOrEmpty(context.Token))
+                                {
+                                    context.Token = request.Cookies["bearer_token"];
+                                }
+
+                                if (string.IsNullOrEmpty(context.Token))
+                                {
+                                    context.Token = request.Query["access_token"];
+                                }
+
+                                return default;
                             });
                     });
                 });
 
             services.AddAuthentication(options =>
             {
-                options.DefaultAuthenticateScheme = OpenIddictValidationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = OpenIddictValidationDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
+                options.DefaultForbidScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
             });
 
             services
@@ -228,19 +251,18 @@ namespace ImperaPlus.Web
                     opt.SerializerSettings.Converters.Add(new StringEnumConverter
                     {
                         // Do not use camel case for enums
-                        NamingStrategy = new DefaultNamingStrategy(),
-                        AllowIntegerValues = true
+                        NamingStrategy = new DefaultNamingStrategy(), AllowIntegerValues = true
                     });
                 });
 
             // Miniprofiler
             services
-               .AddMiniProfiler(config =>
-               {
-                   (config.Storage as MemoryCacheStorage).CacheDuration = TimeSpan.FromMinutes(5);
-                   config.RouteBasePath = "/admin/profiler";
-               })
-               .AddEntityFramework();
+                .AddMiniProfiler(config =>
+                {
+                    (config.Storage as MemoryCacheStorage).CacheDuration = TimeSpan.FromMinutes(5);
+                    config.RouteBasePath = "/admin/profiler";
+                })
+                .AddEntityFramework();
 
             //services.AddMemoryCache();
 
@@ -251,10 +273,10 @@ namespace ImperaPlus.Web
             services.AddHangfire(x =>
             {
                 x.UseNLogLogProvider()
-                 .UseFilter(new JobExpirationTimeAttribute())
-                 .UseConsole();
+                    .UseFilter(new JobExpirationTimeAttribute())
+                    .UseConsole();
 
-                if (Startup.RunningUnderTest)
+                if (RunningUnderTest)
                 {
                     x.UseMemoryStorage();
                 }
@@ -281,10 +303,7 @@ namespace ImperaPlus.Web
             });
 
             services
-                .AddSignalR(options =>
-                {
-                    options.EnableDetailedErrors = true;
-                })
+                .AddSignalR(options => { options.EnableDetailedErrors = true; })
                 .AddNewtonsoftJsonProtocol(options =>
                 {
                     options.PayloadSerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
@@ -304,7 +323,7 @@ namespace ImperaPlus.Web
             // Register AutoMapper
             var assemblyNames = Assembly.GetExecutingAssembly().GetReferencedAssemblies();
             var assembliesTypes = assemblyNames
-                .Where(a => a.Name.Contains("ImperaPlus", StringComparison.OrdinalIgnoreCase))
+                .Where(a => (a.Name ?? "").Contains("ImperaPlus", StringComparison.OrdinalIgnoreCase))
                 .SelectMany(an => Assembly.Load(an).GetTypes())
                 .Where(p => typeof(Profile).IsAssignableFrom(p) && p.IsPublic && !p.IsAbstract)
                 .Distinct()
@@ -329,11 +348,10 @@ namespace ImperaPlus.Web
             // App is hosted under [dev.]imperaonline.de/api, reverse-proxied via nginx
             app.UsePathBase("/api");
 
-            NLog.LogManager.Configuration.Variables["configDir"] = Configuration["LogDir"];
+            LogManager.Configuration.Variables["configDir"] = Configuration["LogDir"];
 
 #if DEBUG
             app.UseDeveloperExceptionPage();
-            app.UseDatabaseErrorPage();
 #endif
 
             app.UseForwardedHeaders(new ForwardedHeadersOptions
@@ -344,7 +362,8 @@ namespace ImperaPlus.Web
 
             // Enable Cors
             app.UseCors(b => b
-                .WithOrigins("http://localhost:8080", "https://dev.imperaonline.de", "https://imperaonline.de", "https://www.imperaonline.de", "https://new.imperaonline.de")
+                .WithOrigins("http://localhost:8080", "https://dev.imperaonline.de", "https://imperaonline.de",
+                    "https://www.imperaonline.de", "https://new.imperaonline.de")
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .WithExposedHeaders("X-MiniProfiler-Ids")
@@ -363,7 +382,6 @@ namespace ImperaPlus.Web
 
             // Auth
             app.UseAuthentication();
-
             app.UseAuthorization();
 
             app.UseWebSockets();
@@ -379,15 +397,15 @@ namespace ImperaPlus.Web
                     "default", "{controller=Home}/{action=Index}/{id?}");
 
 
-                endpoints.MapHub<Hubs.MessagingHub>("/signalr/chat");
-                endpoints.MapHub<Hubs.GameHub>("/signalr/game");
+                endpoints.MapHub<MessagingHub>("/signalr/chat");
+                endpoints.MapHub<GameHub>("/signalr/game");
             });
 
             // Initialize database
-            Log.Info("Initializing database...").Write();
+            Log.Info().Message("Initializing database...").Write();
             if (env.IsDevelopment())
             {
-                if (Startup.RunningUnderTest)
+                if (RunningUnderTest)
                 {
                     dbContext.Database.EnsureDeleted();
                 }
@@ -398,21 +416,20 @@ namespace ImperaPlus.Web
             }
             else
             {
-                Log.Info("Starting migration...").Write();
+                Log.Info().Message("Starting migration...").Write();
                 dbContext.Database.Migrate();
-                Log.Info("...done.").Write();
+                Log.Info().Message("...done.").Write();
             }
-            Log.Info("...done.").Write();
 
-            Log.Info("Seeding database...").Write();
+            Log.Info().Message("...done.").Write();
+
+            Log.Info().Message("Seeding database...").Write();
             dbSeed.Seed(dbContext).Wait();
-            Log.Info("...done.").Write();
+            Log.Info().Message("...done.").Write();
 
             // Hangfire
-            app.UseHangfireDashboard("/Admin/Hangfire", new DashboardOptions
-            {
-                Authorization = new[] { new HangfireAuthorizationFilter() }
-            });
+            app.UseHangfireDashboard("/Admin/Hangfire",
+                new DashboardOptions { Authorization = new[] { new HangfireAuthorizationFilter() } });
 
             // Configure Impera background jobs
             JobConfig.Configure();
@@ -429,8 +446,7 @@ namespace ImperaPlus.Web
             {
                 builder.RegisterInstance(new MailGunSettings
                 {
-                    ApiKey = Configuration["MailGunApiKey"],
-                    Domain = Configuration["MailGunDomain"]
+                    ApiKey = Configuration["MailGunApiKey"], Domain = Configuration["MailGunDomain"]
                 });
                 builder.RegisterType<MailGunEmailService>().AsImplementedInterfaces();
             }
@@ -446,27 +462,27 @@ namespace ImperaPlus.Web
             builder.RegisterType<UserProvider>().As<IUserProvider>().PreserveExistingDefaults();
 
             // Register Domain services
-            builder.RegisterAssemblyTypes(Assembly.GetAssembly(typeof(IGameRepository)))
-                .Where(x => x.Name.EndsWith("Service", StringComparison.OrdinalIgnoreCase) && !x.IsInterface).As(x => x.GetInterfaces());
+            builder.RegisterAssemblyTypes(Assembly.GetAssembly(typeof(IGameRepository))!)
+                .Where(x => x.Name.EndsWith("Service", StringComparison.OrdinalIgnoreCase) && !x.IsInterface)
+                .As(x => x.GetInterfaces());
 
             // Notification
             builder.RegisterType<GamePushNotificationService>().AsImplementedInterfaces();
             builder.RegisterType<UserPushNotificationService>().AsImplementedInterfaces();
 
-            var jsonSettings = new JsonSerializerSettings()
+            var jsonSettings = new JsonSerializerSettings
             {
-                DateTimeZoneHandling = Newtonsoft.Json.DateTimeZoneHandling.Utc,
-                DateFormatHandling = Newtonsoft.Json.DateFormatHandling.IsoDateFormat
+                DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+                DateFormatHandling = DateFormatHandling.IsoDateFormat
             };
             jsonSettings.Converters.Add(new StringEnumConverter
             {
-                NamingStrategy = new DefaultNamingStrategy(),
-                AllowIntegerValues = false
+                NamingStrategy = new DefaultNamingStrategy(), AllowIntegerValues = false
             });
 
             builder.RegisterInstance(JsonSerializer.Create(jsonSettings)).As<JsonSerializer>();
 
-            builder.RegisterModule<Application.DependencyInjectionModule>();
+            builder.RegisterModule<DependencyInjectionModule>();
             builder.RegisterModule<Domain.DependencyInjectionModule>();
 
             builder.RegisterType<BackgroundJobClient>().AsImplementedInterfaces();

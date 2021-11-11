@@ -21,12 +21,12 @@ namespace ImperaPlus.Application.Notifications
 
         public DTO.Notifications.NotificationSummary GetSummary()
         {
-            var userID = this.userProvider.GetCurrentUserId();
+            var userID = userProvider.GetCurrentUserId();
 
             return new DTO.Notifications.NotificationSummary
             {
-                NumberOfGames = this.UnitOfWork.Games.CountForUserAtTurn(userID),
-                NumberOfMessages = this.UnitOfWork.Messages.CountUnread(userID)
+                NumberOfGames = UnitOfWork.Games.CountForUserAtTurn(userID),
+                NumberOfMessages = UnitOfWork.Messages.CountUnread(userID)
             };
         }
     }

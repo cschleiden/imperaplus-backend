@@ -28,117 +28,43 @@ namespace ImperaPlus.DataAccess
             this.context = context;
         }
 
-        public ImperaContext Context
-        {
-            get
-            {
-                return this.context;
-            }
-        }
+        public ImperaContext Context => context;
 
-        public IGameRepository Games
-        {
-            get
-            {
-                return this.games ?? (this.games = new GameRepository(this.context));
-            }
-        }
+        public IGameRepository Games => games ?? (games = new GameRepository(context));
 
-        public IChannelRepository Channels
-        {
-            get
-            {
-                return this.channels ?? (this.channels = new ChannelRepository(this.context));
-            }
-        }
+        public IChannelRepository Channels => channels ?? (channels = new ChannelRepository(context));
 
-        public IChatMessageRepository ChatMessages
-        {
-            get
-            {
-                return this.chatMessages ?? (this.chatMessages = new ChatMessageRepository(this.context));
-            }
-        }
+        public IChatMessageRepository ChatMessages =>
+            chatMessages ?? (chatMessages = new ChatMessageRepository(context));
 
-        public IMapTemplateDescriptorRepository MapTemplateDescriptors
-        {
-            get
-            {
-                return this.mapTemplates ?? (this.mapTemplates = new MapTemplateDescriptorRepository(this.context));
-            }
-        }
+        public IMapTemplateDescriptorRepository MapTemplateDescriptors =>
+            mapTemplates ?? (mapTemplates = new MapTemplateDescriptorRepository(context));
 
-        public IUserRepository Users
-        {
-            get
-            {
-                return this.userRepository ?? (this.userRepository = new UserRepository(this.context));                
-            }
-        }
+        public IUserRepository Users => userRepository ?? (userRepository = new UserRepository(context));
 
-        public IRoleRepository Roles
-        {
-            get
-            {
-                return this.roleRepository ?? (this.roleRepository = new RoleRepository(this.context));
-            }
-        }
+        public IRoleRepository Roles => roleRepository ?? (roleRepository = new RoleRepository(context));
 
-        public INewsRepository News
-        {
-            get
-            {
-                return this.newsRepository ?? (this.newsRepository = new NewsRepository(this.context));
-            }
-        }
+        public INewsRepository News => newsRepository ?? (newsRepository = new NewsRepository(context));
 
-        public IPlayerRepository Players
-        {
-            get
-            {
-                return this.playerRepository ?? (this.playerRepository = new PlayerRepository(this.context));
-            }
-        }
+        public IPlayerRepository Players => playerRepository ?? (playerRepository = new PlayerRepository(context));
 
-        public ITeamRepository Teams
-        {
-            get
-            {
-                return this.teamRepository ?? (this.teamRepository = new TeamRepository(this.context));
-            }
-        }
+        public ITeamRepository Teams => teamRepository ?? (teamRepository = new TeamRepository(context));
 
-        public ILadderRepository Ladders
-        {
-            get
-            {
-                return this.ladderRepository ?? (this.ladderRepository = new LadderRepository(this.context));
-            }
-        }
+        public ILadderRepository Ladders => ladderRepository ?? (ladderRepository = new LadderRepository(context));
 
-        public IMessageRepository Messages
-        {
-            get
-            {
-                return this.messageRepository ?? (this.messageRepository = new MessageRepository(this.context));
-            }
-        }
+        public IMessageRepository Messages => messageRepository ?? (messageRepository = new MessageRepository(context));
 
-        public ITournamentRepository Tournaments
-        {
-            get
-            {
-                return this.tournamentRepository ?? (this.tournamentRepository = new TournamentRepository(this.context));
-            }
-        }
+        public ITournamentRepository Tournaments =>
+            tournamentRepository ?? (tournamentRepository = new TournamentRepository(context));
 
-        public IAllianceRepository Alliances => this.allianceRepository ?? (this.allianceRepository = new AllianceRepository(this.context));
+        public IAllianceRepository Alliances =>
+            allianceRepository ?? (allianceRepository = new AllianceRepository(context));
 
         public void Commit()
         {
             try
             {
-                this.context.SaveChanges();
+                context.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -153,13 +79,13 @@ namespace ImperaPlus.DataAccess
 
         public void Dispose()
         {
-            this.context.Dispose();
+            context.Dispose();
         }
 
 
         public IGenericRepository<T> GetGenericRepository<T>() where T : class
         {
-            return new GenericRepository<T>(this.context);
+            return new GenericRepository<T>(context);
         }
     }
 }

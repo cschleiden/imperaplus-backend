@@ -3,9 +3,9 @@
     public enum ErrorCode
     {
         None = 0,
-        
+
         GenericApplicationError,
-        
+
         CannotFindGame,
 
         CannotFindMapTemplate,

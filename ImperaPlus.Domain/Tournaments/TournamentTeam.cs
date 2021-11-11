@@ -10,16 +10,16 @@ namespace ImperaPlus.Domain.Tournaments
     {
         protected TournamentTeam()
         {
-            this.Id = Guid.NewGuid();
+            Id = Guid.NewGuid();
 
-            this.Participants = new HashSet<TournamentParticipant>();
+            Participants = new HashSet<TournamentParticipant>();
         }
 
         public TournamentTeam(Tournament tournament)
             : this()
         {
-            this.Tournament = tournament;
-            this.TournamentId = tournament.Id;
+            Tournament = tournament;
+            TournamentId = tournament.Id;
         }
 
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -49,22 +49,23 @@ namespace ImperaPlus.Domain.Tournaments
 
         public void AddUser(User user)
         {
-            if (this.Tournament.Options.NumberOfPlayersPerTeam <= this.Participants.Count())
+            if (Tournament.Options.NumberOfPlayersPerTeam <= Participants.Count())
             {
-                throw new DomainException(ErrorCode.TournamentTooManyPlayersInTeam, "Cannot join team, too many players already");
+                throw new DomainException(ErrorCode.TournamentTooManyPlayersInTeam,
+                    "Cannot join team, too many players already");
             }
 
-            this.Participants.Add(new TournamentParticipant(this, user));
+            Participants.Add(new TournamentParticipant(this, user));
 
-            if (this.Participants.Count() == this.Tournament.Options.NumberOfPlayersPerTeam)
+            if (Participants.Count() == Tournament.Options.NumberOfPlayersPerTeam)
             {
-                this.State = TournamentTeamState.Active;
+                State = TournamentTeamState.Active;
             }
         }
 
         public bool PasswordMatch(string password)
         {
-            return string.IsNullOrEmpty(this.Password) || this.Password == password;
+            return string.IsNullOrEmpty(Password) || Password == password;
         }
     }
 }

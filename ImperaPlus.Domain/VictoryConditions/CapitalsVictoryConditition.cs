@@ -8,7 +8,7 @@ namespace ImperaPlus.Domain.VictoryConditions
 {
     public class CapitalsVictoryCondition : SurvivalVictoryCondition
     {
-        public override void Initialize(Games.Game game, IRandomGen random)
+        public override void Initialize(Game game, IRandomGen random)
         {
             // Distribute capitals
             foreach (var team in game.Teams)

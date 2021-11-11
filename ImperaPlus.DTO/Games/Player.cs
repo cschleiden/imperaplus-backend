@@ -4,7 +4,7 @@
     /// Extended information about a single player
     /// </summary>
     public class Player : PlayerSummary
-    {        
+    {
         /// <summary>
         /// Comma separated list of bonus cards
         /// </summary>

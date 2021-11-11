@@ -25,39 +25,40 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Delete(string userId)
         {
-            var user = this.unitOfWork.Users.FindById(userId);
+            var user = unitOfWork.Users.FindById(userId);
             if (user != null)
             {
-                this.userService.DeleteAccount(user);
+                userService.DeleteAccount(user);
 
-                return this.Ok();
+                return Ok();
             }
 
-            return this.NotFound();
+            return NotFound();
         }
 
         [HttpPost]
         public ActionResult Confirm(string userId)
         {
-            var user = this.unitOfWork.Users.FindById(userId);
+            var user = unitOfWork.Users.FindById(userId);
             if (user != null)
             {
-                this.userService.ConfirmEmail(user);
+                userService.ConfirmEmail(user);
 
-                return this.Ok();
+                return Ok();
             }
 
-            return this.NotFound();
+            return NotFound();
         }
 
         [HttpPost]
         public DataTablesJsonResult Data(IDataTablesRequest request)
         {
-            var data = this.unitOfWork.Users.Query();
+            var data = unitOfWork.Users.Query();
 
             if (request.Search != null && !string.IsNullOrWhiteSpace(request.Search.Value))
             {
-                data = data.Where(x => x.UserName.Contains(request.Search.Value) || x.Email.Contains(request.Search.Value));
+                data = data.Where(x =>
+                    x.UserName.Contains(request.Search.Value) || x.Email.Contains(request.Search.Value));
             }
 
             var dataPage = data

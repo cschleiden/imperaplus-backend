@@ -25,39 +25,39 @@ namespace ImperaPlus.Application.News
             IMapper mapper,
             IUserProvider userProvider)
             : base(unitOfWork, mapper, userProvider)
-        {            
+        {
         }
 
         public void PostNews(DTO.News.NewsContent[] newsContents)
         {
             var newsEntry = NewsEntry.Create();
 
-            newsEntry.CreatedById = this.userProvider.GetCurrentUserId();
+            newsEntry.CreatedById = userProvider.GetCurrentUserId();
             newsEntry.CreatedAt = DateTime.UtcNow;
 
-            foreach(var newsContent in newsContents)
+            foreach (var newsContent in newsContents)
             {
                 newsEntry.AddContent(newsContent.Language, newsContent.Title, newsContent.Text);
             }
 
-            this.UnitOfWork.News.Add(newsEntry);
+            UnitOfWork.News.Add(newsEntry);
 
-            this.UnitOfWork.Commit();
+            UnitOfWork.Commit();
         }
 
         public void Delete(long id)
         {
-            var newsEntry = this.UnitOfWork.News.FindById(id);
+            var newsEntry = UnitOfWork.News.FindById(id);
             if (newsEntry != null)
             {
-                this.UnitOfWork.News.Remove(newsEntry);
-                this.UnitOfWork.Commit();
+                UnitOfWork.News.Remove(newsEntry);
+                UnitOfWork.Commit();
             }
         }
 
         public IEnumerable<NewsItem> GetNews()
         {
-            return Mapper.Map<IEnumerable<NewsItem>>(this.UnitOfWork.News.GetOrdered(10).ToArray());
+            return Mapper.Map<IEnumerable<NewsItem>>(UnitOfWork.News.GetOrdered(10).ToArray());
         }
     }
 }

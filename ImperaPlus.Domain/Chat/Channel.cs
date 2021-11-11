@@ -11,19 +11,19 @@ namespace ImperaPlus.Domain.Chat
     {
         public Channel()
         {
-            this.Id = Guid.NewGuid();
-            this.Messages = new List<ChatMessage>();
+            Id = Guid.NewGuid();
+            Messages = new List<ChatMessage>();
         }
 
         public Channel(string name, ChannelType channelType, long? gameId = null)
             : this()
         {
-            this.Name = name;
-            this.Type = channelType;
+            Name = name;
+            Type = channelType;
 
             if (gameId.HasValue)
             {
-                this.GameId = gameId.Value;
+                GameId = gameId.Value;
             }
         }
 

@@ -8,9 +8,9 @@ namespace ImperaPlus.DTO.Games
     public class GameCreationOptions : GameOptions
     {
         public GameCreationOptions()
-        {            
-            this.MinUnitsPerCountry = 0;
-            this.NewUnitsPerTurn = 3;
+        {
+            MinUnitsPerCountry = 0;
+            NewUnitsPerTurn = 3;
         }
 
         /// <summary>

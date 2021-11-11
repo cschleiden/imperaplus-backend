@@ -29,7 +29,7 @@ namespace ImperaPlus.Application
 
         protected Game GetGame(long gameId)
         {
-            var game = this.UnitOfWork.Games.Find(gameId);
+            var game = UnitOfWork.Games.Find(gameId);
             if (game == null)
             {
                 throw new ApplicationException("Cannot find game", ErrorCode.CannotFindGame);
@@ -42,7 +42,7 @@ namespace ImperaPlus.Application
 
         protected Game GetGameWithHistory(long gameId, long turnNo)
         {
-            var game = this.UnitOfWork.Games.FindWithHistory(gameId, turnNo);
+            var game = UnitOfWork.Games.FindWithHistory(gameId, turnNo);
             if (game == null)
             {
                 throw new ApplicationException("Cannot find game", ErrorCode.CannotFindGame);
@@ -53,38 +53,40 @@ namespace ImperaPlus.Application
 
         protected DTO.Games.Game MapAndApplyModifiers(Game game)
         {
-            var currentUserId = this.CurrentUserId;
+            var currentUserId = CurrentUserId;
 
-            var mappedGame = Mapper.Map<DTO.Games.Game>(game, this.GetMapperOptions());
+            var mappedGame = Mapper.Map<DTO.Games.Game>(game, GetMapperOptions());
 
             // Apply visibility modifications
             foreach (var visibilityModifier in game.Options.VisibilityModifier)
             {
-                var visibilityModifierInstance = this.visibilityModifierFactory.Construct(visibilityModifier);
+                var visibilityModifierInstance = visibilityModifierFactory.Construct(visibilityModifier);
 
-                visibilityModifierInstance.Apply(this.CurrentUser, mappedGame);
+                visibilityModifierInstance.Apply(CurrentUser, mappedGame);
             }
 
             // Only send information for current player
-            if (game.CurrentPlayer != null && game.CurrentPlayer.UserId == this.CurrentUserId)
+            if (game.CurrentPlayer != null && game.CurrentPlayer.UserId == CurrentUserId)
             {
-                mappedGame.UnitsToPlace = game.GetUnitsToPlace(this.mapTemplateProvider.GetTemplate(game.MapTemplateName), game.CurrentPlayer);
+                mappedGame.UnitsToPlace = game.GetUnitsToPlace(mapTemplateProvider.GetTemplate(game.MapTemplateName),
+                    game.CurrentPlayer);
             }
 
             return mappedGame;
         }
 
-        protected ImperaPlus.DTO.Games.History.HistoryTurn MapAndApplyModifiers(HistoryGameTurn turn, Map previousTurnMap)
+        protected ImperaPlus.DTO.Games.History.HistoryTurn MapAndApplyModifiers(HistoryGameTurn turn,
+            Map previousTurnMap)
         {
-            var mappedTurn = Mapper.Map<DTO.Games.History.HistoryTurn>(turn, this.GetMapperOptions());
-            var mappedMap = Mapper.Map<DTO.Games.Map.Map>(previousTurnMap, this.GetMapperOptions());
+            var mappedTurn = Mapper.Map<DTO.Games.History.HistoryTurn>(turn, GetMapperOptions());
+            var mappedMap = Mapper.Map<DTO.Games.Map.Map>(previousTurnMap, GetMapperOptions());
 
             // Apply visibility modifications
             foreach (var visibilityModifier in turn.Game.Options.VisibilityModifier)
             {
-                var visibilityModifierInstance = this.visibilityModifierFactory.Construct(visibilityModifier);
+                var visibilityModifierInstance = visibilityModifierFactory.Construct(visibilityModifier);
 
-                visibilityModifierInstance.Apply(this.CurrentUser, mappedTurn, mappedMap);
+                visibilityModifierInstance.Apply(CurrentUser, mappedTurn, mappedMap);
             }
 
             // Fix game stats, we want them to reflect the history turn's state, not the current game's turn
@@ -105,16 +107,10 @@ namespace ImperaPlus.Application
         {
             return opts =>
             {
-                opts.Items.Add("userId", this.CurrentUserId);
+                opts.Items.Add("userId", CurrentUserId);
             };
         }
 
-        protected string CurrentUserId
-        {
-            get
-            {
-                return this.userProvider.GetCurrentUserId();
-            }
-        }
+        protected string CurrentUserId => userProvider.GetCurrentUserId();
     }
 }

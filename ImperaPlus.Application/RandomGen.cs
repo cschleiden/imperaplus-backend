@@ -9,12 +9,12 @@ namespace ImperaPlus.Application
 
         public RandomGen(int seed)
         {
-            this.random = new Random(seed);
+            random = new Random(seed);
         }
 
         public int GetNext(int min, int max)
         {
-            return this.random.Next(min, max + 1);
+            return random.Next(min, max + 1);
         }
     }
 }

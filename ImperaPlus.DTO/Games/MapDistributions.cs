@@ -18,11 +18,11 @@
         /// <summary>
         /// Malibu map distribution, three countries per player
         /// </summary>
-        Malibu3,
+        Malibu3
 
         /// <summary>
         /// TODO: CS Maybe teams start right next to each other?
         /// </summary>
         // TeamCluster
-  }
+    }
 }

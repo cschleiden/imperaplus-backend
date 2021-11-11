@@ -5,9 +5,10 @@ using ImperaPlus.Domain.Repositories;
 
 namespace ImperaPlus.DataAccess.Repositories
 {
-    class MapTemplateDescriptorRepository : GenericRepository<MapTemplateDescriptor>, IMapTemplateDescriptorRepository
+    internal class MapTemplateDescriptorRepository : GenericRepository<MapTemplateDescriptor>,
+        IMapTemplateDescriptorRepository
     {
-        public MapTemplateDescriptorRepository(DbContext context) 
+        public MapTemplateDescriptorRepository(DbContext context)
             : base(context)
         {
         }
@@ -15,7 +16,7 @@ namespace ImperaPlus.DataAccess.Repositories
         public MapTemplateDescriptor Get(string name)
         {
             return
-                this.DbSet
+                DbSet
                     .FirstOrDefault(x => x.Name == name);
         }
     }

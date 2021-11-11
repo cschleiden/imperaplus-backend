@@ -2,14 +2,14 @@
 
 namespace ImperaPlus.Web
 {
-    public class HangfireAuthorizationFilter : Hangfire.Dashboard.IDashboardAuthorizationFilter
+    public class HangfireAuthorizationFilter : IDashboardAuthorizationFilter
     {
-        public bool Authorize(Hangfire.Dashboard.DashboardContext context)
+        public bool Authorize(DashboardContext context)
         {
             var httpContext = context.GetHttpContext();
 
             return httpContext.User.Identity.IsAuthenticated &&
-                        httpContext.User.IsInRole("admin");
+                   httpContext.User.IsInRole("admin");
         }
     }
 }

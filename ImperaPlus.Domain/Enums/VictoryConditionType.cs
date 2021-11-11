@@ -8,6 +8,6 @@
 
         Capitals = 2,
 
-        Rush = 3,
+        Rush = 3
     }
 }

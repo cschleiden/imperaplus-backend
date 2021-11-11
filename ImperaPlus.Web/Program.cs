@@ -13,7 +13,7 @@ namespace ImperaPlus.Web
     {
         public static void Main(string[] args)
         {
-            var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+            var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
             logger.Debug("Init main");
 
             try
@@ -36,17 +36,17 @@ namespace ImperaPlus.Web
                 .CreateDefaultBuilder(args)
                 .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                 .ConfigureWebHostDefaults(webBuilder =>
-                webBuilder
-                    .ConfigureLogging(logging =>
-                    {
-                        logging.ClearProviders();
-                        logging.SetMinimumLevel(LogLevel.Trace);
-                    })
-                    .UseNLog()
-                    .CaptureStartupErrors(true)
-                    .UseSetting("detailedErrors", "true")
-                    .ConfigureServices(services => services.AddAutofac())
-                    .UseStartup<Startup>()
+                    webBuilder
+                        .ConfigureLogging(logging =>
+                        {
+                            logging.ClearProviders();
+                            logging.SetMinimumLevel(LogLevel.Trace);
+                        })
+                        .UseNLog()
+                        .CaptureStartupErrors(true)
+                        .UseSetting("detailedErrors", "true")
+                        .ConfigureServices(services => services.AddAutofac())
+                        .UseStartup<Startup>()
                 );
         }
     }

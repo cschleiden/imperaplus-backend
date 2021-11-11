@@ -34,25 +34,26 @@ namespace ImperaPlus.Domain.Bots
 
         public void PlayTurn()
         {
-            this.ownTeam = game.CurrentPlayer.Team;
-            this.ownPlayer = game.CurrentPlayer; ;
+            ownTeam = game.CurrentPlayer.Team;
+            ownPlayer = game.CurrentPlayer;
+            ;
 
-            if (this.Place())
+            if (Place())
             {
                 // Not first turn
-                this.Attack();
-                this.Move();
-                this.EndTurn();
+                Attack();
+                Move();
+                EndTurn();
             }
         }
 
         private bool Place()
         {
-            var unitsToPlace = this.game.GetUnitsToPlace(this.mapTemplate, this.ownPlayer);
+            var unitsToPlace = game.GetUnitsToPlace(mapTemplate, ownPlayer);
 
-            this.log.Log(LogLevel.Info, "[Bot] Placing {0} units", unitsToPlace);
+            log.Log(LogLevel.Info, "[Bot] Placing {0} units", unitsToPlace);
 
-            var ownCountries = this.game.Map.GetCountriesForTeam(this.ownTeam.Id);
+            var ownCountries = game.Map.GetCountriesForTeam(ownTeam.Id);
             Country ownCountry;
             if (ownCountries.Count() == 1)
             {
@@ -61,10 +62,10 @@ namespace ImperaPlus.Domain.Bots
             else
             {
                 ownCountry = ownCountries.FirstOrDefault(x =>
-                    this.mapTemplate
+                    mapTemplate
                         .GetConnectedCountries(x.CountryIdentifier)
-                        .Select(c => this.game.Map.GetCountry(c))
-                        .Any(c => c.TeamId != this.ownTeam.Id));
+                        .Select(c => game.Map.GetCountry(c))
+                        .Any(c => c.TeamId != ownTeam.Id));
             }
 
             if (ownCountry == null)
@@ -73,34 +74,36 @@ namespace ImperaPlus.Domain.Bots
 
                 if (ownCountry == null)
                 {
-                    this.log.Log(LogLevel.Error, "No connected, enemy country found");
+                    log.Log(LogLevel.Error, "No connected, enemy country found");
                 }
             }
 
-            this.game.PlaceUnits(this.mapTemplate, new List<Tuple<string, int>> { Tuple.Create(ownCountry.CountryIdentifier, unitsToPlace) });
+            game.PlaceUnits(mapTemplate,
+                new List<Tuple<string, int>> { Tuple.Create(ownCountry.CountryIdentifier, unitsToPlace) });
 
-            return this.game.PlayState == Enums.PlayState.Attack;
+            return game.PlayState == PlayState.Attack;
         }
 
         private void Attack()
         {
-            for (int a = 0; a < this.game.Options.AttacksPerTurn; ++a)
+            for (var a = 0; a < game.Options.AttacksPerTurn; ++a)
             {
-                if (this.game.State != GameState.Active)
+                if (game.State != GameState.Active)
                 {
                     // Probably won, don't try to attack.
                     break;
                 }
 
-                var ownCountries = this.game.Map.GetCountriesForTeam(this.ownTeam.Id);
+                var ownCountries = game.Map.GetCountriesForTeam(ownTeam.Id);
 
                 // Find own country, connected to an enemy one
                 var ownCountry = ownCountries.FirstOrDefault(x =>
-                    x.Units > this.game.Options.MinUnitsPerCountry
-                    && this.game.Map.Countries.Any(y => y.TeamId != this.ownTeam.Id
-                                        && mapTemplate
-                                        .Connections
-                                        .Any(c => c.Origin == x.CountryIdentifier && c.Destination == y.CountryIdentifier)));
+                    x.Units > game.Options.MinUnitsPerCountry
+                    && game.Map.Countries.Any(y => y.TeamId != ownTeam.Id
+                                                   && mapTemplate
+                                                       .Connections
+                                                       .Any(c => c.Origin == x.CountryIdentifier &&
+                                                                 c.Destination == y.CountryIdentifier)));
                 if (ownCountry == null)
                 {
                     // Abort attack
@@ -108,26 +111,27 @@ namespace ImperaPlus.Domain.Bots
                 }
 
                 // Find enemy country
-                var enemyCountries = this.game.Map.Countries.Where(x => x.TeamId != this.ownTeam.Id);
+                var enemyCountries = game.Map.Countries.Where(x => x.TeamId != ownTeam.Id);
                 var enemyCountry = enemyCountries.FirstOrDefault(x => mapTemplate
-                                        .Connections.Any(c =>
-                                        c.Origin == ownCountry.CountryIdentifier
-                                        && c.Destination == x.CountryIdentifier));
+                    .Connections.Any(c =>
+                        c.Origin == ownCountry.CountryIdentifier
+                        && c.Destination == x.CountryIdentifier));
                 if (enemyCountry == null)
                 {
-                    this.log.Log(LogLevel.Error, "Cannot find enemy country connected to selected own country");
+                    log.Log(LogLevel.Error, "Cannot find enemy country connected to selected own country");
                 }
 
-                var numberOfUnits = ownCountry.Units - this.game.Options.MinUnitsPerCountry;
+                var numberOfUnits = ownCountry.Units - game.Options.MinUnitsPerCountry;
 
-                this.log.Log(
+                log.Log(
                     LogLevel.Info,
                     "Attack from {0} to {1} with {2} units",
                     ownCountry.CountryIdentifier,
                     enemyCountry.CountryIdentifier,
                     numberOfUnits);
 
-                this.game.Attack(this.attackService, this.randomGen, this.mapTemplate, ownCountry.CountryIdentifier, enemyCountry.CountryIdentifier, numberOfUnits);
+                game.Attack(attackService, randomGen, mapTemplate, ownCountry.CountryIdentifier,
+                    enemyCountry.CountryIdentifier, numberOfUnits);
             }
         }
 
@@ -138,9 +142,9 @@ namespace ImperaPlus.Domain.Bots
 
         private void EndTurn()
         {
-            if (this.game.State == GameState.Active)
+            if (game.State == GameState.Active)
             {
-                this.game.EndTurn();
+                game.EndTurn();
             }
         }
     }

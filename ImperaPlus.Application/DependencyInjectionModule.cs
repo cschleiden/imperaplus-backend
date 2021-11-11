@@ -18,7 +18,7 @@ namespace ImperaPlus.Application
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<MapTemplateProvider>()                
+            builder.RegisterType<MapTemplateProvider>()
                 .As<Domain.Services.IMapTemplateProvider>()
                 .IfNotRegistered(typeof(Domain.Services.IMapTemplateProvider))
                 .SingleInstance();
@@ -45,7 +45,7 @@ namespace ImperaPlus.Application
 
             builder.RegisterType<LadderNotifications>()
                 .As<Domain.Events.ICompletedEventHandler<GameEndedEvent>>();
-            
+
             // Jobs
             builder.RegisterType<TimeoutJob>().AsSelf();
             builder.RegisterType<LadderJob>().AsSelf();

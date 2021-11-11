@@ -16,8 +16,8 @@ namespace ImperaPlus.Domain.Ladders
         {
             this.ladder = ladder;
 
-            this.User = user;
-            this.UserId = user.Id;
+            User = user;
+            UserId = user.Id;
         }
 
         public Guid LadderId { get; set; }

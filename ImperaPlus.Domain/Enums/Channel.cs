@@ -2,7 +2,7 @@
 {
     public enum ChannelType
     {
-        None = 0, 
+        None = 0,
 
         General = 1,
 
@@ -13,5 +13,5 @@
         Private = 4,
 
         Game = 5
-    }    
+    }
 }

@@ -11,13 +11,13 @@ namespace ImperaPlus.Domain
     {
         public User()
         {
-            this.CreatedGames = new HashSet<Game>();
+            CreatedGames = new HashSet<Game>();
 
-            this.GameSlots = Configuration.UserInitialInternalGameSlots;
+            GameSlots = Configuration.UserInitialInternalGameSlots;
 
-            this.Language = Configuration.UserDefaultLanguage;
+            Language = Configuration.UserDefaultLanguage;
 
-            this.Standings = new HashSet<Ladders.LadderStanding>();
+            Standings = new HashSet<Ladders.LadderStanding>();
         }
 
         public Guid? AllianceId { get; set; }
@@ -61,18 +61,18 @@ namespace ImperaPlus.Domain
             get
             {
                 // Might want to move this to role
-                if (this.GameSlots == int.MaxValue)
+                if (GameSlots == int.MaxValue)
                 {
                     return true;
                 }
 
-                return this.CreatedGames.Sum(x => x.RequiredSlots) < this.GameSlots;
+                return CreatedGames.Sum(x => x.RequiredSlots) < GameSlots;
             }
         }
 
         public bool IsInRole(IdentityRole role)
         {
-            return this.Roles.Any(x => x.RoleId == role.Id);
+            return Roles.Any(x => x.RoleId == role.Id);
         }
     }
 }

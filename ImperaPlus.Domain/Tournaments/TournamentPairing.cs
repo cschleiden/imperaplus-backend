@@ -7,17 +7,17 @@ using ImperaPlus.Domain.Utilities;
 
 namespace ImperaPlus.Domain.Tournaments
 {
-
     public class TournamentPairing
     {
         protected TournamentPairing()
         {
-            this.Id = Guid.NewGuid();
+            Id = Guid.NewGuid();
 
-            this.Games = new HashSet<Game>();
+            Games = new HashSet<Game>();
         }
 
-        public TournamentPairing(Tournament tournament, int phase, int order, TournamentTeam teamA, TournamentTeam teamB, int numberOfGames)
+        public TournamentPairing(Tournament tournament, int phase, int order, TournamentTeam teamA,
+            TournamentTeam teamB, int numberOfGames)
             : this()
         {
             Require.NotNull(teamA, nameof(teamA));
@@ -25,19 +25,19 @@ namespace ImperaPlus.Domain.Tournaments
 
             Debug.Assert(numberOfGames % 2 != 0, "NumberOfGames has to be odd");
 
-            this.Tournament = tournament;
-            this.TournamentId = tournament.Id;
+            Tournament = tournament;
+            TournamentId = tournament.Id;
 
-            this.Phase = phase;
-            this.Order = order;
+            Phase = phase;
+            Order = order;
 
-            this.TeamA = teamA;
-            this.TeamAId = teamA.Id;
+            TeamA = teamA;
+            TeamAId = teamA.Id;
 
-            this.TeamB = teamB;
-            this.TeamBId = teamB.Id;
+            TeamB = teamB;
+            TeamBId = teamB.Id;
 
-            this.NumberOfGames = numberOfGames;
+            NumberOfGames = numberOfGames;
         }
 
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -74,9 +74,9 @@ namespace ImperaPlus.Domain.Tournaments
         {
             get
             {
-                Debug.Assert(this.CanWinnerBeDetermined);
+                Debug.Assert(CanWinnerBeDetermined);
 
-                return this.TeamAWon > this.TeamBWon ? this.TeamA : this.TeamB;
+                return TeamAWon > TeamBWon ? TeamA : TeamB;
             }
         }
 
@@ -88,9 +88,9 @@ namespace ImperaPlus.Domain.Tournaments
         {
             get
             {
-                Debug.Assert(this.CanWinnerBeDetermined);
+                Debug.Assert(CanWinnerBeDetermined);
 
-                return this.TeamAWon < this.TeamBWon ? this.TeamA : this.TeamB;
+                return TeamAWon < TeamBWon ? TeamA : TeamB;
             }
         }
 
@@ -102,9 +102,9 @@ namespace ImperaPlus.Domain.Tournaments
         {
             get
             {
-                var requiredNumberOfWins = Math.Ceiling(this.NumberOfGames / 2.0);
-                return this.TeamAWon >= requiredNumberOfWins
-                    || this.TeamBWon >= requiredNumberOfWins;
+                var requiredNumberOfWins = Math.Ceiling(NumberOfGames / 2.0);
+                return TeamAWon >= requiredNumberOfWins
+                       || TeamBWon >= requiredNumberOfWins;
             }
         }
 
@@ -114,7 +114,7 @@ namespace ImperaPlus.Domain.Tournaments
         /// <param name="index">Index of game</param>
         public string GenerateGameName(int index)
         {
-            return $"{this.Tournament.Name}-{this.TeamA.Name}-{this.TeamB.Name}-{this.Phase}-{index}";
+            return $"{Tournament.Name}-{TeamA.Name}-{TeamB.Name}-{Phase}-{index}";
         }
     }
 }

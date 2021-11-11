@@ -15,12 +15,12 @@ namespace ImperaPlus.Domain.Chat
 
         internal ChatMessage(Channel channel, User user, string text)
         {
-            this.Channel = channel;
+            Channel = channel;
 
-            this.CreatedAt = DateTime.UtcNow;
-            this.CreatedBy = user;
+            CreatedAt = DateTime.UtcNow;
+            CreatedBy = user;
 
-            this.Text = text;
+            Text = text;
         }
 
         public long Id { get; set; }
@@ -31,7 +31,7 @@ namespace ImperaPlus.Domain.Chat
         public virtual Channel Channel { get; private set; }
 
         public string CreatedById { get; set; }
-        public User CreatedBy { get; set; }
+        public virtual User CreatedBy { get; set; }
 
         public DateTime CreatedAt { get; set; }
 

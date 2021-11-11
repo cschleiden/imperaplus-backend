@@ -1,4 +1,3 @@
-
 using ImperaPlus.Domain.Map;
 
 namespace ImperaPlus.DataAccess.ConvertedMaps
@@ -1014,4 +1013,3 @@ namespace ImperaPlus.DataAccess.ConvertedMaps
         }
     }
 }
-

@@ -3,13 +3,13 @@
     public class CountryTemplate
     {
         private CountryTemplate()
-        {            
+        {
         }
 
         public CountryTemplate(string identifier, string name)
         {
-            this.Identifier = identifier;
-            this.Name = name;
+            Identifier = identifier;
+            Name = name;
         }
 
         public long Id { get; set; }

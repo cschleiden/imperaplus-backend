@@ -5,11 +5,11 @@ namespace ImperaPlus.TestSupport
 {
     public class TestRandomGen : IRandomGen
     {
-        private Random random = new Random();
+        private Random random = new();
 
         public int GetNext(int min, int max)
         {
-            return this.random.Next(min, max);
+            return random.Next(min, max);
         }
     }
 }

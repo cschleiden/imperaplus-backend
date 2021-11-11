@@ -12,17 +12,18 @@ namespace ImperaPlus.Application.Visibility
         {
         }
 
-        public override void Apply(ImperaPlus.Domain.User user, Game game)
+        public override void Apply(Domain.User user, Game game)
         {
             // Do not modify anything
         }
 
-        public override void Apply(ImperaPlus.Domain.User user, HistoryTurn historyTurn, DTO.Games.Map.Map previousHistoryTurn)
+        public override void Apply(Domain.User user, HistoryTurn historyTurn, DTO.Games.Map.Map previousHistoryTurn)
         {
             // Do not modify anything
         }
 
-        public override void Expand(Domain.User user, Domain.Games.Game game, List<Domain.Games.Country> changedCountries)
+        public override void Expand(Domain.User user, Domain.Games.Game game,
+            List<Domain.Games.Country> changedCountries)
         {
             // Do not modify anything
         }

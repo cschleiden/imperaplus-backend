@@ -5,7 +5,8 @@ namespace ImperaPlus.Domain.Games.Distribution
 {
     public class TeamClusterDistribution : IMapDistribution
     {
-        public void Distribute(GameOptions gameOptions, IEnumerable<Team> teams, Domain.Map.MapTemplate mapTemplate, Map map, IRandomGen random)
+        public void Distribute(GameOptions gameOptions, IEnumerable<Team> teams, Domain.Map.MapTemplate mapTemplate,
+            Map map, IRandomGen random)
         {
             // var players = teams.SelectMany(x => x.Players).ToArray();
             // var numberOfPlayers = players.Count();

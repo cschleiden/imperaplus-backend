@@ -37,7 +37,8 @@ namespace ImperaPlus.Application.Ladder
     {
         private Domain.Services.ILadderService ladderService;
 
-        public LadderService(IUnitOfWork unitOfWork, IMapper mapper, IUserProvider userProvider, Domain.Services.ILadderService ladderService)
+        public LadderService(IUnitOfWork unitOfWork, IMapper mapper, IUserProvider userProvider,
+            Domain.Services.ILadderService ladderService)
             : base(unitOfWork, mapper, userProvider)
         {
             this.ladderService = ladderService;
@@ -45,53 +46,55 @@ namespace ImperaPlus.Application.Ladder
 
         public LadderSummary Create(DTO.Ladder.Admin.CreationOptions creationOptions)
         {
-            var ladder = this.ladderService.Create(creationOptions.Name, creationOptions.NumberOfTeams, creationOptions.NumberOfPlayers);
+            var ladder = ladderService.Create(creationOptions.Name, creationOptions.NumberOfTeams,
+                creationOptions.NumberOfPlayers);
 
-            this.UnitOfWork.Commit();
+            UnitOfWork.Commit();
 
             return Mapper.Map<LadderSummary>(ladder);
         }
 
         public void Delete(Guid ladderId)
         {
-            var ladder = this.GetLadder(ladderId);
+            var ladder = GetLadder(ladderId);
 
-            this.UnitOfWork.Ladders.Remove(ladder);
+            UnitOfWork.Ladders.Remove(ladder);
 
-            this.UnitOfWork.Commit();
+            UnitOfWork.Commit();
         }
 
         public void UpdateName(Guid id, string name)
         {
-            Domain.Ladders.Ladder ladder = GetLadder(id);
+            var ladder = GetLadder(id);
 
             ladder.Name = name;
 
-            this.UnitOfWork.Commit();
+            UnitOfWork.Commit();
         }
 
         public void UpdateMapTemplates(Guid id, IEnumerable<string> mapTemplateNames)
         {
-            Domain.Ladders.Ladder ladder = GetLadder(id);
+            var ladder = GetLadder(id);
 
             foreach (var mapTemplateName in mapTemplateNames)
             {
                 // Ensure MapTemplates exist
-                if (this.UnitOfWork.MapTemplateDescriptors.Get(mapTemplateName) == null)
+                if (UnitOfWork.MapTemplateDescriptors.Get(mapTemplateName) == null)
                 {
-                    throw new Exceptions.ApplicationException("Cannot find map template", ErrorCode.CannotFindMapTemplate);
+                    throw new Exceptions.ApplicationException("Cannot find map template",
+                        ErrorCode.CannotFindMapTemplate);
                 }
             }
 
             ladder.MapTemplates.Clear();
             ladder.MapTemplates.AddRange(mapTemplateNames);
 
-            this.UnitOfWork.Commit();
+            UnitOfWork.Commit();
         }
 
         public void UpdateGameOptions(Guid id, DTO.Games.GameOptions gameOptions)
         {
-            Domain.Ladders.Ladder ladder = GetLadder(id);
+            var ladder = GetLadder(id);
 
             ladder.Options.AttacksPerTurn = gameOptions.AttacksPerTurn;
             ladder.Options.InitialCountryUnits = gameOptions.InitialCountryUnits;
@@ -103,54 +106,56 @@ namespace ImperaPlus.Application.Ladder
             ladder.Options.TimeoutInSeconds = gameOptions.TimeoutInSeconds;
 
             ladder.Options.VictoryConditions.Clear();
-            ladder.Options.VictoryConditions.AddRange(Mapper.Map<IEnumerable<Domain.Enums.VictoryConditionType>>(gameOptions.VictoryConditions));
+            ladder.Options.VictoryConditions.AddRange(
+                Mapper.Map<IEnumerable<Domain.Enums.VictoryConditionType>>(gameOptions.VictoryConditions));
 
             ladder.Options.VisibilityModifier.Clear();
-            ladder.Options.VisibilityModifier.AddRange(Mapper.Map<IEnumerable<Domain.Enums.VisibilityModifierType>>(gameOptions.VisibilityModifier));
+            ladder.Options.VisibilityModifier.AddRange(
+                Mapper.Map<IEnumerable<Domain.Enums.VisibilityModifierType>>(gameOptions.VisibilityModifier));
 
-            this.UnitOfWork.Commit();
+            UnitOfWork.Commit();
         }
 
         public void ToggleActive(Guid ladderId, bool isActive)
         {
-            Domain.Ladders.Ladder ladder = GetLadder(ladderId);
+            var ladder = GetLadder(ladderId);
 
             ladder.ToggleActive(isActive);
 
-            this.UnitOfWork.Commit();
+            UnitOfWork.Commit();
         }
 
         public DTO.Ladder.Ladder Get(Guid ladderId)
         {
-            Domain.Ladders.Ladder ladder = GetLadder(ladderId);
+            var ladder = GetLadder(ladderId);
 
             var mappedLadder = Mapper.Map<DTO.Ladder.Ladder>(ladder);
 
             // Fill in standings here for now
-            mappedLadder.Standings = Mapper.Map<DTO.Ladder.LadderStanding[]>(GetStandings(ladderId, 0).ToArray());
+            mappedLadder.Standings = Mapper.Map<LadderStanding[]>(GetStandings(ladderId, 0).ToArray());
 
             return mappedLadder;
         }
 
         public IEnumerable<DTO.Ladder.Ladder> GetAllFull()
         {
-            return Mapper.Map<IEnumerable<DTO.Ladder.Ladder>>(this.UnitOfWork.Ladders.GetAll());
+            return Mapper.Map<IEnumerable<DTO.Ladder.Ladder>>(UnitOfWork.Ladders.GetAll());
         }
 
         public IEnumerable<LadderSummary> GetAll()
         {
-            var user = this.CurrentUser;
+            var user = CurrentUser;
 
             var ladderSummaries = new List<LadderSummary>();
 
-            var activeLadders = this.UnitOfWork.Ladders.GetActive().ToList();
-            foreach(var activeLadder in activeLadders)
+            var activeLadders = UnitOfWork.Ladders.GetActive().ToList();
+            foreach (var activeLadder in activeLadders)
             {
                 var ladderSummary = Mapper.Map<LadderSummary>(activeLadder);
 
                 ladderSummary.IsQueued = activeLadder.Queue.Any(x => x.UserId == user.Id);
 
-                var userStanding = this.UnitOfWork.Ladders.GetUserStanding(ladderSummary.Id, user.Id);
+                var userStanding = UnitOfWork.Ladders.GetUserStanding(ladderSummary.Id, user.Id);
                 if (userStanding != null)
                 {
                     ladderSummary.Standing = new LadderStanding
@@ -161,7 +166,7 @@ namespace ImperaPlus.Application.Ladder
                         GamesPlayed = userStanding.GamesPlayed,
                         GamesWon = userStanding.GamesWon,
                         GamesLost = userStanding.GamesLost,
-                        Position = this.UnitOfWork.Ladders.GetStandingPosition(userStanding),
+                        Position = UnitOfWork.Ladders.GetStandingPosition(userStanding)
                     };
                 }
 
@@ -173,25 +178,25 @@ namespace ImperaPlus.Application.Ladder
 
         public void Queue(Guid id)
         {
-            var currentUser = this.CurrentUser;
+            var currentUser = CurrentUser;
 
-            this.ladderService.Queue(id, currentUser);
+            ladderService.Queue(id, currentUser);
 
-            this.UnitOfWork.Commit();
+            UnitOfWork.Commit();
         }
 
         public void LeaveQueue(Guid ladderId)
         {
-            var currentUser = this.CurrentUser;
+            var currentUser = CurrentUser;
 
-            this.ladderService.LeaveQueue(ladderId, currentUser);
+            ladderService.LeaveQueue(ladderId, currentUser);
 
-            this.UnitOfWork.Commit();
+            UnitOfWork.Commit();
         }
 
         private Domain.Ladders.Ladder GetLadder(Guid id)
         {
-            var ladder = this.UnitOfWork.Ladders.GetById(id);
+            var ladder = UnitOfWork.Ladders.GetById(id);
             if (ladder == null)
             {
                 throw new Exceptions.ApplicationException("Cannot find ladder", ErrorCode.CannotFindLadder);
@@ -203,9 +208,9 @@ namespace ImperaPlus.Application.Ladder
         public IEnumerable<LadderStanding> GetStandings(Guid ladderId, int start, int count = 30)
         {
             // Future: Think about paging
-            var standings = this.UnitOfWork.Ladders.GetStandings(ladderId);
+            var standings = UnitOfWork.Ladders.GetStandings(ladderId);
 
-            int position = 0;
+            var position = 0;
             return standings.Select(x => new LadderStanding
             {
                 UserId = x.UserId,

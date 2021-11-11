@@ -23,15 +23,15 @@ namespace ImperaPlus.Domain.Alliances.EventHandler
             // Remove from alliance, if a member
             if (user.AllianceId.HasValue)
             {
-                this.allianceService.Leave(user.AllianceId.Value, user);
+                allianceService.Leave(user.AllianceId.Value, user);
             }
 
             // Remove alliance join requests
-            this.unitOfWork.GetGenericRepository<AllianceJoinRequest>()
+            unitOfWork.GetGenericRepository<AllianceJoinRequest>()
                 .Query()
                 .Where(x => x.ApprovedByUserId == user.Id || x.DeniedByUserId == user.Id)
                 .ToList()
-                .ForEach(x => this.unitOfWork.GetGenericRepository<AllianceJoinRequest>().Remove(x));
+                .ForEach(x => unitOfWork.GetGenericRepository<AllianceJoinRequest>().Remove(x));
         }
     }
 }

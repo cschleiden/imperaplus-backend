@@ -13,12 +13,12 @@ namespace ImperaPlus.Application.Jobs
 
         public Job(ILifetimeScope scope)
         {
-            this.LifetimeScope = scope;
+            LifetimeScope = scope;
         }
 
         public virtual void Handle(PerformContext performContext)
         {
-            this.Log = new JobLogger(performContext);
+            Log = new JobLogger(performContext);
         }
     }
 
@@ -28,7 +28,7 @@ namespace ImperaPlus.Application.Jobs
 
         public BackgroundJob(ILifetimeScope scope)
         {
-            this.LifetimeScope = scope;
+            LifetimeScope = scope;
         }
     }
 
@@ -39,12 +39,12 @@ namespace ImperaPlus.Application.Jobs
 
         public AsyncJob(ILifetimeScope scope)
         {
-            this.LifetimeScope = scope;
+            LifetimeScope = scope;
         }
 
         public virtual Task Handle(PerformContext performContext)
         {
-            this.Log = new JobLogger(performContext);
+            Log = new JobLogger(performContext);
 
             return Task.CompletedTask;
         }
@@ -62,11 +62,11 @@ namespace ImperaPlus.Application.Jobs
         public void Log(Domain.LogLevel level, string format, params object[] args)
         {
             // Send to hangfire
-            var color = this.MapLevelToConsoleColor(level);
-            this.performContext.WriteLine(color, format, args);
+            var color = MapLevelToConsoleColor(level);
+            performContext.WriteLine(color, format, args);
 
             // Persist
-            NLog.Fluent.Log.Level(this.MapLevel(level)).Message(format, args).Write();
+            NLog.Fluent.Log.Level(MapLevel(level)).Message(format, args).Write();
         }
 
         private ConsoleTextColor MapLevelToConsoleColor(Domain.LogLevel level)

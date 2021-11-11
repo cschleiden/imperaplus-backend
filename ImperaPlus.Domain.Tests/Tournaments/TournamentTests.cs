@@ -19,10 +19,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             [TestInitialize]
             public void Initialize()
             {
-                this.options = new GameOptions()
-                {
-                    Id = 42
-                };
+                options = new GameOptions() { Id = 42 };
             }
 
             [TestMethod]
@@ -42,32 +39,32 @@ namespace ImperaPlus.Domain.Tests.Tournaments
 
                 // Number of teams
                 AssertHelper.VerifyThrowsDomain(ErrorCode.TournamentInvalidOption,
-                    () => new Tournament("Tournament", 15, 0, 3, 3, DateTime.UtcNow, DateTime.UtcNow, this.options),
-                    () => new Tournament("Tournament", 0, 0, 3, 3, DateTime.UtcNow, DateTime.UtcNow, this.options),
-                    () => new Tournament("Tournament", -16, 0, 3, 3, DateTime.UtcNow, DateTime.UtcNow, this.options));
+                    () => new Tournament("Tournament", 15, 0, 3, 3, DateTime.UtcNow, DateTime.UtcNow, options),
+                    () => new Tournament("Tournament", 0, 0, 3, 3, DateTime.UtcNow, DateTime.UtcNow, options),
+                    () => new Tournament("Tournament", -16, 0, 3, 3, DateTime.UtcNow, DateTime.UtcNow, options));
 
                 // Number of group games
                 AssertHelper.VerifyThrowsDomain(ErrorCode.TournamentInvalidOption,
-                    () => new Tournament("Tournament", 16, 2, 3, 3, DateTime.UtcNow, DateTime.UtcNow, this.options),
-                    () => new Tournament("Tournament", 16, -2, 3, 3, DateTime.UtcNow, DateTime.UtcNow, this.options));
+                    () => new Tournament("Tournament", 16, 2, 3, 3, DateTime.UtcNow, DateTime.UtcNow, options),
+                    () => new Tournament("Tournament", 16, -2, 3, 3, DateTime.UtcNow, DateTime.UtcNow, options));
 
                 // Number of knockout games
                 AssertHelper.VerifyThrowsDomain(ErrorCode.TournamentInvalidOption,
-                    () => new Tournament("Tournament", 16, 0, 0, 3, DateTime.UtcNow, DateTime.UtcNow, this.options),
-                    () => new Tournament("Tournament", 16, 0, 2, 3, DateTime.UtcNow, DateTime.UtcNow, this.options),
-                    () => new Tournament("Tournament", 16, 0, -1, 3, DateTime.UtcNow, DateTime.UtcNow, this.options));
+                    () => new Tournament("Tournament", 16, 0, 0, 3, DateTime.UtcNow, DateTime.UtcNow, options),
+                    () => new Tournament("Tournament", 16, 0, 2, 3, DateTime.UtcNow, DateTime.UtcNow, options),
+                    () => new Tournament("Tournament", 16, 0, -1, 3, DateTime.UtcNow, DateTime.UtcNow, options));
 
                 // Number of final games
                 AssertHelper.VerifyThrowsDomain(ErrorCode.TournamentInvalidOption,
-                    () => new Tournament("Tournament", 16, 0, 3, 0, DateTime.UtcNow, DateTime.UtcNow, this.options),
-                    () => new Tournament("Tournament", 16, 0, 3, 2, DateTime.UtcNow, DateTime.UtcNow, this.options),
-                    () => new Tournament("Tournament", 16, 0, 3, -1, DateTime.UtcNow, DateTime.UtcNow, this.options));
+                    () => new Tournament("Tournament", 16, 0, 3, 0, DateTime.UtcNow, DateTime.UtcNow, options),
+                    () => new Tournament("Tournament", 16, 0, 3, 2, DateTime.UtcNow, DateTime.UtcNow, options),
+                    () => new Tournament("Tournament", 16, 0, 3, -1, DateTime.UtcNow, DateTime.UtcNow, options));
             }
 
             [TestMethod]
             public void Success()
             {
-                var tournament = new Tournament("Tournament", 16, 3, 3, 3, DateTime.UtcNow, DateTime.UtcNow, this.options);
+                var tournament = new Tournament("Tournament", 16, 3, 3, 3, DateTime.UtcNow, DateTime.UtcNow, options);
 
                 Assert.AreNotEqual(Guid.Empty, tournament.Id);
 
@@ -77,8 +74,8 @@ namespace ImperaPlus.Domain.Tests.Tournaments
                 Assert.AreEqual(3, tournament.NumberOfKnockoutGames);
                 Assert.AreEqual(3, tournament.NumberOfFinalGames);
 
-                Assert.AreEqual(this.options.Id, tournament.OptionsId);
-                Assert.AreEqual(this.options, tournament.Options);
+                Assert.AreEqual(options.Id, tournament.OptionsId);
+                Assert.AreEqual(options, tournament.Options);
             }
         }
 
@@ -107,7 +104,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
                 Assert.AreEqual(2, tournament.Teams.Count());
             }
 
-            [TestMethod]            
+            [TestMethod]
             [ExpectedDomainException(ErrorCode.TournamentTooManyTeams)]
             public void SinglePlayerTeamJoin_AlreadyFull()
             {
@@ -198,7 +195,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             [TestMethod]
             public void DeleteTeam_AllowedBeforeStarting()
             {
-                var tournament = CreateTournament(0);            
+                var tournament = CreateTournament(0);
                 var team = tournament.CreateTeam(TestUtils.CreateUser("User1"), "Team");
 
                 Assert.IsTrue(tournament.CanChangeTeams);
@@ -207,7 +204,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             [TestMethod]
             public void DeleteTeam_NotAllowedWhenStarted()
             {
-                Tournament tournament = CreateTournamentWithUsers(3, 8);
+                var tournament = CreateTournamentWithUsers(3, 8);
                 tournament.Start(new TestRandomGen());
 
                 Assert.IsFalse(tournament.CanChangeTeams);
@@ -241,7 +238,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             [TestMethod]
             public void WithGroupGames()
             {
-                Tournament tournament = CreateTournamentWithUsers(3, 8);                
+                var tournament = CreateTournamentWithUsers(3, 8);
 
                 tournament.Start(new TestRandomGen());
 
@@ -262,7 +259,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
                 Assert.AreEqual(DateTime.UtcNow.Ticks, tournament.StartOfTournament.Ticks, 100);
                 Assert.AreEqual(1, tournament.Pairings.Count());
                 Assert.IsFalse(tournament.HasGroupPhase);
-            }            
+            }
         }
 
         [TestClass]
@@ -271,10 +268,10 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             [TestMethod]
             public void GroupToKnockout()
             {
-                Tournament tournament = CreateTournamentWithUsers(3, 8);
+                var tournament = CreateTournamentWithUsers(3, 8);
                 tournament.Start(new TestRandomGen());
 
-                foreach(var pairing in tournament.Pairings)
+                foreach (var pairing in tournament.Pairings)
                 {
                     pairing.TeamAWon = 2;
                     pairing.TeamBWon = 1;
@@ -292,7 +289,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             [TestMethod]
             public void KnockoutToKnockout()
             {
-                Tournament tournament = CreateTournamentWithUsers(0, 8);
+                var tournament = CreateTournamentWithUsers(0, 8);
                 tournament.Start(new TestRandomGen());
 
                 foreach (var pairing in tournament.Pairings)
@@ -314,7 +311,7 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             [TestMethod]
             public void EndTournament()
             {
-                Tournament tournament = CreateTournamentWithUsers(0, 2);
+                var tournament = CreateTournamentWithUsers(0, 2);
                 tournament.Start(new TestRandomGen());
 
                 tournament.Teams.First().State = TournamentTeamState.InActive;
@@ -329,9 +326,9 @@ namespace ImperaPlus.Domain.Tests.Tournaments
 
         private static Tournament CreateTournamentWithUsers(int numberOfGroupGames, int numberOfTeams = 2)
         {
-            Tournament tournament = CreateTournament(numberOfGroupGames, numberOfTeams);
+            var tournament = CreateTournament(numberOfGroupGames, numberOfTeams);
 
-            for (int i = 0; i < numberOfTeams; ++i)
+            for (var i = 0; i < numberOfTeams; ++i)
             {
                 tournament.AddUser(TestUtils.CreateUser($"User-{i}"));
             }
@@ -341,10 +338,8 @@ namespace ImperaPlus.Domain.Tests.Tournaments
 
         private static Tournament CreateTournament(int numberOfGroupGames, int numberOfTeams = 2)
         {
-            return new Tournament("Tournament", numberOfTeams, numberOfGroupGames, 3, 3, DateTime.UtcNow, DateTime.UtcNow, new GameOptions
-            {
-                NumberOfPlayersPerTeam = 1
-            });
+            return new Tournament("Tournament", numberOfTeams, numberOfGroupGames, 3, 3, DateTime.UtcNow,
+                DateTime.UtcNow, new GameOptions { NumberOfPlayersPerTeam = 1 });
         }
     }
 }

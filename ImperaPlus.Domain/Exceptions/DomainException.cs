@@ -17,14 +17,11 @@ namespace ImperaPlus.Domain.Exceptions
         {
         }
 
-        public ErrorCode ErrorCode
-        {
-            get { return this.errorCode; }
-        }
+        public ErrorCode ErrorCode => errorCode;
 
         public override string ToString()
         {
-            return string.Format("{0}: {1}", this.errorCode, this.Message);
+            return string.Format("{0}: {1}", errorCode, Message);
         }
     }
 }

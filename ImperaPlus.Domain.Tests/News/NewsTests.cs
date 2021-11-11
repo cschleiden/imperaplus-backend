@@ -9,7 +9,7 @@ namespace ImperaPlus.Domain.Tests.News
     {
         [TestInitialize]
         public void Setup()
-        {            
+        {
         }
 
         [TestMethod]

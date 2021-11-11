@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System;
+using Autofac;
 using Hangfire;
 using Hangfire.Server;
 using ImperaPlus.DataAccess;
@@ -14,36 +15,36 @@ namespace ImperaPlus.Application.Jobs
     {
         public const string JobId = "TokenCleanup";
 
-        private OpenIddictTokenManager<OpenIddictToken> tokenManager;
+        private OpenIddictTokenManager<OpenIddictEntityFrameworkCoreToken> tokenManager;
 
-        private OpenIddictAuthorizationManager<OpenIddictAuthorization> authorizationManager;
+        private OpenIddictAuthorizationManager<OpenIddictEntityFrameworkCoreAuthorization> authorizationManager;
         private ImperaContext dbContext;
 
         public TokenCleanupJob(ILifetimeScope scope)
             : base(scope)
         {
-            this.tokenManager = this.LifetimeScope.Resolve<OpenIddictTokenManager<OpenIddictToken>>();
-            this.authorizationManager = this.LifetimeScope.Resolve<OpenIddictAuthorizationManager<OpenIddictAuthorization>>();
-            this.dbContext = this.LifetimeScope.Resolve<ImperaContext>();
+            tokenManager = LifetimeScope.Resolve<OpenIddictTokenManager<OpenIddictEntityFrameworkCoreToken>>();
+            authorizationManager = LifetimeScope
+                .Resolve<OpenIddictAuthorizationManager<OpenIddictEntityFrameworkCoreAuthorization>>();
+            dbContext = LifetimeScope.Resolve<ImperaContext>();
         }
 
         public override void Handle(PerformContext performContext)
         {
             base.Handle(performContext);
 
-            this.Log.Log(Domain.LogLevel.Info, "Cleaning up tokens...");
+            Log.Log(Domain.LogLevel.Info, "Cleaning up tokens...");
 
             var strategy = dbContext.Database.CreateExecutionStrategy();
             strategy.Execute<object, object>(null, (context, state) =>
             {
-                this.tokenManager.PruneAsync().Wait();
-
-                this.authorizationManager.PruneAsync().Wait();
+                tokenManager.PruneAsync(DateTimeOffset.Now - TimeSpan.FromDays(7));
+                authorizationManager.PruneAsync(DateTimeOffset.Now - TimeSpan.FromDays(7));
 
                 return null;
             }, null);
 
-            this.Log.Log(Domain.LogLevel.Info, "Done");
+            Log.Log(Domain.LogLevel.Info, "Done");
         }
     }
 }

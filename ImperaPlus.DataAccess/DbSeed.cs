@@ -29,18 +29,18 @@ namespace ImperaPlus.DataAccess
             //     System.Diagnostics.Debugger.Launch();
 
             // Insert roles
-            if (await this.roleManager.FindByNameAsync("admin") == null)
+            if (await roleManager.FindByNameAsync("admin") == null)
             {
-                await this.roleManager.CreateAsync(new IdentityRole("admin"));
+                await roleManager.CreateAsync(new IdentityRole("admin"));
             }
 
-            if (await this.roleManager.FindByNameAsync("system") == null)
+            if (await roleManager.FindByNameAsync("system") == null)
             {
-                await this.roleManager.CreateAsync(new IdentityRole("system"));
+                await roleManager.CreateAsync(new IdentityRole("system"));
             }
 
             // Insert technical user
-            User systemUser = await this.userManager.FindByNameAsync("System");
+            var systemUser = await userManager.FindByNameAsync("System");
             if (systemUser == null)
             {
                 systemUser = new User
@@ -50,7 +50,7 @@ namespace ImperaPlus.DataAccess
                     EmailConfirmed = true,
                     GameSlots = int.MaxValue
                 };
-                var result = await this.userManager.CreateAsync(systemUser, Guid.NewGuid().ToString());
+                var result = await userManager.CreateAsync(systemUser, Guid.NewGuid().ToString());
                 if (!result.Succeeded)
                 {
                     throw new Exception();
@@ -60,23 +60,20 @@ namespace ImperaPlus.DataAccess
             await userManager.AddToRolesAsync(systemUser, new[] { "admin", "system" });
 
             // Insert bot user
-            User botUser = await this.userManager.FindByNameAsync("Bot");
+            var botUser = await userManager.FindByNameAsync("Bot");
             if (botUser == null)
             {
                 botUser = new User
                 {
-                    UserName = "Bot",
-                    Email = "bot@imperaonline.de",
-                    EmailConfirmed = true,
-                    GameSlots = int.MaxValue
+                    UserName = "Bot", Email = "bot@imperaonline.de", EmailConfirmed = true, GameSlots = int.MaxValue
                 };
-                await this.userManager.CreateAsync(botUser, Guid.NewGuid().ToString());
+                await userManager.CreateAsync(botUser, Guid.NewGuid().ToString());
             }
 
-            await this.userManager.AddToRoleAsync(botUser, "system");
+            await userManager.AddToRoleAsync(botUser, "system");
 
             // Insert ghost user
-            User ghostUser = await this.userManager.FindByNameAsync("Ghost");
+            var ghostUser = await userManager.FindByNameAsync("Ghost");
             if (ghostUser == null)
             {
                 ghostUser = new User
@@ -86,37 +83,30 @@ namespace ImperaPlus.DataAccess
                     EmailConfirmed = true,
                     GameSlots = int.MaxValue
                 };
-                await this.userManager.CreateAsync(ghostUser, Guid.NewGuid().ToString());
+                await userManager.CreateAsync(ghostUser, Guid.NewGuid().ToString());
             }
 
-            await this.userManager.AddToRoleAsync(ghostUser, "system");
+            await userManager.AddToRoleAsync(ghostUser, "system");
 
 #if DEBUG
             // Insert test user
-            User testUser = context.Users.FirstOrDefault(x => x.UserName == "digitald");
+            var testUser = context.Users.FirstOrDefault(x => x.UserName == "digitald");
             if (testUser == null)
             {
                 testUser = new User
                 {
-                    UserName = "digitald",
-                    Email = "digitald@imperaonline.de",
-                    EmailConfirmed = true
+                    UserName = "digitald", Email = "digitald@imperaonline.de", EmailConfirmed = true
                 };
-                await this.userManager.CreateAsync(testUser, "impera1234");
+                await userManager.CreateAsync(testUser, "impera1234");
             }
 
-            await this.userManager.AddToRoleAsync(testUser, "admin");
+            await userManager.AddToRoleAsync(testUser, "admin");
 
-            User testUser2 = context.Users.FirstOrDefault(x => x.UserName == "ddtest");
+            var testUser2 = context.Users.FirstOrDefault(x => x.UserName == "ddtest");
             if (testUser2 == null)
             {
-                testUser2 = new User
-                {
-                    UserName = "ddtest",
-                    Email = "ddtest@imperaonline.de",
-                    EmailConfirmed = true
-                };
-                await this.userManager.CreateAsync(testUser2, "impera1234");
+                testUser2 = new User { UserName = "ddtest", Email = "ddtest@imperaonline.de", EmailConfirmed = true };
+                await userManager.CreateAsync(testUser2, "impera1234");
             }
 
             // News
@@ -129,20 +119,17 @@ namespace ImperaPlus.DataAccess
 
             context.SaveChanges();
 
-            this.InitChannels(context, systemUser);
+            InitChannels(context, systemUser);
 
-            this.InitLadder(context, systemUser);
+            InitLadder(context, systemUser);
 
             // Default set of maps
             var mapType = typeof(Maps);
-            foreach (var mapMethod in mapType.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static))
+            foreach (var mapMethod in mapType.GetMethods(System.Reflection.BindingFlags.Public |
+                                                         System.Reflection.BindingFlags.Static))
             {
                 var mapName = mapMethod.Name;
-                var mapTemplateDescriptor = new MapTemplateDescriptor
-                {
-                    Name = mapName,
-                    IsActive = true
-                };
+                var mapTemplateDescriptor = new MapTemplateDescriptor { Name = mapName, IsActive = true };
 
                 mapTemplateDescriptor.LastModifiedAt = mapTemplateDescriptor.CreatedAt = DateTime.UtcNow;
 
@@ -160,17 +147,9 @@ namespace ImperaPlus.DataAccess
             // Insert default chat channels
             if (context.Channels.FirstOrDefault(c => c.Name == "General") == null)
             {
-                context.Channels.Add(new Channel
-                {
-                    Name = "General",
-                    Type = ChannelType.General
-                });
+                context.Channels.Add(new Channel { Name = "General", Type = ChannelType.General });
 
-                context.Channels.Add(new Channel
-                {
-                    Name = "Admin",
-                    Type = ChannelType.Admin
-                });
+                context.Channels.Add(new Channel { Name = "Admin", Type = ChannelType.Admin });
             }
 
             context.SaveChanges();

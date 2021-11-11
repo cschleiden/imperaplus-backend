@@ -23,7 +23,7 @@ namespace ImperaPlus.Application.Notifications
         /// <param name="evt"></param>
         public void Handle(GameStartedEvent evt)
         {
-            this.HandleGameEvent(evt);
+            HandleGameEvent(evt);
         }
 
         /// <summary>
@@ -32,15 +32,15 @@ namespace ImperaPlus.Application.Notifications
         /// <param name="evt"></param>
         public void Handle(TurnEndedEvent evt)
         {
-            this.HandleGameEvent(evt);
+            HandleGameEvent(evt);
         }
-                       
+
         private void HandleGameEvent(GameEvent evt)
         {
             if (evt.Game.State == Domain.Enums.GameState.Active
                 && evt.Game.CurrentPlayer.User.UserName == Constants.BotName)
             {
-                this.backgroundJobClient.Enqueue<BotJob>(x => x.Play(evt.Game.Id, null));
+                backgroundJobClient.Enqueue<BotJob>(x => x.Play(evt.Game.Id, null));
             }
         }
     }

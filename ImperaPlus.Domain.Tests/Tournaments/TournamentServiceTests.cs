@@ -22,7 +22,8 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             mockUnitOfWork.SetupGet(x => x.Tournaments).Returns(tournamentRepositoryMock.Object);
             var unitOfWork = mockUnitOfWork.Object;
             var gameServiceMock = new Mock<IGameService>();
-            var service = new TournamentService(TestUtils.MockUserProvider(), unitOfWork, gameServiceMock.Object, TestUtils.MockMapTemplateProvider());
+            var service = new TournamentService(TestUtils.MockUserProvider(), unitOfWork, gameServiceMock.Object,
+                TestUtils.MockMapTemplateProvider());
 
             var openTournament = new Tournament(
                 "Tournament",
@@ -32,15 +33,12 @@ namespace ImperaPlus.Domain.Tests.Tournaments
                 3,
                 DateTime.UtcNow.AddDays(-1),
                 DateTime.UtcNow,
-                new Domain.Games.GameOptions
-                {
-                    NumberOfPlayersPerTeam = 1
-                });
+                new GameOptions { NumberOfPlayersPerTeam = 1 });
             tournamentRepositoryMock
                 .Setup(x => x.Get(TournamentState.Open))
                 .Returns(new Tournament[] { openTournament }.AsQueryable());
 
-            for (int i = 0; i < 8; ++i)
+            for (var i = 0; i < 8; ++i)
             {
                 openTournament.AddUser(TestUtils.CreateUser($"User{i}"));
             }
@@ -64,9 +62,11 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             var unitOfWork = mockUnitOfWork.Object;
 
             var gameServiceMock = new Mock<IGameService>();
-            var service = new TournamentService(TestUtils.MockUserProvider(), unitOfWork, gameServiceMock.Object, TestUtils.MockMapTemplateProvider());
+            var service = new TournamentService(TestUtils.MockUserProvider(), unitOfWork, gameServiceMock.Object,
+                TestUtils.MockMapTemplateProvider());
 
-            var tournament = new Tournament("T", 2, 0, 1, 1, DateTime.UtcNow, DateTime.UtcNow, new GameOptions { NumberOfPlayersPerTeam = 1 });
+            var tournament = new Tournament("T", 2, 0, 1, 1, DateTime.UtcNow, DateTime.UtcNow,
+                new GameOptions { NumberOfPlayersPerTeam = 1 });
             tournament.State = TournamentState.Knockout;
 
             var user1 = TestUtils.CreateUser("1");
@@ -90,17 +90,11 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             game.State = Enums.GameState.Ended;
 
             var team1 = new Team(game);
-            team1.Players.Add(new Player(game, user1, team1)
-            {
-                Outcome = Enums.PlayerOutcome.Won
-            });
+            team1.Players.Add(new Player(game, user1, team1) { Outcome = Enums.PlayerOutcome.Won });
             game.Teams.Add(team1);
 
             var team2 = new Team(game);
-            team2.Players.Add(new Player(game, user2, team2)
-            {
-                Outcome = Enums.PlayerOutcome.Defeated
-            });
+            team2.Players.Add(new Player(game, user2, team2) { Outcome = Enums.PlayerOutcome.Defeated });
             game.Teams.Add(team2);
 
             pairing.Games = new[] { game };

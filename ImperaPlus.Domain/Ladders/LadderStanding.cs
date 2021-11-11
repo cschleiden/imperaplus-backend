@@ -12,8 +12,8 @@ namespace ImperaPlus.Domain.Ladders
 
         public LadderStanding(Ladder ladder, User user)
         {
-            this.LadderId = ladder.Id;
-            this.UserId = user.Id;
+            LadderId = ladder.Id;
+            UserId = user.Id;
         }
 
         public Guid LadderId { get; set; }

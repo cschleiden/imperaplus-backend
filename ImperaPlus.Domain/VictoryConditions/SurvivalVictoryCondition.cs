@@ -6,7 +6,7 @@ namespace ImperaPlus.Domain.VictoryConditions
 {
     public class SurvivalVictoryCondition : IVictoryCondition
     {
-        public virtual void Initialize(Games.Game game, IRandomGen random)
+        public virtual void Initialize(Game game, IRandomGen random)
         {
         }
 

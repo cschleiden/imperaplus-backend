@@ -17,11 +17,11 @@ namespace ImperaPlus.Application.Jobs
         private IRandomGenProvider randomGenProvider;
 
         public TournamentStartJob(ILifetimeScope scope)
-        : base(scope)
+            : base(scope)
         {
-            this.unitOfWork = this.LifetimeScope.Resolve<IUnitOfWork>();
-            this.tournamentService = this.LifetimeScope.Resolve<ITournamentService>();
-            this.randomGenProvider = this.LifetimeScope.Resolve<IRandomGenProvider>();
+            unitOfWork = LifetimeScope.Resolve<IUnitOfWork>();
+            tournamentService = LifetimeScope.Resolve<ITournamentService>();
+            randomGenProvider = LifetimeScope.Resolve<IRandomGenProvider>();
         }
 
         public override void Handle(PerformContext performContext)
@@ -30,18 +30,17 @@ namespace ImperaPlus.Application.Jobs
 
             try
             {
-                if (this.tournamentService.CheckOpenTournaments(this.Log, this.randomGenProvider.GetRandomGen()))
+                if (tournamentService.CheckOpenTournaments(Log, randomGenProvider.GetRandomGen()))
                 {
-                    this.Log.Log(Domain.LogLevel.Info, "Found changes, saving...");
-                    this.unitOfWork.Commit();
-                    this.Log.Log(Domain.LogLevel.Info, "done.");
+                    Log.Log(Domain.LogLevel.Info, "Found changes, saving...");
+                    unitOfWork.Commit();
+                    Log.Log(Domain.LogLevel.Info, "done.");
                 }
             }
             catch (Exception e)
             {
-                this.Log.Log(Domain.LogLevel.Error, "Error {0}", e);
+                Log.Log(Domain.LogLevel.Error, "Error {0}", e);
             }
         }
     }
-
 }

@@ -13,23 +13,18 @@ namespace ImperaPlus.Domain
 
         public BaseDomainService(IUnitOfWork unitOfWork, IUserProvider userProvider)
         {
-            this.UnitOfWork = unitOfWork;
+            UnitOfWork = unitOfWork;
             this.userProvider = userProvider;
         }
 
-        protected User CurrentUser
-        {
-            get
-            {
-                return this.currentUser ?? (this.currentUser = this.UnitOfWork.Users.FindById(this.userProvider.GetCurrentUserId()));
-            }
-        }
+        protected User CurrentUser =>
+            currentUser ?? (currentUser = UnitOfWork.Users.FindById(userProvider.GetCurrentUserId()));
 
         protected void CheckAdmin()
         {
-            if (!this.userProvider.IsAdmin())
+            if (!userProvider.IsAdmin())
             {
-                throw new Exceptions.DomainException(
+                throw new DomainException(
                     ErrorCode.UserIsNotAllowedToPerformAction,
                     "User has to be admin to perform this action");
             }
@@ -39,7 +34,7 @@ namespace ImperaPlus.Domain
         {
             Require.NotNullOrEmpty(userId, nameof(userId));
 
-            var user = this.UnitOfWork.Users.FindById(userId);
+            var user = UnitOfWork.Users.FindById(userId);
             if (user == null)
             {
                 throw new DomainException(ErrorCode.UserDoesNotExist, "User does not exist");

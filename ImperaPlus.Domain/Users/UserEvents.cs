@@ -6,8 +6,8 @@ namespace ImperaPlus.Domain.Users
     {
         public AccountDeleted(User user, bool force = false)
         {
-            this.User = user;
-            this.Force = force;
+            User = user;
+            Force = force;
         }
 
         public User User { get; private set; }

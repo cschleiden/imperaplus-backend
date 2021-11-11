@@ -10,8 +10,8 @@ namespace ImperaPlus.Domain.Tournaments
     {
         protected TournamentGroup()
         {
-            this.Teams = new HashSet<TournamentTeam>();
-            this.Pairings = new HashSet<TournamentPairing>();
+            Teams = new HashSet<TournamentTeam>();
+            Pairings = new HashSet<TournamentPairing>();
         }
 
         public TournamentGroup(Tournament tournament, int number)
@@ -19,17 +19,17 @@ namespace ImperaPlus.Domain.Tournaments
         {
             Require.NotNull(tournament, nameof(tournament));
 
-            this.Id = Guid.NewGuid();
+            Id = Guid.NewGuid();
 
-            this.TournamentId = tournament.Id;
-            this.Tournament = tournament;
+            TournamentId = tournament.Id;
+            Tournament = tournament;
 
             if (number <= 0)
             {
                 throw new ArgumentException(nameof(number));
             }
 
-            this.Number = number;
+            Number = number;
         }
 
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -44,25 +44,15 @@ namespace ImperaPlus.Domain.Tournaments
         public int Number { get; protected set; }
 
         [NotMapped]
-        public IEnumerable<TournamentTeam> Winners
-        {
-            get
-            {
-                return this.Teams
-                    .OrderBy(t => t.GroupOrder)
-                    .Take(2);
-            }
-        }
+        public IEnumerable<TournamentTeam> Winners =>
+            Teams
+                .OrderBy(t => t.GroupOrder)
+                .Take(2);
 
         [NotMapped]
-        public IEnumerable<TournamentTeam> Losers
-        {
-            get
-            {
-                return this.Teams
-                    .OrderBy(t => t.GroupOrder)
-                    .Skip(2);
-            }
-        }
+        public IEnumerable<TournamentTeam> Losers =>
+            Teams
+                .OrderBy(t => t.GroupOrder)
+                .Skip(2);
     }
 }

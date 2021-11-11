@@ -9,59 +9,61 @@
 
 @using (Html.BeginForm("PostCreate", "News"))
 {
-    @Html.Hidden("post[0].language", "en");
-    @Html.Hidden("post[1].language", "de");
+    @Html.Hidden("post[0].language", "en")
+    ;
+    @Html.Hidden("post[1].language", "de")
+    ;
 
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <a class="collapsed" role="button" data-toggle="collapse" href="#post-news">
-            Post News
-        </a>        
-    </div>
-    <div class="panel-collapse collapse" id="post-news">
-        <div class="panel-body">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    English
-                </div>
-                <div class="panel-body">
-                    <div class="form-group">
-                        <label>Title</label>
-                        <input class="form-control" name="post[0].title">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <a class="collapsed" role="button" data-toggle="collapse" href="#post-news">
+                Post News
+            </a>
+        </div>
+        <div class="panel-collapse collapse" id="post-news">
+            <div class="panel-body">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        English
                     </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input class="form-control" name="post[0].title">
+                        </div>
 
-                    <div class="form-group">
-                        <label>Text</label>
-                        <textarea name="post[0].text" class="form-control" rows="3"></textarea> 
+                        <div class="form-group">
+                            <label>Text</label>
+                            <textarea name="post[0].text" class="form-control" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        German
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input class="form-control" name="post[1].title">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Text</label>
+                            <textarea name="post[1].text" class="form-control" rows="3"></textarea>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    German
-                </div>
-                <div class="panel-body">
-                    <div class="form-group">
-                        <label>Title</label>
-                        <input class="form-control" name="post[1].title">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Text</label>
-                        <textarea name="post[1].text" class="form-control" rows="3"></textarea>
-                    </div>
-                </div>
+            <div class="panel-footer">
+                <button type="submit" class="btn btn-default">Post</button>
             </div>
         </div>
-        <div class="panel-footer">
-            <button type="submit" class="btn btn-default">Post</button>
-        </div>
     </div>
-</div>
 }
 
-@foreach (ImperaPlus.Domain.News.NewsEntry news in Model)
+@foreach (var news in Model)
 {
     <div class="panel panel-info news">
         <div class="panel-heading clearfix">
@@ -70,20 +72,21 @@
             <div class="pull-right">
                 @using (Html.BeginForm("Delete", "News"))
                 {
-                    @Html.Hidden("id", news.Id);
+                    @Html.Hidden("id", news.Id)
+                    ;
 
                     <button type="submit" class="btn btn-danger">Delete</button>
                 }
             </div>
         </div>
-        <div class="panel-body">            
+        <div class="panel-body">
             @foreach (var content in news.Content)
             {
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         Language: @content.Language
                     </div>
-                    <div class="panel-body">                        
+                    <div class="panel-body">
                         @Html.Raw(content.Text)
                     </div>
                 </div>
@@ -97,9 +100,9 @@
 @section scripts
 {
     $(function () {
-        tinymce.init({
-            selector: "textarea",
-            height: 300
-        });
+    tinymce.init({
+    selector: "textarea",
+    height: 300
+    });
     });
 }

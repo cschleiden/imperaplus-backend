@@ -16,20 +16,20 @@ namespace ImperaPlus.Domain.Alliances
     {
         protected AllianceJoinRequest()
         {
-            this.Id = Guid.NewGuid();
+            Id = Guid.NewGuid();
         }
 
         public AllianceJoinRequest(Alliance alliance, User requestedBy, string reason)
             : this()
         {
-            this.Alliance = alliance;
-            this.AllianceId = alliance.Id;
-            this.RequestedByUser = requestedBy;
-            this.RequestedByUserId = requestedBy.Id;
+            Alliance = alliance;
+            AllianceId = alliance.Id;
+            RequestedByUser = requestedBy;
+            RequestedByUserId = requestedBy.Id;
 
-            this.Reason = reason;
+            Reason = reason;
 
-            this.State = AllianceJoinRequestState.Active;
+            State = AllianceJoinRequestState.Active;
         }
 
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -56,14 +56,14 @@ namespace ImperaPlus.Domain.Alliances
 
         internal void Approve(User approver)
         {
-            this.State = AllianceJoinRequestState.Approved;
-            this.ApprovedByUser = approver;
+            State = AllianceJoinRequestState.Approved;
+            ApprovedByUser = approver;
         }
 
         internal void Deny(User denier)
         {
-            this.State = AllianceJoinRequestState.Denied;
-            this.DeniedByUser = denier;
+            State = AllianceJoinRequestState.Denied;
+            DeniedByUser = denier;
         }
     }
 }

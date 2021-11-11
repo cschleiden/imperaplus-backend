@@ -112,7 +112,8 @@ namespace ImperaPlus.Domain.Tests.Games
             game.Start(TestUtils.GetMapTemplate(), new TestRandomGen());
 
             // Assert
-            Assert.AreEqual(game.Options.NumberOfPlayersPerTeam * game.Options.NumberOfTeams, game.Map.Countries.Count(x => !x.IsNeutral));
+            Assert.AreEqual(game.Options.NumberOfPlayersPerTeam * game.Options.NumberOfTeams,
+                game.Map.Countries.Count(x => !x.IsNeutral));
         }
 
         [TestMethod]
@@ -169,7 +170,7 @@ namespace ImperaPlus.Domain.Tests.Games
             var game = TestUtils.CreateGame(2, 2);
 
             // Act
-            for (int i = 0; i < 4; ++i)
+            for (var i = 0; i < 4; ++i)
             {
                 var user = TestUtils.CreateUser("test" + i);
                 game.AddPlayer(user);

@@ -6,7 +6,7 @@ namespace ImperaPlus.DataAccess.Repositories
 {
     internal class TeamRepository : GenericRepository<Team>, ITeamRepository
     {
-        public TeamRepository(DbContext context) 
+        public TeamRepository(DbContext context)
             : base(context)
         {
         }

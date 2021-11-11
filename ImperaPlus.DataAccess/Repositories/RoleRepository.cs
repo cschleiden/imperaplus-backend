@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ImperaPlus.DataAccess.Repositories
 {
-    class RoleRepository : GenericRepository<IdentityRole>, IRoleRepository
+    internal class RoleRepository : GenericRepository<IdentityRole>, IRoleRepository
     {
         public RoleRepository(DbContext context) : base(context)
         {

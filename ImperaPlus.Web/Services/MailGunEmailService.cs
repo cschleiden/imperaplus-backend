@@ -27,21 +27,23 @@ namespace ImperaPlus.Web.Services
 
         public Task SendMail(string to, string subject, string bodyText)
         {
-            return this.SendMail(to, subject, bodyText, bodyText);
+            return SendMail(to, subject, bodyText, bodyText);
         }
 
         public Task SendMail(string to, string subject, string bodyHtml, string bodyText)
         {
-            var client = new MailgunClient(this.settings.Domain, this.settings.ApiKey, 3);
+            var client = new MailgunClient(settings.Domain, settings.ApiKey, 3);
 
-            MailMessage myMessage = new MailMessage();
+            var myMessage = new MailMessage();
             myMessage.To.Add(to);
 
             myMessage.From = new MailAddress("info@imperaonline.de", "Impera Team");
             myMessage.Subject = subject;
 
-            myMessage.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(bodyText, null, MediaTypeNames.Text.Plain));
-            myMessage.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(bodyHtml, null, MediaTypeNames.Text.Html));
+            myMessage.AlternateViews.Add(
+                AlternateView.CreateAlternateViewFromString(bodyText, null, MediaTypeNames.Text.Plain));
+            myMessage.AlternateViews.Add(
+                AlternateView.CreateAlternateViewFromString(bodyHtml, null, MediaTypeNames.Text.Html));
 
             client.SendMail(myMessage);
 

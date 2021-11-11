@@ -38,7 +38,7 @@ namespace ImperaPlus.Domain.Services
 
         public GameService(IUnitOfWork unitOfWork)
         {
-            this.gameRepository = unitOfWork.Games;
+            gameRepository = unitOfWork.Games;
         }
 
         public Game Create(
@@ -56,17 +56,19 @@ namespace ImperaPlus.Domain.Services
             // Check if user is allowed to create games
             if (!user.CanCreateGame)
             {
-                throw new DomainException(ErrorCode.NotEnoughSlots, "User does not have enough available slots to create game");
+                throw new DomainException(ErrorCode.NotEnoughSlots,
+                    "User does not have enough available slots to create game");
             }
 
             // Check if name is not already taken
-            if (this.gameRepository.FindByName(name) != null)
+            if (gameRepository.FindByName(name) != null)
             {
                 throw new DomainException(ErrorCode.NameAlreadyTaken, "Name for this game is already taken");
             }
 
             // Create game
-            return new Game(user, type, name, password, mapTemplate, timeoutInSeconds, numberOfTeams, numberOfPlayersPerTeam, victoryConditions, visibilityModifier);
+            return new Game(user, type, name, password, mapTemplate, timeoutInSeconds, numberOfTeams,
+                numberOfPlayersPerTeam, victoryConditions, visibilityModifier);
         }
 
         public Game Create(
@@ -80,11 +82,12 @@ namespace ImperaPlus.Domain.Services
             // Check if user is allowed to create games
             if (!user.CanCreateGame)
             {
-                throw new DomainException(ErrorCode.NotEnoughSlots, "User does not have enough available slots to create game");
+                throw new DomainException(ErrorCode.NotEnoughSlots,
+                    "User does not have enough available slots to create game");
             }
 
             // Check if name is not already taken
-            if (this.gameRepository.FindByName(name) != null)
+            if (gameRepository.FindByName(name) != null)
             {
                 throw new DomainException(ErrorCode.NameAlreadyTaken, "Name for this game is already taken");
             }
@@ -95,7 +98,7 @@ namespace ImperaPlus.Domain.Services
 
         public void Delete(User user, long gameId)
         {
-            var game = this.GetGame(gameId);
+            var game = GetGame(gameId);
 
             if (game.CreatedBy != user)
             {
@@ -107,12 +110,12 @@ namespace ImperaPlus.Domain.Services
                 throw new DomainException(ErrorCode.CannotDeleteGame, "Game cannot be delete");
             }
 
-            this.gameRepository.Remove(game);
+            gameRepository.Remove(game);
         }
 
         private Game GetGame(long gameId)
         {
-            var game = this.gameRepository.Find(gameId);
+            var game = gameRepository.Find(gameId);
             if (game == null)
             {
                 throw new DomainException(ErrorCode.CannotFindGame, "Cannot find game");

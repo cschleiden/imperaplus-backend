@@ -20,8 +20,7 @@ namespace ImperaPlus.Web.Hubs
     [Authorize]
     public class MessagingHub : Hub, IMessagingHubContext
     {
-        private readonly static ConnectionMapping<string> Connections =
-            new ConnectionMapping<string>();
+        private static readonly ConnectionMapping<string> Connections = new();
 
         private ILogger<MessagingHub> logger;
 
@@ -39,13 +38,13 @@ namespace ImperaPlus.Web.Hubs
         public override async Task OnConnectedAsync()
         {
             // Track connection
-            string userName = this.GetUser().UserName;
-            Connections.Add(userName, this.Context.ConnectionId);
+            var userName = GetUser().UserName;
+            Connections.Add(userName, Context.ConnectionId);
 
             await base.OnConnectedAsync();
         }
 
-        public async override Task OnDisconnectedAsync(Exception exception)
+        public override async Task OnDisconnectedAsync(Exception exception)
         {
             string name;
             IEnumerable<string> channels;
@@ -54,11 +53,8 @@ namespace ImperaPlus.Web.Hubs
                 // Remove clients from groups
                 foreach (var channel in channels)
                 {
-                    await this.Clients.OthersInGroup(channel).SendAsync("leave", new UserChangeEvent
-                    {
-                        ChannelIdentifier = channel,
-                        UserName = name
-                    });
+                    await Clients.OthersInGroup(channel).SendAsync("leave",
+                        new UserChangeEvent { ChannelIdentifier = channel, UserName = name });
                 }
             }
 
@@ -71,67 +67,58 @@ namespace ImperaPlus.Web.Hubs
         /// <returns></returns>
         public async Task<ChatInformation> Init()
         {
-            string userId = this.GetUserId();
-            string userName = this.GetUser().UserName;
+            var userId = GetUserId();
+            var userName = GetUser().UserName;
 
             // Add users to appropriate groups
-            var chatService = this.lifetimeScope.Resolve<IChatService>();
+            var chatService = lifetimeScope.Resolve<IChatService>();
             var channels = chatService.GetChannelInformationForUser(userId).Result;
             foreach (var channel in channels)
             {
-                await this.Groups.AddToGroupAsync(this.Context.ConnectionId, channel.Identifier);
+                await Groups.AddToGroupAsync(Context.ConnectionId, channel.Identifier);
                 Connections.JoinGroup(userName, channel.Identifier);
 
                 // Inform other clients in channel/group
-                await this.Clients.OthersInGroup(channel.Identifier).SendAsync("join", new UserChangeEvent
-                {
-                    ChannelIdentifier = channel.Identifier,
-                    UserName = userName
-                });
+                await Clients.OthersInGroup(channel.Identifier).SendAsync("join",
+                    new UserChangeEvent { ChannelIdentifier = channel.Identifier, UserName = userName });
 
                 // Add information about current users in channels
                 channel.Users =
                     Connections.GetUsersForGroup(channel.Identifier)
-                        .Select(x => new User
-                        {
-                            Type = UserType.None,
-                            Name = x
-                        }).ToArray();
+                        .Select(x => new User { Type = UserType.None, Name = x }).ToArray();
             }
 
-            return new ChatInformation()
-            {
-                Channels = channels.ToArray()
-            };
+            return new ChatInformation() { Channels = channels.ToArray() };
         }
 
         public void SendMessage(Guid channelId, string message)
         {
             // Send to service for persistence
-            var chatService = this.lifetimeScope.Resolve<IChatService>();
-            string userId = this.GetUserId();
+            var chatService = lifetimeScope.Resolve<IChatService>();
+            var userId = GetUserId();
             chatService.SendMessage(channelId, userId, message);
 
             // Send message to currently online players
-            this.Clients.Group(channelId.ToString()).SendAsync("broadcastMessage", new ChatMessage
-            {
-                ChannelIdentifier = channelId.ToString(),
-                UserName = this.GetUser().UserName,
-                DateTime = DateTime.UtcNow,
-                Text = message
-            });
+            Clients.Group(channelId.ToString()).SendAsync("broadcastMessage",
+                new ChatMessage
+                {
+                    ChannelIdentifier = channelId.ToString(),
+                    UserName = GetUser().UserName,
+                    DateTime = DateTime.UtcNow,
+                    Text = message
+                });
         }
 
         private string GetUserId()
         {
-            var userManager = this.lifetimeScope.Resolve<UserManager<Domain.User>>();
-            return userManager.GetUserId(this.Context.User as ClaimsPrincipal);
+            var userManager = lifetimeScope.Resolve<UserManager<Domain.User>>();
+            return userManager.GetUserId(Context.User as ClaimsPrincipal);
         }
 
         private Domain.User GetUser()
         {
-            var userManager = this.lifetimeScope.Resolve<UserManager<Domain.User>>();
-            return userManager.GetUserAsync(this.Context.User as ClaimsPrincipal).Result;
+            var userManager = lifetimeScope.Resolve<UserManager<Domain.User>>();
+            return userManager.GetUserAsync(Context.User as ClaimsPrincipal).Result;
         }
     }
 }

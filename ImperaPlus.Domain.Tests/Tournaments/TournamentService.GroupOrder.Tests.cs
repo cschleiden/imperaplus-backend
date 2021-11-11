@@ -23,22 +23,23 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             var unitOfWork = mockUnitOfWork.Object;
 
             var gameServiceMock = new Mock<IGameService>();
-            var service = new TournamentService(TestUtils.MockUserProvider(), unitOfWork, gameServiceMock.Object, TestUtils.MockMapTemplateProvider());
+            var service = new TournamentService(TestUtils.MockUserProvider(), unitOfWork, gameServiceMock.Object,
+                TestUtils.MockMapTemplateProvider());
 
             const int GroupGames = 3;
             var tournament = new Tournament(
                 "T",
-                numberOfTeams: 8,
-                numberOfGroupGames: GroupGames,
-                numberOfKnockoutGames: 1,
-                numberOfFinalGames: 1,
-                startOfRegistration: DateTime.UtcNow,
-                startOfTournament: DateTime.UtcNow,
-                options: new GameOptions { NumberOfPlayersPerTeam = 1 });
+                8,
+                GroupGames,
+                1,
+                1,
+                DateTime.UtcNow,
+                DateTime.UtcNow,
+                new GameOptions { NumberOfPlayersPerTeam = 1 });
 
-            for (int i = 0; i < 8; ++i)
+            for (var i = 0; i < 8; ++i)
             {
-                this.AddTeam(tournament, i);
+                AddTeam(tournament, i);
             }
 
             tournament.Start(new TestRandomGen());
@@ -104,23 +105,19 @@ namespace ImperaPlus.Domain.Tests.Tournaments
 
             // Assert
             var g1 = tournament.Groups.ElementAt(0).Teams.OrderBy(t => t.GroupOrder).ToArray();
-            this.AssertArray(new[]
-            {
-                teams1[0].Id, teams1[1].Id, teams1[2].Id, teams1[3].Id
-            }, g1.Select(x => x.Id).ToArray());
+            AssertArray(new[] { teams1[0].Id, teams1[1].Id, teams1[2].Id, teams1[3].Id },
+                g1.Select(x => x.Id).ToArray());
 
             var g2 = tournament.Groups.ElementAt(1).Teams.OrderBy(t => t.GroupOrder).ToArray();
-            this.AssertArray(new[]
-            {
-                teams2[1].Id, teams2[3].Id, teams2[0].Id, teams2[2].Id
-            }, g2.Select(x => x.Id).ToArray()); 
+            AssertArray(new[] { teams2[1].Id, teams2[3].Id, teams2[0].Id, teams2[2].Id },
+                g2.Select(x => x.Id).ToArray());
         }
 
         private void AssertArray<T>(T[] expected, T[] v)
         {
             Assert.AreEqual(expected.Length, v.Length);
 
-            for (int i = 0; i < expected.Length; ++i)
+            for (var i = 0; i < expected.Length; ++i)
             {
                 Assert.AreEqual(expected[i], v[i]);
             }
@@ -128,9 +125,9 @@ namespace ImperaPlus.Domain.Tests.Tournaments
 
         private void SetWins(Tournament tournament, TournamentTeam teamA, TournamentTeam teamB, int winsA, int winsB)
         {
-            foreach(var group in tournament.Groups)
+            foreach (var group in tournament.Groups)
             {
-                foreach(var pairing in group.Pairings)
+                foreach (var pairing in group.Pairings)
                 {
                     if (SetWins(pairing, teamA, teamB, winsA, winsB)
                         || SetWins(pairing, teamB, teamA, winsB, winsA))
@@ -141,7 +138,8 @@ namespace ImperaPlus.Domain.Tests.Tournaments
             }
         }
 
-        private bool SetWins(TournamentPairing pairing, TournamentTeam teamA, TournamentTeam teamB, int winsA, int winsB)
+        private bool SetWins(TournamentPairing pairing, TournamentTeam teamA, TournamentTeam teamB, int winsA,
+            int winsB)
         {
             if (pairing.TeamA == teamA && pairing.TeamB == teamB)
             {

@@ -15,8 +15,8 @@ namespace ImperaPlus.Web.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("ProductVersion", "5.0.11")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("ImperaPlus.Domain.Alliances.Alliance", b =>
@@ -876,8 +876,8 @@ namespace ImperaPlus.Web.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
@@ -910,12 +910,12 @@ namespace ImperaPlus.Web.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("NormalizedEmail")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("NormalizedUserName")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
@@ -933,19 +933,19 @@ namespace ImperaPlus.Web.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AllianceId");
 
                     b.HasIndex("NormalizedEmail")
-                        .HasName("EmailIndex");
+                        .HasDatabaseName("EmailIndex");
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasName("UserNameIndex")
+                        .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
@@ -961,18 +961,18 @@ namespace ImperaPlus.Web.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("NormalizedName")
-                        .HasColumnType("nvarchar(256)")
-                        .HasMaxLength(256);
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasName("RoleNameIndex")
+                        .HasDatabaseName("RoleNameIndex")
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
@@ -1079,28 +1079,32 @@ namespace ImperaPlus.Web.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("OpenIddict.EntityFrameworkCore.Models.OpenIddictApplication", b =>
+            modelBuilder.Entity("OpenIddict.EntityFrameworkCore.Models.OpenIddictEntityFrameworkCoreApplication", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ClientId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("ClientSecret")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyToken")
                         .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("ConsentType")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("DisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DisplayNames")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Permissions")
@@ -1115,22 +1119,26 @@ namespace ImperaPlus.Web.Migrations
                     b.Property<string>("RedirectUris")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Requirements")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(25)")
-                        .HasMaxLength(25);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[ClientId] IS NOT NULL");
 
                     b.ToTable("OpenIddictApplications");
                 });
 
-            modelBuilder.Entity("OpenIddict.EntityFrameworkCore.Models.OpenIddictAuthorization", b =>
+            modelBuilder.Entity("OpenIddict.EntityFrameworkCore.Models.OpenIddictEntityFrameworkCoreAuthorization", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ApplicationId")
@@ -1138,8 +1146,11 @@ namespace ImperaPlus.Web.Migrations
 
                     b.Property<string>("ConcurrencyToken")
                         .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("CreationDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Properties")
                         .HasColumnType("nvarchar(max)");
@@ -1148,19 +1159,16 @@ namespace ImperaPlus.Web.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(25)")
-                        .HasMaxLength(25);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Subject")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)")
-                        .HasMaxLength(450);
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
 
                     b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(25)")
-                        .HasMaxLength(25);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -1169,26 +1177,32 @@ namespace ImperaPlus.Web.Migrations
                     b.ToTable("OpenIddictAuthorizations");
                 });
 
-            modelBuilder.Entity("OpenIddict.EntityFrameworkCore.Models.OpenIddictScope", b =>
+            modelBuilder.Entity("OpenIddict.EntityFrameworkCore.Models.OpenIddictEntityFrameworkCoreScope", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ConcurrencyToken")
                         .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Descriptions")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DisplayName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("DisplayNames")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<string>("Properties")
                         .HasColumnType("nvarchar(max)");
@@ -1199,14 +1213,16 @@ namespace ImperaPlus.Web.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Name")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[Name] IS NOT NULL");
 
                     b.ToTable("OpenIddictScopes");
                 });
 
-            modelBuilder.Entity("OpenIddict.EntityFrameworkCore.Models.OpenIddictToken", b =>
+            modelBuilder.Entity("OpenIddict.EntityFrameworkCore.Models.OpenIddictEntityFrameworkCoreToken", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ApplicationId")
@@ -1217,14 +1233,14 @@ namespace ImperaPlus.Web.Migrations
 
                     b.Property<string>("ConcurrencyToken")
                         .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
-                    b.Property<DateTimeOffset?>("CreationDate")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime?>("CreationDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTimeOffset?>("ExpirationDate")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime?>("ExpirationDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Payload")
                         .HasColumnType("nvarchar(max)");
@@ -1232,24 +1248,24 @@ namespace ImperaPlus.Web.Migrations
                     b.Property<string>("Properties")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("RedemptionDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("ReferenceId")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(25)")
-                        .HasMaxLength(25);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Subject")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)")
-                        .HasMaxLength(450);
+                        .HasMaxLength(400)
+                        .HasColumnType("nvarchar(400)");
 
                     b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(25)")
-                        .HasMaxLength(25);
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -1271,6 +1287,8 @@ namespace ImperaPlus.Web.Migrations
                         .HasForeignKey("ChannelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Channel");
                 });
 
             modelBuilder.Entity("ImperaPlus.Domain.Alliances.AllianceJoinRequest", b =>
@@ -1296,6 +1314,14 @@ namespace ImperaPlus.Web.Migrations
                         .HasForeignKey("RequestedByUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Alliance");
+
+                    b.Navigation("ApprovedByUser");
+
+                    b.Navigation("DeniedByUser");
+
+                    b.Navigation("RequestedByUser");
                 });
 
             modelBuilder.Entity("ImperaPlus.Domain.Chat.Channel", b =>
@@ -1304,6 +1330,8 @@ namespace ImperaPlus.Web.Migrations
                         .WithOne()
                         .HasForeignKey("ImperaPlus.Domain.Chat.Channel", "GameId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Game");
                 });
 
             modelBuilder.Entity("ImperaPlus.Domain.Chat.ChatMessage", b =>
@@ -1317,6 +1345,10 @@ namespace ImperaPlus.Web.Migrations
                     b.HasOne("ImperaPlus.Domain.User", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById");
+
+                    b.Navigation("Channel");
+
+                    b.Navigation("CreatedBy");
                 });
 
             modelBuilder.Entity("ImperaPlus.Domain.Games.Chat.GameChatMessage", b =>
@@ -1335,6 +1367,10 @@ namespace ImperaPlus.Web.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Team");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ImperaPlus.Domain.Games.Game", b =>
@@ -1362,6 +1398,12 @@ namespace ImperaPlus.Web.Migrations
                     b.HasOne("ImperaPlus.Domain.User", null)
                         .WithMany("CreatedGames")
                         .HasForeignKey("UserId");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("Ladder");
+
+                    b.Navigation("Options");
                 });
 
             modelBuilder.Entity("ImperaPlus.Domain.Games.History.HistoryEntry", b =>
@@ -1381,6 +1423,12 @@ namespace ImperaPlus.Web.Migrations
                         .WithMany()
                         .HasForeignKey("OtherPlayerId")
                         .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Actor");
+
+                    b.Navigation("Game");
+
+                    b.Navigation("OtherPlayer");
                 });
 
             modelBuilder.Entity("ImperaPlus.Domain.Games.Map", b =>
@@ -1389,6 +1437,8 @@ namespace ImperaPlus.Web.Migrations
                         .WithOne("Map")
                         .HasForeignKey("ImperaPlus.Domain.Games.Map", "GameId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Game");
                 });
 
             modelBuilder.Entity("ImperaPlus.Domain.Games.Player", b =>
@@ -1408,6 +1458,12 @@ namespace ImperaPlus.Web.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Game");
+
+                    b.Navigation("Team");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ImperaPlus.Domain.Games.Team", b =>
@@ -1417,6 +1473,8 @@ namespace ImperaPlus.Web.Migrations
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Game");
                 });
 
             modelBuilder.Entity("ImperaPlus.Domain.Ladders.Ladder", b =>
@@ -1424,6 +1482,8 @@ namespace ImperaPlus.Web.Migrations
                     b.HasOne("ImperaPlus.Domain.Games.GameOptions", "Options")
                         .WithMany()
                         .HasForeignKey("OptionsId");
+
+                    b.Navigation("Options");
                 });
 
             modelBuilder.Entity("ImperaPlus.Domain.Ladders.LadderQueueEntry", b =>
@@ -1439,6 +1499,8 @@ namespace ImperaPlus.Web.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ImperaPlus.Domain.Ladders.LadderStanding", b =>
@@ -1458,6 +1520,8 @@ namespace ImperaPlus.Web.Migrations
                     b.HasOne("ImperaPlus.Domain.User", null)
                         .WithMany("Standings")
                         .HasForeignKey("UserId1");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ImperaPlus.Domain.Messages.Message", b =>
@@ -1477,6 +1541,12 @@ namespace ImperaPlus.Web.Migrations
                         .WithMany()
                         .HasForeignKey("RecipientId")
                         .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("From");
+
+                    b.Navigation("Owner");
+
+                    b.Navigation("Recipient");
                 });
 
             modelBuilder.Entity("ImperaPlus.Domain.News.NewsContent", b =>
@@ -1494,6 +1564,8 @@ namespace ImperaPlus.Web.Migrations
                         .WithMany()
                         .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("CreatedBy");
                 });
 
             modelBuilder.Entity("ImperaPlus.Domain.Tournaments.Tournament", b =>
@@ -1507,6 +1579,10 @@ namespace ImperaPlus.Web.Migrations
                     b.HasOne("ImperaPlus.Domain.Tournaments.TournamentTeam", "Winner")
                         .WithOne()
                         .HasForeignKey("ImperaPlus.Domain.Tournaments.Tournament", "WinnerId");
+
+                    b.Navigation("Options");
+
+                    b.Navigation("Winner");
                 });
 
             modelBuilder.Entity("ImperaPlus.Domain.Tournaments.TournamentGroup", b =>
@@ -1520,6 +1596,8 @@ namespace ImperaPlus.Web.Migrations
                     b.HasOne("ImperaPlus.Domain.Tournaments.Tournament", null)
                         .WithMany("Groups")
                         .HasForeignKey("TournamentId1");
+
+                    b.Navigation("Tournament");
                 });
 
             modelBuilder.Entity("ImperaPlus.Domain.Tournaments.TournamentPairing", b =>
@@ -1551,6 +1629,14 @@ namespace ImperaPlus.Web.Migrations
                         .HasForeignKey("TournamentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Group");
+
+                    b.Navigation("TeamA");
+
+                    b.Navigation("TeamB");
+
+                    b.Navigation("Tournament");
                 });
 
             modelBuilder.Entity("ImperaPlus.Domain.Tournaments.TournamentParticipant", b =>
@@ -1565,6 +1651,10 @@ namespace ImperaPlus.Web.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Team");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ImperaPlus.Domain.Tournaments.TournamentTeam", b =>
@@ -1584,6 +1674,12 @@ namespace ImperaPlus.Web.Migrations
                         .HasForeignKey("TournamentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("Group");
+
+                    b.Navigation("Tournament");
                 });
 
             modelBuilder.Entity("ImperaPlus.Domain.User", b =>
@@ -1592,6 +1688,8 @@ namespace ImperaPlus.Web.Migrations
                         .WithMany("Members")
                         .HasForeignKey("AllianceId")
                         .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Alliance");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1645,22 +1743,119 @@ namespace ImperaPlus.Web.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("OpenIddict.EntityFrameworkCore.Models.OpenIddictAuthorization", b =>
+            modelBuilder.Entity("OpenIddict.EntityFrameworkCore.Models.OpenIddictEntityFrameworkCoreAuthorization", b =>
                 {
-                    b.HasOne("OpenIddict.EntityFrameworkCore.Models.OpenIddictApplication", "Application")
+                    b.HasOne("OpenIddict.EntityFrameworkCore.Models.OpenIddictEntityFrameworkCoreApplication", "Application")
                         .WithMany("Authorizations")
                         .HasForeignKey("ApplicationId");
+
+                    b.Navigation("Application");
                 });
 
-            modelBuilder.Entity("OpenIddict.EntityFrameworkCore.Models.OpenIddictToken", b =>
+            modelBuilder.Entity("OpenIddict.EntityFrameworkCore.Models.OpenIddictEntityFrameworkCoreToken", b =>
                 {
-                    b.HasOne("OpenIddict.EntityFrameworkCore.Models.OpenIddictApplication", "Application")
+                    b.HasOne("OpenIddict.EntityFrameworkCore.Models.OpenIddictEntityFrameworkCoreApplication", "Application")
                         .WithMany("Tokens")
                         .HasForeignKey("ApplicationId");
 
-                    b.HasOne("OpenIddict.EntityFrameworkCore.Models.OpenIddictAuthorization", "Authorization")
+                    b.HasOne("OpenIddict.EntityFrameworkCore.Models.OpenIddictEntityFrameworkCoreAuthorization", "Authorization")
                         .WithMany("Tokens")
                         .HasForeignKey("AuthorizationId");
+
+                    b.Navigation("Application");
+
+                    b.Navigation("Authorization");
+                });
+
+            modelBuilder.Entity("ImperaPlus.Domain.Alliances.Alliance", b =>
+                {
+                    b.Navigation("Members");
+
+                    b.Navigation("Requests");
+                });
+
+            modelBuilder.Entity("ImperaPlus.Domain.Chat.Channel", b =>
+                {
+                    b.Navigation("Messages");
+                });
+
+            modelBuilder.Entity("ImperaPlus.Domain.Games.Game", b =>
+                {
+                    b.Navigation("ChatMessages");
+
+                    b.Navigation("HistoryEntries");
+
+                    b.Navigation("Map");
+
+                    b.Navigation("Teams");
+                });
+
+            modelBuilder.Entity("ImperaPlus.Domain.Games.Team", b =>
+                {
+                    b.Navigation("Players");
+                });
+
+            modelBuilder.Entity("ImperaPlus.Domain.Ladders.Ladder", b =>
+                {
+                    b.Navigation("Games");
+
+                    b.Navigation("Queue");
+
+                    b.Navigation("Standings");
+                });
+
+            modelBuilder.Entity("ImperaPlus.Domain.News.NewsEntry", b =>
+                {
+                    b.Navigation("Content");
+                });
+
+            modelBuilder.Entity("ImperaPlus.Domain.Tournaments.Tournament", b =>
+                {
+                    b.Navigation("Groups");
+
+                    b.Navigation("Pairings");
+
+                    b.Navigation("Teams");
+                });
+
+            modelBuilder.Entity("ImperaPlus.Domain.Tournaments.TournamentGroup", b =>
+                {
+                    b.Navigation("Pairings");
+
+                    b.Navigation("Teams");
+                });
+
+            modelBuilder.Entity("ImperaPlus.Domain.Tournaments.TournamentPairing", b =>
+                {
+                    b.Navigation("Games");
+                });
+
+            modelBuilder.Entity("ImperaPlus.Domain.Tournaments.TournamentTeam", b =>
+                {
+                    b.Navigation("Participants");
+                });
+
+            modelBuilder.Entity("ImperaPlus.Domain.User", b =>
+                {
+                    b.Navigation("CreatedGames");
+
+                    b.Navigation("Logins");
+
+                    b.Navigation("Roles");
+
+                    b.Navigation("Standings");
+                });
+
+            modelBuilder.Entity("OpenIddict.EntityFrameworkCore.Models.OpenIddictEntityFrameworkCoreApplication", b =>
+                {
+                    b.Navigation("Authorizations");
+
+                    b.Navigation("Tokens");
+                });
+
+            modelBuilder.Entity("OpenIddict.EntityFrameworkCore.Models.OpenIddictEntityFrameworkCoreAuthorization", b =>
+                {
+                    b.Navigation("Tokens");
                 });
 #pragma warning restore 612, 618
         }

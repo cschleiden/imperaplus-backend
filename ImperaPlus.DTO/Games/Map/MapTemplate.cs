@@ -1,6 +1,5 @@
 ﻿namespace ImperaPlus.DTO.Games.Map
 {
-
     public class MapTemplate
     {
         /// <summary>
@@ -26,6 +25,6 @@
         /// <summary>
         /// List of continents in this map
         /// </summary>
-        public Continent[] Continents { get; set; } 
+        public Continent[] Continents { get; set; }
     }
 }

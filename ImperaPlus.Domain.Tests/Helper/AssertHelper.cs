@@ -9,7 +9,7 @@ namespace ImperaPlus.Domain.Tests.Helper
         {
             foreach (var action in actions)
             {
-                bool thrown = false;
+                var thrown = false;
 
                 try
                 {
@@ -31,7 +31,7 @@ namespace ImperaPlus.Domain.Tests.Helper
         {
             foreach (var action in actions)
             {
-                bool thrown = false;
+                var thrown = false;
 
                 try
                 {

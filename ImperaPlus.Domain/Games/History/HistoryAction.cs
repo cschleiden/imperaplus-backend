@@ -67,6 +67,6 @@ namespace ImperaPlus.Domain.Games.History
         /// <summary>
         /// Capital was lost
         /// </summary
-        CapitalLost = 13,
+        CapitalLost = 13
     }
 }

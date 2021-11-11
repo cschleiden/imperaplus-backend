@@ -16,7 +16,7 @@ namespace ImperaPlus.Web.Filters
             if (MiniProfiler.Current != null)
             {
                 Stack<IDisposable> stack;
-                
+
                 if (context.ActionDescriptor.Properties.ContainsKey(StackKey))
                 {
                     stack = context.ActionDescriptor.Properties[StackKey] as Stack<IDisposable>;
@@ -26,11 +26,12 @@ namespace ImperaPlus.Web.Filters
                     stack = new Stack<IDisposable>();
                     context.ActionDescriptor.Properties[StackKey] = (object)stack;
                 }
-                MiniProfiler current = MiniProfiler.Current;
+
+                var current = MiniProfiler.Current;
                 if (current != null)
                 {
-                    string controllerName = context.Controller.GetType().Name;
-                    string actionName = context.ActionDescriptor.DisplayName;
+                    var controllerName = context.Controller.GetType().Name;
+                    var actionName = context.ActionDescriptor.DisplayName;
                     stack.Push(MiniProfiler.Current.Step("Controller: " + controllerName + actionName));
                 }
             }

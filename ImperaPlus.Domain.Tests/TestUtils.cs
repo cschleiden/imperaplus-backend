@@ -17,18 +17,12 @@ namespace ImperaPlus.Domain.Tests
     {
         public static User CreateUser(string name)
         {
-            return new User()
-            {
-                UserName = name
-            };
+            return new User() { UserName = name };
         }
 
         public static User CreateUser(string name, IUnitOfWork unitOfWork)
         {
-            var user = new User()
-            {
-                UserName = name
-            };
+            var user = new User() { UserName = name };
 
             unitOfWork.Users.Add(user);
             unitOfWork.Commit();
@@ -63,7 +57,7 @@ namespace ImperaPlus.Domain.Tests
 
         public static MapTemplate GetMapTemplate()
         {
-            var mapTemplate = ImperaPlus.DataAccess.ConvertedMaps.Maps.WorldDeluxe();
+            var mapTemplate = DataAccess.ConvertedMaps.Maps.WorldDeluxe();
 
             return mapTemplate;
         }
@@ -94,10 +88,12 @@ namespace ImperaPlus.Domain.Tests
             mockUnitOfWork.SetupGet(x => x.Ladders).Returns(mockLadderRepository.Object);
 
             var mockLadderStanding = new Mock<IGenericRepository<Domain.Ladders.LadderStanding>>();
-            mockUnitOfWork.Setup(x => x.GetGenericRepository<Domain.Ladders.LadderStanding>()).Returns(mockLadderStanding.Object);
+            mockUnitOfWork.Setup(x => x.GetGenericRepository<Domain.Ladders.LadderStanding>())
+                .Returns(mockLadderStanding.Object);
 
             var mockLadderQueueEntry = new Mock<IGenericRepository<Domain.Ladders.LadderQueueEntry>>();
-            mockUnitOfWork.Setup(x => x.GetGenericRepository<Domain.Ladders.LadderQueueEntry>()).Returns(mockLadderQueueEntry.Object);
+            mockUnitOfWork.Setup(x => x.GetGenericRepository<Domain.Ladders.LadderQueueEntry>())
+                .Returns(mockLadderQueueEntry.Object);
 
             var mockAlliance = new Mock<IAllianceRepository>();
             mockUnitOfWork.Setup(x => x.Alliances).Returns(mockAlliance.Object);
@@ -112,7 +108,7 @@ namespace ImperaPlus.Domain.Tests
 
         public static IContainer Container;
 
-        public static Game CreateGame(int teams = 2, int playerPerTeam = 1, Enums.GameType type = GameType.Fun)
+        public static Game CreateGame(int teams = 2, int playerPerTeam = 1, GameType type = GameType.Fun)
         {
             var mapTemplate = new MapTemplate("blah");
 
@@ -137,11 +133,11 @@ namespace ImperaPlus.Domain.Tests
 
             var game = CreateGame(teams, playerPerTeam);
 
-            for (int t = 0; t < teams; ++t)
+            for (var t = 0; t < teams; ++t)
             {
                 var team = game.AddTeam();
 
-                for (int player = 0; player < playerPerTeam; ++player)
+                for (var player = 0; player < playerPerTeam; ++player)
                 {
                     team.AddPlayer(users[t * playerPerTeam + player]);
                 }
@@ -154,7 +150,7 @@ namespace ImperaPlus.Domain.Tests
         {
             var game = CreateGameWithMapAndPlayers(teams, playerPerTeam);
 
-            game.Start(TestUtils.GetMapTemplate(), new TestRandomGen());
+            game.Start(GetMapTemplate(), new TestRandomGen());
 
             return game;
         }
@@ -171,16 +167,17 @@ namespace ImperaPlus.Domain.Tests
         public static void PlaceUnits(Game game)
         {
             // Place units
-            for (int i = 0; i < game.Options.NumberOfTeams * game.Options.NumberOfPlayersPerTeam; ++i)
+            for (var i = 0; i < game.Options.NumberOfTeams * game.Options.NumberOfPlayersPerTeam; ++i)
             {
                 var currentPlayer = game.CurrentPlayer;
 
                 var countries = new List<Tuple<string, int>>
                 {
-                    Tuple.Create(currentPlayer.Countries.First().CountryIdentifier, game.GetUnitsToPlace(TestUtils.GetMapTemplate(), currentPlayer))
+                    Tuple.Create(currentPlayer.Countries.First().CountryIdentifier,
+                        game.GetUnitsToPlace(GetMapTemplate(), currentPlayer))
                 };
 
-                game.PlaceUnits(TestUtils.GetMapTemplate(), countries);
+                game.PlaceUnits(GetMapTemplate(), countries);
             }
         }
     }

@@ -61,7 +61,7 @@ namespace ImperaPlus.DTO.Games
         /// <summary>
         /// Date and time last action was performed (in UTC)
         /// </summary>
-        public DateTime LastActionAt { get; set; } 
+        public DateTime LastActionAt { get; set; }
 
         /// <summary>
         /// Seconds until timeout of current player

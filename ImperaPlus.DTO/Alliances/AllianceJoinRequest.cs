@@ -19,7 +19,7 @@ namespace ImperaPlus.DTO.Alliances
         /// Id of alliance to join
         /// </summary>
         public Guid AllianceId { get; set; }
-    
+
         /// <summary>
         /// Date and time when the request was last modified (e.g., approved or denied)
         /// </summary>

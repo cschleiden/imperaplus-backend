@@ -11,7 +11,7 @@
         /// <param name="type"></param>
         public Notification(NotificationType type)
         {
-            this.Type = type;
+            Type = type;
         }
 
         /// <summary>

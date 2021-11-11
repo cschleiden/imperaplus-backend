@@ -18,7 +18,7 @@
         /// <summary>
         /// Game is active and ongoing
         /// </summary>
-        Active, 
+        Active,
 
         /// <summary>
         /// Game has ended and playing is done

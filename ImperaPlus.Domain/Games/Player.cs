@@ -12,31 +12,31 @@ namespace ImperaPlus.Domain.Games
     {
         protected Player()
         {
-            this.Id = Guid.NewGuid();
+            Id = Guid.NewGuid();
 
-            this.InternalCardData = string.Empty;
-            this.Timeouts = 0;
+            InternalCardData = string.Empty;
+            Timeouts = 0;
         }
 
         public Player(Game game, User user, Team team)
             : this()
         {
-            this.Game = game;
-            this.GameId = game.Id;
+            Game = game;
+            GameId = game.Id;
 
-            this.User = user;
-            this.UserId = user.Id;
+            User = user;
+            UserId = user.Id;
 
-            this.Team = team;
-            this.TeamId = team.Id;
+            Team = team;
+            TeamId = team.Id;
 
-            this.Bonus = 0;
-            this.State = PlayerState.Active;
-            this.Outcome = PlayerOutcome.None;
+            Bonus = 0;
+            State = PlayerState.Active;
+            Outcome = PlayerOutcome.None;
 
-            this.PlayOrder = team.Game.Teams.SelectMany(x => x.Players).Count();
+            PlayOrder = team.Game.Teams.SelectMany(x => x.Players).Count();
 
-            this.IsHidden = false;
+            IsHidden = false;
         }
 
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -71,15 +71,9 @@ namespace ImperaPlus.Domain.Games
         [NotMapped]
         public BonusCard[] Cards
         {
-            get
-            {
-                return ParseCardData(this.InternalCardData);
-            }
+            get => ParseCardData(InternalCardData);
 
-            set
-            {
-                this.InternalCardData = string.Join(";", value);
-            }
+            set => InternalCardData = string.Join(";", value);
         }
 
         /// <summary>
@@ -96,24 +90,12 @@ namespace ImperaPlus.Domain.Games
 
         public PlayerOutcome Outcome { get; set; }
 
-        [NotMapped]
-        public IEnumerable<Country> Countries
-        {
-            get
-            {
-                return this.Team.Game.Map.GetCountriesForPlayer(this);
-            }
-        }
+        [NotMapped] public IEnumerable<Country> Countries => Team.Game.Map.GetCountriesForPlayer(this);
 
-        public bool HasLost
-        {
-            get
-            {
-                return this.Outcome == PlayerOutcome.Defeated
-                    || this.Outcome == PlayerOutcome.Surrendered
-                    || this.Outcome == PlayerOutcome.Timeout;
-            }
-        }
+        public bool HasLost =>
+            Outcome == PlayerOutcome.Defeated
+            || Outcome == PlayerOutcome.Surrendered
+            || Outcome == PlayerOutcome.Timeout;
 
         public static BonusCard[] ParseCardData(string data)
         {
@@ -123,17 +105,17 @@ namespace ImperaPlus.Domain.Games
             }
 
             return data
-                    .Split(';')
-                    .Where(x => !string.IsNullOrEmpty(x))
-                    .Select(source => (BonusCard)Enum.Parse(typeof(BonusCard), source))
-                    .ToArray();
+                .Split(';')
+                .Where(x => !string.IsNullOrEmpty(x))
+                .Select(source => (BonusCard)Enum.Parse(typeof(BonusCard), source))
+                .ToArray();
         }
 
         internal int ExchangeCards()
         {
             var bonusUnits = 0;
 
-            var cards = this.Cards;
+            var cards = Cards;
             Array.Sort(cards);
 
             var counts = new List<int>();
@@ -150,7 +132,7 @@ namespace ImperaPlus.Domain.Games
 
             var newCards = new List<BonusCard>();
 
-            for (int i = 0; i < counts.Count(); ++i)
+            for (var i = 0; i < counts.Count(); ++i)
             {
                 var count = counts[i] - tripleBonusCount;
 
@@ -165,20 +147,20 @@ namespace ImperaPlus.Domain.Games
                 newCards.AddRange(Enumerable.Repeat((BonusCard)i, count));
             }
 
-            this.Cards = newCards.ToArray();
-            this.Bonus += bonusUnits;
+            Cards = newCards.ToArray();
+            Bonus += bonusUnits;
 
             return bonusUnits;
         }
 
         public void Hide()
         {
-            if (this.Team.Game.State == GameState.Open || this.State != PlayerState.InActive)
+            if (Team.Game.State == GameState.Open || State != PlayerState.InActive)
             {
                 throw new DomainException(ErrorCode.CannotHideGame, "Cannot hide game for player");
             }
 
-            this.IsHidden = true;
+            IsHidden = true;
         }
 
         /// <summary>
@@ -186,40 +168,40 @@ namespace ImperaPlus.Domain.Games
         /// </summary>
         public void Surrender()
         {
-            if (this.Outcome != PlayerOutcome.None)
+            if (Outcome != PlayerOutcome.None)
             {
                 throw new DomainException(ErrorCode.CannotSurrender, "Player is not active");
             }
 
-            var game = this.Team.Game;
+            var game = Team.Game;
             if (game.State != GameState.Active)
             {
                 throw new DomainException(ErrorCode.GameNotActive, "Can only surrender if game is active");
             }
 
-            this.Outcome = PlayerOutcome.Surrendered;
-            this.State = PlayerState.InActive;
+            Outcome = PlayerOutcome.Surrendered;
+            State = PlayerState.InActive;
 
-            this.ForfeitCountries();
+            ForfeitCountries();
 
-            this.Team.Game.GameHistory.RecordPlayerSurrendered(this);
-            this.Team.Game.CheckForVictory();
+            Team.Game.GameHistory.RecordPlayerSurrendered(this);
+            Team.Game.CheckForVictory();
 
-            this.EventQueue.Raise(new PlayerSurrenderedEvent(this.Team.Game, this));
+            EventQueue.Raise(new PlayerSurrenderedEvent(Team.Game, this));
 
-            if (this.Game.CurrentPlayer == this)
+            if (Game.CurrentPlayer == this)
             {
                 // Player was the current player, advance turn
-                this.Game.EndTurn();
+                Game.EndTurn();
             }
         }
 
         public void ForfeitCountries()
         {
-            var game = this.Team.Game;
+            var game = Team.Game;
 
             // Change player's countries to neutral player
-            foreach (var country in this.Countries.ToArray())
+            foreach (var country in Countries.ToArray())
             {
                 game.Map.UpdateOwnership(this, null, country);
                 game.GameHistory.RecordOwnershipChange(this, null, country.CountryIdentifier);

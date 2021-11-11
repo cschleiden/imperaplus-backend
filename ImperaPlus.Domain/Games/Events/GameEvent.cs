@@ -6,13 +6,7 @@ namespace ImperaPlus.Domain.Games.Events
     {
         private readonly Game game;
 
-        public Game Game
-        {
-            get
-            {
-                return this.game;
-            }
-        }
+        public Game Game => game;
 
         public GameEvent(Game game)
         {

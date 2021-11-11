@@ -84,9 +84,9 @@ namespace ImperaPlus.Application.Games
 
         public GameSummary Create(GameCreationOptions creationOptions)
         {
-            var user = this.CurrentUser;
+            var user = CurrentUser;
 
-            var mapTemplate = this.mapTemplateProvider.GetTemplate(creationOptions.MapTemplate);
+            var mapTemplate = mapTemplateProvider.GetTemplate(creationOptions.MapTemplate);
             if (mapTemplate == null)
             {
                 throw new Exceptions.ApplicationException("Cannot find map template", ErrorCode.CannotFindMapTemplate);
@@ -94,17 +94,20 @@ namespace ImperaPlus.Application.Games
 
             if (creationOptions.VictoryConditions == null || !creationOptions.VictoryConditions.Any())
             {
-                throw new Exceptions.ApplicationException("VictoryConditions are required", ErrorCode.GenericApplicationError);
+                throw new Exceptions.ApplicationException("VictoryConditions are required",
+                    ErrorCode.GenericApplicationError);
             }
 
             if (creationOptions.VisibilityModifier == null || !creationOptions.VisibilityModifier.Any())
             {
-                throw new Exceptions.ApplicationException("VisibilityModifier are required", ErrorCode.GenericApplicationError);
+                throw new Exceptions.ApplicationException("VisibilityModifier are required",
+                    ErrorCode.GenericApplicationError);
             }
 
             if (creationOptions.TimeoutInSeconds < 5 * 60)
             {
-                throw new Exceptions.ApplicationException("Timouts has to be at least 300 seconds", ErrorCode.GenericApplicationError);
+                throw new Exceptions.ApplicationException("Timouts has to be at least 300 seconds",
+                    ErrorCode.GenericApplicationError);
             }
 
             var password = creationOptions.Password;
@@ -118,7 +121,7 @@ namespace ImperaPlus.Application.Games
                 }
             }
 
-            var game = this.gameService.Create(
+            var game = gameService.Create(
                 Domain.Enums.GameType.Fun,
                 user,
                 creationOptions.Name,
@@ -147,24 +150,24 @@ namespace ImperaPlus.Application.Games
             {
                 using (TraceContext.Trace("Add Bot"))
                 {
-                    var botUser = this.UnitOfWork.Users.Query().First(x => x.UserName == Constants.BotName);
+                    var botUser = UnitOfWork.Users.Query().First(x => x.UserName == Constants.BotName);
                     game.AddPlayer(botUser, password);
                 }
             }
 
-            this.UnitOfWork.Games.Add(game);
+            UnitOfWork.Games.Add(game);
 
             if (game.CanStart)
             {
                 using (TraceContext.Trace("Start Game"))
                 {
-                    game.Start(mapTemplate, this.randomGenProvider.GetRandomGen());
+                    game.Start(mapTemplate, randomGenProvider.GetRandomGen());
                 }
             }
 
             using (TraceContext.Trace("Save Game"))
             {
-                this.UnitOfWork.Commit();
+                UnitOfWork.Commit();
             }
 
             return Mapper.Map<GameSummary>(game);
@@ -172,94 +175,94 @@ namespace ImperaPlus.Application.Games
 
         public void Delete(long gameId)
         {
-            this.gameService.Delete(this.CurrentUser, gameId);
+            gameService.Delete(CurrentUser, gameId);
 
-            this.UnitOfWork.Commit();
+            UnitOfWork.Commit();
         }
 
         public void Join(long gameId, string password)
         {
-            var game = this.GetGame(gameId);
-            var user = this.CurrentUser;
+            var game = GetGame(gameId);
+            var user = CurrentUser;
 
             game.AddPlayer(user, password);
 
             // Ensure all Ids are generated
-            this.UnitOfWork.Commit();
+            UnitOfWork.Commit();
 
-            var mapTemplate = this.mapTemplateProvider.GetTemplate(game.MapTemplateName);
+            var mapTemplate = mapTemplateProvider.GetTemplate(game.MapTemplateName);
 
             if (game.CanStart)
             {
-                game.Start(mapTemplate, this.randomGenProvider.GetRandomGen());
+                game.Start(mapTemplate, randomGenProvider.GetRandomGen());
             }
 
-            this.UnitOfWork.Commit();
+            UnitOfWork.Commit();
         }
 
         public void Leave(long gameId)
         {
-            var game = this.GetGame(gameId);
-            var user = this.CurrentUser;
+            var game = GetGame(gameId);
+            var user = CurrentUser;
 
             game.Leave(user);
 
-            this.UnitOfWork.Commit();
+            UnitOfWork.Commit();
         }
 
         public GameSummary Surrender(long gameId)
         {
-            var game = this.GetGame(gameId);
-            var user = this.CurrentUser;
+            var game = GetGame(gameId);
+            var user = CurrentUser;
 
             var player = game.GetPlayerForUser(user.Id);
             player.Surrender();
 
-            this.UnitOfWork.Commit();
+            UnitOfWork.Commit();
 
             return Mapper.Map<GameSummary>(game);
         }
 
         public void Hide(long gameId)
         {
-            var game = this.GetGame(gameId);
+            var game = GetGame(gameId);
 
-            var user = this.CurrentUser;
+            var user = CurrentUser;
 
             var player = game.GetPlayerForUser(user.Id);
             player.Hide();
 
-            this.UnitOfWork.Commit();
+            UnitOfWork.Commit();
         }
 
         public IEnumerable<long> HideAll()
         {
             var hiddenGameIds = new List<long>();
 
-            var games = this.UnitOfWork.Games.FindNotHiddenNotOutcomeForUser(this.CurrentUserId, Domain.Enums.PlayerOutcome.None);
+            var games = UnitOfWork.Games.FindNotHiddenNotOutcomeForUser(CurrentUserId, Domain.Enums.PlayerOutcome.None);
             foreach (var game in games)
             {
-                var player = game.GetPlayerForUser(this.CurrentUserId);
+                var player = game.GetPlayerForUser(CurrentUserId);
                 player.Hide();
 
                 hiddenGameIds.Add(game.Id);
             }
 
-            this.UnitOfWork.Commit();
+            UnitOfWork.Commit();
 
             return hiddenGameIds;
         }
 
         public Game Get(long gameId)
         {
-            var game = this.GetGame(gameId);
+            var game = GetGame(gameId);
 
-            return this.MapAndApplyModifiers(game);
+            return MapAndApplyModifiers(game);
         }
 
         public HistoryTurn Get(long gameId, long turnNo)
         {
-            var game = this.GetGameWithHistory(gameId, turnNo);
+            var game = GetGameWithHistory(gameId, turnNo);
 
             var historyTurn = game.GameHistory.GetTurn(turnNo);
 
@@ -274,46 +277,46 @@ namespace ImperaPlus.Application.Games
                 previousMap = historyTurn.Game.Map;
             }
 
-            return this.MapAndApplyModifiers(historyTurn, previousMap);
+            return MapAndApplyModifiers(historyTurn, previousMap);
         }
 
         public IEnumerable<GameSummary> GetOpen()
         {
-            var userId = this.CurrentUserId;
+            var userId = CurrentUserId;
 
-            return Mapper.Map<IEnumerable<GameSummary>>(this.UnitOfWork.Games.FindOpen(userId));
+            return Mapper.Map<IEnumerable<GameSummary>>(UnitOfWork.Games.FindOpen(userId));
         }
 
         public IEnumerable<GameSummary> GetForCurrentUserReadOnly()
         {
-            var userId = this.CurrentUserId;
+            var userId = CurrentUserId;
 
-            return Mapper.Map<IEnumerable<GameSummary>>(this.UnitOfWork.Games.FindForUser(userId));
+            return Mapper.Map<IEnumerable<GameSummary>>(UnitOfWork.Games.FindForUser(userId));
         }
 
         public IEnumerable<GameSummary> GetForCurrentUserTurn()
         {
-            var userId = this.CurrentUserId;
+            var userId = CurrentUserId;
 
-            return Mapper.Map<IEnumerable<GameSummary>>(this.UnitOfWork.Games.FindForUserAtTurnReadOnly(userId));
+            return Mapper.Map<IEnumerable<GameSummary>>(UnitOfWork.Games.FindForUserAtTurnReadOnly(userId));
         }
 
         public GameChatMessage SendMessage(long gameId, string text, bool isPublic)
         {
-            var user = this.CurrentUser;
-            var game = this.GetGame(gameId);
+            var user = CurrentUser;
+            var game = GetGame(gameId);
 
             var message = game.PostMessage(user, text, isPublic);
 
-            this.UnitOfWork.Commit();
+            UnitOfWork.Commit();
 
             return Mapper.Map<GameChatMessage>(message);
         }
 
         public IEnumerable<GameChatMessage> GetMessages(long gameId, bool isPublic)
         {
-            var user = this.CurrentUser;
-            var messages = this.UnitOfWork.Games.GetGameMessages(gameId, isPublic, user.Id);
+            var user = CurrentUser;
+            var messages = UnitOfWork.Games.GetGameMessages(gameId, isPublic, user.Id);
             return Mapper.Map<IEnumerable<GameChatMessage>>(messages);
         }
     }

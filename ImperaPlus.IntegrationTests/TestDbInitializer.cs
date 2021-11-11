@@ -1,4 +1,3 @@
-
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,9 +23,7 @@ namespace ImperaPlus.IntegrationTests
             {
                 context.MapTemplates.Add(new Domain.Map.MapTemplateDescriptor
                 {
-                    Name = "TestMap",
-                    LastModifiedAt = DateTime.UtcNow,
-                    CreatedAt = DateTime.UtcNow
+                    Name = "TestMap", LastModifiedAt = DateTime.UtcNow, CreatedAt = DateTime.UtcNow
                 });
             }
 

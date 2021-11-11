@@ -6,7 +6,7 @@ namespace ImperaPlus.DataAccess.Repositories
 {
     internal class PlayerRepository : GenericRepository<Player>, IPlayerRepository
     {
-        public PlayerRepository(DbContext context) 
+        public PlayerRepository(DbContext context)
             : base(context)
         {
         }

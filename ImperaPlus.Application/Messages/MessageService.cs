@@ -28,7 +28,8 @@ namespace ImperaPlus.Application.Messages
     {
         private IUserNotificationService userNotificationService;
 
-        public MessageService(IUnitOfWork unitOfWork, IMapper mapper, IUserProvider userProvider, IUserNotificationService userNotificationService)
+        public MessageService(IUnitOfWork unitOfWork, IMapper mapper, IUserProvider userProvider,
+            IUserNotificationService userNotificationService)
             : base(unitOfWork, mapper, userProvider)
         {
             this.userNotificationService = userNotificationService;
@@ -36,9 +37,9 @@ namespace ImperaPlus.Application.Messages
 
         public DTO.Messages.Message Get(Guid id)
         {
-            var currentUserId = this.userProvider.GetCurrentUserId();
+            var currentUserId = userProvider.GetCurrentUserId();
 
-            var message = this.UnitOfWork.Messages
+            var message = UnitOfWork.Messages
                 .Query()
                 .Include(x => x.Owner)
                 .Include(x => x.Recipient)
@@ -54,12 +55,13 @@ namespace ImperaPlus.Application.Messages
             return Mapper.Map<DTO.Messages.Message>(message);
         }
 
-        public IEnumerable<DTO.Messages.Message> Get(DTO.Messages.MessageFolder folder = DTO.Messages.MessageFolder.Inbox)
+        public IEnumerable<DTO.Messages.Message> Get(
+            DTO.Messages.MessageFolder folder = DTO.Messages.MessageFolder.Inbox)
         {
             var mappedFolder = Mapper.Map<Domain.Messages.MessageFolder>(folder);
-            var currentUserId = this.userProvider.GetCurrentUserId();
+            var currentUserId = userProvider.GetCurrentUserId();
 
-            return Mapper.Map<IEnumerable<DTO.Messages.Message>>(this.UnitOfWork.Messages
+            return Mapper.Map<IEnumerable<DTO.Messages.Message>>(UnitOfWork.Messages
                 .Query()
                 .Include(x => x.Owner)
                 .Include(x => x.Recipient)
@@ -69,28 +71,20 @@ namespace ImperaPlus.Application.Messages
 
         public IEnumerable<DTO.Messages.FolderInformation> GetFolderInformation()
         {
-            var currentUserId = this.userProvider.GetCurrentUserId();
+            var currentUserId = userProvider.GetCurrentUserId();
 
-            var messagesByFolder = this.UnitOfWork.Messages
+            var messagesByFolder = UnitOfWork.Messages
                 .Query()
                 .Where(m => m.OwnerId == currentUserId)
                 .GroupBy(m => m.Folder)
-                .Select(gr => new 
-                { 
-                    Folder = gr.Key, 
-                    Count = gr.Count()
-                })
+                .Select(gr => new { Folder = gr.Key, Count = gr.Count() })
                 .ToDictionary(x => x.Folder);
 
-            var unreadMessagesByFolder = this.UnitOfWork.Messages
+            var unreadMessagesByFolder = UnitOfWork.Messages
                 .Query()
                 .Where(m => m.OwnerId == currentUserId && !m.IsRead)
                 .GroupBy(m => m.Folder)
-                .Select(gr => new
-                {
-                    Folder = gr.Key,
-                    Count = gr.Count()
-                })
+                .Select(gr => new { Folder = gr.Key, Count = gr.Count() })
                 .ToDictionary(x => x.Folder, x => x.Count);
 
             return new[] { Domain.Messages.MessageFolder.Inbox, Domain.Messages.MessageFolder.Sent }.Select(folder =>
@@ -108,12 +102,7 @@ namespace ImperaPlus.Application.Messages
                 }
                 else
                 {
-                    return new DTO.Messages.FolderInformation
-                    {
-                        Folder = mappedFolder,
-                        Count = 0,
-                        UnreadCount = 0
-                    };
+                    return new DTO.Messages.FolderInformation { Folder = mappedFolder, Count = 0, UnreadCount = 0 };
                 }
             });
         }
@@ -122,30 +111,32 @@ namespace ImperaPlus.Application.Messages
         {
             Require.NotEmpty(messageId, nameof(messageId));
 
-            var message = this.UnitOfWork.Messages.FindById(messageId);
+            var message = UnitOfWork.Messages.FindById(messageId);
 
-            if (message.OwnerId != this.userProvider.GetCurrentUserId())
+            if (message.OwnerId != userProvider.GetCurrentUserId())
             {
-                throw new Exceptions.ApplicationException("Can only mark own messages as read", ErrorCode.UserIsNotAllowedToPerformAction);
+                throw new Exceptions.ApplicationException("Can only mark own messages as read",
+                    ErrorCode.UserIsNotAllowedToPerformAction);
             }
 
             message.IsRead = true;
 
-            this.UnitOfWork.Commit();
+            UnitOfWork.Commit();
         }
 
         public void Delete(Guid messageId)
         {
             Require.NotEmpty(messageId, nameof(messageId));
 
-            var message = this.UnitOfWork.Messages.FindById(messageId);
-            if (message.OwnerId != this.userProvider.GetCurrentUserId())
+            var message = UnitOfWork.Messages.FindById(messageId);
+            if (message.OwnerId != userProvider.GetCurrentUserId())
             {
-                throw new Exceptions.ApplicationException("Can only mark own messages as read", ErrorCode.UserIsNotAllowedToPerformAction);
+                throw new Exceptions.ApplicationException("Can only mark own messages as read",
+                    ErrorCode.UserIsNotAllowedToPerformAction);
             }
 
-            this.UnitOfWork.Messages.Remove(message);
-            this.UnitOfWork.Commit();
+            UnitOfWork.Messages.Remove(message);
+            UnitOfWork.Commit();
         }
 
         public Guid SendMessage(string toId, string subject, string text)
@@ -154,27 +145,29 @@ namespace ImperaPlus.Application.Messages
             Require.NotNullOrEmpty(subject, nameof(subject));
             Require.NotNullOrEmpty(text, nameof(text));
 
-            var toUser = this.UnitOfWork.Users.FindById(toId);
+            var toUser = UnitOfWork.Users.FindById(toId);
             if (toUser == null)
             {
                 throw new Exceptions.ApplicationException("Cannot find user", ErrorCode.UserDoesNotExist);
             }
 
-            var messageFrom = new Domain.Messages.Message(this.CurrentUser, this.CurrentUser, toUser, subject, text, Domain.Messages.MessageFolder.Sent);
+            var messageFrom = new Domain.Messages.Message(CurrentUser, CurrentUser, toUser, subject, text,
+                Domain.Messages.MessageFolder.Sent);
             messageFrom.IsRead = true;
-            var messageTo = new Domain.Messages.Message(toUser, this.CurrentUser, toUser, subject, text, Domain.Messages.MessageFolder.Inbox);
+            var messageTo = new Domain.Messages.Message(toUser, CurrentUser, toUser, subject, text,
+                Domain.Messages.MessageFolder.Inbox);
 
-            this.UnitOfWork.Messages.Add(messageFrom);
-            this.UnitOfWork.Messages.Add(messageTo);
+            UnitOfWork.Messages.Add(messageFrom);
+            UnitOfWork.Messages.Add(messageTo);
 
             // Notify recipient
-            this.userNotificationService.SendNotification(toUser.Id, new DTO.Notifications.NewMessageNotification
-            {
-                FromUserName = this.CurrentUser.UserName,
-                Subject = subject
-            });
-            
-            this.UnitOfWork.Commit();
+            userNotificationService.SendNotification(toUser.Id,
+                new DTO.Notifications.NewMessageNotification
+                {
+                    FromUserName = CurrentUser.UserName, Subject = subject
+                });
+
+            UnitOfWork.Commit();
 
             return messageTo.Id;
         }

@@ -15,12 +15,13 @@ namespace ImperaPlus.DataAccess.Repositories
 
         public NewsEntry FindById(long id)
         {
-            return this.DbSet.FirstOrDefault(x => x.Id == id);
+            return DbSet.FirstOrDefault(x => x.Id == id);
         }
 
         public IEnumerable<NewsEntry> GetOrdered(int count)
         {
-            return this.DbSet.OrderByDescending(x => x.CreatedAt).Take(count).Include(x => x.CreatedBy).Include(x => x.Content);
+            return DbSet.OrderByDescending(x => x.CreatedAt).Take(count).Include(x => x.CreatedBy)
+                .Include(x => x.Content);
         }
     }
 }

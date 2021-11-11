@@ -5,7 +5,7 @@
         public PlayerSurrenderedEvent(Game game, Player player)
             : base(game)
         {
-            this.Player = player;
+            Player = player;
         }
 
         public Player Player { get; set; }

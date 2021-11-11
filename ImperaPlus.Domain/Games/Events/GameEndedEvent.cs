@@ -4,7 +4,7 @@
     {
         public GameEndedEvent(Game game)
             : base(game)
-        {            
+        {
         }
     }
 }

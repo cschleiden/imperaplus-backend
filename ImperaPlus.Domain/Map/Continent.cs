@@ -5,14 +5,14 @@ namespace ImperaPlus.Domain.Map
     public class Continent
     {
         private Continent()
-        {            
+        {
         }
 
         public Continent(string name, int bonus)
         {
-            this.Name = name;
-            this.Bonus = bonus;
-            this.Countries = new HashSet<CountryTemplate>();
+            Name = name;
+            Bonus = bonus;
+            Countries = new HashSet<CountryTemplate>();
         }
 
         public long Id { get; set; }

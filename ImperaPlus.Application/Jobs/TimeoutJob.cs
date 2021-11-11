@@ -17,39 +17,40 @@ namespace ImperaPlus.Application.Jobs
 
         public TimeoutJob(ILifetimeScope scope)
             : base(scope)
-        { 
-            this.unitOfWork = this.LifetimeScope.Resolve<IUnitOfWork>();
+        {
+            unitOfWork = LifetimeScope.Resolve<IUnitOfWork>();
         }
 
         public override void Handle(PerformContext performContext)
         {
             base.Handle(performContext);
 
-            this.Log.Log(Domain.LogLevel.Info, "Processing timeouts");
+            Log.Log(Domain.LogLevel.Info, "Processing timeouts");
 
-            var gameIds = this.unitOfWork.Games.FindTimeoutGames().ToArray();
-            
-            foreach(var gameId in gameIds)
+            var gameIds = unitOfWork.Games.FindTimeoutGames().ToArray();
+
+            foreach (var gameId in gameIds)
             {
                 try
                 {
-                    var game = this.unitOfWork.Games.Find(gameId);
-                    this.Log.Log(Domain.LogLevel.Info, "Processing timeout in game {0} {1}", game.Id, game.Name);
+                    var game = unitOfWork.Games.Find(gameId);
+                    Log.Log(Domain.LogLevel.Info, "Processing timeout in game {0} {1}", game.Id, game.Name);
                     game.ProcessTimeouts();
                 }
                 catch (Exception e)
                 {
                     // Log and continue with next game
-                    this.Log.Log(Domain.LogLevel.Error, "Error while processing timeouts for game {0} {1}", gameId, e.ToString());
+                    Log.Log(Domain.LogLevel.Error, "Error while processing timeouts for game {0} {1}", gameId,
+                        e.ToString());
                 }
 
                 try
                 {
-                    this.unitOfWork.Commit();
+                    unitOfWork.Commit();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    this.Log.Log(Domain.LogLevel.Error, "DbUpdateConcurrencyException for game {0}", gameId);
+                    Log.Log(Domain.LogLevel.Error, "DbUpdateConcurrencyException for game {0}", gameId);
                 }
             }
         }

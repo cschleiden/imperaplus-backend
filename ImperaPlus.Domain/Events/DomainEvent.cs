@@ -17,7 +17,7 @@ namespace ImperaPlus.Domain.Events
     {
         private readonly IComponentContext context;
 
-        private List<IDomainEvent> queuedEvents = new List<IDomainEvent>();
+        private List<IDomainEvent> queuedEvents = new();
 
         public EventAggregator(IComponentContext context)
         {
@@ -30,21 +30,21 @@ namespace ImperaPlus.Domain.Events
                 "EventAggregator: Raise event " + args.GetType().Name,
                 () =>
                 {
-                    this.RaiseInternal<TEvent>(args);
+                    RaiseInternal<TEvent>(args);
 
                     var completedHandlerType = typeof(ICompletedEventHandler<>).MakeGenericType(args.GetType());
-                    if (this.context.IsRegistered(completedHandlerType))
+                    if (context.IsRegistered(completedHandlerType))
                     {
                         // Queue for later
-                        this.queuedEvents.Add(args);
+                        queuedEvents.Add(args);
                     }
                 });
         }
 
         public void HandleQueuedEvents()
         {
-            var events = this.queuedEvents.ToArray();
-            this.queuedEvents.Clear();
+            var events = queuedEvents.ToArray();
+            queuedEvents.Clear();
 
             foreach (var queuedEvent in events)
             {
@@ -54,7 +54,7 @@ namespace ImperaPlus.Domain.Events
                     "EventAggregator: Handle queued event " + type.Name,
                     () =>
                     {
-                        this.GetType()
+                        GetType()
                             .GetMethod("RaiseInternal")
                             .MakeGenericMethod(type)
                             .Invoke(this, new object[] { queuedEvent, true });
@@ -65,17 +65,17 @@ namespace ImperaPlus.Domain.Events
         public void RaiseInternal<TEvent>(TEvent args, bool completed = false) where TEvent : IDomainEvent
         {
             TraceContext.Trace(
-            "EventAggregator: Raise internal for " + typeof(TEvent).Name,
+                "EventAggregator: Raise internal for " + typeof(TEvent).Name,
                 () =>
                 {
                     IEnumerable<IEventHandler<TEvent>> handlers;
                     if (completed)
                     {
-                        handlers = this.context.Resolve<IEnumerable<ICompletedEventHandler<TEvent>>>();
+                        handlers = context.Resolve<IEnumerable<ICompletedEventHandler<TEvent>>>();
                     }
                     else
                     {
-                        handlers = this.context.Resolve<IEnumerable<IEventHandler<TEvent>>>();
+                        handlers = context.Resolve<IEnumerable<IEventHandler<TEvent>>>();
                     }
 
                     foreach (var handler in handlers)
@@ -87,7 +87,7 @@ namespace ImperaPlus.Domain.Events
                             {
                                 handler.Handle(args);
                             }
-                            catch(Exception ex)
+                            catch (Exception ex)
                             {
                                 Log
                                     .Error()

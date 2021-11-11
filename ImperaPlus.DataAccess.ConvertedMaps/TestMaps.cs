@@ -2,7 +2,7 @@
 
 namespace ImperaPlus.DataAccess.ConvertedMaps
 {
-    public static partial class Maps    
+    public static partial class Maps
     {
         public static MapTemplate TestMap()
         {
@@ -13,10 +13,7 @@ namespace ImperaPlus.DataAccess.ConvertedMaps
             C - D
             */
 
-            var mapTemplate = new MapTemplate("TestMap")
-            {
-                Image = "testmap.jpg"
-            };
+            var mapTemplate = new MapTemplate("TestMap") { Image = "testmap.jpg" };
 
             var countryA = new CountryTemplate("A", "A") { X = 0, Y = 0 };
             mapTemplate.Countries.Add(countryA);

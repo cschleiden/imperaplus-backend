@@ -14,12 +14,12 @@ namespace ImperaPlus.Domain.Tests.Services
             var attackService = new AttackService(new AttackerWinsRandomGen());
 
             // Act
-            int attackerUnits = 3;
-            int defenderUnits = 2;
+            var attackerUnits = 3;
+            var defenderUnits = 2;
             int attackerUnitsLost;
             int defenderUnitsLost;
             var result = attackService.Attack(
-                attackerUnits, defenderUnits, 
+                attackerUnits, defenderUnits,
                 out attackerUnitsLost, out defenderUnitsLost);
 
             // Assert
@@ -35,8 +35,8 @@ namespace ImperaPlus.Domain.Tests.Services
             var attackService = new AttackService(new DefenderWinsRandomGen());
 
             // Act
-            int attackerUnits = 2;
-            int defenderUnits = 2;
+            var attackerUnits = 2;
+            var defenderUnits = 2;
             int attackerUnitsLost;
             int defenderUnitsLost;
             var result = attackService.Attack(
@@ -57,8 +57,8 @@ namespace ImperaPlus.Domain.Tests.Services
             var attackService = new AttackService(randomService);
 
             // Act
-            int attackerUnits = 2;
-            int defenderUnits = 2;
+            var attackerUnits = 2;
+            var defenderUnits = 2;
             int attackerUnitsLost;
             int defenderUnitsLost;
             var result = attackService.Attack(
@@ -69,6 +69,6 @@ namespace ImperaPlus.Domain.Tests.Services
             Assert.IsFalse(result);
             Assert.AreEqual(attackerUnits, attackerUnitsLost);
             Assert.AreEqual(0, defenderUnitsLost);
-        }        
+        }
     }
 }

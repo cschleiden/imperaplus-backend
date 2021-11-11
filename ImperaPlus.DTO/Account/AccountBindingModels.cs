@@ -4,8 +4,7 @@ namespace ImperaPlus.DTO.Account
 {
     public class AddExternalLoginBindingModel
     {
-        [Required]
-        public string ExternalAccessToken { get; set; }
+        [Required] public string ExternalAccessToken { get; set; }
     }
 
     public class ChangePasswordBindingModel
@@ -19,8 +18,7 @@ namespace ImperaPlus.DTO.Account
         [DataType(DataType.Password)]
         public string NewPassword { get; set; }
 
-        [DataType(DataType.Password)]
-        public string ConfirmPassword { get; set; }
+        [DataType(DataType.Password)] public string ConfirmPassword { get; set; }
     }
 
     public class DeleteAccountBindingModel
@@ -46,8 +44,7 @@ namespace ImperaPlus.DTO.Account
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        [DataType(DataType.Password)]
-        public string ConfirmPassword { get; set; }
+        [DataType(DataType.Password)] public string ConfirmPassword { get; set; }
 
         /// <summary>
         /// Password reset confirmation code
@@ -103,8 +100,7 @@ namespace ImperaPlus.DTO.Account
         [Required]
         public string CallbackUrl { get; set; }
 
-        [Required]
-        public string UserName { get; set; }
+        [Required] public string UserName { get; set; }
 
         /// <summary>
         /// Email address of user to request password for
@@ -154,7 +150,7 @@ namespace ImperaPlus.DTO.Account
         /// <summary>
         /// Id of user to confirm
         /// </summary>
-        [Required]        
+        [Required]
         public string UserId { get; set; }
 
         /// <summary>
@@ -166,21 +162,16 @@ namespace ImperaPlus.DTO.Account
 
     public class RegisterExternalBindingModel
     {
-        [Required]
-        public string UserName { get; set; }
+        [Required] public string UserName { get; set; }
 
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; }
+        [Required] [EmailAddress] public string Email { get; set; }
     }
 
     public class RemoveLoginBindingModel
     {
-        [Required]
-        public string LoginProvider { get; set; }
+        [Required] public string LoginProvider { get; set; }
 
-        [Required]
-        public string ProviderKey { get; set; }
+        [Required] public string ProviderKey { get; set; }
     }
 
     public class SetPasswordBindingModel
@@ -192,8 +183,7 @@ namespace ImperaPlus.DTO.Account
         public string NewPassword { get; set; }
 
         // TODO: CS: Localize
-        [DataType(DataType.Password)]
-        public string ConfirmPassword { get; set; }
+        [DataType(DataType.Password)] public string ConfirmPassword { get; set; }
     }
 
     public class LanguageModel

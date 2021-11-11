@@ -17,7 +17,7 @@ namespace ImperaPlus.Domain.Tests.Helper
         {
             this.errorCode = errorCode;
         }
-        
+
         protected override void Verify(Exception exception)
         {
             Assert.IsNotNull(exception);
@@ -25,10 +25,11 @@ namespace ImperaPlus.Domain.Tests.Helper
 
             var domainException = (DomainException)exception;
 
-            if (this.errorCode.HasValue)
+            if (errorCode.HasValue)
             {
-                Assert.AreEqual(this.errorCode, domainException.ErrorCode,
-                    string.Format(CultureInfo.InvariantCulture, "ErrorCode {0} expected, but received {1}", this.errorCode, domainException.ErrorCode));
+                Assert.AreEqual(errorCode, domainException.ErrorCode,
+                    string.Format(CultureInfo.InvariantCulture, "ErrorCode {0} expected, but received {1}", errorCode,
+                        domainException.ErrorCode));
             }
         }
     }

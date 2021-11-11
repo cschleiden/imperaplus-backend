@@ -12,25 +12,25 @@ namespace ImperaPlus.Backend.Controllers
         protected BaseController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
-            this.Mapper = mapper;
+            Mapper = mapper;
         }
 
         protected IActionResult Map<T>(object source)
         {
-            return this.Ok(this.Mapper.Map<T>(source));
+            return Ok(Mapper.Map<T>(source));
         }
 
         protected IActionResult CommitAndMap<T>(object source)
         {
-            this.unitOfWork.Commit();
+            unitOfWork.Commit();
 
-            return this.Map<T>(source);
+            return Map<T>(source);
         }
 
         protected IActionResult Commit()
         {
-            this.unitOfWork.Commit();
-            return this.Ok();
+            unitOfWork.Commit();
+            return Ok();
         }
     }
 }

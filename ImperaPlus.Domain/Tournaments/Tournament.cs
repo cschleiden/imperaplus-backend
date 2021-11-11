@@ -23,23 +23,20 @@ namespace ImperaPlus.Domain.Tournaments
         /// <returns>Empty tournament instance</returns>
         public static Tournament CreateEmpty()
         {
-            return new Tournament()
-            {
-                Options = new GameOptions()
-            };
+            return new Tournament() { Options = new GameOptions() };
         }
 
         protected Tournament()
         {
-            this.Id = Guid.NewGuid();
+            Id = Guid.NewGuid();
 
-            this.MapTemplates = new SerializedCollection<string>();
+            MapTemplates = new SerializedCollection<string>();
 
-            this.Groups = new HashSet<TournamentGroup>();
-            this.Teams = new HashSet<TournamentTeam>();
-            this.Pairings = new HashSet<TournamentPairing>();
+            Groups = new HashSet<TournamentGroup>();
+            Teams = new HashSet<TournamentTeam>();
+            Pairings = new HashSet<TournamentPairing>();
 
-            this.Phase = 0;
+            Phase = 0;
         }
 
         public Tournament(
@@ -56,47 +53,55 @@ namespace ImperaPlus.Domain.Tournaments
             Require.NotNullOrEmpty(name, nameof(name));
             Require.NotNull(options, nameof(options));
 
-            this.Name = name;
+            Name = name;
 
             if (numberOfTeams <= 0 || Math.Pow(2, Math.Log(numberOfTeams, 2)) != numberOfTeams)
             {
                 throw new DomainException(
-                    ErrorCode.TournamentInvalidOption, "Number of teams has to be a power of two and greater than zero");
+                    ErrorCode.TournamentInvalidOption,
+                    "Number of teams has to be a power of two and greater than zero");
             }
 
-            this.NumberOfTeams = numberOfTeams;
+            NumberOfTeams = numberOfTeams;
 
-            if (numberOfGroupGames < 0 || (numberOfGroupGames > 0 && numberOfGroupGames % 2 == 0))
+            if (numberOfGroupGames < 0 || numberOfGroupGames > 0 && numberOfGroupGames % 2 == 0)
             {
-                throw new DomainException(ErrorCode.TournamentInvalidOption, "Number of group games has to be odd and 0 or more");
+                throw new DomainException(ErrorCode.TournamentInvalidOption,
+                    "Number of group games has to be odd and 0 or more");
             }
-            this.NumberOfGroupGames = numberOfGroupGames;
 
-            if (this.NumberOfGroupGames > 0)
+            NumberOfGroupGames = numberOfGroupGames;
+
+            if (NumberOfGroupGames > 0)
             {
                 if (numberOfTeams < 8)
                 {
-                    throw new DomainException(ErrorCode.TournamentInvalidOption, "At least 8 teams required for group mode");
+                    throw new DomainException(ErrorCode.TournamentInvalidOption,
+                        "At least 8 teams required for group mode");
                 }
             }
 
             if (numberOfKnockoutGames <= 0 || numberOfKnockoutGames % 2 == 0)
             {
-                throw new DomainException(ErrorCode.TournamentInvalidOption, "Number of knockout games has to be odd and greater than zero");
+                throw new DomainException(ErrorCode.TournamentInvalidOption,
+                    "Number of knockout games has to be odd and greater than zero");
             }
-            this.NumberOfKnockoutGames = numberOfKnockoutGames;
+
+            NumberOfKnockoutGames = numberOfKnockoutGames;
 
             if (numberOfFinalGames <= 0 || numberOfFinalGames % 2 == 0)
             {
-                throw new DomainException(ErrorCode.TournamentInvalidOption, "Number of final games has to be odd and greater than zero");
+                throw new DomainException(ErrorCode.TournamentInvalidOption,
+                    "Number of final games has to be odd and greater than zero");
             }
-            this.NumberOfFinalGames = numberOfFinalGames;
 
-            this.OptionsId = options.Id;
-            this.Options = options;
+            NumberOfFinalGames = numberOfFinalGames;
 
-            this.StartOfRegistration = startOfRegistration;
-            this.StartOfTournament = startOfTournament;
+            OptionsId = options.Id;
+            Options = options;
+
+            StartOfRegistration = startOfRegistration;
+            StartOfTournament = startOfTournament;
         }
 
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -164,20 +169,13 @@ namespace ImperaPlus.Domain.Tournaments
 
         public TournamentState State { get; set; }
 
-        [NotMapped]
-        public SerializedCollection<string> MapTemplates { get; private set; }
+        [NotMapped] public SerializedCollection<string> MapTemplates { get; private set; }
 
         public string SerializedMapTemplates
         {
-            get
-            {
-                return this.MapTemplates.Serialize();
-            }
+            get => MapTemplates.Serialize();
 
-            set
-            {
-                this.MapTemplates = new SerializedCollection<string>(value);
-            }
+            set => MapTemplates = new SerializedCollection<string>(value);
         }
 
         /// <summary>
@@ -188,17 +186,17 @@ namespace ImperaPlus.Domain.Tournaments
         {
             get
             {
-                if (this.State == TournamentState.Open)
+                if (State == TournamentState.Open)
                 {
                     return 0;
                 }
 
-                if (this.State == TournamentState.Closed)
+                if (State == TournamentState.Closed)
                 {
                     return 100;
                 }
 
-                return (this.ActiveTeams.Count() / this.Teams.Count()) * 100;
+                return ActiveTeams.Count() / Teams.Count() * 100;
             }
         }
 
@@ -206,99 +204,50 @@ namespace ImperaPlus.Domain.Tournaments
         /// Value indicating whether tournament is for single player teams
         /// </summary>
         [NotMapped]
-        public bool IsSinglePlayerTournament
-        {
-            get
-            {
-                return this.Options.NumberOfPlayersPerTeam == 1;
-            }
-        }
+        public bool IsSinglePlayerTournament => Options.NumberOfPlayersPerTeam == 1;
 
         /// <summary>
         /// Gets value indicating whether players can register
         /// </summary>
         [NotMapped]
-        public bool CanRegister
-        {
-            get
-            {
-                return this.State == TournamentState.Open
-                        && DateTime.UtcNow >= this.StartOfRegistration
-                        && DateTime.UtcNow < this.StartOfTournament
-                        && this.Teams.SelectMany(x => x.Participants).Count() <= this.NumberOfTeams * this.Options.NumberOfPlayersPerTeam;
-            }
-        }
+        public bool CanRegister =>
+            State == TournamentState.Open
+            && DateTime.UtcNow >= StartOfRegistration
+            && DateTime.UtcNow < StartOfTournament
+            && Teams.SelectMany(x => x.Participants).Count() <= NumberOfTeams * Options.NumberOfPlayersPerTeam;
 
         /// <summary>
         /// Gets value indicating whether tournament can be started
         /// </summary>
         [NotMapped]
-        public bool CanStart
-        {
-            get
-            {
-                return this.State == TournamentState.Open
-                    && this.Teams.SelectMany(x => x.Participants).Count() == this.NumberOfTeams * this.Options.NumberOfPlayersPerTeam
-                    && DateTime.UtcNow >= this.StartOfTournament;
-            }
-        }
+        public bool CanStart =>
+            State == TournamentState.Open
+            && Teams.SelectMany(x => x.Participants).Count() == NumberOfTeams * Options.NumberOfPlayersPerTeam
+            && DateTime.UtcNow >= StartOfTournament;
 
         /// <summary>
         /// Gets value indicating whether the tournament has a group phase or only knockout
         /// </summary>
         [NotMapped]
-        public bool HasGroupPhase
-        {
-            get
-            {
-                return this.NumberOfGroupGames > 0;
-            }
-        }
+        public bool HasGroupPhase => NumberOfGroupGames > 0;
+
+        [NotMapped] public bool CanStartNextRound => Pairings.All(p => p.CanWinnerBeDetermined) && !CanEnd;
+
+        [NotMapped] public bool CanEnd => ActiveTeams.Count() == 1;
 
         [NotMapped]
-        public bool CanStartNextRound
-        {
-            get
-            {
-                return this.Pairings.All(p => p.CanWinnerBeDetermined) && !this.CanEnd;
-            }
-        }
+        public IEnumerable<TournamentTeam> ActiveTeams => Teams.Where(t => t.State != TournamentTeamState.InActive);
 
-        [NotMapped]
-        public bool CanEnd
-        {
-            get
-            {
-                return this.ActiveTeams.Count() == 1;
-            }
-        }
-
-        [NotMapped]
-        public IEnumerable<TournamentTeam> ActiveTeams
-        {
-            get
-            {
-                return this.Teams.Where(t => t.State != TournamentTeamState.InActive);
-            }
-        }
-
-        [NotMapped]
-        public bool CanChangeTeams
-        {
-            get
-            {
-                return this.State == TournamentState.Open;
-            }
-        }
+        [NotMapped] public bool CanChangeTeams => State == TournamentState.Open;
 
         public string GetMapTemplateForGame(IRandomGen random)
         {
-            if (!this.MapTemplates.Any())
+            if (!MapTemplates.Any())
             {
                 throw new DomainException(ErrorCode.TournamentNoMapTemplates, "No map templates set for tournament");
             }
 
-            return this.MapTemplates.Shuffle(random).First();
+            return MapTemplates.Shuffle(random).First();
         }
 
         /// <summary>
@@ -310,13 +259,14 @@ namespace ImperaPlus.Domain.Tournaments
         {
             Require.NotNull(user, nameof(user));
 
-            if (!this.IsSinglePlayerTournament)
+            if (!IsSinglePlayerTournament)
             {
                 throw new DomainException(
-                    ErrorCode.TournamentRequiresExplicitTeam, "For team tournaments, joining a team explicitly is required");
+                    ErrorCode.TournamentRequiresExplicitTeam,
+                    "For team tournaments, joining a team explicitly is required");
             }
 
-            return this.AddUser(user, null);
+            return AddUser(user, null);
         }
 
         /// <summary>
@@ -330,14 +280,14 @@ namespace ImperaPlus.Domain.Tournaments
         {
             Require.NotNull(user, nameof(user));
 
-            if (!this.CanChangeTeams)
+            if (!CanChangeTeams)
             {
                 throw new DomainException(ErrorCode.TournamentCannotJoinLeave, "Cannot leave team");
             }
 
             if (team == null)
             {
-                if (this.Teams.Count() >= this.NumberOfTeams)
+                if (Teams.Count() >= NumberOfTeams)
                 {
                     throw new DomainException(ErrorCode.TournamentTooManyTeams, "Too many teams already");
                 }
@@ -347,13 +297,14 @@ namespace ImperaPlus.Domain.Tournaments
                 team.CreatedBy = user;
                 team.CreatedById = user.Id;
 
-                this.Teams.Add(team);
+                Teams.Add(team);
             }
             else
             {
                 if (!team.PasswordMatch(password))
                 {
-                    throw new DomainException(ErrorCode.TournamentIncorrectPassword, "Cannot join team, password incorrect");
+                    throw new DomainException(ErrorCode.TournamentIncorrectPassword,
+                        "Cannot join team, password incorrect");
                 }
             }
 
@@ -366,20 +317,22 @@ namespace ImperaPlus.Domain.Tournaments
         {
             Require.NotNull(user, nameof(user));
 
-            if (!this.CanChangeTeams)
+            if (!CanChangeTeams)
             {
                 throw new DomainException(ErrorCode.TournamentCannotJoinLeave, "Cannot leave team");
             }
 
-            var currentTeam = this.Teams.FirstOrDefault(t => t.Participants.Any(p => p.UserId == user.Id));
+            var currentTeam = Teams.FirstOrDefault(t => t.Participants.Any(p => p.UserId == user.Id));
             if (currentTeam == null)
             {
-                throw new DomainException(ErrorCode.TournamentUserNoParticipant, "User is no participant in tournament");
+                throw new DomainException(ErrorCode.TournamentUserNoParticipant,
+                    "User is no participant in tournament");
             }
 
             if (currentTeam.CreatedById == user.Id)
             {
-                throw new DomainException(ErrorCode.TournamentTeamCreatorHasToDelete, "Creator of team has to delete team");
+                throw new DomainException(ErrorCode.TournamentTeamCreatorHasToDelete,
+                    "Creator of team has to delete team");
             }
 
             var participant = currentTeam.Participants.FirstOrDefault(p => p.UserId == user.Id);
@@ -399,33 +352,29 @@ namespace ImperaPlus.Domain.Tournaments
             Require.NotNull(user, nameof(user));
             Require.NotNullOrEmpty(name, nameof(name));
 
-            if (!this.CanChangeTeams)
+            if (!CanChangeTeams)
             {
                 throw new DomainException(ErrorCode.TournamentCannotJoinLeave, "Cannot create team");
             }
 
-            if (this.Teams.Count() >= this.NumberOfTeams)
+            if (Teams.Count() >= NumberOfTeams)
             {
                 throw new DomainException(ErrorCode.TournamentTooManyTeams, "Too many teams already");
             }
 
-            if (this.Teams.Any(t => string.Equals(t.Name, name, StringComparison.OrdinalIgnoreCase)))
+            if (Teams.Any(t => string.Equals(t.Name, name, StringComparison.OrdinalIgnoreCase)))
             {
                 throw new DomainException(ErrorCode.TournamentDuplicateTeamName, "Team with name already exists");
             }
 
             var team = new TournamentTeam(this)
             {
-                CreatedBy = user,
-                CreatedById = user.Id,
-
-                Name = name,
-                Password = password
+                CreatedBy = user, CreatedById = user.Id, Name = name, Password = password
             };
 
             team.AddUser(user);
 
-            this.Teams.Add(team);
+            Teams.Add(team);
 
             return team;
         }
@@ -438,7 +387,7 @@ namespace ImperaPlus.Domain.Tournaments
         {
             Require.NotNull(user, nameof(user));
 
-            var ownedTeam = this.Teams.FirstOrDefault(t => t.CreatedById == user.Id);
+            var ownedTeam = Teams.FirstOrDefault(t => t.CreatedById == user.Id);
 
             return ownedTeam;
         }
@@ -448,17 +397,18 @@ namespace ImperaPlus.Domain.Tournaments
             Require.NotNull(user, nameof(user));
             Require.NotNull(team, nameof(team));
 
-            if (!this.CanChangeTeams)
+            if (!CanChangeTeams)
             {
                 throw new DomainException(ErrorCode.TournamentCannotJoinLeave, "Cannot delete team");
             }
 
             if (user.Id != team.CreatedById)
             {
-                throw new DomainException(ErrorCode.TournamentTeamDeleteNoPermission, "User does not have permission to delete team");
+                throw new DomainException(ErrorCode.TournamentTeamDeleteNoPermission,
+                    "User does not have permission to delete team");
             }
 
-            this.Teams.Remove(team);
+            Teams.Remove(team);
 
             // TODO: Generate domain events for all players in team
         }
@@ -468,58 +418,58 @@ namespace ImperaPlus.Domain.Tournaments
         /// </summary>
         public void Start(IRandomGen random)
         {
-            if (this.State != TournamentState.Open)
+            if (State != TournamentState.Open)
             {
                 throw new DomainException(ErrorCode.TournamentStart, "Cannot start tournament");
             }
 
-            if (!this.CanStart)
+            if (!CanStart)
             {
                 throw new DomainException(ErrorCode.TournamentStart, "Cannot start tournament");
             }
 
-            if (this.HasGroupPhase)
+            if (HasGroupPhase)
             {
-                this.State = TournamentState.Groups;
+                State = TournamentState.Groups;
 
-                this.CreateGroupPairings(random);
+                CreateGroupPairings(random);
             }
             else
             {
-                this.State = TournamentState.Knockout;
+                State = TournamentState.Knockout;
 
-                this.CreateNextRoundPairings(this.Teams);
+                CreateNextRoundPairings(Teams);
             }
 
-            this.StartOfTournament = DateTime.UtcNow;
+            StartOfTournament = DateTime.UtcNow;
         }
 
         internal void End()
         {
-            Debug.Assert(this.CanEnd, "Cannot end tournament");
-            Debug.Assert(this.ActiveTeams.Count() == 1, "There should be only one active team");
+            Debug.Assert(CanEnd, "Cannot end tournament");
+            Debug.Assert(ActiveTeams.Count() == 1, "There should be only one active team");
 
-            this.State = TournamentState.Closed;
-            this.EndOfTournament = DateTime.UtcNow;
+            State = TournamentState.Closed;
+            EndOfTournament = DateTime.UtcNow;
 
-            this.Winner = this.ActiveTeams.First();
-            this.Winner.State = TournamentTeamState.InActive;
+            Winner = ActiveTeams.First();
+            Winner.State = TournamentTeamState.InActive;
 
             // TODO: Generate domain event
         }
 
         public void StartNextRound(IRandomGen random, ILogger log)
         {
-            ++this.Phase;
+            ++Phase;
 
-            if (this.State == TournamentState.Groups)
+            if (State == TournamentState.Groups)
             {
-                log.Log(LogLevel.Info, "Switch from Group to KO phase for tournament {0}", this.Name);
+                log.Log(LogLevel.Info, "Switch from Group to KO phase for tournament {0}", Name);
 
-                this.State = TournamentState.Knockout;
+                State = TournamentState.Knockout;
 
                 // Update losers
-                var losingTeams = this.Groups.SelectMany(g => g.Losers);
+                var losingTeams = Groups.SelectMany(g => g.Losers);
                 foreach (var losingTeam in losingTeams)
                 {
                     log.Log(LogLevel.Info, "Team {0} has lost", losingTeam.Name);
@@ -527,18 +477,18 @@ namespace ImperaPlus.Domain.Tournaments
                 }
 
                 // Create pairings for KO phase
-                var koTeams = this.Groups.SelectMany(g => g.Winners).Shuffle(random);
+                var koTeams = Groups.SelectMany(g => g.Winners).Shuffle(random);
 
                 log.Log(LogLevel.Info, "Teams for KO phase: {0}", string.Join(", ", koTeams.Select(t => t.Name)));
 
-                this.CreateNextRoundPairings(koTeams);
+                CreateNextRoundPairings(koTeams);
             }
             else
             {
                 // Knockout
                 log.Log(LogLevel.Info, "Creating knockout pairings");
-                this.CreateNextRoundPairings(this.Pairings
-                    .Where(p => p.Phase == this.Phase - 1)
+                CreateNextRoundPairings(Pairings
+                    .Where(p => p.Phase == Phase - 1)
                     .OrderBy(p => p.Order)
                     .Select(p => p.Winner)
                 );
@@ -553,18 +503,18 @@ namespace ImperaPlus.Domain.Tournaments
         {
             var teamArray = teams.ToArray();
 
-            for (int i = 0; i < teamArray.Length; i += 2)
+            for (var i = 0; i < teamArray.Length; i += 2)
             {
                 var teamA = teamArray[i];
                 var teamB = teamArray[i + 1];
 
-                int numberOfGames = this.NumberOfKnockoutGames;
+                var numberOfGames = NumberOfKnockoutGames;
                 if (teamArray.Length == 2)
                 {
-                    numberOfGames = this.NumberOfFinalGames;
+                    numberOfGames = NumberOfFinalGames;
                 }
 
-                this.CreatePairing(i / 2, teamA, teamB, numberOfGames);
+                CreatePairing(i / 2, teamA, teamB, numberOfGames);
             }
         }
 
@@ -574,35 +524,35 @@ namespace ImperaPlus.Domain.Tournaments
         private void CreateGroupPairings(IRandomGen random)
         {
             // Create groups
-            var shuffledTeams = this.Teams.Shuffle(random);
+            var shuffledTeams = Teams.Shuffle(random);
             var teamIterator = shuffledTeams.GetEnumerator();
 
-            for (int i = 0; i < this.NumberOfTeams / Tournament.GroupSize; ++i)
+            for (var i = 0; i < NumberOfTeams / GroupSize; ++i)
             {
                 var group = new TournamentGroup(this, i + 1);
 
-                for (int j = 0; j < Tournament.GroupSize; ++j)
+                for (var j = 0; j < GroupSize; ++j)
                 {
                     teamIterator.MoveNext();
                     group.Teams.Add(teamIterator.Current);
                 }
 
-                this.Groups.Add(group);
+                Groups.Add(group);
             }
 
             // Create pairings so that each team plays against all others
-            int order = 0;
+            var order = 0;
 
-            foreach (var group in this.Groups)
+            foreach (var group in Groups)
             {
-                for (int i = 0; i < group.Teams.Count(); ++i)
+                for (var i = 0; i < group.Teams.Count(); ++i)
                 {
-                    for (int j = i + 1; j < group.Teams.Count(); ++j)
+                    for (var j = i + 1; j < group.Teams.Count(); ++j)
                     {
                         var teamA = group.Teams.ElementAt(i);
                         var teamB = group.Teams.ElementAt(j);
 
-                        var pairing = this.CreatePairing(order++, teamA, teamB, this.NumberOfGroupGames);
+                        var pairing = CreatePairing(order++, teamA, teamB, NumberOfGroupGames);
 
                         pairing.Group = group;
                         pairing.GroupId = group.Id;
@@ -613,10 +563,11 @@ namespace ImperaPlus.Domain.Tournaments
             }
         }
 
-        private TournamentPairing CreatePairing(int order, TournamentTeam teamA, TournamentTeam teamB, int numberOfGames)
+        private TournamentPairing CreatePairing(int order, TournamentTeam teamA, TournamentTeam teamB,
+            int numberOfGames)
         {
-            var pairing = new TournamentPairing(this, this.Phase, order, teamA, teamB, numberOfGames);
-            this.Pairings.Add(pairing);
+            var pairing = new TournamentPairing(this, Phase, order, teamA, teamB, numberOfGames);
+            Pairings.Add(pairing);
             return pairing;
         }
     }

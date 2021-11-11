@@ -16,14 +16,15 @@ namespace ImperaPlus.IntegrationTests
     {
         public static Task<TClientType> GetClient<TClientType>() where TClientType : ImperaHttpClient
         {
-            string uri = TestSetup.TestServer.BaseAddress.ToString();
+            var uri = TestSetup.TestServer.BaseAddress.ToString();
             // Remove trailing slash
             uri = uri.Substring(0, uri.Length - 1);
             var client = ImperaClientFactory.GetClient<TClientType>(uri, null, TestSetup.TestServer.CreateHandler());
             return Task.FromResult(client);
         }
 
-        public static async Task<TClientType> GetAuthenticatedClient<TClientType>(string username, string password) where TClientType : ImperaHttpClient
+        public static async Task<TClientType> GetAuthenticatedClient<TClientType>(string username, string password)
+            where TClientType : ImperaHttpClient
         {
             // Login
             try
@@ -32,7 +33,7 @@ namespace ImperaPlus.IntegrationTests
                 var signinResult = await accountClient.LoginAsync("password", username, password, null, null);
 
                 // Create requested client
-                var client = await ApiClient.GetClient<TClientType>();
+                var client = await GetClient<TClientType>();
                 client.AuthToken = signinResult.Access_token;
                 return client;
             }
@@ -43,21 +44,24 @@ namespace ImperaPlus.IntegrationTests
             }
         }
 
-        public static async Task<TClientType> GetAuthenticatedClientAdminUser<TClientType>() where TClientType : ImperaHttpClient
+        public static async Task<TClientType> GetAuthenticatedClientAdminUser<TClientType>()
+            where TClientType : ImperaHttpClient
         {
             return await GetAuthenticatedClient<TClientType>("TestAdmin", "TestAdmin");
         }
 
-        public static async Task<TClientType> GetAuthenticatedClientDefaultUser<TClientType>() where TClientType : ImperaHttpClient
+        public static async Task<TClientType> GetAuthenticatedClientDefaultUser<TClientType>()
+            where TClientType : ImperaHttpClient
         {
             return await GetAuthenticatedClient<TClientType>((int)TestUser.Default);
         }
 
-        public static async Task<TClientType> GetAuthenticatedClient<TClientType>(int user) where TClientType : ImperaHttpClient
+        public static async Task<TClientType> GetAuthenticatedClient<TClientType>(int user)
+            where TClientType : ImperaHttpClient
         {
             return await GetAuthenticatedClient<TClientType>(
                 "TestUser" + user,
-                ApiClient.GetUserPassword(user));
+                GetUserPassword(user));
         }
 
         public static string GetUserPassword(int user)

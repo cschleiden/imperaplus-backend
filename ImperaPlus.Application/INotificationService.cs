@@ -12,7 +12,6 @@
 
     public interface IGameNotificationService
     {
-
         /// <summary>
         /// Send notification to given game
         /// </summary>

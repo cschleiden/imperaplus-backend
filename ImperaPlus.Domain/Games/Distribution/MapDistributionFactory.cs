@@ -19,7 +19,7 @@ namespace ImperaPlus.Domain.Games.Distribution
                     return new MalibuMapDistribution(3);
 
                 //case MapDistribution.TeamCluster:
-                    // return new TeamClusterDistribution();
+                // return new TeamClusterDistribution();
 
                 default:
                     throw new ArgumentOutOfRangeException("mapDistribution");

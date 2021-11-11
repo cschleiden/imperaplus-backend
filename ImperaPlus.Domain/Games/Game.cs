@@ -24,10 +24,10 @@ namespace ImperaPlus.Domain.Games
         [UsedImplicitly]
         protected Game()
         {
-            this.ChatMessages = new HashSet<GameChatMessage>();
-            this.HistoryEntries = new List<HistoryEntry>();
-            this.GameHistory = new GameHistory(this);
-            this.Teams = new HashSet<Team>();
+            ChatMessages = new HashSet<GameChatMessage>();
+            HistoryEntries = new List<HistoryEntry>();
+            GameHistory = new GameHistory(this);
+            Teams = new HashSet<Team>();
         }
 
         public Game(
@@ -41,15 +41,16 @@ namespace ImperaPlus.Domain.Games
             int numberOfPlayersPerTeam,
             IEnumerable<VictoryConditionType> victoryConditions,
             IEnumerable<VisibilityModifierType> visibilityModifier)
-            : this(user, type, name, password, mapTemplateName, new GameOptions
-            {
-                NumberOfPlayersPerTeam = numberOfPlayersPerTeam,
-                NumberOfTeams = numberOfTeams,
-                TimeoutInSeconds = timeoutInSeconds
-            })
+            : this(user, type, name, password, mapTemplateName,
+                new GameOptions
+                {
+                    NumberOfPlayersPerTeam = numberOfPlayersPerTeam,
+                    NumberOfTeams = numberOfTeams,
+                    TimeoutInSeconds = timeoutInSeconds
+                })
         {
-            this.Options.VictoryConditions.AddRange(victoryConditions);
-            this.Options.VisibilityModifier.AddRange(visibilityModifier);
+            Options.VictoryConditions.AddRange(victoryConditions);
+            Options.VisibilityModifier.AddRange(visibilityModifier);
         }
 
         public Game(
@@ -61,24 +62,25 @@ namespace ImperaPlus.Domain.Games
             GameOptions options)
             : this()
         {
-            this.Type = type;
-            this.Name = name;
-            this.Password = password;
+            Type = type;
+            Name = name;
+            Password = password;
 
-            if (this.Password != null && this.Type != GameType.Fun)
+            if (Password != null && Type != GameType.Fun)
             {
-                throw new DomainException(ErrorCode.GamePasswordOnlyAllowedForFun, "Passwords for games are only allowed for fun games");
+                throw new DomainException(ErrorCode.GamePasswordOnlyAllowedForFun,
+                    "Passwords for games are only allowed for fun games");
             }
 
-            this.CreatedBy = user;
-            this.CreatedAt = DateTime.UtcNow;
+            CreatedBy = user;
+            CreatedAt = DateTime.UtcNow;
 
-            this.MapTemplateName = mapTemplateName;
+            MapTemplateName = mapTemplateName;
 
-            this.Options = options;
+            Options = options;
 
-            this.State = GameState.Open;
-            this.PlayState = PlayState.None;
+            State = GameState.Open;
+            PlayState = PlayState.None;
         }
 
         public long Id { get; set; }
@@ -92,7 +94,7 @@ namespace ImperaPlus.Domain.Games
         public DateTime CreatedAt { get; set; }
 
         public string CreatedById { get; set; }
-        public User CreatedBy { get; set; }
+        public virtual User CreatedBy { get; set; }
 
         public DateTime LastModifiedAt { get; set; }
 
@@ -120,8 +122,7 @@ namespace ImperaPlus.Domain.Games
 
         public virtual ICollection<Team> Teams { get; private set; }
 
-        [NotMapped]
-        public GameHistory GameHistory { get; private set; }
+        [NotMapped] public GameHistory GameHistory { get; private set; }
 
         public virtual ICollection<GameChatMessage> ChatMessages { get; private set; }
 
@@ -140,12 +141,12 @@ namespace ImperaPlus.Domain.Games
         {
             get
             {
-                if (!this.CurrentPlayerId.HasValue)
+                if (!CurrentPlayerId.HasValue)
                 {
                     return null;
                 }
 
-                return this.Teams.SelectMany(x => x.Players).FirstOrDefault(p => p.Id == this.CurrentPlayerId.Value);
+                return Teams.SelectMany(x => x.Players).FirstOrDefault(p => p.Id == CurrentPlayerId.Value);
             }
         }
 
@@ -167,40 +168,28 @@ namespace ImperaPlus.Domain.Games
         {
             get
             {
-                var players = this.Teams.SelectMany(x => x.Players).Count();
+                var players = Teams.SelectMany(x => x.Players).Count();
 
-                return players == this.Options.PlayerCount && this.State == GameState.Open;
+                return players == Options.PlayerCount && State == GameState.Open;
             }
         }
 
         /// <summary>
         /// Gets a value indicating whether the game can be deleted
         /// </summary>
-        public bool CanBeDeleted
-        {
-            get
-            {
-                return this.State == GameState.Open;
-            }
-        }
+        public bool CanBeDeleted => State == GameState.Open;
 
         /// <summary>
         /// Gets a value indicating whether players can leave the game
         /// </summary>
         [NotMapped]
-        public bool CanLeave
-        {
-            get
-            {
-                return this.State == GameState.Open;
-            }
-        }
+        public bool CanLeave => State == GameState.Open;
 
         public void ResetMapTracking()
         {
-            if (this.Map != null)
+            if (Map != null)
             {
-                this.Map.ResetTracking();
+                Map.ResetTracking();
             }
         }
 
@@ -210,14 +199,15 @@ namespace ImperaPlus.Domain.Games
         /// <returns>New team</returns>
         public Team AddTeam()
         {
-            if (this.Teams.Count() >= this.Options.NumberOfTeams)
+            if (Teams.Count() >= Options.NumberOfTeams)
             {
-                throw new DomainException(ErrorCode.TooManyTeams, "Cannot create team, there are too many teams already");
+                throw new DomainException(ErrorCode.TooManyTeams,
+                    "Cannot create team, there are too many teams already");
             }
 
             var team = new Team(this);
 
-            this.Teams.Add(team);
+            Teams.Add(team);
 
             return team;
         }
@@ -234,9 +224,9 @@ namespace ImperaPlus.Domain.Games
             Require.NotNull(user, "user");
             Require.NotNullOrEmpty(text, "text");
 
-            this.RequireGameStarted();
+            RequireGameStarted();
 
-            var player = this.GetPlayerForUser(user.Id);
+            var player = GetPlayerForUser(user.Id);
 
             Team team = null;
             if (!isPublic)
@@ -246,7 +236,7 @@ namespace ImperaPlus.Domain.Games
 
             var message = new GameChatMessage(this, user, team, text);
 
-            this.ChatMessages.Add(message);
+            ChatMessages.Add(message);
 
             return message;
         }
@@ -255,16 +245,16 @@ namespace ImperaPlus.Domain.Games
         {
             Require.NotNull(user, "user");
 
-            var player = this.GetPlayerForUser(user.Id);
+            var player = GetPlayerForUser(user.Id);
 
             IEnumerable<GameChatMessage> messages;
             if (isPublic)
             {
-                messages = this.ChatMessages.Where(x => x.TeamId == null);
+                messages = ChatMessages.Where(x => x.TeamId == null);
             }
             else
             {
-                messages = this.ChatMessages.Where(x => x.TeamId == player.TeamId);
+                messages = ChatMessages.Where(x => x.TeamId == player.TeamId);
             }
 
             return messages.OrderBy(x => x.TeamId).OrderBy(x => x.DateTime).ToList();
@@ -277,24 +267,25 @@ namespace ImperaPlus.Domain.Games
         {
             Require.NotNull(user, "user");
 
-            if (this.IsPasswordProtected && !string.Equals(password, this.Password, StringComparison.InvariantCultureIgnoreCase))
+            if (IsPasswordProtected && !string.Equals(password, Password, StringComparison.InvariantCultureIgnoreCase))
             {
-                throw new DomainException(ErrorCode.GamePasswordNotCorrect, "Game is password protected and given password does not match");
+                throw new DomainException(ErrorCode.GamePasswordNotCorrect,
+                    "Game is password protected and given password does not match");
             }
 
-            if (this.Teams.SelectMany(x => x.Players).Any(x => x.UserId == user.Id))
+            if (Teams.SelectMany(x => x.Players).Any(x => x.UserId == user.Id))
             {
                 throw new DomainException(ErrorCode.PlayerAlreadyJoined, "Player has already joined this game.");
             }
 
             Team team;
-            if (this.Teams.Count < this.Options.NumberOfTeams)
+            if (Teams.Count < Options.NumberOfTeams)
             {
-                team = this.AddTeam();
+                team = AddTeam();
             }
             else
             {
-                team = this.Teams.FirstOrDefault(x => x.Players.Count() < this.Options.NumberOfPlayersPerTeam);
+                team = Teams.FirstOrDefault(x => x.Players.Count() < Options.NumberOfPlayersPerTeam);
                 if (team == null)
                 {
                     throw new DomainException(ErrorCode.TooManyTeams, "All teams have enough players");
@@ -312,17 +303,17 @@ namespace ImperaPlus.Domain.Games
         {
             Require.NotNull(user, "user");
 
-            if (!this.CanLeave)
+            if (!CanLeave)
             {
                 throw new DomainException(ErrorCode.CannotLeaveGame, "Game state does not allow leaving");
             }
 
-            if (user.Id == this.CreatedBy.Id)
+            if (user.Id == CreatedBy.Id)
             {
                 throw new DomainException(ErrorCode.CannotLeaveGame, "Game creator cannot leave game");
             }
 
-            var player = this.GetPlayerForUser(user.Id);
+            var player = GetPlayerForUser(user.Id);
             var team = player.Team;
 
             team.RemovePlayer(player);
@@ -330,7 +321,7 @@ namespace ImperaPlus.Domain.Games
             if (!team.Players.Any())
             {
                 // Remove empty team
-                this.Teams.Remove(team);
+                Teams.Remove(team);
             }
         }
 
@@ -339,47 +330,47 @@ namespace ImperaPlus.Domain.Games
         /// </summary>
         public void Start(MapTemplate mapTemplate, IRandomGen random)
         {
-            if (!this.CanStart)
+            if (!CanStart)
             {
                 throw new DomainException(ErrorCode.CannotStartGame, "Cannot start");
             }
 
-            this.StartedAt = DateTime.UtcNow;
-            this.State = GameState.Active;
+            StartedAt = DateTime.UtcNow;
+            State = GameState.Active;
 
             TraceContext.Trace("Create Map from Template", () =>
             {
-                this.Map = Map.CreateFromTemplate(this, mapTemplate);
+                Map = Map.CreateFromTemplate(this, mapTemplate);
             });
             TraceContext.Trace(
                 "Distribute countries to teams",
-                () => this.Map.Distribute(this.Options, this.Teams, mapTemplate, this.Options.MapDistribution, random)
+                () => Map.Distribute(Options, Teams, mapTemplate, Options.MapDistribution, random)
             );
 
             // Determine player order
-            this.DeterminePlayOrder(random);
+            DeterminePlayOrder(random);
 
             // Set current player
-            var currentTeam = this.Teams.RandomElement(random);
+            var currentTeam = Teams.RandomElement(random);
             var currentPlayer = currentTeam.Players.First();
 
-            this.CurrentPlayerId = currentPlayer.Id;
+            CurrentPlayerId = currentPlayer.Id;
 
             // Allow victory conditions to modify the game state
-            foreach (var victoryCondition in this.Options.VictoryConditions)
+            foreach (var victoryCondition in Options.VictoryConditions)
             {
                 var victoryConditionImpl = VictoryConditionFactory.Create(victoryCondition);
                 victoryConditionImpl.Initialize(this, random);
             }
 
             // Record in history
-            this.GameHistory.RecordStart();
+            GameHistory.RecordStart();
 
-            this.TurnCounter = 1;
+            TurnCounter = 1;
 
-            this.ResetTurn();
+            ResetTurn();
 
-            this.EventQueue.Raise(new GameStartedEvent(this));
+            EventQueue.Raise(new GameStartedEvent(this));
         }
 
         /// <summary>
@@ -387,16 +378,16 @@ namespace ImperaPlus.Domain.Games
         /// </summary>
         public void EndTurn()
         {
-            if (this.State != GameState.Active)
+            if (State != GameState.Active)
             {
                 return;
             }
 
-            this.GameHistory.RecordEndTurn();
-            this.TurnCounter++;
+            GameHistory.RecordEndTurn();
+            TurnCounter++;
 
-            this.CheckForVictory();
-            if (this.State != GameState.Active)
+            CheckForVictory();
+            if (State != GameState.Active)
             {
                 // Game might have ended
                 return;
@@ -404,45 +395,45 @@ namespace ImperaPlus.Domain.Games
 
             // Go to next player
             Player nextPlayer = null;
-            for (int i = 1; i < 2 * this.Options.PlayerCount && nextPlayer == null && nextPlayer != this.CurrentPlayer; ++i)
+            for (var i = 1; i < 2 * Options.PlayerCount && nextPlayer == null && nextPlayer != CurrentPlayer; ++i)
             {
-                var nextPlayerOrder = (this.CurrentPlayer.PlayOrder + i) % this.Options.PlayerCount;
-                nextPlayer = this.Teams
-                                    .SelectMany(x => x.Players)
-                                    .OrderBy(x => x.PlayOrder)
-                                    .FirstOrDefault(x => x.State == PlayerState.Active && x.PlayOrder >= nextPlayerOrder);
+                var nextPlayerOrder = (CurrentPlayer.PlayOrder + i) % Options.PlayerCount;
+                nextPlayer = Teams
+                    .SelectMany(x => x.Players)
+                    .OrderBy(x => x.PlayOrder)
+                    .FirstOrDefault(x => x.State == PlayerState.Active && x.PlayOrder >= nextPlayerOrder);
             }
 
             if (nextPlayer == null)
             {
-                Log.Fatal().Message("Cannot find active player for game {0}", this.Id).Write();
+                Log.Fatal().Message("Cannot find active player for game {0}", Id).Write();
                 throw new DomainException(ErrorCode.GenericError, "Cannot find active player");
             }
 
-            this.CurrentPlayerId = nextPlayer.Id;
+            CurrentPlayerId = nextPlayer.Id;
 
-            this.ResetTurn();
-            this.EventQueue.Raise(new TurnEndedEvent(this));
+            ResetTurn();
+            EventQueue.Raise(new TurnEndedEvent(this));
         }
 
         private void ResetTurn()
         {
-            this.CurrentPlayer.Bonus = 0;
+            CurrentPlayer.Bonus = 0;
 
-            this.AttacksInCurrentTurn = 0;
-            this.MovesInCurrentTurn = 0;
+            AttacksInCurrentTurn = 0;
+            MovesInCurrentTurn = 0;
 
-            this.CardDistributed = false;
+            CardDistributed = false;
 
-            this.PlayState = PlayState.PlaceUnits;
+            PlayState = PlayState.PlaceUnits;
 
-            this.LastTurnStartedAt = DateTime.UtcNow;
+            LastTurnStartedAt = DateTime.UtcNow;
         }
 
         public int GetUnitsToPlace(MapTemplate mapTemplate, Player player)
         {
             // Base units as configured
-            var unitsToPlace = this.Options.NewUnitsPerTurn;
+            var unitsToPlace = Options.NewUnitsPerTurn;
 
             if (player.PlacedInitialUnits)
             {
@@ -461,66 +452,69 @@ namespace ImperaPlus.Domain.Games
 
         public void ExchangeCards()
         {
-            this.RequireGameActive();
+            RequireGameActive();
 
-            if (this.PlayState != PlayState.PlaceUnits)
+            if (PlayState != PlayState.PlaceUnits)
             {
                 throw new DomainException(ErrorCode.ExchangingCardsNotAllowed, "Exchanging cards is not allowed");
             }
 
-            var unitsReceived = this.CurrentPlayer.ExchangeCards();
+            var unitsReceived = CurrentPlayer.ExchangeCards();
             if (unitsReceived > 0)
             {
-                this.GameHistory.RecordCardExchange(this.CurrentPlayer, this.CurrentPlayer.Bonus);
+                GameHistory.RecordCardExchange(CurrentPlayer, CurrentPlayer.Bonus);
             }
         }
 
         public void PlaceUnits(MapTemplate mapTemplate, IEnumerable<Tuple<string, int>> countries)
         {
-            this.RequireGameActive();
+            RequireGameActive();
 
-            if (this.PlayState != PlayState.PlaceUnits)
+            if (PlayState != PlayState.PlaceUnits)
             {
                 throw new DomainException(ErrorCode.PlacingNotAllowed, "Placing units is not allowed");
             }
 
             var unitsToPlace = countries.Sum(x => x.Item2);
-            var unitsAvailable = this.GetUnitsToPlace(mapTemplate, this.CurrentPlayer);
+            var unitsAvailable = GetUnitsToPlace(mapTemplate, CurrentPlayer);
             if (unitsToPlace > unitsAvailable)
             {
-                throw new DomainException(ErrorCode.PlacingMoreUnitsThanAvailable, "Cannot place more units than available");
+                throw new DomainException(ErrorCode.PlacingMoreUnitsThanAvailable,
+                    "Cannot place more units than available");
             }
             else if (unitsToPlace < unitsAvailable)
             {
-                throw new DomainException(ErrorCode.PlacingLessUnitsThanAvailable, "Cannot place less units than available");
+                throw new DomainException(ErrorCode.PlacingLessUnitsThanAvailable,
+                    "Cannot place less units than available");
             }
 
             foreach (var place in countries)
             {
-                var country = this.Map.GetCountry(place.Item1);
+                var country = Map.GetCountry(place.Item1);
 
                 // Check ownership
-                var owner = this.GetPlayerById(country.PlayerId);
-                if (owner.TeamId != this.CurrentPlayer.TeamId)
+                var owner = GetPlayerById(country.PlayerId);
+                if (owner.TeamId != CurrentPlayer.TeamId)
                 {
-                    throw new DomainException(ErrorCode.PlacingToForeignCountry, "Country does not belong to current team");
+                    throw new DomainException(ErrorCode.PlacingToForeignCountry,
+                        "Country does not belong to current team");
                 }
 
                 country.PlaceUnits(place.Item2);
 
-                this.GameHistory.RecordPlace(this.CurrentPlayer, country.CountryIdentifier, place.Item2);
+                GameHistory.RecordPlace(CurrentPlayer, country.CountryIdentifier, place.Item2);
             }
 
-            if (!this.CurrentPlayer.PlacedInitialUnits)
+            if (!CurrentPlayer.PlacedInitialUnits)
             {
-                this.CurrentPlayer.PlacedInitialUnits = true;
+                CurrentPlayer.PlacedInitialUnits = true;
 
                 // In the first turn, players are only allowed to place
-                this.EndTurn();
+                EndTurn();
             }
             else
             {
-                this.PlayState = PlayState.Attack;
+                PlayState = PlayState.Attack;
             }
         }
 
@@ -532,26 +526,28 @@ namespace ImperaPlus.Domain.Games
             string destCountryIdentifier,
             int numberOfUnits)
         {
-            this.RequireGameActive();
+            RequireGameActive();
 
-            if (this.PlayState != PlayState.Attack)
+            if (PlayState != PlayState.Attack)
             {
                 throw new DomainException(ErrorCode.AttackingNotPossible, "Cannot attack, state incorrect");
             }
 
-            var sourceCountry = this.Map.GetCountry(sourceCountryIdentifier);
-            var destCountry = this.Map.GetCountry(destCountryIdentifier);
+            var sourceCountry = Map.GetCountry(sourceCountryIdentifier);
+            var destCountry = Map.GetCountry(destCountryIdentifier);
 
             // Check connection
             if (!mapTemplate.AreConnected(sourceCountryIdentifier, destCountryIdentifier))
             {
-                throw new DomainException(ErrorCode.CountriesNotConnected, "There is no connection between those countries");
+                throw new DomainException(ErrorCode.CountriesNotConnected,
+                    "There is no connection between those countries");
             }
 
             // Check ownership
-            if (sourceCountry.TeamId != this.CurrentPlayer.TeamId)
+            if (sourceCountry.TeamId != CurrentPlayer.TeamId)
             {
-                throw new DomainException(ErrorCode.OriginCountryNotOwnedByTeam, "Can only initiate actions from countries that belong to the same team");
+                throw new DomainException(ErrorCode.OriginCountryNotOwnedByTeam,
+                    "Can only initiate actions from countries that belong to the same team");
             }
 
             if (sourceCountry.PlayerId == destCountry.PlayerId)
@@ -559,15 +555,15 @@ namespace ImperaPlus.Domain.Games
                 throw new DomainException(ErrorCode.AttackOwnCountries, "Cannot attack own countries");
             }
 
-            if (numberOfUnits <= 0 || sourceCountry.Units - numberOfUnits < this.Options.MinUnitsPerCountry)
+            if (numberOfUnits <= 0 || sourceCountry.Units - numberOfUnits < Options.MinUnitsPerCountry)
             {
                 throw new DomainException(ErrorCode.NotEnoughUnits, "Cannot attack with that many units");
             }
 
-            var otherPlayer = this.GetPlayerById(destCountry.PlayerId);
+            var otherPlayer = GetPlayerById(destCountry.PlayerId);
 
             var result = attackService.Attack(
-                numberOfUnits, destCountry.Units, out int attackerUnitsLost, out int defenderUnitsLost);
+                numberOfUnits, destCountry.Units, out var attackerUnitsLost, out var defenderUnitsLost);
 
             if (result)
             {
@@ -577,13 +573,13 @@ namespace ImperaPlus.Domain.Games
                 // Changing ownership removes capitals
                 if (destCountry.Flags.HasFlag(CountryFlags.Capital))
                 {
-                    this.GameHistory.RecordCapitalLost(this.CurrentPlayer, destCountry.CountryIdentifier);
+                    GameHistory.RecordCapitalLost(CurrentPlayer, destCountry.CountryIdentifier);
                     otherPlayer.ForfeitCountries();
                 }
 
-                this.Map.UpdateOwnership(otherPlayer, this.CurrentPlayer, destCountry);
+                Map.UpdateOwnership(otherPlayer, CurrentPlayer, destCountry);
 
-                this.DistributeCard(randomGen);
+                DistributeCard(randomGen);
             }
             else
             {
@@ -594,56 +590,56 @@ namespace ImperaPlus.Domain.Games
             // Reduce units in this country in any case
             sourceCountry.Units -= numberOfUnits;
 
-            this.GameHistory.RecordAttack(
-                this.CurrentPlayer, otherPlayer,
+            GameHistory.RecordAttack(
+                CurrentPlayer, otherPlayer,
                 sourceCountryIdentifier, destCountryIdentifier,
                 numberOfUnits, attackerUnitsLost, defenderUnitsLost,
                 result);
 
             // Reduce number of attacks left
-            this.AttacksInCurrentTurn++;
+            AttacksInCurrentTurn++;
 
             // Check for victory
-            this.CheckForVictory();
+            CheckForVictory();
 
-            if (this.AttacksInCurrentTurn >= this.Options.AttacksPerTurn)
+            if (AttacksInCurrentTurn >= Options.AttacksPerTurn)
             {
-                this.EndAttack();
+                EndAttack();
             }
         }
 
         public void EndAttack()
         {
-            this.PlayState = PlayState.Move;
+            PlayState = PlayState.Move;
         }
 
         private void DistributeCard(IRandomGen randomGen)
         {
-            if (!this.CardDistributed)
+            if (!CardDistributed)
             {
-                this.CardDistributed = true;
+                CardDistributed = true;
 
-                if (this.CurrentPlayer.Cards.Count() < this.Options.MaximumNumberOfCards)
+                if (CurrentPlayer.Cards.Count() < Options.MaximumNumberOfCards)
                 {
-                    var existingCards = new List<BonusCard>(this.CurrentPlayer.Cards);
+                    var existingCards = new List<BonusCard>(CurrentPlayer.Cards);
 
                     var cardToDistribute = randomGen.GetNext(0, 2);
                     existingCards.Add((BonusCard)cardToDistribute);
 
-                    this.CurrentPlayer.Cards = existingCards.ToArray();
+                    CurrentPlayer.Cards = existingCards.ToArray();
                 }
             }
         }
 
         internal void CheckForVictory()
         {
-            foreach (var victoryCondition in this.Options.VictoryConditions)
+            foreach (var victoryCondition in Options.VictoryConditions)
             {
                 var victoryConditionImpl = VictoryConditionFactory.Create(victoryCondition);
 
-                foreach (var player in this.Teams.SelectMany(t => t.Players).Where(p => p.State == PlayerState.Active))
+                foreach (var player in Teams.SelectMany(t => t.Players).Where(p => p.State == PlayerState.Active))
                 {
-                    var result = victoryConditionImpl.Evaluate(player, this.Map);
+                    var result = victoryConditionImpl.Evaluate(player, Map);
                     switch (result)
                     {
                         case VictoryConditionResult.Defeat:
@@ -651,7 +647,7 @@ namespace ImperaPlus.Domain.Games
                                 player.Outcome = PlayerOutcome.Defeated;
                                 player.State = PlayerState.InActive;
 
-                                this.GameHistory.RecordPlayerDefeated(player);
+                                GameHistory.RecordPlayerDefeated(player);
                                 break;
                             }
 
@@ -662,7 +658,7 @@ namespace ImperaPlus.Domain.Games
                                     teamPlayer.Outcome = PlayerOutcome.Defeated;
                                     teamPlayer.State = PlayerState.InActive;
 
-                                    this.GameHistory.RecordPlayerDefeated(teamPlayer);
+                                    GameHistory.RecordPlayerDefeated(teamPlayer);
                                 }
 
                                 break;
@@ -691,7 +687,7 @@ namespace ImperaPlus.Domain.Games
             }
 
             // Update team status
-            var activeTeams = this.Teams.Where(x => x.Players.Any(p => !p.HasLost));
+            var activeTeams = Teams.Where(x => x.Players.Any(p => !p.HasLost));
             if (activeTeams.Count() <= 1)
             {
                 // Only one team has survived, all players in this team have won
@@ -700,29 +696,29 @@ namespace ImperaPlus.Domain.Games
                     player.Outcome = PlayerOutcome.Won;
                     player.State = PlayerState.InActive;
 
-                    this.GameHistory.RecordPlayerWon(player);
+                    GameHistory.RecordPlayerWon(player);
                     // TODO: CS: Generate event
                 }
 
-                this.End();
+                End();
             }
         }
 
         public void End()
         {
             // Set this first to prevent EndTurn from determining new player
-            this.State = GameState.Ended;
+            State = GameState.Ended;
 
-            this.EndTurn();
+            EndTurn();
 
-            this.GameHistory.RecordEnd();
+            GameHistory.RecordEnd();
 
-            this.EventQueue.Raise(new GameEndedEvent(this));
+            EventQueue.Raise(new GameEndedEvent(this));
         }
 
         public Player GetPlayerForUser(string userId)
         {
-            var player = this.Teams.SelectMany(x => x.Players).FirstOrDefault(x => x.UserId == userId);
+            var player = Teams.SelectMany(x => x.Players).FirstOrDefault(x => x.UserId == userId);
 
             if (null == player)
             {
@@ -740,7 +736,7 @@ namespace ImperaPlus.Domain.Games
                 return null;
             }
 
-            var player = this.Teams.SelectMany(x => x.Players).FirstOrDefault(x => x.Id == id);
+            var player = Teams.SelectMany(x => x.Players).FirstOrDefault(x => x.Id == id);
             if (null == player)
             {
                 throw new DomainException(ErrorCode.PlayerNotInGame, "Cannot find player with id");
@@ -751,46 +747,37 @@ namespace ImperaPlus.Domain.Games
 
         public void ProcessTimeouts()
         {
-            if (DateTime.UtcNow - this.LastTurnStartedAt > TimeSpan.FromSeconds(this.Options.TimeoutInSeconds))
+            if (DateTime.UtcNow - LastTurnStartedAt > TimeSpan.FromSeconds(Options.TimeoutInSeconds))
             {
-                ++this.CurrentPlayer.Timeouts;
-                this.GameHistory.RecordTimeout();
+                ++CurrentPlayer.Timeouts;
+                GameHistory.RecordTimeout();
 
-                if (this.Options.MaximumTimeoutsPerPlayer > 0
-                    && this.CurrentPlayer.Timeouts > this.Options.MaximumTimeoutsPerPlayer)
+                if (Options.MaximumTimeoutsPerPlayer > 0
+                    && CurrentPlayer.Timeouts > Options.MaximumTimeoutsPerPlayer)
                 {
                     // TODO: CS: Refactor?
-                    this.CurrentPlayer.State = PlayerState.InActive;
-                    this.CurrentPlayer.Outcome = PlayerOutcome.Defeated;
+                    CurrentPlayer.State = PlayerState.InActive;
+                    CurrentPlayer.Outcome = PlayerOutcome.Defeated;
 
-                    foreach (var country in this.CurrentPlayer.Countries.ToArray())
+                    foreach (var country in CurrentPlayer.Countries.ToArray())
                     {
-                        this.Map.UpdateOwnership(null, country);
-                        this.GameHistory.RecordOwnershipChange(this.CurrentPlayer, null, country.CountryIdentifier);
+                        Map.UpdateOwnership(null, country);
+                        GameHistory.RecordOwnershipChange(CurrentPlayer, null, country.CountryIdentifier);
                     }
 
-                    this.CheckForVictory();
+                    CheckForVictory();
                 }
 
-                this.EndTurn();
+                EndTurn();
             }
         }
 
         /// <summary>
         /// Gets the number of slots this game occupies for each player
         /// </summary>
-        public int RequiredSlots
-        {
-            get { return 1 /* + MapSlots*/; }
-        }
+        public int RequiredSlots => 1 /* + MapSlots*/;
 
-        public bool IsPasswordProtected
-        {
-            get
-            {
-                return this.Password != null;
-            }
-        }
+        public bool IsPasswordProtected => Password != null;
 
         public void Move(
             MapTemplate mapTemplate,
@@ -798,7 +785,7 @@ namespace ImperaPlus.Domain.Games
             string destCountryIdentifier,
             int numberOfUnits)
         {
-            this.RequireGameActive();
+            RequireGameActive();
 
             // Check connection
             if (!mapTemplate.AreConnected(sourceCountryIdentifier, destCountryIdentifier))
@@ -806,31 +793,33 @@ namespace ImperaPlus.Domain.Games
                 throw new DomainException(ErrorCode.CountriesNotConnected, "Countries are not connected");
             }
 
-            var sourceCountry = this.Map.GetCountry(sourceCountryIdentifier);
-            var destCountry = this.Map.GetCountry(destCountryIdentifier);
+            var sourceCountry = Map.GetCountry(sourceCountryIdentifier);
+            var destCountry = Map.GetCountry(destCountryIdentifier);
 
-            if (numberOfUnits <= 0 || sourceCountry.Units - numberOfUnits < this.Options.MinUnitsPerCountry)
+            if (numberOfUnits <= 0 || sourceCountry.Units - numberOfUnits < Options.MinUnitsPerCountry)
             {
                 throw new DomainException(ErrorCode.NotEnoughUnits, "Cannot move that many units");
             }
 
             // Check ownership
-            if (sourceCountry.TeamId != this.CurrentPlayer.TeamId)
+            if (sourceCountry.TeamId != CurrentPlayer.TeamId)
             {
-                throw new DomainException(ErrorCode.OriginCountryNotOwnedByTeam, "Can only initiate actions from countries that belong to the same team");
+                throw new DomainException(ErrorCode.OriginCountryNotOwnedByTeam,
+                    "Can only initiate actions from countries that belong to the same team");
             }
 
             if (sourceCountry.TeamId != destCountry.TeamId)
             {
-                throw new DomainException(ErrorCode.MoveOwnCountries, "Units can only be moved between countries that belong to the same team");
+                throw new DomainException(ErrorCode.MoveOwnCountries,
+                    "Units can only be moved between countries that belong to the same team");
             }
 
-            if (this.PlayState != PlayState.Move)
+            if (PlayState != PlayState.Move)
             {
-                if (this.PlayState == PlayState.Attack)
+                if (PlayState == PlayState.Attack)
                 {
                     // Switch automatically to move and end attacking
-                    this.PlayState = PlayState.Move;
+                    PlayState = PlayState.Move;
                 }
                 else
                 {
@@ -842,14 +831,14 @@ namespace ImperaPlus.Domain.Games
             sourceCountry.Units -= numberOfUnits;
             destCountry.Units += numberOfUnits;
 
-            this.GameHistory.RecordMove(
-                this.CurrentPlayer,
+            GameHistory.RecordMove(
+                CurrentPlayer,
                 sourceCountry.CountryIdentifier, destCountry.CountryIdentifier, numberOfUnits);
 
-            this.MovesInCurrentTurn++;
-            if (this.MovesInCurrentTurn >= this.Options.MovesPerTurn)
+            MovesInCurrentTurn++;
+            if (MovesInCurrentTurn >= Options.MovesPerTurn)
             {
-                this.PlayState = PlayState.Done;
+                PlayState = PlayState.Done;
             }
         }
 
@@ -861,16 +850,16 @@ namespace ImperaPlus.Domain.Games
             // t1: p2 - 2
             // t2: p2 - 3
 
-            var shuffledTeams = this.Teams.Shuffle(random).ToArray();
-            int teamIdx = 0;
+            var shuffledTeams = Teams.Shuffle(random).ToArray();
+            var teamIdx = 0;
             foreach (var shuffledTeam in shuffledTeams)
             {
                 shuffledTeam.PlayOrder = teamIdx;
 
-                int playerIdx = 0;
+                var playerIdx = 0;
                 foreach (var player in shuffledTeam.Players)
                 {
-                    player.PlayOrder = teamIdx + playerIdx * this.Options.NumberOfTeams;
+                    player.PlayOrder = teamIdx + playerIdx * Options.NumberOfTeams;
 
                     ++playerIdx;
                 }
@@ -881,7 +870,7 @@ namespace ImperaPlus.Domain.Games
 
         private void RequireGameActive()
         {
-            if (this.State != GameState.Active)
+            if (State != GameState.Active)
             {
                 throw new DomainException(ErrorCode.GameNotActive, "Game is not active");
             }
@@ -889,7 +878,7 @@ namespace ImperaPlus.Domain.Games
 
         private void RequireGameStarted()
         {
-            if (this.State == GameState.Open)
+            if (State == GameState.Open)
             {
                 throw new DomainException(ErrorCode.GameNotActive, "Game is not started");
             }

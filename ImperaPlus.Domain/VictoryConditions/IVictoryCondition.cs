@@ -13,12 +13,12 @@ namespace ImperaPlus.Domain.VictoryConditions
 
         TeamDefeat = 3,
 
-        TeamVictory = 4,
+        TeamVictory = 4
     }
 
     public interface IVictoryCondition
     {
-        void Initialize(Games.Game game, IRandomGen random);
+        void Initialize(Game game, IRandomGen random);
 
         VictoryConditionResult Evaluate(Player player, Games.Map map);
     }

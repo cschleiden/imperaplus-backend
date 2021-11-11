@@ -4,11 +4,11 @@ namespace ImperaPlus.Domain.Events
 {
     public class EventQueue
     {
-        public List<IDomainEvent> Events { get; } = new List<IDomainEvent>();
+        public List<IDomainEvent> Events { get; } = new();
 
         public void Raise<TEvent>(TEvent domainEvent) where TEvent : IDomainEvent
         {
-            this.Events.Add(domainEvent);
+            Events.Add(domainEvent);
         }
     }
 }

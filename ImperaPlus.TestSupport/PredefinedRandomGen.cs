@@ -1,10 +1,11 @@
 ﻿using ImperaPlus.Domain.Services;
+
 namespace ImperaPlus.TestSupport
 {
     public class PredefinedRandomGen : IAttackRandomGen
     {
-        int attackerDice;
-        readonly int defenderDice;
+        private int attackerDice;
+        private readonly int defenderDice;
 
         public PredefinedRandomGen(int attackerDice, int defenderDice)
         {
@@ -14,12 +15,12 @@ namespace ImperaPlus.TestSupport
 
         public int GetAttackerDice()
         {
-            return this.attackerDice;
+            return attackerDice;
         }
 
         public int GetDefenderDice()
         {
-            return this.defenderDice;
+            return defenderDice;
         }
     }
 

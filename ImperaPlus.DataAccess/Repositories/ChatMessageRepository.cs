@@ -15,7 +15,7 @@ namespace ImperaPlus.DataAccess.Repositories
 
         public IEnumerable<ChatMessage> FindForUser(User user)
         {
-            return this.DbSet.Where(x => x.CreatedById == user.Id);
+            return DbSet.Where(x => x.CreatedById == user.Id);
         }
     }
 }

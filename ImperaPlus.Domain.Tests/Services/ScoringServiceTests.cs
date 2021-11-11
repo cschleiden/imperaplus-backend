@@ -17,7 +17,7 @@ namespace ImperaPlus.Domain.Tests.Services
 
             var game = TestUtils.CreateStartedGameWithMapAndPlayersUnitsPlaced();
             game.Teams.First().Players.First().Surrender();
-            
+
             game.LadderId = ladder.Id;
             game.Ladder = ladder;
 

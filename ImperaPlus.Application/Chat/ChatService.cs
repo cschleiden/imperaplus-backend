@@ -29,7 +29,8 @@ namespace ImperaPlus.Application.Chat
     {
         private readonly RoleManager<IdentityRole> roleManager;
 
-        public ChatService(IUnitOfWork unitOfWork, IMapper mapper, IUserProvider userProvider, RoleManager<IdentityRole> roleManager) 
+        public ChatService(IUnitOfWork unitOfWork, IMapper mapper, IUserProvider userProvider,
+            RoleManager<IdentityRole> roleManager)
             : base(unitOfWork, mapper, userProvider)
         {
             this.roleManager = roleManager;
@@ -37,7 +38,7 @@ namespace ImperaPlus.Application.Chat
 
         public async Task<IEnumerable<ChannelInformation>> GetChannelInformationForUser(string userId)
         {
-            var user = this.UnitOfWork.Users.FindByIdWithRoles(userId);
+            var user = UnitOfWork.Users.FindByIdWithRoles(userId);
 
             if (user == null)
             {
@@ -48,23 +49,23 @@ namespace ImperaPlus.Application.Chat
             var channels = new List<ChannelInformation>
             {
                 Mapper.Map<ChannelInformation>(
-                    this.UnitOfWork.Channels.GetByType(ChannelType.General))
+                    UnitOfWork.Channels.GetByType(ChannelType.General))
             };
 
             // Alliance channel if user is a member
             if (user.AllianceId.HasValue)
             {
-                var alliance = this.UnitOfWork.Alliances.Get(user.AllianceId.Value);
-                channels.Add(Mapper.Map<ChannelInformation>(this.UnitOfWork.Channels.GetById(alliance.ChannelId)));
-            }            
+                var alliance = UnitOfWork.Alliances.Get(user.AllianceId.Value);
+                channels.Add(Mapper.Map<ChannelInformation>(UnitOfWork.Channels.GetById(alliance.ChannelId)));
+            }
 
             // Admin
-            var adminRole = await this.roleManager.FindByNameAsync("admin");
+            var adminRole = await roleManager.FindByNameAsync("admin");
             if (user.IsInRole(adminRole))
             {
                 channels.Add(
                     Mapper.Map<ChannelInformation>(
-                        this.UnitOfWork.Channels.GetByType(ChannelType.Admin)));
+                        UnitOfWork.Channels.GetByType(ChannelType.Admin)));
             }
 
             return channels;
@@ -72,19 +73,19 @@ namespace ImperaPlus.Application.Chat
 
         public void SendMessage(Guid channelId, string userId, string message)
         {
-            var channel = this.UnitOfWork.Channels.Query().FirstOrDefault(x => x.Id == channelId);
+            var channel = UnitOfWork.Channels.Query().FirstOrDefault(x => x.Id == channelId);
             if (null == channel)
             {
                 // Channel does not exist in database.. might be transient, do not save anything
                 return;
             }
 
-            var user = this.UnitOfWork.Users.FindById(userId); 
+            var user = UnitOfWork.Users.FindById(userId);
 
             // TODO: CS: Check if user is allowed to post to channel!
 
-            this.UnitOfWork.ChatMessages.Add(channel.CreateMessage(user, message));
-            this.UnitOfWork.Commit();
+            UnitOfWork.ChatMessages.Add(channel.CreateMessage(user, message));
+            UnitOfWork.Commit();
         }
     }
 }

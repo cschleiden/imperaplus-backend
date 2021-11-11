@@ -22,11 +22,11 @@ namespace ImperaPlus.DataAccess.Repositories
 
             if (includeGames)
             {
-                source = this.SetWithGames;
+                source = SetWithGames;
             }
             else
             {
-                source = this.Set;
+                source = Set;
             }
 
             if (readOnly)
@@ -41,87 +41,76 @@ namespace ImperaPlus.DataAccess.Repositories
         {
             if (states == null || states.Length == 0)
             {
-                states = new[] { TournamentState.Open, TournamentState.Groups, TournamentState.Knockout, TournamentState.Closed };
+                states = new[]
+                {
+                    TournamentState.Open, TournamentState.Groups, TournamentState.Knockout, TournamentState.Closed
+                };
             }
 
-            var result = this.SummarySet
-                        .Where(x => states.Contains(x.State) && (!x.EndOfTournament.HasValue || x.EndOfTournament >= DateTime.UtcNow.AddDays(-90)));
+            var result = SummarySet
+                .Where(x => states.Contains(x.State) &&
+                            (!x.EndOfTournament.HasValue || x.EndOfTournament >= DateTime.UtcNow.AddDays(-90)));
 
             return result;
         }
 
         public bool ExistsWithName(string name)
         {
-            return this.DbSet.Any(x => x.Name == name);
+            return DbSet.Any(x => x.Name == name);
         }
 
         public IEnumerable<Tournament> GetAllFull()
         {
-            return this.Set;
+            return Set;
         }
 
         public IEnumerable<Tournament> GetRecentFull()
         {
-            return this.Set.Where(x => x.LastModifiedAt >= DateTime.UtcNow.AddDays(-30));
+            return Set.Where(x => x.LastModifiedAt >= DateTime.UtcNow.AddDays(-30));
         }
 
         public IEnumerable<Game> GetGamesForPairing(Guid pairingId)
         {
-            var pairing = this.Context.Set<TournamentPairing>()
-                    .Include(x => x.Games)
-                        .ThenInclude(g => g.Teams)
-                        .ThenInclude(t => t.Players)
-                        .ThenInclude(p => p.User)
-                    .Include(x => x.Games)
-                        .ThenInclude(g => g.Options)
-                    .FirstOrDefault(p => p.Id == pairingId);
+            var pairing = Context.Set<TournamentPairing>()
+                .Include(x => x.Games)
+                .ThenInclude(g => g.Teams)
+                .ThenInclude(t => t.Players)
+                .ThenInclude(p => p.User)
+                .Include(x => x.Games)
+                .ThenInclude(g => g.Options)
+                .FirstOrDefault(p => p.Id == pairingId);
 
             return pairing.Games;
         }
 
-        private IQueryable<Tournament> SummarySet
-        {
-            get
-            {
-                // Include Games/Teams/Players so we can synchronize
-                return this.DbSet
-                    .Include(x => x.Teams)
-                        .ThenInclude(t => t.Participants)
-                            .ThenInclude(p => p.User)
-                    .Include(x => x.Options);
-            }
-        }
+        private IQueryable<Tournament> SummarySet =>
+            // Include Games/Teams/Players so we can synchronize
+            DbSet
+                .Include(x => x.Teams)
+                .ThenInclude(t => t.Participants)
+                .ThenInclude(p => p.User)
+                .Include(x => x.Options);
 
-        private IQueryable<Tournament> Set
-        {
-            get
-            {
-                return this.DbSet
-                    .Include(x => x.Teams)
-                        .ThenInclude(t => t.Participants)
-                            .ThenInclude(p => p.User)
-                    .Include(x => x.Pairings)
-                    .Include(x => x.Groups)
-                    .Include(x => x.Options);
-            }
-        }
+        private IQueryable<Tournament> Set =>
+            DbSet
+                .Include(x => x.Teams)
+                .ThenInclude(t => t.Participants)
+                .ThenInclude(p => p.User)
+                .Include(x => x.Pairings)
+                .Include(x => x.Groups)
+                .Include(x => x.Options);
 
-        private IQueryable<Tournament> SetWithGames
-        {
-            get
-            {
-                // Include Games/Teams/Players so we can synchronize
-                return this.DbSet
-                    .Include(x => x.Teams)
-                        .ThenInclude(t => t.Participants)
-                            .ThenInclude(p => p.User)
-                    .Include(x => x.Pairings)
-                        .ThenInclude(p => p.Games)
-                            .ThenInclude(g => g.Teams)
-                                .ThenInclude(t => t.Players)
-                    .Include(x => x.Groups)
-                    .Include(x => x.Options);
-            }
-        }
+        private IQueryable<Tournament> SetWithGames =>
+            // Include Games/Teams/Players so we can synchronize
+            DbSet
+                .Include(x => x.Teams)
+                .ThenInclude(t => t.Participants)
+                .ThenInclude(p => p.User)
+                .Include(x => x.Pairings)
+                .ThenInclude(p => p.Games)
+                .ThenInclude(g => g.Teams)
+                .ThenInclude(t => t.Players)
+                .Include(x => x.Groups)
+                .Include(x => x.Options);
     }
 }

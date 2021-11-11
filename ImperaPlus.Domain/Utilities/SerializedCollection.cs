@@ -10,7 +10,7 @@ namespace ImperaPlus.Domain.Utilities
 
         public SerializedCollection(string input)
             : base(Jil.JSON.Deserialize<IEnumerable<T>>(input ?? "[]"))
-        { 
+        {
         }
 
         public SerializedCollection(IEnumerable<T> data)

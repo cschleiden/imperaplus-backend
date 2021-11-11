@@ -32,7 +32,7 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(IEnumerable<LadderSummary>), 200)]
         public IEnumerable<LadderSummary> Get()
         {
-            return this.ladderService.GetAll();
+            return ladderService.GetAll();
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(Ladder), 200)]
         public IActionResult Get(Guid ladderId)
         {
-            return this.Ok(this.ladderService.Get(ladderId));
+            return Ok(ladderService.Get(ladderId));
         }
 
         /// <summary>
@@ -53,9 +53,9 @@ namespace ImperaPlus.Backend.Controllers
         [HttpPost("{ladderId:guid}/queue")]
         public IActionResult PostJoin(Guid ladderId)
         {
-            this.ladderService.Queue(ladderId);
+            ladderService.Queue(ladderId);
 
-            return this.Ok();
+            return Ok();
         }
 
         /// <summary>
@@ -65,9 +65,9 @@ namespace ImperaPlus.Backend.Controllers
         [HttpDelete("{ladderId:guid}/queue")]
         public IActionResult DeleteJoin(Guid ladderId)
         {
-            this.ladderService.LeaveQueue(ladderId);
+            ladderService.LeaveQueue(ladderId);
 
-            return this.Ok();
+            return Ok();
         }
     }
 }

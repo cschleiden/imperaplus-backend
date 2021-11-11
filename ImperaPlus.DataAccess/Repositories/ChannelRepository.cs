@@ -16,29 +16,29 @@ namespace ImperaPlus.DataAccess.Repositories
 
         public Channel GetById(Guid channelId)
         {
-            var channel = this.DbSet.First(x => x.Id == channelId);
-            this.AddMessages(channel);
+            var channel = DbSet.First(x => x.Id == channelId);
+            AddMessages(channel);
             return channel;
         }
 
         public Channel GetByType(ChannelType channelType)
         {
-            var channel = this.DbSet.First(x => x.Type == channelType);
-            this.AddMessages(channel);
+            var channel = DbSet.First(x => x.Type == channelType);
+            AddMessages(channel);
             return channel;
         }
 
         private void AddMessages(Channel channel)
         {
-            channel.RecentMessages = this.Context
-                    .Entry(channel)
-                    .Collection(c => c.Messages)
-                    .Query()
-                    .Include(x => x.CreatedBy)
-                    .OrderByDescending(x => x.CreatedAt)
-                    .Where(x => x.CreatedBy != null && !x.CreatedBy.IsDeleted)
-                    .Take(20)
-                    .OrderBy(x => x.CreatedAt);
+            channel.RecentMessages = Context
+                .Entry(channel)
+                .Collection(c => c.Messages)
+                .Query()
+                .Include(x => x.CreatedBy)
+                .OrderByDescending(x => x.CreatedAt)
+                .Where(x => x.CreatedBy != null && !x.CreatedBy.IsDeleted)
+                .Take(20)
+                .OrderBy(x => x.CreatedAt);
         }
     }
 }

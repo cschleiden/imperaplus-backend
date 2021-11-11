@@ -24,93 +24,77 @@ namespace ImperaPlus.Domain.Games
 
         protected Country()
         {
-            this.IsUpdated = false;
+            IsUpdated = false;
         }
 
         public Country(string countryIdentifier, int units)
             : this()
         {
-            this.CountryIdentifier = countryIdentifier;
+            CountryIdentifier = countryIdentifier;
             this.units = units;
         }
 
         public Guid PlayerId
         {
-            get
-            {
-                return this.playerId;
-            }
+            get => playerId;
 
             internal set
             {
-                if (this.playerId != value)
+                if (playerId != value)
                 {
                     // Capitals fall when the ownership changes.
-                    this.Flags &= ~CountryFlags.Capital;
+                    Flags &= ~CountryFlags.Capital;
 
-                    this.IsUpdated = true;
+                    IsUpdated = true;
                 }
 
-                this.playerId = value;
+                playerId = value;
             }
         }
 
         public Guid TeamId
         {
-            get
-            {
-                return this.teamId;
-            }
+            get => teamId;
 
             internal set
             {
-                if (this.teamId != value)
+                if (teamId != value)
                 {
-                    this.IsUpdated = true;
+                    IsUpdated = true;
                 }
 
-                this.teamId = value;
+                teamId = value;
             }
         }
 
         public int Units
         {
-            get
-            {
-                return this.units;
-            }
+            get => units;
 
             set
             {
-                if (this.units != value)
+                if (units != value)
                 {
-                    this.units = value;
-                    this.IsUpdated = true;
+                    units = value;
+                    IsUpdated = true;
                 }
             }
         }
 
         public CountryFlags Flags
         {
-            get => this.flags;
+            get => flags;
             set
             {
-                if (this.flags != value)
+                if (flags != value)
                 {
-                    this.flags = value;
-                    this.IsUpdated = true;
+                    flags = value;
+                    IsUpdated = true;
                 }
             }
         }
 
-        [NotMapped]
-        public bool IsNeutral
-        {
-            get
-            {
-                return this.PlayerId == Guid.Empty;
-            }
-        }
+        [NotMapped] public bool IsNeutral => PlayerId == Guid.Empty;
 
         public string CountryIdentifier { get; private set; }
 
@@ -127,7 +111,7 @@ namespace ImperaPlus.Domain.Games
                 throw new DomainException(ErrorCode.ZeroNegativeUnits, "Cannot place zero or negative units");
             }
 
-            this.Units += units;
+            Units += units;
         }
     }
 }

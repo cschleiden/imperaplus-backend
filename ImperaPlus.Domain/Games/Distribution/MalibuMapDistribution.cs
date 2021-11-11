@@ -17,7 +17,8 @@ namespace ImperaPlus.Domain.Games.Distribution
             this.countriesPerPlayer = countriesPerPlayer;
         }
 
-        public void Distribute(GameOptions gameOptions, IEnumerable<Team> teams, MapTemplate mapTemplate, Map map, IRandomGen random)
+        public void Distribute(GameOptions gameOptions, IEnumerable<Team> teams, MapTemplate mapTemplate, Map map,
+            IRandomGen random)
         {
             // Default all countries to 1 unit
             foreach (var country in map.Countries)
@@ -29,14 +30,14 @@ namespace ImperaPlus.Domain.Games.Distribution
             var shuffledCountries = map.Countries.Shuffle(random).ToArray();
             var countryIdx = 0;
 
-            for (int c = 0; c < this.countriesPerPlayer; ++c)
+            for (var c = 0; c < countriesPerPlayer; ++c)
             {
                 foreach (var player in players)
                 {
-                    bool countryDistributed = false;
+                    var countryDistributed = false;
 
                     // Try to find a country that is not next to another player
-                    for (int i = 0; i < shuffledCountries.Length; ++i)
+                    for (var i = 0; i < shuffledCountries.Length; ++i)
                     {
                         // Get a random country
                         var country = shuffledCountries[countryIdx++ % shuffledCountries.Count()];
@@ -47,7 +48,8 @@ namespace ImperaPlus.Domain.Games.Distribution
 
                         // Check all connected countries
                         var connectedCountryIdentifiers = mapTemplate.GetConnectedCountries(country.CountryIdentifier);
-                        if (connectedCountryIdentifiers.Select(x => map.GetCountry(x)).Any(c => !c.IsNeutral && c.TeamId != player.TeamId))
+                        if (connectedCountryIdentifiers.Select(x => map.GetCountry(x))
+                            .Any(c => !c.IsNeutral && c.TeamId != player.TeamId))
                         {
                             // One of the connected countries already belongs to another player, try the next country
                             continue;

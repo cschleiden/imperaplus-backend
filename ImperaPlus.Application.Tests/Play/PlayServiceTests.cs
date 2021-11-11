@@ -18,15 +18,15 @@ namespace ImperaPlus.Application.Tests.Play
         [TestInitialize]
         public void Setup()
         {
-            this.playService = this.Scope.Resolve<IPlayService>();
-            this.gameService = this.Scope.Resolve<IGameService>();
+            playService = Scope.Resolve<IPlayService>();
+            gameService = Scope.Resolve<IGameService>();
         }
 
         [TestMethod]
         public void PlaceUnitsSucceeds()
         {
             // Arrange
-            var mapTemplate = this.TestData.CreateAndSaveMapTemplate();
+            var mapTemplate = TestData.CreateAndSaveMapTemplate();
             var gameCreationOptions = new GameCreationOptions
             {
                 Name = "TestGame",
@@ -38,12 +38,12 @@ namespace ImperaPlus.Application.Tests.Play
                 TimeoutInSeconds = 5 * 60,
                 AddBot = true
             };
-            this.UnitOfWork.Commit();
+            UnitOfWork.Commit();
 
-            var game = this.gameService.Create(gameCreationOptions);
-            this.UnitOfWork.Commit();
+            var game = gameService.Create(gameCreationOptions);
+            UnitOfWork.Commit();
 
-            var fullGame = this.gameService.Get(game.Id);
+            var fullGame = gameService.Get(game.Id);
 
             if (fullGame.CurrentPlayer.Name == "Bot")
             {
@@ -51,17 +51,20 @@ namespace ImperaPlus.Application.Tests.Play
                 return;
             }
 
-            TestUserProvider.User = this.UnitOfWork.Users.FindById(fullGame.CurrentPlayer.UserId);
+            TestUserProvider.User = UnitOfWork.Users.FindById(fullGame.CurrentPlayer.UserId);
 
             // Act
-            var actionResult = this.playService.Place(game.Id, new[]
-            {
-                new PlaceUnitsOptions
+            var actionResult = playService.Place(game.Id,
+                new[]
                 {
-                    CountryIdentifier = fullGame.Map.Countries.First(x => x.PlayerId == fullGame.CurrentPlayer.Id).Identifier,
-                    NumberOfUnits = fullGame.UnitsToPlace
-                }
-            });
+                    new PlaceUnitsOptions
+                    {
+                        CountryIdentifier =
+                            fullGame.Map.Countries.First(x => x.PlayerId == fullGame.CurrentPlayer.Id)
+                                .Identifier,
+                        NumberOfUnits = fullGame.UnitsToPlace
+                    }
+                });
 
             // Assert
             Assert.IsNotNull(actionResult);

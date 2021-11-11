@@ -37,7 +37,7 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(IEnumerable<GameSummary>), 200)]
         public IEnumerable<GameSummary> GetAll()
         {
-            return this.gameService.GetOpen();
+            return gameService.GetOpen();
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(IEnumerable<GameSummary>), 200)]
         public IEnumerable<GameSummary> GetMy()
         {
-            return this.gameService.GetForCurrentUserReadOnly();
+            return gameService.GetForCurrentUserReadOnly();
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(IEnumerable<GameSummary>), 200)]
         public IEnumerable<GameSummary> GetMyTurn()
         {
-            return this.gameService.GetForCurrentUserTurn();
+            return gameService.GetForCurrentUserTurn();
         }
 
         /// <summary>
@@ -73,9 +73,9 @@ namespace ImperaPlus.Backend.Controllers
         {
             Require.NotNull(creationOptions, nameof(creationOptions));
 
-            var game = this.gameService.Create(creationOptions);
+            var game = gameService.Create(creationOptions);
 
-            return this.Ok(game);
+            return Ok(game);
         }
 
         /// <summary>
@@ -87,9 +87,9 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(Game), 200)]
         public IActionResult Get(long gameId)
         {
-            var game = this.gameService.Get(gameId);
+            var game = gameService.Get(gameId);
 
-            return this.Ok(game);
+            return Ok(game);
         }
 
         /// <summary>
@@ -102,9 +102,9 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(IEnumerable<DTO.Games.Chat.GameChatMessage>), 200)]
         public IActionResult GetMessages(long gameId, bool isPublic = true)
         {
-            var messages = this.gameService.GetMessages(gameId, isPublic);
+            var messages = gameService.GetMessages(gameId, isPublic);
 
-            return this.Ok(messages);
+            return Ok(messages);
         }
 
         /// <summary>
@@ -119,9 +119,9 @@ namespace ImperaPlus.Backend.Controllers
         [HttpDelete("{gameId:long:min(1)}")]
         public IActionResult Delete(long gameId)
         {
-            this.gameService.Delete(gameId);
+            gameService.Delete(gameId);
 
-            return this.Ok();
+            return Ok();
         }
 
         /// <summary>
@@ -132,9 +132,9 @@ namespace ImperaPlus.Backend.Controllers
         [HttpPost("{gameId:long:min(1)}/join")]
         public IActionResult PostJoin(long gameId, string password)
         {
-            this.gameService.Join(gameId, password);
+            gameService.Join(gameId, password);
 
-            return this.Ok();
+            return Ok();
         }
 
         /// <summary>
@@ -145,9 +145,9 @@ namespace ImperaPlus.Backend.Controllers
         [HttpPost("{gameId:long:min(1)}/leave")]
         public IActionResult PostLeave(long gameId)
         {
-            this.gameService.Leave(gameId);
+            gameService.Leave(gameId);
 
-            return this.Ok();
+            return Ok();
         }
 
         /// <summary>
@@ -159,9 +159,9 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(GameSummary), 200)]
         public IActionResult PostSurrender(long gameId)
         {
-            var gameSummary = this.gameService.Surrender(gameId);
+            var gameSummary = gameService.Surrender(gameId);
 
-            return this.Ok(gameSummary);
+            return Ok(gameSummary);
         }
 
         /// <summary>
@@ -171,9 +171,9 @@ namespace ImperaPlus.Backend.Controllers
         [HttpPatch("{gameId:long:min(1)}/hide")]
         public IActionResult PatchHide(long gameId)
         {
-            this.gameService.Hide(gameId);
+            gameService.Hide(gameId);
 
-            return this.Ok();
+            return Ok();
         }
 
         /// <summary>
@@ -182,7 +182,7 @@ namespace ImperaPlus.Backend.Controllers
         [HttpPatch("hide")]
         public IActionResult PatchHideAll()
         {
-            return this.Ok(this.gameService.HideAll());
+            return Ok(gameService.HideAll());
         }
     }
 }

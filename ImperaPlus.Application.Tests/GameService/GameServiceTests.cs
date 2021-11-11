@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ImperaPlus.Application.Tests.GameService
 {
-    [TestClass]    
+    [TestClass]
     public class GameServiceTests : TestBase
     {
         private IGameService gameService;
@@ -15,14 +15,14 @@ namespace ImperaPlus.Application.Tests.GameService
         [TestInitialize]
         public void Setup()
         {
-            this.gameService = this.Scope.Resolve<IGameService>();
+            gameService = Scope.Resolve<IGameService>();
         }
 
         [TestMethod]
         public void CreateGameShouldSucceed()
         {
             // Arrange
-            var mapTemplate = this.TestData.CreateAndSaveMapTemplate();
+            var mapTemplate = TestData.CreateAndSaveMapTemplate();
             var gameCreationOptions = new GameCreationOptions
             {
                 Name = "TestGame",
@@ -33,26 +33,26 @@ namespace ImperaPlus.Application.Tests.GameService
                 VisibilityModifier = new[] { VisibilityModifierType.None },
                 TimeoutInSeconds = 600
             };
-            this.UnitOfWork.Commit();
+            UnitOfWork.Commit();
 
             // Act
-            var game = this.gameService.Create(gameCreationOptions);
-            var openGames = this.gameService.GetOpen();
+            var game = gameService.Create(gameCreationOptions);
+            var openGames = gameService.GetOpen();
 
             // Assert
             Assert.IsNotNull(game);
             Assert.IsNotNull(openGames);
-            var dbGame = this.UnitOfWork.Games.Find(game.Id);
+            var dbGame = UnitOfWork.Games.Find(game.Id);
             Assert.IsNotNull(dbGame);
             Assert.AreEqual(dbGame.Id, game.Id);
-            Assert.IsTrue(dbGame.Teams.SelectMany(x => x.Players).Any(x => x.UserId == this.TestUser.Id));
+            Assert.IsTrue(dbGame.Teams.SelectMany(x => x.Players).Any(x => x.UserId == TestUser.Id));
         }
 
         [TestMethod]
         public void CreateGameWithBotShouldSucceed()
         {
             // Arrange
-            var mapTemplate = this.TestData.CreateAndSaveMapTemplate();
+            var mapTemplate = TestData.CreateAndSaveMapTemplate();
             var gameCreationOptions = new GameCreationOptions
             {
                 Name = "TestGame",
@@ -64,10 +64,10 @@ namespace ImperaPlus.Application.Tests.GameService
                 TimeoutInSeconds = 600,
                 AddBot = true
             };
-            this.UnitOfWork.Commit();
+            UnitOfWork.Commit();
 
             // Act
-            var game = this.gameService.Create(gameCreationOptions);
+            var game = gameService.Create(gameCreationOptions);
 
             // Assert
             Assert.IsNotNull(game);
@@ -79,7 +79,7 @@ namespace ImperaPlus.Application.Tests.GameService
         public void GetHistoryTurn()
         {
             // Act
-            var historyTurn = this.CreateGameAndGetHistoryTurn(0);
+            var historyTurn = CreateGameAndGetHistoryTurn(0);
 
             // Assert
             Assert.IsNotNull(historyTurn);
@@ -89,21 +89,21 @@ namespace ImperaPlus.Application.Tests.GameService
         [ExpectedException(typeof(Domain.Exceptions.DomainException))]
         public void GetHistoryTurnInvalidTurnId()
         {
-            this.CreateGameAndGetHistoryTurn(100);
+            CreateGameAndGetHistoryTurn(100);
         }
-        
+
         [TestMethod]
         public void HideAllGamesSucceed()
         {
             // Arrange
-            var game1 = this.CreateGame("a");
-            this.gameService.Surrender(game1.Id);
-            
-            var game2 = this.CreateGame("b");
-            this.gameService.Surrender(game2.Id);
+            var game1 = CreateGame("a");
+            gameService.Surrender(game1.Id);
+
+            var game2 = CreateGame("b");
+            gameService.Surrender(game2.Id);
 
             // Act
-            var hiddenGameIds = this.gameService.HideAll().ToArray();
+            var hiddenGameIds = gameService.HideAll().ToArray();
 
             // Assert
             Assert.IsNotNull(hiddenGameIds);
@@ -115,13 +115,13 @@ namespace ImperaPlus.Application.Tests.GameService
         {
             var game = CreateGame();
 
-            return this.gameService.Get(game.Id, turnNo);
+            return gameService.Get(game.Id, turnNo);
         }
 
         private GameSummary CreateGame(string suffix = null)
         {
-            var mapTemplate = this.TestData.CreateAndSaveMapTemplate();
-            this.UnitOfWork.Commit();
+            var mapTemplate = TestData.CreateAndSaveMapTemplate();
+            UnitOfWork.Commit();
 
             var gameCreationOptions = new GameCreationOptions
             {
@@ -135,7 +135,7 @@ namespace ImperaPlus.Application.Tests.GameService
                 AddBot = true
             };
 
-            var game = this.gameService.Create(gameCreationOptions);            
+            var game = gameService.Create(gameCreationOptions);
             return game;
         }
     }

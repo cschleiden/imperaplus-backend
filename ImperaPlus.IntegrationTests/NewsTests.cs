@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ImperaPlus.IntegrationTests
 {
-    [TestClass]    
+    [TestClass]
     public class NewsTests : BaseIntegrationTest
     {
         [TestMethod]

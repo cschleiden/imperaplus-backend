@@ -7,24 +7,23 @@ namespace ImperaPlus.Domain.Games.History
     {
         protected HistoryEntry()
         {
-
         }
 
         public HistoryEntry(Game game, Player player, HistoryAction action, long turnNo)
         {
-            this.GameId = game.Id;
-            this.Game = game;
+            GameId = game.Id;
+            Game = game;
 
             if (player != null)
             {
-                this.ActorId = player.Id;
-                this.Actor = player;
+                ActorId = player.Id;
+                Actor = player;
             }
 
-            this.Action = action;
-            this.TurnNo = turnNo;
+            Action = action;
+            TurnNo = turnNo;
 
-            this.DateTime = DateTime.UtcNow;
+            DateTime = DateTime.UtcNow;
         }
 
         public long Id { get; set; }

@@ -2,7 +2,7 @@
 {
     public enum PlayerState
     {
-        None = 0,        
+        None = 0,
 
         Active,
 

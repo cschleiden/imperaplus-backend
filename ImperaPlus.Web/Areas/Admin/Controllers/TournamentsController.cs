@@ -20,16 +20,16 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
         // GET: Admin/Tournaments
         public ActionResult Index()
         {
-            this.AddLookups();
+            AddLookups();
 
-            var tournaments = this.tournamentService.GetRecentFull();
+            var tournaments = tournamentService.GetRecentFull();
 
             return View(tournaments);
         }
 
         public ActionResult Create()
         {
-            this.AddLookups();
+            AddLookups();
 
             var tournament = new DTO.Tournaments.Tournament();
 
@@ -37,10 +37,7 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
             tournament.StartOfTournament = DateTime.UtcNow.AddDays(2);
 
             tournament.MapTemplates = new string[0];
-            tournament.Options = new DTO.Games.GameOptions
-            {
-                NumberOfTeams = 2
-            };
+            tournament.Options = new DTO.Games.GameOptions { NumberOfTeams = 2 };
             GameOptionsHelper.SetDefaultGameOptions(tournament.Options);
 
             ViewBag.FixedOptions = new HashSet<string> { "NumberOfTeams" };
@@ -51,17 +48,17 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult PostCreate(DTO.Tournaments.Tournament tournament)
         {
-            this.tournamentService.Create(tournament);
+            tournamentService.Create(tournament);
 
-            return this.Redirect("Index");
+            return Redirect("Index");
         }
 
         [HttpPost]
         public ActionResult Delete(Guid id)
         {
-            this.tournamentService.Delete(id);
+            tournamentService.Delete(id);
 
-            return this.Redirect("Index");
+            return Redirect("Index");
         }
     }
 }

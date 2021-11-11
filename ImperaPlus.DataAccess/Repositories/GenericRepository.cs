@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ImperaPlus.DataAccess.Repositories
 {
-    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class 
+    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
     {
         private readonly DbContext context;
 
@@ -13,35 +13,23 @@ namespace ImperaPlus.DataAccess.Repositories
             this.context = context;
         }
 
-        protected virtual DbContext Context
-        {
-            get
-            {
-                return this.context;
-            }
-        }
+        protected virtual DbContext Context => context;
 
-        protected virtual DbSet<TEntity> DbSet
-        {
-            get
-            {
-                return this.context.Set<TEntity>();
-            }
-        }
+        protected virtual DbSet<TEntity> DbSet => context.Set<TEntity>();
 
         public void Add(TEntity item)
         {
-            this.DbSet.Add(item);
+            DbSet.Add(item);
         }
 
         public void Remove(TEntity item)
         {
-            this.DbSet.Remove(item);
+            DbSet.Remove(item);
         }
 
         public IQueryable<TEntity> Query()
         {
-            return this.DbSet;
+            return DbSet;
         }
     }
 }

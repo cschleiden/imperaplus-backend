@@ -20,9 +20,9 @@ namespace ImperaPlus.Application.Jobs
         public LadderJob(ILifetimeScope scope)
             : base(scope)
         {
-            this.unitOfWork = this.LifetimeScope.Resolve<IUnitOfWork>();
-            this.ladderService = this.LifetimeScope.Resolve<ILadderService>();
-            this.randomGenProvider = this.LifetimeScope.Resolve<IRandomGenProvider>();
+            unitOfWork = LifetimeScope.Resolve<IUnitOfWork>();
+            ladderService = LifetimeScope.Resolve<ILadderService>();
+            randomGenProvider = LifetimeScope.Resolve<IRandomGenProvider>();
         }
 
         public override void Handle(PerformContext performContext)
@@ -33,11 +33,11 @@ namespace ImperaPlus.Application.Jobs
             {
                 try
                 {
-                    this.ladderService.CheckAndCreateMatches(this.randomGenProvider.GetRandomGen());
+                    ladderService.CheckAndCreateMatches(randomGenProvider.GetRandomGen());
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    this.Log.Log(Domain.LogLevel.Error, "DbUpdateConcurrencyException while processing ladders");
+                    Log.Log(Domain.LogLevel.Error, "DbUpdateConcurrencyException while processing ladders");
                 }
             });
         }

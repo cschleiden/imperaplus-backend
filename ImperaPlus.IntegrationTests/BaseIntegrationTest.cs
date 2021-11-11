@@ -17,7 +17,7 @@ namespace ImperaPlus.IntegrationTests
 
         public void Log(string message, params object[] args)
         {
-            this.TestContext.WriteLine(message, args);
+            TestContext.WriteLine(message, args);
         }
 
         public TestContext TestContext { get; set; }

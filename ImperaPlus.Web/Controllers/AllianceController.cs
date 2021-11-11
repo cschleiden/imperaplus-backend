@@ -19,7 +19,8 @@ namespace ImperaPlus.Backend.Controllers
     {
         private Domain.Alliances.IAllianceService allianceService;
 
-        public AllianceController(Domain.Repositories.IUnitOfWork unitOfWork, IMapper mapper, Domain.Alliances.IAllianceService allianceService)
+        public AllianceController(Domain.Repositories.IUnitOfWork unitOfWork, IMapper mapper,
+            Domain.Alliances.IAllianceService allianceService)
             : base(unitOfWork, mapper)
         {
             this.allianceService = allianceService;
@@ -33,7 +34,7 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(IEnumerable<AllianceSummary>), 200)]
         public IActionResult GetAll()
         {
-            return this.Map<IEnumerable<AllianceSummary>>(this.allianceService.GetAll());
+            return Map<IEnumerable<AllianceSummary>>(allianceService.GetAll());
         }
 
         /// <summary>
@@ -44,7 +45,7 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(IEnumerable<AllianceJoinRequest>), 200)]
         public IActionResult GetAllRequests()
         {
-            return this.Map<IEnumerable<AllianceJoinRequest>>((this.allianceService.GetJoinRequests()));
+            return Map<IEnumerable<AllianceJoinRequest>>(allianceService.GetJoinRequests());
         }
 
         /// <summary>
@@ -56,7 +57,7 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(Alliance), 200)]
         public IActionResult Get(Guid allianceId)
         {
-            return this.Map<Alliance>(this.allianceService.Get(allianceId));
+            return Map<Alliance>(allianceService.Get(allianceId));
         }
 
         /// <summary>
@@ -68,7 +69,7 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(AllianceSummary), 200)]
         public IActionResult Create([FromBody] AllianceCreationOptions creationOptions)
         {
-            return this.CommitAndMap<Alliance>(this.allianceService.Create(creationOptions.Name, creationOptions.Description));
+            return CommitAndMap<Alliance>(allianceService.Create(creationOptions.Name, creationOptions.Description));
         }
 
         /// <summary>
@@ -80,8 +81,8 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(void), 200)]
         public IActionResult Delete(Guid allianceId)
         {
-            this.allianceService.Delete(allianceId);
-            return this.Commit();
+            allianceService.Delete(allianceId);
+            return Commit();
         }
 
         /// <summary>
@@ -94,8 +95,8 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(void), 200)]
         public IActionResult RemoveMember(Guid allianceId, string userId)
         {
-            this.allianceService.RemoveMember(allianceId, userId);
-            return this.Commit();
+            allianceService.RemoveMember(allianceId, userId);
+            return Commit();
         }
 
         /// <summary>
@@ -109,8 +110,8 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(void), 200)]
         public IActionResult ChangeAdmin(Guid allianceId, string userId, [FromBody] bool isAdmin)
         {
-            this.allianceService.ChangeAdmin(allianceId, userId, isAdmin);
-            return this.Commit();
+            allianceService.ChangeAdmin(allianceId, userId, isAdmin);
+            return Commit();
         }
 
         /// <summary>
@@ -123,7 +124,7 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(AllianceJoinRequest), 200)]
         public IActionResult RequestJoin(Guid allianceId, [FromBody] string reason)
         {
-            return this.CommitAndMap<AllianceJoinRequest>(this.allianceService.RequestToJoin(allianceId, reason));
+            return CommitAndMap<AllianceJoinRequest>(allianceService.RequestToJoin(allianceId, reason));
         }
 
         /// <summary>
@@ -135,7 +136,7 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(IEnumerable<AllianceJoinRequest>), 200)]
         public IActionResult GetRequests(Guid allianceId)
         {
-            return this.Map<IEnumerable<AllianceJoinRequest>>((this.allianceService.GetJoinRequests(allianceId)));
+            return Map<IEnumerable<AllianceJoinRequest>>(allianceService.GetJoinRequests(allianceId));
         }
 
         /// <summary>
@@ -148,8 +149,9 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(AllianceJoinRequest), 200)]
         public IActionResult UpdateRequest(Guid allianceId, Guid requestId, [FromBody] AllianceJoinRequestState state)
         {
-            return this.CommitAndMap<AllianceJoinRequest>(
-                this.allianceService.UpdateRequest(allianceId, requestId, this.Mapper.Map<Domain.Alliances.AllianceJoinRequestState>(state)));
+            return CommitAndMap<AllianceJoinRequest>(
+                allianceService.UpdateRequest(allianceId, requestId,
+                    Mapper.Map<Domain.Alliances.AllianceJoinRequestState>(state)));
         }
     }
 }

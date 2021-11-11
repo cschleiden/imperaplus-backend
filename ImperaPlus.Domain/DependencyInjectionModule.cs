@@ -21,7 +21,8 @@ namespace ImperaPlus.Domain
             builder.RegisterType<EventAggregator>().As<IEventAggregator>().InstancePerLifetimeScope();
 
             // Notifications
-            builder.RegisterAssemblyTypes(typeof(DependencyInjectionModule).Assembly).AsClosedTypesOf(typeof(IEventHandler<>));
+            builder.RegisterAssemblyTypes(typeof(DependencyInjectionModule).Assembly)
+                .AsClosedTypesOf(typeof(IEventHandler<>));
 
             builder.RegisterType<Tournaments.EventHandler.AccountDeletedHandler>().As<IEventHandler<AccountDeleted>>();
             builder.RegisterType<Games.EventHandler.AccountDeletedHandler>().As<IEventHandler<AccountDeleted>>();

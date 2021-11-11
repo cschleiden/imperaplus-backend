@@ -15,7 +15,7 @@ namespace ImperaPlus.DTO.Games
         /// <summary>
         /// Type of the game
         /// </summary>
-        public GameType Type { get; set;}
+        public GameType Type { get; set; }
 
         /// <summary>
         /// Name of the game

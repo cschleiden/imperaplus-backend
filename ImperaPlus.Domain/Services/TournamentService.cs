@@ -46,7 +46,7 @@ namespace ImperaPlus.Domain.Services
             this.gameService = gameService;
             this.mapTemplateProvider = mapTemplateProvider;
 
-            this.ghostUser = unitOfWork.Users.FindByName("Ghost");
+            ghostUser = unitOfWork.Users.FindByName("Ghost");
         }
 
         /// <summary>
@@ -55,9 +55,9 @@ namespace ImperaPlus.Domain.Services
         /// <returns>True if a tournament was started</returns>
         public bool CheckOpenTournaments(ILogger log, IRandomGen random)
         {
-            bool tournamentStarted = false;
+            var tournamentStarted = false;
 
-            var tournaments = this.unitOfWork.Tournaments.Get(TournamentState.Open);
+            var tournaments = unitOfWork.Tournaments.Get(TournamentState.Open);
 
             foreach (var tournament in tournaments)
             {
@@ -80,24 +80,23 @@ namespace ImperaPlus.Domain.Services
         /// </summary>
         public void CheckTournaments(ILogger log, IRandomGen random)
         {
-
-            var tournamentIds = this.unitOfWork.Tournaments.Get(Tournament.ActiveStates).Select(t => t.Id);
+            var tournamentIds = unitOfWork.Tournaments.Get(Tournament.ActiveStates).Select(t => t.Id);
 
             foreach (var tournamentId in tournamentIds)
             {
                 try
                 {
-                    var tournament = this.unitOfWork.Tournaments.GetById(tournamentId);
+                    var tournament = unitOfWork.Tournaments.GetById(tournamentId);
 
                     log.Log(LogLevel.Info, "Synchronizing games for tournament {0}", tournament.Id);
 
-                    this.SynchronizeGamesToPairings(log, tournament);
+                    SynchronizeGamesToPairings(log, tournament);
 
                     if (tournament.HasGroupPhase && tournament.State == TournamentState.Groups)
                     {
                         log.Log(LogLevel.Info, "Update group order for tournament {0}", tournament.Id);
 
-                        this.OrderGroupTeams(tournament);
+                        OrderGroupTeams(tournament);
                     }
 
                     // Advance rounds
@@ -114,7 +113,7 @@ namespace ImperaPlus.Domain.Services
                         tournament.End();
                     }
 
-                    this.CreateGamesForPairings(log, tournament, random);
+                    CreateGamesForPairings(log, tournament, random);
                 }
                 catch (Exception ex)
                 {
@@ -131,11 +130,11 @@ namespace ImperaPlus.Domain.Services
             log.Log(LogLevel.Info, "Creating games for {0}", tournament.Id);
 
             foreach (var pairing in tournament.Pairings.Where(
-                x => x.State == PairingState.None && x.Games.Count() != x.NumberOfGames))
+                         x => x.State == PairingState.None && x.Games.Count() != x.NumberOfGames))
             {
                 log.Log(LogLevel.Info, "Creating games for pairing {0}", pairing.Id);
 
-                this.CreateGamesForPairing(log, pairing, random);
+                CreateGamesForPairing(log, pairing, random);
             }
         }
 
@@ -143,13 +142,14 @@ namespace ImperaPlus.Domain.Services
         {
             var activePairings = tournament.Pairings.Where(x => x.State == PairingState.Active).ToList();
 
-            log.Log(LogLevel.Info, "Checking {0} active pairings of {1} total", activePairings.Count, tournament.Pairings.Count);
+            log.Log(LogLevel.Info, "Checking {0} active pairings of {1} total", activePairings.Count,
+                tournament.Pairings.Count);
 
             foreach (var pairing in activePairings)
             {
                 // Synchronize number of won games
-                pairing.TeamAWon = this.CountWonGamesForTeam(pairing.Games, pairing.TeamA);
-                pairing.TeamBWon = this.CountWonGamesForTeam(pairing.Games, pairing.TeamB);
+                pairing.TeamAWon = CountWonGamesForTeam(pairing.Games, pairing.TeamA);
+                pairing.TeamBWon = CountWonGamesForTeam(pairing.Games, pairing.TeamB);
 
                 log.Log(LogLevel.Info, "Wins: TeamA {0} TeamB {1}", pairing.TeamAWon, pairing.TeamBWon);
 
@@ -207,7 +207,7 @@ namespace ImperaPlus.Domain.Services
                     .ThenByDescending(t => t, Comparer<TournamentTeam>.Create((teamA, teamB) =>
                     {
                         // Check pairing
-                        int factor = 1;
+                        var factor = 1;
                         var pairing = group.Pairings.FirstOrDefault(x => x.TeamA == teamA && x.TeamB == teamB);
                         if (pairing != null && pairing.CanWinnerBeDetermined)
                         {
@@ -235,7 +235,7 @@ namespace ImperaPlus.Domain.Services
                     }))
                     .ToList();
 
-                for (int i = 0; i < orderedTeams.Count; ++i)
+                for (var i = 0; i < orderedTeams.Count; ++i)
                 {
                     orderedTeams[i].GroupOrder = i + 1;
                 }
@@ -249,22 +249,22 @@ namespace ImperaPlus.Domain.Services
             // - a winning team contains
             //  - the first player of the given team (enough to check)
             return games.Count(x => x.State == Enums.GameState.Ended
-                    && x.Teams.Any(t =>
-                        t.Outcome == Enums.PlayerOutcome.Won
-                        && t.Players.Select(p => p.UserId).Contains(team.Participants.First().UserId)));
+                                    && x.Teams.Any(t =>
+                                        t.Outcome == Enums.PlayerOutcome.Won
+                                        && t.Players.Select(p => p.UserId).Contains(team.Participants.First().UserId)));
         }
 
         private void CreateGamesForPairing(ILogger log, TournamentPairing pairing, IRandomGen random)
         {
             Debug.Assert(pairing.State == PairingState.None, "Pairing state is not correct");
 
-            var systemUser = this.unitOfWork.Users.FindByName("System");
+            var systemUser = unitOfWork.Users.FindByName("System");
 
-            for (int i = 0; i < pairing.NumberOfGames; ++i)
+            for (var i = 0; i < pairing.NumberOfGames; ++i)
             {
                 log.Log(LogLevel.Info, "Creating game {0}", i);
 
-                string gameName = pairing.GenerateGameName(i);
+                var gameName = pairing.GenerateGameName(i);
                 Game game;
 
                 try
@@ -297,7 +297,7 @@ namespace ImperaPlus.Domain.Services
                 {
                     if (participant.User == null)
                     {
-                        teamA.AddPlayer(this.ghostUser);
+                        teamA.AddPlayer(ghostUser);
                     }
                     else
                     {
@@ -310,7 +310,7 @@ namespace ImperaPlus.Domain.Services
                 {
                     if (participant.User == null)
                     {
-                        teamB.AddPlayer(this.ghostUser);
+                        teamB.AddPlayer(ghostUser);
                     }
                     else
                     {
@@ -318,7 +318,7 @@ namespace ImperaPlus.Domain.Services
                     }
                 }
 
-                game.Start(this.mapTemplateProvider.GetTemplate(game.MapTemplateName), random);
+                game.Start(mapTemplateProvider.GetTemplate(game.MapTemplateName), random);
 
                 log.Log(LogLevel.Info, "Done.");
             }
@@ -328,7 +328,7 @@ namespace ImperaPlus.Domain.Services
 
         public IEnumerable<Game> GetGamesForPairing(Guid pairingId)
         {
-            return this.unitOfWork.Tournaments.GetGamesForPairing(pairingId);
+            return unitOfWork.Tournaments.GetGamesForPairing(pairingId);
         }
     }
 }

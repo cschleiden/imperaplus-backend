@@ -18,9 +18,11 @@ namespace ImperaPlus.Application.Play
 
         DTO.Games.GameActionResult Place(long gameId, IEnumerable<PlaceUnitsOptions> places);
 
-        DTO.Games.GameActionResult Attack(long gameId, string originCountryIdentifier, string destinationCountryIdentifier, int numberOfUnits);
+        DTO.Games.GameActionResult Attack(long gameId, string originCountryIdentifier,
+            string destinationCountryIdentifier, int numberOfUnits);
 
-        DTO.Games.GameActionResult Move(long gameId, string originCountryIdentifier, string destinationCountryIdentifier, int numberOfUnits);
+        DTO.Games.GameActionResult Move(long gameId, string originCountryIdentifier,
+            string destinationCountryIdentifier, int numberOfUnits);
 
         DTO.Games.GameActionResult EndAttack(long gameId);
 
@@ -32,7 +34,8 @@ namespace ImperaPlus.Application.Play
         private IRandomGen randomGen;
         private IAttackService attackService;
 
-        public PlayService(IUnitOfWork unitOfWork, IMapper mapper, IUserProvider userProvider, IVisibilityModifierFactory visibilityModifierFactory,
+        public PlayService(IUnitOfWork unitOfWork, IMapper mapper, IUserProvider userProvider,
+            IVisibilityModifierFactory visibilityModifierFactory,
             IAttackService attackService,
             IMapTemplateProvider mapTemplateProvider,
             IRandomGen randomGen)
@@ -44,106 +47,115 @@ namespace ImperaPlus.Application.Play
 
         public DTO.Games.GameActionResult Place(long gameId, IEnumerable<PlaceUnitsOptions> places)
         {
-            var game = this.GetGame(gameId);
-            this.CheckPermission(game);
+            var game = GetGame(gameId);
+            CheckPermission(game);
 
             game.PlaceUnits(
-                this.GetMapTemplate(game), places.Select(x => Tuple.Create(x.CountryIdentifier, x.NumberOfUnits)).ToList());
+                GetMapTemplate(game), places.Select(x => Tuple.Create(x.CountryIdentifier, x.NumberOfUnits)).ToList());
 
-            return this.CommitAndGetGameActionResult(game);
+            return CommitAndGetGameActionResult(game);
         }
 
-        public DTO.Games.GameActionResult Attack(long gameId, string originCountryIdentifier, string destinationCountryIdentifier, int numberOfUnits)
+        public DTO.Games.GameActionResult Attack(long gameId, string originCountryIdentifier,
+            string destinationCountryIdentifier, int numberOfUnits)
         {
-            var game = this.GetGame(gameId);
-            this.CheckPermission(game);
+            var game = GetGame(gameId);
+            CheckPermission(game);
 
-            game.Attack(this.attackService, this.randomGen, this.GetMapTemplate(game), originCountryIdentifier, destinationCountryIdentifier, numberOfUnits);
+            game.Attack(attackService, randomGen, GetMapTemplate(game), originCountryIdentifier,
+                destinationCountryIdentifier, numberOfUnits);
 
-            var actionResult = this.CommitAndGetGameActionResult(game);
+            var actionResult = CommitAndGetGameActionResult(game);
 
-            var currentPlayer = game.GetPlayerForUser(this.userProvider.GetCurrentUserId());
+            var currentPlayer = game.GetPlayerForUser(userProvider.GetCurrentUserId());
 
-            var destCountry = actionResult.CountryUpdates.FirstOrDefault(x => x.Identifier == destinationCountryIdentifier);
-            actionResult.ActionResult = (destCountry != null && destCountry.PlayerId == currentPlayer.Id)
-                ? DTO.Games.Result.Successful : DTO.Games.Result.NotSuccessful;
+            var destCountry =
+                actionResult.CountryUpdates.FirstOrDefault(x => x.Identifier == destinationCountryIdentifier);
+            actionResult.ActionResult = destCountry != null && destCountry.PlayerId == currentPlayer.Id
+                ? DTO.Games.Result.Successful
+                : DTO.Games.Result.NotSuccessful;
 
             return actionResult;
         }
 
-        public DTO.Games.GameActionResult Move(long gameId, string originCountryIdentifier, string destinationCountryIdentifier, int numberOfUnits)
+        public DTO.Games.GameActionResult Move(long gameId, string originCountryIdentifier,
+            string destinationCountryIdentifier, int numberOfUnits)
         {
-            var game = this.GetGame(gameId);
-            this.CheckPermission(game);
+            var game = GetGame(gameId);
+            CheckPermission(game);
 
-            game.Move(this.GetMapTemplate(game), originCountryIdentifier, destinationCountryIdentifier, numberOfUnits);
+            game.Move(GetMapTemplate(game), originCountryIdentifier, destinationCountryIdentifier, numberOfUnits);
 
-            return this.CommitAndGetGameActionResult(game);
+            return CommitAndGetGameActionResult(game);
         }
 
         public DTO.Games.GameActionResult EndAttack(long gameId)
         {
-            var game = this.GetGame(gameId);
-            this.CheckPermission(game);
+            var game = GetGame(gameId);
+            CheckPermission(game);
 
             game.EndAttack();
 
-            return this.CommitAndGetGameActionResult(game);
+            return CommitAndGetGameActionResult(game);
         }
 
         public DTO.Games.GameActionResult Exchange(long gameId)
         {
-            var game = this.GetGame(gameId);
-            this.CheckPermission(game);
+            var game = GetGame(gameId);
+            CheckPermission(game);
 
             game.ExchangeCards();
 
-            return this.CommitAndGetGameActionResult(game);
+            return CommitAndGetGameActionResult(game);
         }
 
         public DTO.Games.Game EndTurn(long gameId)
         {
-            var game = this.GetGame(gameId);
-            this.CheckPermission(game);
+            var game = GetGame(gameId);
+            CheckPermission(game);
 
             game.EndTurn();
 
-            this.UnitOfWork.Commit();
+            UnitOfWork.Commit();
 
-            return this.MapAndApplyModifiers(game);
+            return MapAndApplyModifiers(game);
         }
 
         private void CheckPermission(Game game)
         {
-            if (game.CurrentPlayer.UserId != this.userProvider.GetCurrentUserId())
+            if (game.CurrentPlayer.UserId != userProvider.GetCurrentUserId())
             {
-                throw new Exceptions.ApplicationException("Only current player can perform actions", ErrorCode.UserIsNotAllowedToPerformAction);
+                throw new Exceptions.ApplicationException("Only current player can perform actions",
+                    ErrorCode.UserIsNotAllowedToPerformAction);
             }
         }
 
         private DTO.Games.GameActionResult CommitAndGetGameActionResult(Game game)
         {
-            var gameActionResult = Mapper.Map<Domain.Games.Game, DTO.Games.GameActionResult>(game, opts => opts.Items.Add("userId", this.CurrentUserId));
+            var gameActionResult =
+                Mapper.Map<Game, DTO.Games.GameActionResult>(game, opts => opts.Items.Add("userId", CurrentUserId));
 
             var changedCountries = game.Map.ChangedCountries.ToList();
-            foreach(var visibilityModifier in game.Options.VisibilityModifier)
+            foreach (var visibilityModifier in game.Options.VisibilityModifier)
             {
-                var visibilityModifierInstance = this.visibilityModifierFactory.Construct(visibilityModifier);
+                var visibilityModifierInstance = visibilityModifierFactory.Construct(visibilityModifier);
 
-                visibilityModifierInstance.Expand(this.CurrentUser, game, changedCountries);
+                visibilityModifierInstance.Expand(CurrentUser, game, changedCountries);
             }
 
-            gameActionResult.CountryUpdates = Mapper.Map<IEnumerable<DTO.Games.Map.Country>>(changedCountries.ToArray()).ToArray();
-            gameActionResult.UnitsToPlace = game.GetUnitsToPlace(this.mapTemplateProvider.GetTemplate(game.MapTemplateName), game.CurrentPlayer);
+            gameActionResult.CountryUpdates =
+                Mapper.Map<IEnumerable<DTO.Games.Map.Country>>(changedCountries.ToArray()).ToArray();
+            gameActionResult.UnitsToPlace = game.GetUnitsToPlace(mapTemplateProvider.GetTemplate(game.MapTemplateName),
+                game.CurrentPlayer);
 
-            this.UnitOfWork.Commit();
+            UnitOfWork.Commit();
 
             return gameActionResult;
         }
 
         private MapTemplate GetMapTemplate(Game game)
         {
-            return this.mapTemplateProvider.GetTemplate(game.MapTemplateName);
+            return mapTemplateProvider.GetTemplate(game.MapTemplateName);
         }
     }
 }

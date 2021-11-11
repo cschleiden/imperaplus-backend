@@ -14,7 +14,7 @@ namespace ImperaPlus.IntegrationTests
 {
     [TestClass]
     public class GameEndpointTests : BaseIntegrationTest
-    {       
+    {
         private const string BaseMapTemplate = "map/";
         private GameClient clientDefault;
 
@@ -23,7 +23,7 @@ namespace ImperaPlus.IntegrationTests
         {
             base.Initialize();
 
-            this.clientDefault = ApiClient.GetAuthenticatedClientDefaultUser<GameClient>().Result;
+            clientDefault = ApiClient.GetAuthenticatedClientDefaultUser<GameClient>().Result;
         }
 
         [TestCleanup]
@@ -35,54 +35,54 @@ namespace ImperaPlus.IntegrationTests
         [TestMethod]
         public async Task CreateAndDeleteGame()
         {
-            this.Log("Create game");
-            var gameSummary = await this.clientDefault.PostAsync(this.GetCreationOptions(this.GetGameName(), 2, 1));
+            Log("Create game");
+            var gameSummary = await clientDefault.PostAsync(GetCreationOptions(GetGameName(), 2, 1));
 
-            this.Log("Find game using other user");
+            Log("Find game using other user");
             var otherUser = await ApiClient.GetAuthenticatedClient<GameClient>(1);
-            await this.EnsureGameDoesShowInOpenList(otherUser, gameSummary.Id);
+            await EnsureGameDoesShowInOpenList(otherUser, gameSummary.Id);
 
-            this.Log("Delete game");
-            await this.clientDefault.DeleteAsync(gameSummary.Id);
+            Log("Delete game");
+            await clientDefault.DeleteAsync(gameSummary.Id);
 
-            this.Log("Make sure game does not show up anymore");
-            await this.EnsureGameDoesNotShowInOpenList(this.clientDefault, gameSummary.Id);
+            Log("Make sure game does not show up anymore");
+            await EnsureGameDoesNotShowInOpenList(clientDefault, gameSummary.Id);
         }
 
         [TestMethod]
         public async Task StartJoinAndCompleteGame()
         {
-            await CreateAndPlayGameToEnd(this.GetCreationOptions(this.GetGameName(), 2, 1));
+            await CreateAndPlayGameToEnd(GetCreationOptions(GetGameName(), 2, 1));
         }
-        
+
         [TestMethod]
         public async Task StartJoinAndCompleteGameWithBot()
         {
-            this.Log("Create game");
-            var gameCreationOptions = this.GetCreationOptions("BotGame" + Guid.NewGuid().ToString(), 2, 1);
+            Log("Create game");
+            var gameCreationOptions = GetCreationOptions("BotGame" + Guid.NewGuid().ToString(), 2, 1);
             gameCreationOptions.AddBot = true;
-            var gameSummary = await this.clientDefault.PostAsync(gameCreationOptions);
+            var gameSummary = await clientDefault.PostAsync(gameCreationOptions);
             Assert.AreEqual(GameState.Active, gameSummary.State);
 
             Thread.Sleep(4000);
 
-            var game = await this.clientDefault.GetAsync(gameSummary.Id);
+            var game = await clientDefault.GetAsync(gameSummary.Id);
             var turnCount = game.TurnCounter;
 
             if (gameSummary.CurrentPlayer.Name != "Bot")
             {
-                this.Log("End turn to trigger bot");
+                Log("End turn to trigger bot");
                 var playClient = await ApiClient.GetAuthenticatedClientDefaultUser<PlayClient>();
                 var result = await playClient.PostEndTurnAsync(gameSummary.Id);
 
                 Thread.Sleep(4000);
 
-                var game2 = await this.clientDefault.GetAsync(gameSummary.Id);
+                var game2 = await clientDefault.GetAsync(gameSummary.Id);
                 Assert.IsTrue(turnCount + 2 <= game2.TurnCounter);
             }
             else
             {
-                this.Log("Bot made it's move already");
+                Log("Bot made it's move already");
                 Assert.IsTrue(2 <= turnCount);
             }
         }
@@ -115,29 +115,29 @@ namespace ImperaPlus.IntegrationTests
             var defaultPlayClient = await ApiClient.GetAuthenticatedClientDefaultUser<PlayClient>();
 
             var gameClients = new List<Tuple<GameClient, PlayClient, string>>();
-            for (int i = 0; i < gameCreationOptions.NumberOfTeams * gameCreationOptions.NumberOfPlayersPerTeam - 1; ++i)
+            for (var i = 0; i < gameCreationOptions.NumberOfTeams * gameCreationOptions.NumberOfPlayersPerTeam - 1; ++i)
             {
                 var gameClient = await ApiClient.GetAuthenticatedClient<GameClient>(i + 1);
                 var playClient = await ApiClient.GetAuthenticatedClient<PlayClient>(i + 1);
                 gameClients.Add(Tuple.Create(gameClient, playClient, "TestUser" + (i + 1)));
             }
 
-            this.Log("Create game");
-            var gameSummary = await this.clientDefault.PostAsync(gameCreationOptions);
+            Log("Create game");
+            var gameSummary = await clientDefault.PostAsync(gameCreationOptions);
 
             foreach (var gameClient in gameClients)
             {
-                this.Log("Find game");
-                await this.EnsureGameDoesShowInOpenList(gameClient.Item1, gameSummary.Id);
+                Log("Find game");
+                await EnsureGameDoesShowInOpenList(gameClient.Item1, gameSummary.Id);
 
-                this.Log("Join game for player");
+                Log("Join game for player");
                 await gameClient.Item1.PostJoinAsync(gameSummary.Id, null);
             }
 
-            this.Log("Make sure game has disappeared from open list");
-            await this.EnsureGameDoesNotShowInOpenList(gameClients.First().Item1, gameSummary.Id);
+            Log("Make sure game has disappeared from open list");
+            await EnsureGameDoesNotShowInOpenList(gameClients.First().Item1, gameSummary.Id);
 
-            this.Log("Make sure game is now listed as active");
+            Log("Make sure game is now listed as active");
             IEnumerable<GameSummary> myGames = await clientDefault.GetMyAsync();
             var gameSummary2 = myGames.FirstOrDefault(x => x.Id == gameSummary.Id);
             Assert.IsNotNull(gameSummary2);
@@ -146,34 +146,34 @@ namespace ImperaPlus.IntegrationTests
             Assert.IsTrue(gameSummary2.Teams.SelectMany(x => x.Players).Any(), "No players in teams");
             Assert.IsNotNull(gameSummary2.CurrentPlayer);
 
-            this.Log("Get game for default player");
-            var gameDefault = await this.clientDefault.GetAsync(gameSummary.Id);
+            Log("Get game for default player");
+            var gameDefault = await clientDefault.GetAsync(gameSummary.Id);
             Assert.IsNotNull(gameDefault.Teams);
             Assert.IsTrue(gameDefault.Teams.Any());
             Assert.IsNotNull(gameDefault.Map);
             Assert.AreEqual(PlayState.PlaceUnits, gameDefault.PlayState);
 
-            this.Log("Get map template");
+            Log("Get map template");
             var mapTemplateClient = await ApiClient.GetClient<MapClient>();
             var mapTemplate = await mapTemplateClient.GetMapTemplateAsync(gameDefault.MapTemplate);
 
             while (gameDefault.State == GameState.Active)
             {
-                bool placeOnlyTurn = false;
+                var placeOnlyTurn = false;
 
-                this.Log("Begin of turn");
+                Log("Begin of turn");
 
                 var currentPlayerId = gameDefault.CurrentPlayer.Id;
                 var currentTeamId = gameDefault.CurrentPlayer.TeamId;
-                
-                this.Log("\tCurrent player:{0} - {1}", currentPlayerId, currentTeamId);
+
+                Log("\tCurrent player:{0} - {1}", currentPlayerId, currentTeamId);
 
                 PlayClient playClient;
                 GameClient gameClient;
                 var player = gameClients.FirstOrDefault(x => x.Item3 == gameDefault.CurrentPlayer.Name);
                 if (player == null)
                 {
-                    gameClient = this.clientDefault;
+                    gameClient = clientDefault;
                     playClient = defaultPlayClient;
                 }
                 else
@@ -186,7 +186,7 @@ namespace ImperaPlus.IntegrationTests
 
                 {
                     // Place units
-                    this.Log("Placing units - player {0} - {1}", currentPlayerId, gameDefault.UnitsToPlace);
+                    Log("Placing units - player {0} - {1}", currentPlayerId, gameDefault.UnitsToPlace);
                     var ownCountries = gameState.Map.Countries.Where(x => x.TeamId == currentTeamId);
                     Country ownCountry;
                     if (ownCountries.Count() == 1)
@@ -196,11 +196,11 @@ namespace ImperaPlus.IntegrationTests
                     else
                     {
                         ownCountry = ownCountries.FirstOrDefault(x =>
-                           gameDefault.Map.Countries.Any(
+                            gameDefault.Map.Countries.Any(
                                 y => y.TeamId != currentTeamId
-                                                && mapTemplate
-                                                .Connections
-                                                .Any(c => c.Origin == x.Identifier && c.Destination == y.Identifier)));
+                                     && mapTemplate
+                                         .Connections
+                                         .Any(c => c.Origin == x.Identifier && c.Destination == y.Identifier)));
                     }
 
                     if (ownCountry == null)
@@ -208,16 +208,16 @@ namespace ImperaPlus.IntegrationTests
                         Assert.Fail("No connected, enemy country found");
                     }
 
-                    var placeOptions = new[] {
+                    var placeOptions = new[]
+                    {
                         new PlaceUnitsOptions
                         {
-                            CountryIdentifier = ownCountry.Identifier,
-                            NumberOfUnits = gameState.UnitsToPlace
+                            CountryIdentifier = ownCountry.Identifier, NumberOfUnits = gameState.UnitsToPlace
                         }
                     };
 
                     var placeResponse = await playClient.PostPlaceAsync(gameDefault.Id, placeOptions);
-                    this.ApplyMapUpdates(gameState.Map, placeResponse.CountryUpdates);
+                    ApplyMapUpdates(gameState.Map, placeResponse.CountryUpdates);
 
                     if (placeResponse.State != GameState.Active)
                     {
@@ -226,7 +226,7 @@ namespace ImperaPlus.IntegrationTests
 
                     if (placeResponse.CurrentPlayer.Id != currentPlayerId)
                     {
-                        this.Log("Place only turn");
+                        Log("Place only turn");
                         placeOnlyTurn = true;
                     }
                 }
@@ -234,20 +234,21 @@ namespace ImperaPlus.IntegrationTests
                 // Attack
                 if (gameState.TurnCounter > 3)
                 {
-                    bool breakExecution = false;
+                    var breakExecution = false;
 
-                    for (int a = 0; a < gameState.Options.AttacksPerTurn; ++a)
+                    for (var a = 0; a < gameState.Options.AttacksPerTurn; ++a)
                     {
                         var ownCountries = gameState.Map.Countries.Where(x => x.TeamId == currentTeamId);
                         var ownCountry = ownCountries.FirstOrDefault(x =>
                             x.Units > gameState.Options.MinUnitsPerCountry
                             && gameState.Map.Countries.Any(y => y.TeamId != currentTeamId
-                                                && mapTemplate
-                                                .Connections
-                                                .Any(c => c.Origin == x.Identifier && c.Destination == y.Identifier)));
+                                                                && mapTemplate
+                                                                    .Connections
+                                                                    .Any(c => c.Origin == x.Identifier &&
+                                                                              c.Destination == y.Identifier)));
                         if (ownCountry == null)
                         {
-                            this.Log("Cannot find own country");
+                            Log("Cannot find own country");
 
                             // Abort attack
                             break;
@@ -256,9 +257,9 @@ namespace ImperaPlus.IntegrationTests
                         // Find enemy country
                         var enemyCountries = gameState.Map.Countries.Where(x => x.TeamId != currentTeamId);
                         var enemyCountry = enemyCountries.FirstOrDefault(x => mapTemplate
-                                                .Connections.Any(c =>
-                                                c.Origin == ownCountry.Identifier
-                                                && c.Destination == x.Identifier));
+                            .Connections.Any(c =>
+                                c.Origin == ownCountry.Identifier
+                                && c.Destination == x.Identifier));
                         if (enemyCountry == null)
                         {
                             Assert.Fail("Cannot find enemy country connected to selected own country");
@@ -277,7 +278,7 @@ namespace ImperaPlus.IntegrationTests
                             NumberOfUnits = numberOfUnits
                         };
 
-                        this.Log("Attack from {0} to {1} with {2} units",
+                        Log("Attack from {0} to {1} with {2} units",
                             attackOptions.OriginCountryIdentifier,
                             attackOptions.DestinationCountryIdentifier,
                             attackOptions.NumberOfUnits);
@@ -286,14 +287,16 @@ namespace ImperaPlus.IntegrationTests
 
                         if (attackResult.ActionResult == Result.Successful)
                         {
-                            this.Log("\tAttack successful, units left {0}", attackResult.CountryUpdates.First(x => x.Identifier == attackOptions.DestinationCountryIdentifier).Units);
+                            Log("\tAttack successful, units left {0}",
+                                attackResult.CountryUpdates.First(x =>
+                                    x.Identifier == attackOptions.DestinationCountryIdentifier).Units);
                         }
                         else
                         {
-                            this.Log("\tAttack failed");
+                            Log("\tAttack failed");
                         }
 
-                        this.ApplyMapUpdates(gameState.Map, attackResult.CountryUpdates);
+                        ApplyMapUpdates(gameState.Map, attackResult.CountryUpdates);
 
                         if (attackResult.State != GameState.Active)
                         {
@@ -318,11 +321,11 @@ namespace ImperaPlus.IntegrationTests
                     gameHistory.Add(gameState.TurnCounter, await gameClient.GetAsync(gameSummary.Id));
 
                     // End turn
-                    this.Log("End turn");
+                    Log("End turn");
                     await playClient.PostEndTurnAsync(gameState.Id);
                 }
 
-                gameDefault = await this.clientDefault.GetAsync(gameSummary.Id);
+                gameDefault = await clientDefault.GetAsync(gameSummary.Id);
                 if (gameDefault.State == GameState.Ended)
                 {
                     break;
@@ -336,7 +339,7 @@ namespace ImperaPlus.IntegrationTests
                 {
                     foreach (var p in gameDefault.Teams.SelectMany(x => x.Players))
                     {
-                        this.Log("Player {0} has {1} countries",
+                        Log("Player {0} has {1} countries",
                             p.Name,
                             gameDefault.Map.Countries.Count(x => x.PlayerId == p.Id));
                     }
@@ -345,52 +348,55 @@ namespace ImperaPlus.IntegrationTests
                 }
             }
 
-            this.Log("Game ended");
+            Log("Game ended");
 
             // Refresh
-            gameDefault = await this.clientDefault.GetAsync(gameSummary.Id);
+            gameDefault = await clientDefault.GetAsync(gameSummary.Id);
 
             Assert.IsTrue(
                 gameDefault.Teams.SelectMany(x => x.Players)
-                .Any(x => x.Outcome == PlayerOutcome.Won
-                && x.State == PlayerState.InActive),
+                    .Any(x => x.Outcome == PlayerOutcome.Won
+                              && x.State == PlayerState.InActive),
                 "No winner after game has ended");
             Assert.IsTrue(
                 gameDefault.Teams.SelectMany(x => x.Players)
-                .Any(x => x.Outcome == PlayerOutcome.Defeated
-                && x.State == PlayerState.InActive),
+                    .Any(x => x.Outcome == PlayerOutcome.Defeated
+                              && x.State == PlayerState.InActive),
                 "No loser after game has ended");
 
             // Output debug information
             foreach (var player in gameDefault.Teams.SelectMany(x => x.Players))
             {
-                this.Log("Player {0} result {1}", player.Name, player.Outcome);
+                Log("Player {0} result {1}", player.Name, player.Outcome);
             }
 
-            this.Log("Verifying history");
+            Log("Verifying history");
 
             var historyClient = await ApiClient.GetAuthenticatedClientDefaultUser<HistoryClient>();
 
-            foreach(var gameHistoryEntry in gameHistory)
+            foreach (var gameHistoryEntry in gameHistory)
             {
-                this.Log("Get history for turn {0}", gameHistoryEntry.Key);
+                Log("Get history for turn {0}", gameHistoryEntry.Key);
 
-                var historyTurn = await historyClient.GetTurnAsync(gameHistoryEntry.Value.Id, gameHistoryEntry.Value.TurnCounter);
+                var historyTurn =
+                    await historyClient.GetTurnAsync(gameHistoryEntry.Value.Id, gameHistoryEntry.Value.TurnCounter);
 
                 // Verify players
-                foreach(var player in gameHistoryEntry.Value.Teams.SelectMany(x => x.Players))
+                foreach (var player in gameHistoryEntry.Value.Teams.SelectMany(x => x.Players))
                 {
-                    var historyPlayer = historyTurn.Game.Teams.SelectMany(x => x.Players).FirstOrDefault(x => x.Id == player.Id);
+                    var historyPlayer = historyTurn.Game.Teams.SelectMany(x => x.Players)
+                        .FirstOrDefault(x => x.Id == player.Id);
                     Assert.IsNotNull(historyPlayer);
 
                     Assert.AreEqual(player.State, historyPlayer.State);
                     Assert.AreEqual(player.Outcome, historyPlayer.Outcome);
                 }
-                
+
                 // Verify map
-                foreach(var country in gameHistoryEntry.Value.Map.Countries)
+                foreach (var country in gameHistoryEntry.Value.Map.Countries)
                 {
-                    var historyCountry = historyTurn.Game.Map.Countries.FirstOrDefault(x => x.Identifier == country.Identifier);
+                    var historyCountry =
+                        historyTurn.Game.Map.Countries.FirstOrDefault(x => x.Identifier == country.Identifier);
                     Assert.IsNotNull(historyCountry);
 
                     Assert.AreEqual(country.Units, historyCountry.Units);
@@ -427,5 +433,5 @@ namespace ImperaPlus.IntegrationTests
             IEnumerable<GameSummary> open2Games = await client.GetAllAsync();
             Assert.IsTrue(open2Games.Any(x => x.Id == gameId), "Game does not show in open list");
         }
-    }    
+    }
 }

@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace MapConverter
 {
-    class Program
+    internal class Program
     {
         private class ContryRep
         {
@@ -20,10 +20,10 @@ namespace MapConverter
         {
             public string Identifier;
             public int Bonus;
-            public List<string> Countries = new List<string>();
+            public List<string> Countries = new();
         }
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             if (args.Length < 1)
             {
@@ -41,8 +41,8 @@ namespace MapConverter
 
             var file = File.OpenRead(args[0]);
             var textReader = new StreamReader(file);
-                
-            string line = textReader.ReadLine();
+
+            var line = textReader.ReadLine();
             while (line != null)
             {
                 if (line.Contains("class"))
@@ -62,11 +62,7 @@ namespace MapConverter
                     var countryId = GetValue<string>(line, @"\$L\[(\d+)\]");
                     var countryName = GetValue<string>(line, @"""(.+)""");
 
-                    countries.Add(countryId, new ContryRep
-                    {
-                        Identifier = countryId,
-                        Name = countryName
-                    });
+                    countries.Add(countryId, new ContryRep { Identifier = countryId, Name = countryName });
                 }
                 else if (line.Contains("$P["))
                 {
@@ -80,7 +76,7 @@ namespace MapConverter
                     // Connection
                     var conn = GetValues<string>(line, @"\$A\[(\d+)\] = array\((?:\s?(\d+)\s*,?\s?)+\);");
 
-                    for (int i = 1; i < conn.Count; ++i)
+                    for (var i = 1; i < conn.Count; ++i)
                     {
                         connections.Add(Tuple.Create(conn[0], conn[i]));
                     }
@@ -91,18 +87,15 @@ namespace MapConverter
 
                     if (cont[0] != "0")
                     {
-                        continents.Add(cont[0], new ContinentRep
-                        {
-                            Identifier = cont[0],
-                            Bonus = int.Parse(cont[1])
-                        });
+                        continents.Add(cont[0], new ContinentRep { Identifier = cont[0], Bonus = int.Parse(cont[1]) });
                     }
                 }
                 else if (line.Contains("$k") && line.Contains("][1] = "))
                 {
-                    var cont = GetValues<string>(line, @"\$k\[(\d+)\]\[1\] = [\'\""]\((?:\s*landid\s?=\s?(\d+)[\sOR]*)+\)[\'\""];");
+                    var cont = GetValues<string>(line,
+                        @"\$k\[(\d+)\]\[1\] = [\'\""]\((?:\s*landid\s?=\s?(\d+)[\sOR]*)+\)[\'\""];");
 
-                    for (int i = 1; i < cont.Count; ++i)
+                    for (var i = 1; i < cont.Count; ++i)
                     {
                         continents[cont[0]].Countries.Add(cont[i]);
                     }
@@ -162,6 +155,7 @@ namespace MapConverter
 
             sw.WriteLine();
 #endif
+
             #endregion
 
             if (connections.Count == 0)
@@ -179,7 +173,7 @@ namespace MapConverter
                 throw new Exception("No countries!");
             }
 
-            foreach(var continent in continents)
+            foreach (var continent in continents)
             {
                 if (continent.Value.Countries.Count == 0)
                 {
@@ -210,13 +204,15 @@ namespace ImperaPlus.DataAccess.ConvertedMaps
 
                 foreach (var country in countries.Values)
                 {
-                    sw.WriteLine("var country{0} = new CountryTemplate(\"{1}\", \"{4}\") {{ X = {2}, Y = {3} }};", country.Identifier, country.Identifier, country.X, country.Y, country.Name);
+                    sw.WriteLine("var country{0} = new CountryTemplate(\"{1}\", \"{4}\") {{ X = {2}, Y = {3} }};",
+                        country.Identifier, country.Identifier, country.X, country.Y, country.Name);
                     sw.WriteLine("mapTemplate.Countries.Add(country{0});", country.Identifier);
                 }
 
                 foreach (var continent in continents.Values)
                 {
-                    sw.WriteLine("var continent{0} = new Continent(\"{1}\", {2});", continent.Identifier, continent.Identifier,
+                    sw.WriteLine("var continent{0} = new Continent(\"{1}\", {2});", continent.Identifier,
+                        continent.Identifier,
                         continent.Bonus);
 
                     foreach (var country in continent.Countries)
@@ -253,11 +249,11 @@ namespace ImperaPlus.DataAccess.ConvertedMaps
 
             var result = new List<T>();
 
-            for (int i = 1; i < match.Groups.Count; ++i)
+            for (var i = 1; i < match.Groups.Count; ++i)
             {
                 foreach (var capture in match.Groups[i].Captures)
                 {
-                    result.Add((T) Convert.ChangeType(capture.ToString(), typeof (T)));
+                    result.Add((T)Convert.ChangeType(capture.ToString(), typeof(T)));
                 }
             }
 

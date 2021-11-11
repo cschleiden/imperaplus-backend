@@ -5,7 +5,7 @@ namespace ImperaPlus.Domain.VictoryConditions
 {
     public class ControlContinentVictoryCondition : IVictoryCondition
     {
-        public void Initialize(Games.Game game, IRandomGen random)
+        public void Initialize(Game game, IRandomGen random)
         {
         }
 

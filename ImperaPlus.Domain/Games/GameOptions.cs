@@ -9,52 +9,40 @@ namespace ImperaPlus.Domain.Games
         public GameOptions()
         {
             // Minimum for a game
-            this.NumberOfTeams = 2;
-            this.NumberOfPlayersPerTeam = 1;
+            NumberOfTeams = 2;
+            NumberOfPlayersPerTeam = 1;
 
-            this.MinUnitsPerCountry = 1;
-            this.NewUnitsPerTurn = 3;
+            MinUnitsPerCountry = 1;
+            NewUnitsPerTurn = 3;
 
-            this.InitialCountryUnits = 1;
+            InitialCountryUnits = 1;
 
-            this.MapDistribution = MapDistribution.Default;
+            MapDistribution = MapDistribution.Default;
 
-            this.TimeoutInSeconds = 5 * 60;
-            this.MaximumTimeoutsPerPlayer = 1;
+            TimeoutInSeconds = 5 * 60;
+            MaximumTimeoutsPerPlayer = 1;
 
-            this.AttacksPerTurn = 5;
-            this.MovesPerTurn = 4;
+            AttacksPerTurn = 5;
+            MovesPerTurn = 4;
 
-            this.MaximumNumberOfCards = 5;
+            MaximumNumberOfCards = 5;
 
-            this.VictoryConditions = new SerializedCollection<VictoryConditionType>();
-            this.VisibilityModifier = new SerializedCollection<VisibilityModifierType>();
+            VictoryConditions = new SerializedCollection<VictoryConditionType>();
+            VisibilityModifier = new SerializedCollection<VisibilityModifierType>();
         }
 
         public string SerializedVictoryConditions
         {
-            get
-            {
-                return this.VictoryConditions.Serialize();
-            }
+            get => VictoryConditions.Serialize();
 
-            set
-            {
-                this.VictoryConditions = new SerializedCollection<VictoryConditionType>(value);
-            }
+            set => VictoryConditions = new SerializedCollection<VictoryConditionType>(value);
         }
 
         public string SerializedVisibilityModifier
         {
-            get
-            {
-                return this.VisibilityModifier.Serialize();
-            }
+            get => VisibilityModifier.Serialize();
 
-            set
-            {
-                this.VisibilityModifier = new SerializedCollection<VisibilityModifierType>(value);
-            }
+            set => VisibilityModifier = new SerializedCollection<VisibilityModifierType>(value);
         }
 
         public long Id { get; set; }
@@ -98,11 +86,9 @@ namespace ImperaPlus.Domain.Games
         /// </summary>
         public MapDistribution MapDistribution { get; set; }
 
-        [NotMapped]
-        public SerializedCollection<VictoryConditionType> VictoryConditions { get; private set; }
+        [NotMapped] public SerializedCollection<VictoryConditionType> VictoryConditions { get; private set; }
 
-        [NotMapped]
-        public SerializedCollection<VisibilityModifierType> VisibilityModifier { get; private set; }
+        [NotMapped] public SerializedCollection<VisibilityModifierType> VisibilityModifier { get; private set; }
 
         /// <summary>
         /// Maximum number of cards a player can hold at any given time. Defaults to 5
@@ -116,9 +102,6 @@ namespace ImperaPlus.Domain.Games
 
         public int TimeoutInSeconds { get; set; }
 
-        public int PlayerCount
-        {
-            get { return this.NumberOfTeams * this.NumberOfPlayersPerTeam; }
-        }        
+        public int PlayerCount => NumberOfTeams * NumberOfPlayersPerTeam;
     }
 }

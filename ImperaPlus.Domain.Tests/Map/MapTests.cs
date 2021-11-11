@@ -16,7 +16,7 @@ namespace ImperaPlus.Domain.Tests.Map
             // Arrange
             var mockGame = new Mock<Game>();
             var map = new Map(mockGame.Object);
-            var countryA = new Domain.Games.Country("A", 1);
+            var countryA = new Country("A", 1);
             map.Countries.Add(countryA);
 
             // Act

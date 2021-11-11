@@ -34,9 +34,9 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(IEnumerable<DTO.Tournaments.TournamentSummary>), 200)]
         public IActionResult GetAll()
         {
-            return this.Ok(
-                this.mapper.Map<IEnumerable<DTO.Tournaments.TournamentSummary>>(
-                    this.unitOfWork.Tournaments.Get()
+            return Ok(
+                mapper.Map<IEnumerable<DTO.Tournaments.TournamentSummary>>(
+                    unitOfWork.Tournaments.Get()
                 )
             );
         }
@@ -49,9 +49,9 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(DTO.Tournaments.Tournament), 200)]
         public IActionResult GetById(Guid tournamentId)
         {
-            return this.Ok(
-                this.mapper.Map<DTO.Tournaments.Tournament>(
-                    this.unitOfWork.Tournaments.GetById(tournamentId, readOnly: true)
+            return Ok(
+                mapper.Map<DTO.Tournaments.Tournament>(
+                    unitOfWork.Tournaments.GetById(tournamentId, readOnly: true)
                 )
             );
         }
@@ -64,7 +64,7 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(DTO.Tournaments.TournamentTeam), 200)]
         public IActionResult PostJoin(Guid tournamentId)
         {
-            return this.Ok(this.tournamentService.Join(tournamentId));
+            return Ok(tournamentService.Join(tournamentId));
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(IEnumerable<DTO.Tournaments.TournamentTeam>), 200)]
         public IActionResult GetTeams(Guid tournamentId)
         {
-            return this.Ok(this.tournamentService.GetTeams(tournamentId));
+            return Ok(tournamentService.GetTeams(tournamentId));
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(IEnumerable<DTO.Games.GameSummary>), 200)]
         public IActionResult GetGamesForPairing(Guid pairingId)
         {
-            return this.Ok(this.tournamentService.GetGamesForPairing(pairingId));
+            return Ok(tournamentService.GetGamesForPairing(pairingId));
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(DTO.Tournaments.TournamentTeam), 200)]
         public IActionResult PostCreateTeam(Guid tournamentId, string name, string password = null)
         {
-            return this.Ok(this.tournamentService.CreateTeam(tournamentId, name, password));
+            return Ok(tournamentService.CreateTeam(tournamentId, name, password));
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(DTO.Tournaments.TournamentTeam), 200)]
         public IActionResult PostJoinTeam(Guid tournamentId, Guid teamId, string password = null)
         {
-            return this.Ok(this.tournamentService.JoinTeam(tournamentId, teamId, password));
+            return Ok(tournamentService.JoinTeam(tournamentId, teamId, password));
         }
 
         /// <summary>
@@ -124,9 +124,9 @@ namespace ImperaPlus.Backend.Controllers
         [HttpDelete("{tournamentId:guid}/teams/{teamId:guid}")]
         public IActionResult DeleteTeam(Guid tournamentId, Guid teamId)
         {
-            this.tournamentService.DeleteTeam(tournamentId, teamId);
+            tournamentService.DeleteTeam(tournamentId, teamId);
 
-            return this.Ok();
+            return Ok();
         }
 
         /// <summary>
@@ -136,9 +136,9 @@ namespace ImperaPlus.Backend.Controllers
         [HttpDelete("{tournamentId:guid}/teams/me")]
         public IActionResult LeaveTournament(Guid tournamentId)
         {
-            this.tournamentService.Leave(tournamentId);
+            tournamentService.Leave(tournamentId);
 
-            return this.Ok();
+            return Ok();
         }
     }
 }

@@ -24,6 +24,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A0795CDD-8D63-431A-AF14-9D95A0334065}"
 	ProjectSection(SolutionItems) = preProject
 		Credentials.config = Credentials.config
+		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{9CF30DFE-9BF7-44E7-81F0-C2CEAADA74CC}"

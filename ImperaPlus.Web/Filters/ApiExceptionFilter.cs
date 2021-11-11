@@ -16,7 +16,8 @@ namespace ImperaPlus.Web.Filters
             if (domainException != null)
             {
                 context.ExceptionHandled = true;
-                context.Result = new BadRequestObjectResult(new ErrorResponse(domainException.ErrorCode.ToString(), domainException.Message));
+                context.Result = new BadRequestObjectResult(new ErrorResponse(domainException.ErrorCode.ToString(),
+                    domainException.Message));
 
                 base.OnException(context);
 
@@ -27,7 +28,8 @@ namespace ImperaPlus.Web.Filters
             if (applicationException != null)
             {
                 context.ExceptionHandled = true;
-                context.Result = new BadRequestObjectResult(new ErrorResponse(applicationException.ErrorCode.ToString(), applicationException.Message));
+                context.Result = new BadRequestObjectResult(new ErrorResponse(applicationException.ErrorCode.ToString(),
+                    applicationException.Message));
 
                 base.OnException(context);
 

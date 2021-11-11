@@ -1,69 +1,69 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>ImperaPlus Admin - @ViewBag.Title</title>
 
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/r/bs/dt-1.10.9,r-1.0.7/datatables.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/r/bs/dt-1.10.9,r-1.0.7/datatables.min.css"/>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
-    <link rel="stylesheet" href="~/admin/font-awesome.css" type="text/css" />
-    <link rel="stylesheet" href="~/admin/jquery.dataTables.css" type="text/css" />
-    <link rel="stylesheet" href="~/admin/metisMenu.css" type="text/css" />
-    <link rel="stylesheet" href="~/admin/morris.css" type="text/css" />
-    <link rel="stylesheet" href="~/admin/sb-admin-2.css" type="text/css" />
-    <link rel="stylesheet" href="~/admin/bootstrap-datetimepicker.min.css" type="text/css" />
+    <link rel="stylesheet" href="~/admin/font-awesome.css" type="text/css"/>
+    <link rel="stylesheet" href="~/admin/jquery.dataTables.css" type="text/css"/>
+    <link rel="stylesheet" href="~/admin/metisMenu.css" type="text/css"/>
+    <link rel="stylesheet" href="~/admin/morris.css" type="text/css"/>
+    <link rel="stylesheet" href="~/admin/sb-admin-2.css" type="text/css"/>
+    <link rel="stylesheet" href="~/admin/bootstrap-datetimepicker.min.css" type="text/css"/>
 
-    <link href="~/admin/site.css" rel="stylesheet" type="text/css" />
+    <link href="~/admin/site.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-    <div id="wrapper">
-        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="index.html">ImperaPlus Admin</a>
-            </div>
+<div id="wrapper">
+    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="index.html">ImperaPlus Admin</a>
+        </div>
 
-            @Html.Partial("Navigation")
-        </nav>
+        @Html.Partial("Navigation")
+    </nav>
 
-        <div id="page-wrapper">
-            <div class="row">
-                @RenderBody()
-            </div>
+    <div id="page-wrapper">
+        <div class="row">
+            @RenderBody()
         </div>
     </div>
+</div>
 
-    <script src="~/admin/scripts/jquery.js"></script>
-    <script src="~/admin/scripts/bootstrap.js"></script>
-    <script src="~/admin/scripts/morris.js"></script>
-    <script src="~/admin/scripts/metisMenu.js"></script>
-    <script src="~/admin/scripts/sb-admin-2.js"></script>
-    <script src="~/admin/scripts/moment.min.js"></script>
-    <script src="~/admin/scripts/bootstrap-datetimepicker.min.js"></script>
+<script src="~/admin/scripts/jquery.js"></script>
+<script src="~/admin/scripts/bootstrap.js"></script>
+<script src="~/admin/scripts/morris.js"></script>
+<script src="~/admin/scripts/metisMenu.js"></script>
+<script src="~/admin/scripts/sb-admin-2.js"></script>
+<script src="~/admin/scripts/moment.min.js"></script>
+<script src="~/admin/scripts/bootstrap-datetimepicker.min.js"></script>
 
-    <!-- CDN -->
-    <script src="//tinymce.cachefly.net/4.2/tinymce.min.js"></script>
-    <script src="https://cdn.tiny.cloud/1/e533gr1zr3jsg62xk7xkfu8ztxmdfoax3x5sesm6cv921pfz/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/r/bs/dt-1.10.9,r-1.0.7/datatables.min.js"></script>
+<!-- CDN -->
+<script src="//tinymce.cachefly.net/4.2/tinymce.min.js"></script>
+<script src="https://cdn.tiny.cloud/1/e533gr1zr3jsg62xk7xkfu8ztxmdfoax3x5sesm6cv921pfz/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/r/bs/dt-1.10.9,r-1.0.7/datatables.min.js"></script>
 
-    <script type="text/javascript">
-        @RenderSection("scripts", required: false);
+<script type="text/javascript">
+        @RenderSection("scripts", false);
 
         $(function () {
             $('.datepicker').datetimepicker();
         });
     </script>
 
-    @RenderSection("imports", required: false);
+@RenderSection("imports", false);
 </body>
 </html>

@@ -15,8 +15,8 @@ namespace ImperaPlus.Domain.Chat.EventHandler
 
         public void Handle(AccountDeleted evt)
         {
-            var messagesFromUser = this.unitOfWork.ChatMessages.FindForUser(evt.User);
-            foreach(var message in messagesFromUser)
+            var messagesFromUser = unitOfWork.ChatMessages.FindForUser(evt.User);
+            foreach (var message in messagesFromUser)
             {
                 message.CreatedBy = null;
                 message.CreatedById = null;

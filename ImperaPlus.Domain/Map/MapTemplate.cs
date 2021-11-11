@@ -5,17 +5,17 @@ namespace ImperaPlus.Domain.Map
 {
     public class MapTemplate
     {
-        private ILookup<string, string> connectionDict;        
+        private ILookup<string, string> connectionDict;
 
         public MapTemplate(string name)
         {
-            this.Name = name;
+            Name = name;
 
-            this.Countries = new HashSet<CountryTemplate>();
-            this.Continents = new HashSet<Continent>();
-            this.Connections = new HashSet<Connection>();
-        }        
-        
+            Countries = new HashSet<CountryTemplate>();
+            Continents = new HashSet<Continent>();
+            Connections = new HashSet<Connection>();
+        }
+
         public string Name { get; set; }
 
         public string Image { get; set; }
@@ -24,7 +24,7 @@ namespace ImperaPlus.Domain.Map
 
         public ICollection<Continent> Continents { get; set; }
 
-        public ICollection<Connection> Connections { get; set; }        
+        public ICollection<Connection> Connections { get; set; }
 
         /// <summary>
         /// Returns a value indicating whether the given countries are connected
@@ -34,18 +34,18 @@ namespace ImperaPlus.Domain.Map
         /// <returns>Value indicating whether the countries are connected</returns>
         public bool AreConnected(string origin, string destination)
         {
-            if (this.connectionDict == null)
+            if (connectionDict == null)
             {
                 lock (this)
                 {
-                    if (this.connectionDict == null)
+                    if (connectionDict == null)
                     {
-                        this.connectionDict = this.Connections.ToLookup(x => x.Origin, x => x.Destination);
+                        connectionDict = Connections.ToLookup(x => x.Origin, x => x.Destination);
                     }
                 }
             }
 
-            return this.connectionDict[origin].Contains(destination);
+            return connectionDict[origin].Contains(destination);
         }
 
         /// <summary>
@@ -55,18 +55,18 @@ namespace ImperaPlus.Domain.Map
         /// <returns></returns>
         public IEnumerable<string> GetConnectedCountries(string origin)
         {
-            if (this.connectionDict == null)
+            if (connectionDict == null)
             {
                 lock (this)
                 {
-                    if (this.connectionDict == null)
+                    if (connectionDict == null)
                     {
-                        this.connectionDict = this.Connections.ToLookup(x => x.Origin, x => x.Destination);
+                        connectionDict = Connections.ToLookup(x => x.Origin, x => x.Destination);
                     }
                 }
             }
 
-            return this.connectionDict[origin];
+            return connectionDict[origin];
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace ImperaPlus.Domain.Map
         public int CalculateBonus(IEnumerable<string> countryIdentifiers)
         {
             return
-                this.OccupiedContinents(countryIdentifiers)
+                OccupiedContinents(countryIdentifiers)
                     .Sum(continent => continent.Bonus);
         }
 
@@ -87,7 +87,7 @@ namespace ImperaPlus.Domain.Map
         public IEnumerable<Continent> OccupiedContinents(IEnumerable<string> countryIdentifiers)
         {
             return
-                this.Continents
+                Continents
                     .Where(continent => continent.Countries.All(x => countryIdentifiers.Contains(x.Identifier)));
         }
     }

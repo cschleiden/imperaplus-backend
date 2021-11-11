@@ -18,7 +18,8 @@ namespace ImperaPlus.Application
     {
         private IMapTemplateProvider mapTemplateProvider;
 
-        public MapTemplateService(IUnitOfWork unitOfWork, IMapper mapper, IUserProvider userProvider, IMapTemplateProvider mapTemplateProvider) 
+        public MapTemplateService(IUnitOfWork unitOfWork, IMapper mapper, IUserProvider userProvider,
+            IMapTemplateProvider mapTemplateProvider)
             : base(unitOfWork, mapper, userProvider)
         {
             this.mapTemplateProvider = mapTemplateProvider;
@@ -26,12 +27,12 @@ namespace ImperaPlus.Application
 
         public IQueryable<MapTemplateDescriptor> QuerySummary()
         {
-            return this.Mapper.ProjectTo<MapTemplateDescriptor>(this.UnitOfWork.MapTemplateDescriptors.Query());
+            return Mapper.ProjectTo<MapTemplateDescriptor>(UnitOfWork.MapTemplateDescriptors.Query());
         }
 
         public MapTemplate Get(string name)
         {
-            return Mapper.Map<MapTemplate>(this.mapTemplateProvider.GetTemplate(name));
+            return Mapper.Map<MapTemplate>(mapTemplateProvider.GetTemplate(name));
         }
     }
 }

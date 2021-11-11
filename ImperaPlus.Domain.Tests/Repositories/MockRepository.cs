@@ -8,18 +8,18 @@ namespace ImperaPlus.Domain.Tests
 {
     public class MockRepository<T> : IGenericRepository<T> where T : class
     {
-        private HashSet<T> data = new HashSet<T>();
+        private HashSet<T> data = new();
 
         public Func<T, object[], bool> FindSelector { get; set; }
 
         public void Add(T item)
         {
-            this.data.Add(item);
+            data.Add(item);
         }
 
         public T FindById(params object[] keyValues)
         {
-            return this.data.FirstOrDefault(x => this.FindSelector(x, keyValues));
+            return data.FirstOrDefault(x => FindSelector(x, keyValues));
         }
 
         public IQueryable<T> Query()
@@ -29,7 +29,7 @@ namespace ImperaPlus.Domain.Tests
 
         public void Remove(T item)
         {
-            this.data.Remove(item);
+            data.Remove(item);
         }
     }
 
@@ -37,7 +37,7 @@ namespace ImperaPlus.Domain.Tests
     {
         public MockLadderRepository()
         {
-            this.FindSelector = (ladder, keys) =>
+            FindSelector = (ladder, keys) =>
             {
                 if (keys == null || keys.Length < 1 || !(keys[0] is Guid))
                 {
@@ -50,12 +50,12 @@ namespace ImperaPlus.Domain.Tests
 
         public IQueryable<Ladder> GetActive()
         {
-            return this.Query().Where(x => x.IsActive);
+            return Query().Where(x => x.IsActive);
         }
 
         public IEnumerable<Ladder> GetAll()
         {
-            return this.Query();
+            return Query();
         }
 
         public Ladder GetById(Guid id)
@@ -85,7 +85,7 @@ namespace ImperaPlus.Domain.Tests
 
         IEnumerable<Ladder> ILadderRepository.GetActive()
         {
-            return this.Query().Where(x => x.IsActive);
+            return Query().Where(x => x.IsActive);
         }
     }
 }

@@ -28,8 +28,8 @@ namespace ImperaPlus.DTO
         /// <param name="description">Error description</param>
         public ErrorResponse(string error, string description)
         {
-            this.Error = error;
-            this.Error_Description = description;
+            Error = error;
+            Error_Description = description;
         }
 
         /// <summary>

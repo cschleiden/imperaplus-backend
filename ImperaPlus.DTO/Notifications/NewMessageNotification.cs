@@ -2,7 +2,7 @@
 {
     public class NewMessageNotification : Notification
     {
-        public NewMessageNotification(): base (NotificationType.NewMessage)
+        public NewMessageNotification() : base(NotificationType.NewMessage)
         {
         }
 

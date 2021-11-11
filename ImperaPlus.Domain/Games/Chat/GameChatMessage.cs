@@ -10,11 +10,11 @@ namespace ImperaPlus.Domain.Games.Chat
 
         public GameChatMessage(Game game, User user, Team team, string text)
         {
-            this.GameId = game.Id;
-            this.User = user;
-            this.Team = team;
-            this.Text = text;
-            this.DateTime = DateTime.UtcNow;
+            GameId = game.Id;
+            User = user;
+            Team = team;
+            Text = text;
+            DateTime = DateTime.UtcNow;
         }
 
         public long Id { get; set; }

@@ -1,17 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
-    <PackageReference Include="Moq" Version="4.13.1" />
-    <PackageReference Include="MSTest.TestAdapter" Version="2.1.1" />
-    <PackageReference Include="MSTest.TestFramework" Version="2.1.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0"/>
+    <PackageReference Include="Moq" Version="4.16.1"/>
+    <PackageReference Include="MSTest.TestAdapter" Version="2.2.7"/>
+    <PackageReference Include="MSTest.TestFramework" Version="2.2.7"/>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ImperaPlus.DataAccess.ConvertedMaps\ImperaPlus.DataAccess.ConvertedMaps.csproj" />
-    <ProjectReference Include="..\ImperaPlus.DataAccess.InMemory\ImperaPlus.DataAccess.InMemory.csproj" />
-    <ProjectReference Include="..\ImperaPlus.Domain\ImperaPlus.Domain.csproj" />
-    <ProjectReference Include="..\ImperaPlus.TestSupport\ImperaPlus.TestSupport.csproj" />
+    <ProjectReference Include="..\ImperaPlus.DataAccess.ConvertedMaps\ImperaPlus.DataAccess.ConvertedMaps.csproj"/>
+    <ProjectReference Include="..\ImperaPlus.DataAccess.InMemory\ImperaPlus.DataAccess.InMemory.csproj"/>
+    <ProjectReference Include="..\ImperaPlus.Domain\ImperaPlus.Domain.csproj"/>
+    <ProjectReference Include="..\ImperaPlus.TestSupport\ImperaPlus.TestSupport.csproj"/>
   </ItemGroup>
 </Project>

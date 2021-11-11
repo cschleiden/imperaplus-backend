@@ -33,7 +33,7 @@ namespace ImperaPlus.Backend.Controllers
         {
             Require.NotNullOrEmpty(query, nameof(query));
 
-            return this.Ok(this.userService.FindUsers(query));
+            return Ok(userService.FindUsers(query));
         }
     }
 }

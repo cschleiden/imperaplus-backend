@@ -29,12 +29,12 @@ namespace ImperaPlus.Domain.Services
 
         public int GetAttackerDice()
         {
-            return this.randomGen.GetNext(AttackConfiguration.DiceMin, AttackConfiguration.DiceMax);
+            return randomGen.GetNext(AttackConfiguration.DiceMin, AttackConfiguration.DiceMax);
         }
 
         public int GetDefenderDice()
         {
-            return this.randomGen.GetNext(AttackConfiguration.DiceMin, AttackConfiguration.DiceMax);
+            return randomGen.GetNext(AttackConfiguration.DiceMin, AttackConfiguration.DiceMax);
         }
     }
 
@@ -44,7 +44,7 @@ namespace ImperaPlus.Domain.Services
     }
 
     public class AttackService : IAttackService
-    {       
+    {
         private IAttackRandomGen randomGen;
 
         public AttackService(IAttackRandomGen randomGen)
@@ -54,24 +54,24 @@ namespace ImperaPlus.Domain.Services
 
         public bool Attack(int unitsAttacker, int unitsDefender, out int unitsAttackerLost, out int unitsDefenderLost)
         {
-            int orgUnitsAttacker = unitsAttacker;
-            int orgUnitsDefender = unitsDefender;
+            var orgUnitsAttacker = unitsAttacker;
+            var orgUnitsDefender = unitsDefender;
 
             while (unitsAttacker > 0 && unitsDefender > 0)
             {
                 var attackerDice = Enumerable
                     .Range(0, Math.Min(unitsAttacker, AttackConfiguration.AttackerDice))
-                    .Select(x => this.randomGen.GetAttackerDice())
+                    .Select(x => randomGen.GetAttackerDice())
                     .OrderByDescending(x => x)
                     .ToArray();
 
                 var defenderDice = Enumerable
                     .Range(0, Math.Min(unitsDefender, AttackConfiguration.DefenderDice))
-                    .Select(x => this.randomGen.GetDefenderDice())
+                    .Select(x => randomGen.GetDefenderDice())
                     .OrderByDescending(x => x)
                     .ToArray();
 
-                for (int i = 0; i < Math.Min(attackerDice.Length, defenderDice.Length); ++i)    
+                for (var i = 0; i < Math.Min(attackerDice.Length, defenderDice.Length); ++i)
                 {
                     if (defenderDice[i] >= attackerDice[i])
                     {
@@ -101,5 +101,5 @@ namespace ImperaPlus.Domain.Services
                 return true;
             }
         }
-    }    
+    }
 }

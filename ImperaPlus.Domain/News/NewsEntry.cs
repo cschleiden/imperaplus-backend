@@ -9,13 +9,13 @@ namespace ImperaPlus.Domain.News
     {
         protected NewsEntry()
         {
-            this.Content = new HashSet<NewsContent>();
+            Content = new HashSet<NewsContent>();
         }
 
         public long Id { get; set; }
 
         public string CreatedById { get; set; }
-        public User CreatedBy { get; set; }
+        public virtual User CreatedBy { get; set; }
 
         public virtual ICollection<NewsContent> Content { get; private set; }
 
@@ -29,23 +29,24 @@ namespace ImperaPlus.Domain.News
 
         public NewsContent AddContent(string language, string title, string text)
         {
-            if (this.Content.Any(x => x.Language == language))
+            if (Content.Any(x => x.Language == language))
             {
-                throw new DomainException(ErrorCode.DuplicateNewsContent, "There is already news content for the given language");
+                throw new DomainException(ErrorCode.DuplicateNewsContent,
+                    "There is already news content for the given language");
             }
 
             var newsContent = new NewsContent(language, title, text);
 
-            this.Content.Add(newsContent);
+            Content.Add(newsContent);
 
             return newsContent;
         }
 
         public NewsContent GetContentForLanguage(string language)
         {
-            var content = this.Content.FirstOrDefault(x => x.Language == language);
+            var content = Content.FirstOrDefault(x => x.Language == language);
 
-            if(content == null)
+            if (content == null)
             {
                 throw new DomainException(ErrorCode.NewsContentNotFound, "No news content for the given language");
             }

@@ -11,21 +11,21 @@ namespace ImperaPlus.Application
 
     public class RandomGenProvider : IRandomGenProvider
     {
-        private Object sync = new object();
+        private object sync = new();
         private RNGCryptoServiceProvider random;
 
         public RandomGenProvider()
         {
-            this.random = new RNGCryptoServiceProvider();
+            random = new RNGCryptoServiceProvider();
         }
 
         public IRandomGen GetRandomGen()
         {
-            byte[] buffer = new byte[4];
+            var buffer = new byte[4];
 
-            lock (this.sync)
+            lock (sync)
             {
-                this.random.GetBytes(buffer);
+                random.GetBytes(buffer);
             }
 
             return new RandomGen(BitConverter.ToInt32(buffer, 0));

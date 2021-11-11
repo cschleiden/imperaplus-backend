@@ -28,7 +28,7 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(IEnumerable<NewsItem>), 200)]
         public IEnumerable<NewsItem> GetAll()
         {
-            return this.newsService.GetNews();
-        }        
+            return newsService.GetNews();
+        }
     }
 }

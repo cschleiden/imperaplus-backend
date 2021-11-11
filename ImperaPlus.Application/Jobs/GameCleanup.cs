@@ -17,24 +17,24 @@ namespace ImperaPlus.Application.Jobs
         public GameCleanupJob(ILifetimeScope scope)
             : base(scope)
         {
-            this.unitOfWork = this.LifetimeScope.Resolve<IUnitOfWork>();
+            unitOfWork = LifetimeScope.Resolve<IUnitOfWork>();
         }
 
         public override void Handle(PerformContext performContext)
         {
             base.Handle(performContext);
 
-            this.Log.Log(Domain.LogLevel.Info, "Cleaning up fun games...");
+            Log.Log(Domain.LogLevel.Info, "Cleaning up fun games...");
 
-            int deletedCount = this.unitOfWork.Games.DeleteOpenPasswordFunGames();
-            this.Log.Log(Domain.LogLevel.Info, "Removed {0} fun games", deletedCount);
-            this.unitOfWork.Commit();
+            var deletedCount = unitOfWork.Games.DeleteOpenPasswordFunGames();
+            Log.Log(Domain.LogLevel.Info, "Removed {0} fun games", deletedCount);
+            unitOfWork.Commit();
 
-            int deletedEndedCount = this.unitOfWork.Games.DeleteEndedGames();
-            this.Log.Log(Domain.LogLevel.Info, "Removed {0} ended games", deletedEndedCount);
-            this.unitOfWork.Commit();
+            var deletedEndedCount = unitOfWork.Games.DeleteEndedGames();
+            Log.Log(Domain.LogLevel.Info, "Removed {0} ended games", deletedEndedCount);
+            unitOfWork.Commit();
 
-            this.Log.Log(Domain.LogLevel.Info, "Done");
+            Log.Log(Domain.LogLevel.Info, "Done");
         }
     }
 }

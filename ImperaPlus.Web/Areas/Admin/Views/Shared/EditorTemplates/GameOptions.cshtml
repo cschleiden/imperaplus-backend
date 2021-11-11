@@ -1,9 +1,9 @@
 ﻿@model ImperaPlus.DTO.Games.GameOptions
 
 <h4>GameOptions</h4>
-<hr />
+<hr/>
 
-@{ 
+@{
     if (ViewBag.FixedOptions == null)
     {
         ViewBag.FixedOptions = new HashSet<string>();
@@ -14,7 +14,7 @@
 }
 
 <div class="form-group">
-    @Html.LabelFor(model => model.NumberOfPlayersPerTeam, htmlAttributes: new { @class = "control-label col-md-3" })
+    @Html.LabelFor(model => model.NumberOfPlayersPerTeam, new { @class = "control-label col-md-3" })
     <div class="col-md-6">
         @Html.EditorFor(model => model.NumberOfPlayersPerTeam, new { htmlAttributes = new { @class = "form-control" } })
         @Html.ValidationMessageFor(model => model.NumberOfPlayersPerTeam, "", new { @class = "text-danger" })
@@ -22,7 +22,7 @@
 </div>
 
 <div class="form-group">
-    @Html.LabelFor(model => model.NumberOfTeams, htmlAttributes: new { @class = "control-label col-md-3" })
+    @Html.LabelFor(model => model.NumberOfTeams, new { @class = "control-label col-md-3" })
     <div class="col-md-6">
         @Html.EditorFor(model => model.NumberOfTeams, new { htmlAttributes = ViewBag.FixedOptions.Contains("NumberOfTeams") ? (object)readonlyFormControlOptions : (object)formControlOptions })
         @Html.ValidationMessageFor(model => model.NumberOfTeams, "", new { @class = "text-danger" })
@@ -30,7 +30,7 @@
 </div>
 
 <div class="form-group">
-    @Html.LabelFor(model => model.MinUnitsPerCountry, htmlAttributes: new { @class = "control-label col-md-3" })
+    @Html.LabelFor(model => model.MinUnitsPerCountry, new { @class = "control-label col-md-3" })
     <div class="col-md-6">
         @Html.EditorFor(model => model.MinUnitsPerCountry, new { htmlAttributes = new { @class = "form-control" } })
         @Html.ValidationMessageFor(model => model.MinUnitsPerCountry, "", new { @class = "text-danger" })
@@ -38,7 +38,7 @@
 </div>
 
 <div class="form-group">
-    @Html.LabelFor(model => model.NewUnitsPerTurn, htmlAttributes: new { @class = "control-label col-md-3" })
+    @Html.LabelFor(model => model.NewUnitsPerTurn, new { @class = "control-label col-md-3" })
     <div class="col-md-6">
         @Html.EditorFor(model => model.NewUnitsPerTurn, new { htmlAttributes = new { @class = "form-control" } })
         @Html.ValidationMessageFor(model => model.NewUnitsPerTurn, "", new { @class = "text-danger" })
@@ -46,7 +46,7 @@
 </div>
 
 <div class="form-group">
-    @Html.LabelFor(model => model.AttacksPerTurn, htmlAttributes: new { @class = "control-label col-md-3" })
+    @Html.LabelFor(model => model.AttacksPerTurn, new { @class = "control-label col-md-3" })
     <div class="col-md-6">
         @Html.EditorFor(model => model.AttacksPerTurn, new { htmlAttributes = new { @class = "form-control" } })
         @Html.ValidationMessageFor(model => model.AttacksPerTurn, "", new { @class = "text-danger" })
@@ -54,7 +54,7 @@
 </div>
 
 <div class="form-group">
-    @Html.LabelFor(model => model.MovesPerTurn, htmlAttributes: new { @class = "control-label col-md-3" })
+    @Html.LabelFor(model => model.MovesPerTurn, new { @class = "control-label col-md-3" })
     <div class="col-md-6">
         @Html.EditorFor(model => model.MovesPerTurn, new { htmlAttributes = new { @class = "form-control" } })
         @Html.ValidationMessageFor(model => model.MovesPerTurn, "", new { @class = "text-danger" })
@@ -62,7 +62,7 @@
 </div>
 
 <div class="form-group">
-    @Html.LabelFor(model => model.InitialCountryUnits, htmlAttributes: new { @class = "control-label col-md-3" })
+    @Html.LabelFor(model => model.InitialCountryUnits, new { @class = "control-label col-md-3" })
     <div class="col-md-6">
         @Html.EditorFor(model => model.InitialCountryUnits, new { htmlAttributes = new { @class = "form-control" } })
         @Html.ValidationMessageFor(model => model.InitialCountryUnits, "", new { @class = "text-danger" })
@@ -70,15 +70,15 @@
 </div>
 
 <div class="form-group">
-    @Html.LabelFor(model => model.MapDistribution, htmlAttributes: new { @class = "control-label col-md-3" })
+    @Html.LabelFor(model => model.MapDistribution, new { @class = "control-label col-md-3" })
     <div class="col-md-6">
-        @Html.DropDownListFor(model => model.MapDistribution, Html.GetEnumSelectList(typeof(ImperaPlus.DTO.Games.MapDistribution)), htmlAttributes: new { @class = "form-control" })
+        @Html.DropDownListFor(model => model.MapDistribution, Html.GetEnumSelectList(typeof(ImperaPlus.DTO.Games.MapDistribution)), new { @class = "form-control" })
         @Html.ValidationMessageFor(model => model.MapDistribution, "", new { @class = "text-danger" })
     </div>
 </div>
 
 <div class="form-group">
-    @Html.LabelFor(model => model.MaximumNumberOfCards, htmlAttributes: new { @class = "control-label col-md-3" })
+    @Html.LabelFor(model => model.MaximumNumberOfCards, new { @class = "control-label col-md-3" })
     <div class="col-md-6">
         @Html.EditorFor(model => model.MaximumNumberOfCards, new { htmlAttributes = new { @class = "form-control" } })
         @Html.ValidationMessageFor(model => model.MaximumNumberOfCards, "", new { @class = "text-danger" })
@@ -86,7 +86,7 @@
 </div>
 
 <div class="form-group">
-    @Html.LabelFor(model => model.MaximumTimeoutsPerPlayer, htmlAttributes: new { @class = "control-label col-md-3" })
+    @Html.LabelFor(model => model.MaximumTimeoutsPerPlayer, new { @class = "control-label col-md-3" })
     <div class="col-md-6">
         @Html.EditorFor(model => model.MaximumTimeoutsPerPlayer, new { htmlAttributes = new { @class = "form-control" } })
         @Html.ValidationMessageFor(model => model.MaximumTimeoutsPerPlayer, "", new { @class = "text-danger" })
@@ -94,39 +94,38 @@
 </div>
 
 <div class="form-group">
-    @Html.LabelFor(model => model.TimeoutInSeconds, htmlAttributes: new { @class = "control-label col-md-3" })
+    @Html.LabelFor(model => model.TimeoutInSeconds, new { @class = "control-label col-md-3" })
     <div class="col-md-6">
         @Html.DropDownListFor(model => model.TimeoutInSeconds, new SelectList(new[]
         {
             new { Label = "2 minutes", Value = 60 * 2 },
             new { Label = "3 minutes", Value = 60 * 3 },
-            new { Label = "5 minutes", Value = 60 * 5},
-
+            new { Label = "5 minutes", Value = 60 * 5 },
             new { Label = "15 hours", Value = 60 * 60 * 15 },
             new { Label = "1 day", Value = 86400 },
-
             new { Label = "2 days", Value = 86400 * 2 },
             new { Label = "3 days", Value = 86400 * 3 },
             new { Label = "4 days", Value = 86400 * 4 },
-            new { Label = "5 days", Value = 86400 * 5 },
-        }, "Value", "Label"), htmlAttributes: new { @class = "form-control" })
+            new { Label = "5 days", Value = 86400 * 5 }
+        }, "Value", "Label"), new { @class = "form-control" })
     </div>
 </div>
 
 <div class="form-group">
-    @Html.LabelFor(model => model.VictoryConditions, htmlAttributes: new { @class = "control-label col-md-3" })
+    @Html.LabelFor(model => model.VictoryConditions, new { @class = "control-label col-md-3" })
     <div class="col-md-6">
         @Html.ListBoxFor(model => model.VictoryConditions,
-                                new MultiSelectList(ViewBag.VictoryConditionValues as IEnumerable<string>, Model.VictoryConditions),
-                                new { @class = "form-control" })
+            new MultiSelectList(ViewBag.VictoryConditionValues as IEnumerable<string>, Model.VictoryConditions),
+            new { @class = "form-control" })
     </div>
 </div
 
-><div class="form-group">
-    @Html.LabelFor(model => model.VisibilityModifier, htmlAttributes: new { @class = "control-label col-md-3" })
+>
+<div class="form-group">
+    @Html.LabelFor(model => model.VisibilityModifier, new { @class = "control-label col-md-3" })
     <div class="col-md-6">
         @Html.ListBoxFor(model => model.VisibilityModifier,
-                                new MultiSelectList(ViewBag.VisibilityModifierValues as IEnumerable<string>, Model.VisibilityModifier),
-                                new { @class = "form-control" })
+            new MultiSelectList(ViewBag.VisibilityModifierValues as IEnumerable<string>, Model.VisibilityModifier),
+            new { @class = "form-control" })
     </div>
 </div>

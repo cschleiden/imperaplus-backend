@@ -21,7 +21,7 @@ namespace ImperaPlus.Domain.Games.EventHandler
             var user = evt.User;
 
             // Surrender in all games
-            var games = this.unitOfWork.Games.FindForUser(user.Id);
+            var games = unitOfWork.Games.FindForUser(user.Id);
             foreach (var game in games)
             {
                 var player = game.GetPlayerForUser(user.Id);
@@ -31,7 +31,7 @@ namespace ImperaPlus.Domain.Games.EventHandler
                     {
                         if (game.CanBeDeleted && game.CreatedById == user.Id)
                         {
-                            this.gameService.Delete(user, game.Id);
+                            gameService.Delete(user, game.Id);
                         }
                         else
                         {

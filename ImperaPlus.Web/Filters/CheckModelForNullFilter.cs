@@ -13,11 +13,12 @@ namespace ImperaPlus.Web.Filters
 
         public CheckModelForNull()
             : this(arguments => arguments.Any(kvp => kvp.Value == null))
-        { }
+        {
+        }
 
         public CheckModelForNull(Func<IDictionary<string, object>, bool> checkCondition)
         {
-            this._validate = checkCondition;
+            _validate = checkCondition;
         }
 
         public void OnActionExecuted(ActionExecutedContext context)
@@ -26,7 +27,7 @@ namespace ImperaPlus.Web.Filters
 
         public void OnActionExecuting(ActionExecutingContext actionContext)
         {
-            if (this._validate(actionContext.ActionArguments))
+            if (_validate(actionContext.ActionArguments))
             {
                 var message = string.Join(", ",
                     actionContext.ActionArguments.Where(x => x.Value == null).Select(x => x.Key).Select(

@@ -29,26 +29,26 @@ namespace ImperaPlus.Web.Hubs
             return string.Format(CultureInfo.InvariantCulture, "game-{0}-t-{1}", gameId, teamId);
         }
 
-        private readonly static ConnectionMapping<string> Connections = new ConnectionMapping<string>();
+        private static readonly ConnectionMapping<string> Connections = new();
 
         private ILifetimeScope lifetimeScope;
 
         public GameHub(ILifetimeScope scope)
             : base()
         {
-            this.lifetimeScope = scope;
+            lifetimeScope = scope;
         }
 
         public override async Task OnConnectedAsync()
         {
             // Track connection
-            string userId = this.GetUserId();
+            var userId = GetUserId();
             if (!Connections.GetConnections(userId).Contains(Context.ConnectionId))
             {
                 Connections.Add(userId, Context.ConnectionId);
             }
 
-            await this.AddGroup(userId);
+            await AddGroup(userId);
 
             await base.OnConnectedAsync();
         }
@@ -80,9 +80,9 @@ namespace ImperaPlus.Web.Hubs
         /// <param name="gameId">Id of game to receive notifications for</param>
         public async Task JoinGame(long gameId)
         {
-            string userId = this.GetUserId();
+            var userId = GetUserId();
 
-            var gameService = this.lifetimeScope.Resolve<IGameService>();
+            var gameService = lifetimeScope.Resolve<IGameService>();
             var game = gameService.Get(gameId);
             var userTeam = game.Teams.FirstOrDefault(x => x.Players.Any(p => p.UserId == userId));
             if (userTeam == null)
@@ -90,8 +90,8 @@ namespace ImperaPlus.Web.Hubs
                 throw new ArgumentException("gameId");
             }
 
-            await this.AddGroup(GameGroup(gameId));
-            await this.AddGroup(GameTeamGroup(gameId, userTeam.Id));
+            await AddGroup(GameGroup(gameId));
+            await AddGroup(GameTeamGroup(gameId, userTeam.Id));
         }
 
         /// <summary>
@@ -105,9 +105,9 @@ namespace ImperaPlus.Web.Hubs
                 return;
             }
 
-            string userId = this.GetUserId();
+            var userId = GetUserId();
 
-            var gameService = this.lifetimeScope.Resolve<IGameService>();
+            var gameService = lifetimeScope.Resolve<IGameService>();
             var game = gameService.Get(gameId);
             var userTeam = game.Teams.FirstOrDefault(x => x.Players.Any(p => p.UserId == userId));
             if (userTeam == null)
@@ -115,8 +115,8 @@ namespace ImperaPlus.Web.Hubs
                 throw new ArgumentException("gameId");
             }
 
-            await this.LeaveGroup(GameGroup(gameId));
-            await this.LeaveGroup(GameTeamGroup(gameId, userTeam.Id));
+            await LeaveGroup(GameGroup(gameId));
+            await LeaveGroup(GameTeamGroup(gameId, userTeam.Id));
         }
 
         /// <summary>
@@ -129,11 +129,11 @@ namespace ImperaPlus.Web.Hubs
             if (oldGameId > 0)
             {
                 // Leave current groups
-                await this.LeaveGame(oldGameId);
+                await LeaveGame(oldGameId);
             }
 
             // Initialize for new game
-            await this.JoinGame(newGameId);
+            await JoinGame(newGameId);
         }
 
         /// <summary>
@@ -144,38 +144,35 @@ namespace ImperaPlus.Web.Hubs
         /// <param name="isPublic">Value indicating whether message is inteded for all players or only team</param>
         public async Task SendGameMessage(long gameId, string text, bool isPublic)
         {
-            var gameService = this.lifetimeScope.Resolve<IGameService>();
+            var gameService = lifetimeScope.Resolve<IGameService>();
             var message = gameService.SendMessage(gameId, text, isPublic);
 
             // Relay to clients
             var groupName = isPublic ? GameGroup(gameId) : GameTeamGroup(gameId, message.TeamId);
-            await this.Clients.Group(groupName).SendAsync("notification", new ImperaPlus.DTO.Notifications.GameChatMessageNotification
-            {
-                GameId = message.GameId,
-                Message = message
-            });
+            await Clients.Group(groupName).SendAsync("notification",
+                new DTO.Notifications.GameChatMessageNotification { GameId = message.GameId, Message = message });
         }
 
         private async Task AddGroup(string groupName)
         {
-            string userId = this.GetUserId();
+            var userId = GetUserId();
 
-            await this.Groups.AddToGroupAsync(this.Context.ConnectionId, groupName);
+            await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
             Connections.JoinGroup(userId, groupName);
         }
 
         private async Task LeaveGroup(string groupName)
         {
-            string userId = this.GetUserId();
+            var userId = GetUserId();
 
-            await this.Groups.RemoveFromGroupAsync(this.Context.ConnectionId, groupName);
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
             Connections.LeaveGroup(userId, groupName);
         }
 
         private string GetUserId()
         {
-            var userManager = this.lifetimeScope.Resolve<UserManager<Domain.User>>();
-            return userManager.GetUserId(this.Context.User as ClaimsPrincipal);
+            var userManager = lifetimeScope.Resolve<UserManager<Domain.User>>();
+            return userManager.GetUserId(Context.User as ClaimsPrincipal);
         }
     }
 }

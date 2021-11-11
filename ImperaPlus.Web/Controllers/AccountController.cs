@@ -3,30 +3,29 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-using AspNet.Security.OpenIdConnect.Extensions;
-using AspNet.Security.OpenIdConnect.Primitives;
-using AspNet.Security.OpenIdConnect.Server;
 using ImperaPlus.Application;
 using ImperaPlus.Application.Users;
 using ImperaPlus.Domain;
 using ImperaPlus.DTO;
 using ImperaPlus.DTO.Account;
-using ImperaPlus.Web;
-using ImperaPlus.Web.Resources;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Fluent;
 using OpenIddict.Abstractions;
 using OpenIddict.Core;
 using OpenIddict.EntityFrameworkCore.Models;
+using OpenIddict.Server.AspNetCore;
+using ErrorCode = ImperaPlus.Application.ErrorCode;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
-namespace ImperaPlus.Backend.Controllers
+namespace ImperaPlus.Web.Controllers
 {
     [Authorize]
     [Route("Account")]
@@ -36,16 +35,16 @@ namespace ImperaPlus.Backend.Controllers
     {
         public const string LocalLoginProvider = "Local";
 
-        private readonly UserManager<User> userManager;
-        private readonly SignInManager<User> signInManager;
-
 
         private readonly IEmailService emailSender;
-        private readonly Microsoft.Extensions.Logging.ILogger logger;
-        private IUserService userService;
+        private readonly ILogger logger;
+        private readonly SignInManager<User> signInManager;
+
+        private readonly UserManager<User> userManager;
+        private readonly IUserService userService;
 
         public AccountController(
-            OpenIddictApplicationManager<OpenIddictApplication> applicationManager,
+            OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> applicationManager,
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             IEmailService emailSender,
@@ -55,7 +54,7 @@ namespace ImperaPlus.Backend.Controllers
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.emailSender = emailSender;
-            this.logger = loggerFactory.CreateLogger<AccountController>();
+            logger = loggerFactory.CreateLogger<AccountController>();
             this.userService = userService;
         }
 
@@ -66,32 +65,36 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(LoginResponseModel), 200)]
         public async Task<IActionResult> Exchange([FromForm] LoginRequest loginRequest)
         {
-            var request = HttpContext.GetOpenIdConnectRequest();
+            var request = HttpContext.GetOpenIddictServerRequest() ??
+                          throw new InvalidOperationException("The OpenID Connect request cannot be retrieved.");
 
             if (request.IsPasswordGrantType())
             {
                 var user = await userManager.FindByNameAsync(request.Username);
                 if (user == null)
                 {
-                    return BadRequest(new ErrorResponse(Application.ErrorCode.UsernameOrPasswordNotCorrect, "The username/password is invalid."));
+                    return BadRequest(new ErrorResponse(ErrorCode.UsernameOrPasswordNotCorrect,
+                        "The username/password is invalid."));
                 }
 
                 // Ensure the user is allowed to sign in.
                 if (!await signInManager.CanSignInAsync(user))
                 {
-                    return BadRequest(new ErrorResponse(Application.ErrorCode.UsernameOrPasswordNotCorrect, "User cannot sign in."));
+                    return BadRequest(new ErrorResponse(ErrorCode.UsernameOrPasswordNotCorrect,
+                        "User cannot sign in."));
                 }
 
                 // Reject the token request if two-factor authentication has been enabled by the user.
                 if (userManager.SupportsUserTwoFactor && await userManager.GetTwoFactorEnabledAsync(user))
                 {
-                    return BadRequest(new ErrorResponse(Application.ErrorCode.UsernameOrPasswordNotCorrect, "The username/password is invalid."));
+                    return BadRequest(new ErrorResponse(ErrorCode.UsernameOrPasswordNotCorrect,
+                        "The username/password is invalid."));
                 }
 
                 // Ensure the user is not already locked out.
                 if (userManager.SupportsUserLockout && await userManager.IsLockedOutAsync(user))
                 {
-                    return BadRequest(new ErrorResponse(Application.ErrorCode.AccountIsLocked, "This account is locked."));
+                    return BadRequest(new ErrorResponse(ErrorCode.AccountIsLocked, "This account is locked."));
                 }
 
                 // Ensure the password is valid.
@@ -102,12 +105,14 @@ namespace ImperaPlus.Backend.Controllers
                         await userManager.AccessFailedAsync(user);
                     }
 
-                    return BadRequest(new ErrorResponse(Application.ErrorCode.UsernameOrPasswordNotCorrect, "The username/password is invalid."));
+                    return BadRequest(new ErrorResponse(ErrorCode.UsernameOrPasswordNotCorrect,
+                        "The username/password is invalid."));
                 }
 
                 if (user.IsDeleted)
                 {
-                    return this.BadRequest(new ErrorResponse(Application.ErrorCode.AccountIsDeleted, "Account is deleted and will be removed soon"));
+                    return BadRequest(new ErrorResponse(ErrorCode.AccountIsDeleted,
+                        "Account is deleted and will be removed soon"));
                 }
 
                 if (userManager.SupportsUserLockout)
@@ -116,105 +121,115 @@ namespace ImperaPlus.Backend.Controllers
                 }
 
                 // Store last login date
-                this.userService.TrackLogin(user);
+                userService.TrackLogin(user);
 
                 // Create a new authentication ticket.
-                var ticket = await CreateTicketAsync(request, user);
-                return SignIn(ticket.Principal, ticket.Properties, ticket.AuthenticationScheme);
+                var principal = await CreatePrincipalAsync(request, user);
+                return SignIn(principal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
             }
-            else if (request.IsRefreshTokenGrantType())
+
+            if (request.IsRefreshTokenGrantType())
             {
                 // Retrieve the claims principal stored in the refresh token.
-                var info = await HttpContext.AuthenticateAsync(OpenIdConnectServerDefaults.AuthenticationScheme);
-                // var info = await HttpContext.GetAuthenticateInfoAsync(OpenIdConnectServerDefaults.AuthenticationScheme);
+                var info = await HttpContext.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
 
                 // Retrieve the user profile corresponding to the refresh token.
                 var user = await userManager.GetUserAsync(info.Principal);
                 if (user == null)
                 {
-                    return BadRequest(new ErrorResponse(Application.ErrorCode.UsernameOrPasswordNotCorrect, "Refresh token not valid."));
+                    return BadRequest(new ErrorResponse(ErrorCode.UsernameOrPasswordNotCorrect,
+                        "Refresh token not valid."));
                 }
 
                 // Ensure the user is still allowed to sign in.
                 if (!await signInManager.CanSignInAsync(user))
                 {
-                    return BadRequest(new ErrorResponse(Application.ErrorCode.UsernameOrPasswordNotCorrect, "User cannot sign in."));
+                    return BadRequest(new ErrorResponse(ErrorCode.UsernameOrPasswordNotCorrect,
+                        "User cannot sign in."));
                 }
 
-                // Create a new authentication ticket, but reuse the properties stored
-                // in the refresh token, including the scopes originally granted.
-                var ticket = await CreateTicketAsync(request, user, info.Properties);
-
-                return SignIn(ticket.Principal, ticket.Properties, ticket.AuthenticationScheme);
+                var principal = await CreatePrincipalAsync(request, user);
+                return SignIn(principal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
             }
 
-            return BadRequest(new ErrorResponse(Application.ErrorCode.GenericApplicationError, "Grant type is not supported."));
+            return BadRequest(new ErrorResponse(ErrorCode.GenericApplicationError, "Grant type is not supported."));
         }
 
-        private async Task<AuthenticationTicket> CreateTicketAsync(OpenIdConnectRequest request, User user, Microsoft.AspNetCore.Authentication.AuthenticationProperties properties = null)
+        private async Task<ClaimsPrincipal> CreatePrincipalAsync(OpenIddictRequest request, User user)
         {
-            // Set the list of scopes granted to the client application.
-            // Note: the offline_access scope must be granted
-            // to allow OpenIddict to return a refresh token.
-            var scopes = new[] {
-                OpenIdConnectConstants.Scopes.OpenId,
-                OpenIdConnectConstants.Scopes.Email,
-                OpenIdConnectConstants.Scopes.Profile,
-                OpenIdConnectConstants.Scopes.OfflineAccess,
-                OpenIdConnectConstants.Scopes.Profile,
-                OpenIddictConstants.Scopes.Roles
-            }.Intersect(request.GetScopes());
-
             // Create a new ClaimsPrincipal containing the claims that
             // will be used to create an id_token, a token or a code.
             var principal = await signInManager.CreateUserPrincipalAsync(user);
 
+            // Set the list of scopes granted to the client application.
+            // Note: the offline_access scope must be granted
+            // to allow OpenIddict to return a refresh token.
+            var scopes = new[]
+            {
+                OpenIddictConstants.Scopes.OpenId, OpenIddictConstants.Scopes.Email,
+                OpenIddictConstants.Scopes.Profile, OpenIddictConstants.Scopes.OfflineAccess,
+                OpenIddictConstants.Scopes.Roles
+            }.Intersect(request.GetScopes()).ToHashSet();
+
+            principal.SetScopes(scopes);
+
+            foreach (var claim in principal.Claims)
+            {
+                claim.SetDestinations(GetDestinations(claim, principal));
+            }
+
+            return principal;
+        }
+
+        private IEnumerable<string> GetDestinations(Claim claim, ClaimsPrincipal principal)
+        {
             // Note: by default, claims are NOT automatically included in the access and identity tokens.
             // To allow OpenIddict to serialize them, you must attach them a destination, that specifies
             // whether they should be included in access tokens, in identity tokens or in both.
-            foreach (var claim in principal.Claims)
+
+            switch (claim.Type)
             {
-                // Always include the user identifier in the
-                // access token and the identity token.
-                if (claim.Type == OpenIdConnectConstants.Claims.Name)
-                {
-                    claim.SetDestinations(OpenIdConnectConstants.Destinations.AccessToken,
-                                          OpenIdConnectConstants.Destinations.IdentityToken);
-                }
+                case OpenIddictConstants.Claims.Name:
+                    yield return OpenIddictConstants.Destinations.AccessToken;
 
-                // Include the name claim, but only if the "profile" scope was requested.
-                else if (claim.Type == OpenIdConnectConstants.Claims.Name && scopes.Contains(OpenIdConnectConstants.Scopes.Profile))
-                {
-                    claim.SetDestinations(OpenIdConnectConstants.Destinations.IdentityToken);
-                }
+                    if (principal.HasScope(OpenIddictConstants.Permissions.Scopes.Profile))
+                    {
+                        yield return OpenIddictConstants.Destinations.IdentityToken;
+                    }
 
-                // Include the role claims, but only if the "roles" scope was requested.
-                else if (claim.Type == OpenIdConnectConstants.Claims.Role && scopes.Contains(OpenIddictConstants.Scopes.Roles))
-                {
-                    claim.SetDestinations(OpenIdConnectConstants.Destinations.AccessToken,
-                                          OpenIdConnectConstants.Destinations.IdentityToken);
-                }
+                    yield break;
 
-                // The other claims won't be added to the access
-                // and identity tokens and will be kept private.
+                case OpenIddictConstants.Claims.Email:
+                    yield return OpenIddictConstants.Destinations.AccessToken;
+
+                    if (principal.HasScope(OpenIddictConstants.Permissions.Scopes.Email))
+                    {
+                        yield return OpenIddictConstants.Destinations.IdentityToken;
+                    }
+
+                    yield break;
+
+                case OpenIddictConstants.Claims.Role:
+                    yield return OpenIddictConstants.Destinations.AccessToken;
+
+                    if (principal.HasScope(OpenIddictConstants.Permissions.Scopes.Roles))
+                    {
+                        yield return OpenIddictConstants.Destinations.IdentityToken;
+                    }
+
+                    yield break;
+
+                // Never include the security stamp in the access and identity tokens, as it's a secret value.
+                case "AspNet.Identity.SecurityStamp": yield break;
+
+                default:
+                    yield return OpenIddictConstants.Destinations.AccessToken;
+                    yield break;
             }
-
-            // Create a new authentication ticket holding the user identity.
-            var ticket = new AuthenticationTicket(
-                principal,
-                properties,
-                OpenIdConnectServerDefaults.AuthenticationScheme);
-
-            if (!request.IsRefreshTokenGrantType())
-            {
-                ticket.SetScopes(scopes);
-            }
-
-            return ticket;
         }
 
         /// <summary>
-        /// Checks if a username is available
+        ///     Checks if a username is available
         /// </summary>
         /// <param name="userName">Username to check</param>
         /// <returns>True if username is available</returns>
@@ -226,34 +241,34 @@ namespace ImperaPlus.Backend.Controllers
         {
             if (string.IsNullOrEmpty(userName) || userName.Length < 4)
             {
-                return this.BadRequest();
+                return BadRequest();
             }
 
-            var user = await this.userManager.FindByNameAsync(userName);
+            var user = await userManager.FindByNameAsync(userName);
 
-            return this.Ok(user == null);
+            return Ok(user == null);
         }
 
         /// <summary>
-        /// Get user information
+        ///     Get user information
         /// </summary>
         /// <returns></returns>
         [Route("UserInfo")]
         [HttpGet]
-        [ProducesResponseType(typeof(DTO.Account.UserInfo), 200)]
+        [ProducesResponseType(typeof(UserInfo), 200)]
         public async Task<IActionResult> GetUserInfo()
         {
-            var user = await this.userManager.GetUserAsync(this.User);
+            var user = await userManager.GetUserAsync(User);
             if (user == null)
             {
-                return this.BadRequest(
-                    new ErrorResponse(Application.ErrorCode.UserIdNotFound.ToString(), string.Empty));
+                return BadRequest(
+                    new ErrorResponse(ErrorCode.UserIdNotFound.ToString(), string.Empty));
             }
 
-            var roles = await this.userManager.GetRolesAsync(user);
-            var logins = await this.userManager.GetLoginsAsync(user);
+            var roles = await userManager.GetRolesAsync(user);
+            var logins = await userManager.GetLoginsAsync(user);
 
-            return this.Ok(new DTO.Account.UserInfo
+            return Ok(new UserInfo
             {
                 UserId = user.Id,
                 UserName = user.UserName,
@@ -261,7 +276,9 @@ namespace ImperaPlus.Backend.Controllers
                 LoginProvider = null,
                 Language = user.Language,
                 Roles = roles.ToArray(),
-                AllianceAdmin = user.AllianceId.HasValue && user.AllianceId != Guid.Empty && user.IsAllianceAdmin, // Can only be admin if in an alliance
+                AllianceAdmin =
+                    user.AllianceId.HasValue && user.AllianceId != Guid.Empty &&
+                    user.IsAllianceAdmin, // Can only be admin if in an alliance
                 AllianceId = user.AllianceId
             });
         }
@@ -271,7 +288,7 @@ namespace ImperaPlus.Backend.Controllers
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
-            await this.signInManager.SignOutAsync();
+            await signInManager.SignOutAsync();
             return Ok();
         }
 
@@ -279,12 +296,13 @@ namespace ImperaPlus.Backend.Controllers
         [Route("ManageInfo")]
         [HttpGet]
         [ProducesResponseType(typeof(ManageInfoViewModel), 200)]
-        public async Task<IActionResult> GetManageInfo([FromQuery] string returnUrl, [FromQuery] bool generateState = false)
+        public async Task<IActionResult> GetManageInfo([FromQuery] string returnUrl,
+            [FromQuery] bool generateState = false)
         {
-            User user = await this.GetCurrentUserAsync();
+            var user = await GetCurrentUserAsync();
             if (user == null)
             {
-                return this.BadRequest();
+                return BadRequest();
             }
 
             var logins = new List<UserLoginInfoViewModel>();
@@ -293,8 +311,7 @@ namespace ImperaPlus.Backend.Controllers
             {
                 logins.Add(new UserLoginInfoViewModel
                 {
-                    LoginProvider = linkedAccount.LoginProvider,
-                    ProviderKey = linkedAccount.ProviderKey
+                    LoginProvider = linkedAccount.LoginProvider, ProviderKey = linkedAccount.ProviderKey
                 });
             }
 
@@ -302,17 +319,16 @@ namespace ImperaPlus.Backend.Controllers
             {
                 logins.Add(new UserLoginInfoViewModel
                 {
-                    LoginProvider = LocalLoginProvider,
-                    ProviderKey = user.UserName,
+                    LoginProvider = LocalLoginProvider, ProviderKey = user.UserName
                 });
             }
 
-            return this.Ok(new ManageInfoViewModel
+            return Ok(new ManageInfoViewModel
             {
                 LocalLoginProvider = LocalLoginProvider,
                 UserName = user.UserName,
                 Logins = logins.ToArray(),
-                ExternalLoginProviders = (await this.GetExternalLogins()).ToArray()
+                ExternalLoginProviders = (await GetExternalLogins()).ToArray()
             });
         }
 
@@ -323,21 +339,21 @@ namespace ImperaPlus.Backend.Controllers
             var user = await GetCurrentUserAsync();
             if (user == null)
             {
-                return this.BadRequest();
+                return BadRequest();
             }
 
             if (model.NewPassword != model.ConfirmPassword)
             {
-                return BadRequest(new ErrorResponse(Application.ErrorCode.PasswordsDoNotMatch, "Passwords do not match."));
+                return BadRequest(new ErrorResponse(ErrorCode.PasswordsDoNotMatch, "Passwords do not match."));
             }
 
-            var result = await this.userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
+            var result = await userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
             if (result.Succeeded)
             {
-                await signInManager.SignInAsync(user, isPersistent: false);
+                await signInManager.SignInAsync(user, false);
             }
 
-            return this.CheckResult(result);
+            return CheckResult(result);
         }
 
         [Route("SetPassword")]
@@ -347,16 +363,16 @@ namespace ImperaPlus.Backend.Controllers
             var user = await GetCurrentUserAsync();
             if (user == null)
             {
-                return this.BadRequest();
+                return BadRequest();
             }
 
             var result = await userManager.AddPasswordAsync(user, model.NewPassword);
             if (result.Succeeded)
             {
-                await signInManager.SignInAsync(user, isPersistent: false);
+                await signInManager.SignInAsync(user, false);
             }
 
-            return this.CheckResult(result);
+            return CheckResult(result);
         }
 
         [Route("Delete")]
@@ -368,16 +384,17 @@ namespace ImperaPlus.Backend.Controllers
             var user = await GetCurrentUserAsync();
             if (user == null)
             {
-                return this.BadRequest();
+                return BadRequest();
             }
 
-            if (!await this.userManager.CheckPasswordAsync(user, model.Password))
+            if (!await userManager.CheckPasswordAsync(user, model.Password))
             {
-                return this.BadRequest(new ErrorResponse(Application.ErrorCode.UsernameOrPasswordNotCorrect, "Password is not correct."));
+                return BadRequest(new ErrorResponse(ErrorCode.UsernameOrPasswordNotCorrect,
+                    "Password is not correct."));
             }
 
-            this.userService.DeleteAccount();
-            return this.Ok();
+            userService.DeleteAccount();
+            return Ok();
         }
 
         [Route("Language")]
@@ -385,7 +402,7 @@ namespace ImperaPlus.Backend.Controllers
         public async Task<IActionResult> SetLanguage(LanguageModel model)
         {
             var user = await GetCurrentUserAsync();
-            this.userService.SetLanguage(user, model.Language);
+            userService.SetLanguage(user, model.Language);
 
             return Ok();
         }
@@ -395,10 +412,10 @@ namespace ImperaPlus.Backend.Controllers
         [HttpPost]
         public async Task<IActionResult> RemoveLogin([FromBody] RemoveLoginBindingModel model)
         {
-            var user = await this.GetCurrentUserAsync();
+            var user = await GetCurrentUserAsync();
             if (user == null)
             {
-                return this.BadRequest();
+                return BadRequest();
             }
 
             IdentityResult result;
@@ -416,10 +433,10 @@ namespace ImperaPlus.Backend.Controllers
 
             if (result.Succeeded)
             {
-                return this.Ok();
+                return Ok();
             }
 
-            return this.CheckResult(result);
+            return CheckResult(result);
         }
 
         // GET Account/ExternalLogins?returnUrl=%2F&generateState=true
@@ -429,13 +446,12 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(IEnumerable<ExternalLoginViewModel>), 200)]
         public async Task<IEnumerable<ExternalLoginViewModel>> GetExternalLogins()
         {
-            var descriptions = await this.signInManager.GetExternalAuthenticationSchemesAsync();
+            var descriptions = await signInManager.GetExternalAuthenticationSchemesAsync();
 
             return descriptions
                 .Select(description => new ExternalLoginViewModel
                 {
-                    Name = description.DisplayName,
-                    AuthenticationScheme = description.Name
+                    Name = description.DisplayName, AuthenticationScheme = description.Name
                 })
                 .ToList();
         }
@@ -461,35 +477,36 @@ namespace ImperaPlus.Backend.Controllers
             {
                 if (Startup.RequireUserConfirmation)
                 {
-                    var code = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
-                    await this.sendEmailConfirmation(user, code, model.Language, model.CallbackUrl);
+                    var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
+                    await sendEmailConfirmation(user, code, model.Language, model.CallbackUrl);
                 }
             }
 
-            return this.CheckResult(result);
+            return CheckResult(result);
         }
 
         /// <summary>
-        /// Resend the email confirmation account to the given user account
+        ///     Resend the email confirmation account to the given user account
         /// </summary>
         [AllowAnonymous]
         [Route("ResendConfirmation")]
         [HttpPost]
         public async Task<IActionResult> ResendConfirmationCode([FromBody] ResendConfirmationModel model)
         {
-            var user = await this.userManager.FindByNameAsync(model.UserName);
+            var user = await userManager.FindByNameAsync(model.UserName);
             if (user == null)
             {
-                return this.BadRequest(new ErrorResponse(Application.ErrorCode.UsernameOrPasswordNotCorrect, "Username or password are not correct."));
+                return BadRequest(new ErrorResponse(ErrorCode.UsernameOrPasswordNotCorrect,
+                    "Username or password are not correct."));
             }
 
-            if (!await this.userManager.IsEmailConfirmedAsync(user))
+            if (!await userManager.IsEmailConfirmedAsync(user))
             {
-                string code = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
-                await this.sendEmailConfirmation(user, code, model.Language, model.CallbackUrl);
+                var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
+                await sendEmailConfirmation(user, code, model.Language, model.CallbackUrl);
             }
 
-            return this.Ok();
+            return Ok();
         }
 
         private async Task sendEmailConfirmation(User user, string code, string language, string callbackUrl)
@@ -498,14 +515,14 @@ namespace ImperaPlus.Backend.Controllers
             callbackUrl = callbackUrl.Replace("userId", user.Id);
             callbackUrl = callbackUrl.Replace("code", WebUtility.UrlEncode(code));
 
-            this.SetCulture(language);
+            SetCulture(language);
 
-            string body = string.Format(Resources.EmailConfirmationBody, callbackUrl);
-            await this.emailSender.SendMail(user.Email, Resources.EmailConfirmationSubject, body, body);
+            var body = string.Format(Resources.Resources.EmailConfirmationBody, callbackUrl);
+            await emailSender.SendMail(user.Email, Resources.Resources.EmailConfirmationSubject, body, body);
         }
 
         /// <summary>
-        /// Confirm user account using code provided in mail
+        ///     Confirm user account using code provided in mail
         /// </summary>
         /// <param name="model">Model containing id and code</param>
         /// <returns>Success if successfully activated</returns>
@@ -521,16 +538,16 @@ namespace ImperaPlus.Backend.Controllers
             {
                 Log.Error().Message($"Could not find user {model.UserId}").Write();
 
-                return this.BadRequest();
+                return BadRequest();
             }
 
             var result = await userManager.ConfirmEmailAsync(user, model.Code);
 
-            return this.CheckResult(result);
+            return CheckResult(result);
         }
 
         /// <summary>
-        /// Request password reset link
+        ///     Request password reset link
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -541,10 +558,10 @@ namespace ImperaPlus.Backend.Controllers
         {
             var user = await userManager.FindByNameAsync(model.UserName);
             if (user == null
-                || !(await userManager.IsEmailConfirmedAsync(user))
+                || !await userManager.IsEmailConfirmedAsync(user)
                 || !string.Equals(user.Email, model.Email, StringComparison.InvariantCultureIgnoreCase))
             {
-                return this.Ok();
+                return Ok();
             }
 
             var code = await userManager.GeneratePasswordResetTokenAsync(user);
@@ -553,18 +570,18 @@ namespace ImperaPlus.Backend.Controllers
             callbackUrl = callbackUrl.Replace("userId", user.Id);
             callbackUrl = callbackUrl.Replace("code", WebUtility.UrlEncode(code));
 
-            this.SetCulture(model.Language);
+            SetCulture(model.Language);
 
-            await this.emailSender.SendMail(
+            await emailSender.SendMail(
                 user.Email,
-                Resources.ResetPasswordSubject,
-                string.Format(Resources.ResetPasswordBody, callbackUrl));
+                Resources.Resources.ResetPasswordSubject,
+                string.Format(Resources.Resources.ResetPasswordBody, callbackUrl));
 
-            return this.Ok();
+            return Ok();
         }
 
         /// <summary>
-        /// Reset password confirmation
+        ///     Reset password confirmation
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -576,17 +593,17 @@ namespace ImperaPlus.Backend.Controllers
             var user = await userManager.FindByIdAsync(model.UserId);
             if (user == null)
             {
-                return this.Ok();
+                return Ok();
             }
 
             var result = await userManager.ResetPasswordAsync(user, model.Code, model.Password);
 
-            return this.CheckResult(result);
+            return CheckResult(result);
         }
 
         // POST Account/RegisterExternal
         /// <summary>
-        /// Create user accout for an external login
+        ///     Create user accout for an external login
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -596,10 +613,10 @@ namespace ImperaPlus.Backend.Controllers
         [HttpPost]
         public async Task<IActionResult> RegisterExternal([FromBody] RegisterExternalBindingModel model)
         {
-            var externalLoginInfo = await this.signInManager.GetExternalLoginInfoAsync();
+            var externalLoginInfo = await signInManager.GetExternalLoginInfoAsync();
             if (externalLoginInfo == null)
             {
-                return this.BadRequest();
+                return BadRequest();
             }
 
             var user = new User
@@ -609,18 +626,18 @@ namespace ImperaPlus.Backend.Controllers
                 EmailConfirmed = true // External accounts are trusted by default
             };
 
-            var result = await this.userManager.CreateAsync(user);
+            var result = await userManager.CreateAsync(user);
             if (result.Succeeded)
             {
-                result = await this.userManager.AddLoginAsync(user, externalLoginInfo);
+                result = await userManager.AddLoginAsync(user, externalLoginInfo);
                 if (result.Succeeded)
                 {
-                    await this.signInManager.SignInAsync(user, isPersistent: false);
-                    return this.Ok();
+                    await signInManager.SignInAsync(user, false);
+                    return Ok();
                 }
             }
 
-            return this.CheckResult(result);
+            return CheckResult(result);
         }
 
         #region Helpers
@@ -628,8 +645,8 @@ namespace ImperaPlus.Backend.Controllers
         private IActionResult CheckResult(IdentityResult result)
         {
             if (result == null)
-            {
                 // No error code
+            {
                 return BadRequest();
             }
 
@@ -637,53 +654,53 @@ namespace ImperaPlus.Backend.Controllers
             {
                 Log.Error().Message($"Error: {string.Join(" ", result.Errors.Select(x => x.Description))}").Write();
 
-                var errors = result.Errors.Select(x => this.TransformError(x.Code));
+                var errors = result.Errors.Select(x => TransformError(x.Code));
 
                 var error = new ErrorResponse(errors.First().Item1, errors.First().Item2.ToString());
 
                 error.Parameter_Errors = errors
                     .GroupBy(x => x.Item1, x => x.Item2)
                     .ToDictionary(x => x.Key, x => x.Select(y => y.ToString())
-                    .ToArray());
+                        .ToArray());
 
-                return this.BadRequest(error);
+                return BadRequest(error);
             }
 
-            return this.Ok();
+            return Ok();
         }
 
-        private Tuple<string, Application.ErrorCode> TransformError(string error)
+        private Tuple<string, ErrorCode> TransformError(string error)
         {
             switch (error)
             {
                 case nameof(IdentityErrorDescriber.DuplicateEmail):
-                    return Tuple.Create("Email", Application.ErrorCode.EmailAlreadyInUse);
+                    return Tuple.Create("Email", ErrorCode.EmailAlreadyInUse);
 
                 case nameof(IdentityErrorDescriber.InvalidEmail):
-                    return Tuple.Create("Email", Application.ErrorCode.EmailInvalid);
+                    return Tuple.Create("Email", ErrorCode.EmailInvalid);
 
                 case nameof(IdentityErrorDescriber.DuplicateUserName):
-                    return Tuple.Create("Username", Application.ErrorCode.UsernameAlreadyInUse);
+                    return Tuple.Create("Username", ErrorCode.UsernameAlreadyInUse);
 
                 case nameof(IdentityErrorDescriber.LoginAlreadyAssociated):
-                    return Tuple.Create("Login", Application.ErrorCode.UserWithExternalLoginExists);
+                    return Tuple.Create("Login", ErrorCode.UserWithExternalLoginExists);
 
                 case nameof(IdentityErrorDescriber.PasswordMismatch):
-                    return Tuple.Create("Password", Application.ErrorCode.UsernameOrPasswordNotCorrect);
+                    return Tuple.Create("Password", ErrorCode.UsernameOrPasswordNotCorrect);
 
                 case nameof(IdentityErrorDescriber.PasswordRequiresDigit):
                 case nameof(IdentityErrorDescriber.PasswordRequiresLower):
                 case nameof(IdentityErrorDescriber.PasswordRequiresNonAlphanumeric):
                 case nameof(IdentityErrorDescriber.PasswordRequiresUpper):
                 case nameof(IdentityErrorDescriber.PasswordTooShort):
-                    return Tuple.Create("Password", Application.ErrorCode.PasswordInvalid);
+                    return Tuple.Create("Password", ErrorCode.PasswordInvalid);
 
                 case nameof(IdentityErrorDescriber.InvalidUserName):
-                    return Tuple.Create("Username", Application.ErrorCode.UsernameInvalid);
+                    return Tuple.Create("Username", ErrorCode.UsernameInvalid);
             }
 
             // Default
-            return Tuple.Create("General", Application.ErrorCode.GenericApplicationError);
+            return Tuple.Create("General", ErrorCode.GenericApplicationError);
         }
 
         private void SetCulture(string language)
@@ -696,7 +713,7 @@ namespace ImperaPlus.Backend.Controllers
 
         private Task<User> GetCurrentUserAsync()
         {
-            return this.userManager.GetUserAsync(HttpContext.User);
+            return userManager.GetUserAsync(HttpContext.User);
         }
 
         #endregion

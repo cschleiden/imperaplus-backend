@@ -25,9 +25,9 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
 
         public ActionResult View(long gameId)
         {
-            var game = this.gameService.Get(gameId);
+            var game = gameService.Get(gameId);
 
-            this.AddLookups();
+            AddLookups();
 
             return View(game);
         }
@@ -35,11 +35,11 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
         [HttpPost]
         public DataTablesJsonResult Data(IDataTablesRequest request)
         {
-            var data = this.unitOfWork.Games.Query();
+            var data = unitOfWork.Games.Query();
 
             if (request.Search != null && !string.IsNullOrWhiteSpace(request.Search.Value))
             {
-                long searchId = long.Parse(request.Search.Value);
+                var searchId = long.Parse(request.Search.Value);
                 data = data.Where(x => x.Id == searchId);
             }
 
@@ -50,7 +50,7 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
                 .Select(g => new
                 {
                     g.Id,
-                    Type = g.Type.ToString(),                    
+                    Type = g.Type.ToString(),
                     g.Name,
                     State = g.State.ToString(),
                     PlayState = g.PlayState.ToString(),

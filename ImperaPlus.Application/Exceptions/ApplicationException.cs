@@ -7,7 +7,7 @@ namespace ImperaPlus.Application.Exceptions
         public ApplicationException(string message, ErrorCode errorCode)
             : base(message)
         {
-            this.ErrorCode = errorCode;
+            ErrorCode = errorCode;
         }
 
         public ErrorCode ErrorCode { get; private set; }

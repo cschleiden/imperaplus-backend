@@ -45,19 +45,16 @@ namespace ImperaPlus.IntegrationTests
                 return settings;
             };
 
-            TestSetup.TestServer = new TestServer(new WebHostBuilder()
-                .UseEnvironment(EnvironmentName.Development)
+            TestServer = new TestServer(new WebHostBuilder()
+                .UseEnvironment(Microsoft.Extensions.Hosting.Environments.Development)
                 .UseContentRoot(contentRoot)
                 .ConfigureServices(services => services.AddAutofac())
-                .ConfigureTestContainer((ContainerBuilder container) => TestSetup.ConfigureContainer(container))
-                .UseStartup<Startup>())
-            {
-                BaseAddress = new Uri("http://localhost", UriKind.Absolute)
-            };
+                .ConfigureTestContainer((ContainerBuilder container) => ConfigureContainer(container))
+                .UseStartup<Startup>()) { BaseAddress = new Uri("http://localhost", UriKind.Absolute) };
 
-            for (int i = 0; i < 4; ++i)
+            for (var i = 0; i < 4; ++i)
             {
-                TestSetup.RegisterClient(i);
+                RegisterClient(i);
             }
         }
 
@@ -66,8 +63,8 @@ namespace ImperaPlus.IntegrationTests
             builder.RegisterType<SynchronousBackgroundJobClient>().AsImplementedInterfaces();
             builder.RegisterType<FakeEmailService>().AsImplementedInterfaces();
 
-            builder.RegisterType<ImperaPlus.IntegrationTests.TestUserProvider>().AsImplementedInterfaces();
-            builder.RegisterType<ImperaPlus.IntegrationTests.TestMapTemplateProvider>().As<IMapTemplateProvider>();
+            builder.RegisterType<TestUserProvider>().AsImplementedInterfaces();
+            builder.RegisterType<TestMapTemplateProvider>().As<IMapTemplateProvider>();
         }
 
         public static void RegisterClient(int i)
@@ -89,7 +86,8 @@ namespace ImperaPlus.IntegrationTests
             }
             catch (AggregateException e)
             {
-                if (e.InnerExceptions != null && e.InnerExceptions.Count > 0 && e.InnerExceptions[0] is ImperaPlusException)
+                if (e.InnerExceptions != null && e.InnerExceptions.Count > 0 &&
+                    e.InnerExceptions[0] is ImperaPlusException)
                 {
                     if ((e.InnerExceptions[0] as ImperaPlusException).StatusCode == 400)
                     {
@@ -111,7 +109,7 @@ namespace ImperaPlus.IntegrationTests
         public static string GetProjectPath(string solutionRelativePath, Assembly assembly)
         {
             var projectName = assembly.GetName().Name;
-            var applicationBasePath = System.AppContext.BaseDirectory;
+            var applicationBasePath = AppContext.BaseDirectory;
 
             var directoryInfo = new DirectoryInfo(applicationBasePath);
             do
@@ -123,10 +121,9 @@ namespace ImperaPlus.IntegrationTests
                 }
 
                 directoryInfo = directoryInfo.Parent;
-            }
-            while (directoryInfo.Parent != null);
+            } while (directoryInfo.Parent != null);
 
-            throw new System.Exception();
+            throw new Exception();
         }
     }
 }

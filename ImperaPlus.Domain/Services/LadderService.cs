@@ -31,9 +31,10 @@ namespace ImperaPlus.Domain.Services
         private IMapTemplateProvider mapTemplateProvider;
         private IEventAggregator eventAggregator;
 
-        private static Object CreateGamesLock = new Object();
+        private static object CreateGamesLock = new();
 
-        public LadderService(IUnitOfWork unitOfWork, IGameService gameService, IMapTemplateProvider mapTemplateProvider, IEventAggregator eventAggregator)
+        public LadderService(IUnitOfWork unitOfWork, IGameService gameService, IMapTemplateProvider mapTemplateProvider,
+            IEventAggregator eventAggregator)
         {
             this.unitOfWork = unitOfWork;
             this.gameService = gameService;
@@ -50,7 +51,7 @@ namespace ImperaPlus.Domain.Services
 
             lock (CreateGamesLock)
             {
-                var ladders = this.unitOfWork.Ladders.GetActive().ToList();
+                var ladders = unitOfWork.Ladders.GetActive().ToList();
 
                 foreach (var ladder in ladders)
                 {
@@ -62,8 +63,8 @@ namespace ImperaPlus.Domain.Services
                     {
                         Log.Debug().Message("Found enough players").Write();
 
-                        var game = this.CreateGame(ladder, random);
-                        this.unitOfWork.Games.Add(game);
+                        var game = CreateGame(ladder, random);
+                        unitOfWork.Games.Add(game);
                         ladder.Games.Add(game);
 
                         // Add required players from queue to game
@@ -77,13 +78,13 @@ namespace ImperaPlus.Domain.Services
 
                             // Remove user from queue
                             ladder.Queue.Remove(queueEntry);
-                            this.unitOfWork.GetGenericRepository<LadderQueueEntry>().Remove(queueEntry);
+                            unitOfWork.GetGenericRepository<LadderQueueEntry>().Remove(queueEntry);
                         }
 
-                        game.Start(this.mapTemplateProvider.GetTemplate(game.MapTemplateName), random);
+                        game.Start(mapTemplateProvider.GetTemplate(game.MapTemplateName), random);
 
-                        this.eventAggregator.Raise(new LadderGameStartedEvent(ladder, game));
-                        this.unitOfWork.Commit();
+                        eventAggregator.Raise(new LadderGameStartedEvent(ladder, game));
+                        unitOfWork.Commit();
 
                         Log.Debug().Message("Created game {0}", game.Id).Write();
                     }
@@ -98,7 +99,7 @@ namespace ImperaPlus.Domain.Services
         {
             var ladder = new Ladder(name, numberOfTeams, numberOfPlayers);
 
-            this.unitOfWork.Ladders.Add(ladder);
+            unitOfWork.Ladders.Add(ladder);
 
             return ladder;
         }
@@ -108,7 +109,7 @@ namespace ImperaPlus.Domain.Services
         /// </summary>
         public void Queue(Guid ladderId, User user)
         {
-            Ladder ladder = this.unitOfWork.Ladders.Query().First(l => l.Id == ladderId);
+            var ladder = unitOfWork.Ladders.Query().First(l => l.Id == ladderId);
 
             ladder.QueueUser(user);
         }
@@ -118,7 +119,7 @@ namespace ImperaPlus.Domain.Services
         /// </summary>
         public void LeaveQueue(Guid ladderId, User user)
         {
-            Ladder ladder = this.unitOfWork.Ladders.GetById(ladderId);
+            var ladder = unitOfWork.Ladders.GetById(ladderId);
 
             ladder.QueueLeaveUser(user);
         }
@@ -129,7 +130,7 @@ namespace ImperaPlus.Domain.Services
         /// <param name="user">User fo check for</param>
         public IEnumerable<Ladder> GetQueuedLadders(User user)
         {
-            return this.unitOfWork.Ladders.GetInQueue(user.Id);
+            return unitOfWork.Ladders.GetInQueue(user.Id);
         }
 
         /// <summary>
@@ -137,7 +138,7 @@ namespace ImperaPlus.Domain.Services
         /// </summary>
         protected virtual Games.Game CreateGame(Ladder ladder, IRandomGen random)
         {
-            var systemUser = this.unitOfWork.Users.FindByName("System");
+            var systemUser = unitOfWork.Users.FindByName("System");
 
             var mapTemplate = ladder.GetMapTemplateForGame(random);
 

@@ -7,17 +7,17 @@ namespace ImperaPlus.Domain.Tournaments
     {
         protected TournamentParticipant()
         {
-            this.Id = Guid.NewGuid();
+            Id = Guid.NewGuid();
         }
 
         public TournamentParticipant(TournamentTeam team, User user)
             : this()
         {
-            this.TeamId = team.Id;
-            this.Team = team;
+            TeamId = team.Id;
+            Team = team;
 
-            this.UserId = user.Id;
-            this.User = user;
+            UserId = user.Id;
+            User = user;
         }
 
         [DatabaseGenerated(DatabaseGeneratedOption.None)]

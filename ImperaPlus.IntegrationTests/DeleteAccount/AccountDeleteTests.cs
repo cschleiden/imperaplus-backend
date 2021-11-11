@@ -25,11 +25,11 @@ namespace ImperaPlus.IntegrationTests
             base.Initialize();
 
             TestSetup.RegisterClient(99);
-            this.defaultAccountClient = ApiClient.GetAuthenticatedClient<AccountClient>(99).Result;
-            this.otherAccountClient = ApiClient.GetAuthenticatedClient<AccountClient>(1).Result;
+            defaultAccountClient = ApiClient.GetAuthenticatedClient<AccountClient>(99).Result;
+            otherAccountClient = ApiClient.GetAuthenticatedClient<AccountClient>(1).Result;
 
-            this.defaultUser = this.defaultAccountClient.GetUserInfoAsync().Result;
-            this.otherUser = this.otherAccountClient.GetUserInfoAsync().Result;
+            defaultUser = defaultAccountClient.GetUserInfoAsync().Result;
+            otherUser = otherAccountClient.GetUserInfoAsync().Result;
         }
 
         [TestCleanup]
@@ -42,10 +42,10 @@ namespace ImperaPlus.IntegrationTests
         public async Task DeleteAcccount()
         {
             // Arrange
-            await this.SetupAccount();
+            await SetupAccount();
 
             // Act
-            await this.defaultAccountClient.DeleteAccountAsync(new DeleteAccountBindingModel
+            await defaultAccountClient.DeleteAccountAsync(new DeleteAccountBindingModel
             {
                 Password = ApiClient.GetUserPassword(99)
             });
@@ -55,10 +55,10 @@ namespace ImperaPlus.IntegrationTests
 
         private async Task SetupAccount()
         {
-            await this.SendMessages();
-            await this.JoinLadder();
-            await this.JoinTournament();
-            await this.JoinGame();
+            await SendMessages();
+            await JoinLadder();
+            await JoinTournament();
+            await JoinGame();
         }
 
         private async Task SendMessages()
@@ -68,28 +68,16 @@ namespace ImperaPlus.IntegrationTests
             // Send message to other user
             await messageClient.PostSendAsync(new DTO.Messages.SendMessage
             {
-                To = new DTO.Users.UserReference
-                {
-                    Id = this.otherUser.UserId,
-                    Name = this.otherUser.UserName
-                },
-
+                To = new DTO.Users.UserReference { Id = otherUser.UserId, Name = otherUser.UserName },
                 Subject = "Test",
-
                 Text = "Test"
             });
 
             // Send message to self
             await messageClient.PostSendAsync(new DTO.Messages.SendMessage
             {
-                To = new DTO.Users.UserReference
-                {
-                    Id = this.defaultUser.UserId,
-                    Name = this.defaultUser.UserName
-                },
-
+                To = new DTO.Users.UserReference { Id = defaultUser.UserId, Name = defaultUser.UserName },
                 Subject = "Test",
-
                 Text = "Test"
             });
         }
@@ -106,10 +94,10 @@ namespace ImperaPlus.IntegrationTests
         private async Task JoinTournament()
         {
             // Team
-            await this.CreateAndJoinTournament(2);
+            await CreateAndJoinTournament(2);
 
             // Single player
-            await this.CreateAndJoinTournament(1);
+            await CreateAndJoinTournament(1);
         }
 
         private async Task CreateAndJoinTournament(int numberOfPlayersPerTeam)
@@ -118,8 +106,7 @@ namespace ImperaPlus.IntegrationTests
 
             var options = new DTO.Games.GameOptions
             {
-                NumberOfTeams = 2,
-                NumberOfPlayersPerTeam = numberOfPlayersPerTeam
+                NumberOfTeams = 2, NumberOfPlayersPerTeam = numberOfPlayersPerTeam
             };
             GameOptionsHelper.SetDefaultGameOptions(options);
 
@@ -129,10 +116,7 @@ namespace ImperaPlus.IntegrationTests
                 StartOfTournament = DateTime.UtcNow,
                 StartOfRegistration = DateTime.UtcNow,
                 Options = options,
-                MapTemplates = new[]
-                {
-                    "WorldDeluxe"
-                },
+                MapTemplates = new[] { "WorldDeluxe" },
                 NumberOfGroupGames = 3,
                 NumberOfKnockoutGames = 3,
                 NumberOfFinalGames = 3,

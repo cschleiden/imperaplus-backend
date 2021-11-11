@@ -12,15 +12,15 @@ namespace ImperaPlus.Domain.Games
     {
         protected Team()
         {
-            this.Id = Guid.NewGuid();
+            Id = Guid.NewGuid();
         }
 
         public Team(Game game)
             : this()
         {
-            this.Players = new HashSet<Player>();
-            this.Game = game;
-            this.PlayOrder = game.Teams.Count();
+            Players = new HashSet<Player>();
+            Game = game;
+            PlayOrder = game.Teams.Count();
         }
 
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -40,12 +40,12 @@ namespace ImperaPlus.Domain.Games
         {
             get
             {
-                if (this.Players.All(x => x.Outcome == PlayerOutcome.Won))
+                if (Players.All(x => x.Outcome == PlayerOutcome.Won))
                 {
                     return PlayerOutcome.Won;
                 }
 
-                if (this.Players.Any(x => x.Outcome == PlayerOutcome.None))
+                if (Players.Any(x => x.Outcome == PlayerOutcome.None))
                 {
                     return PlayerOutcome.None;
                 }
@@ -58,14 +58,14 @@ namespace ImperaPlus.Domain.Games
         {
             Require.NotNull(user, "user");
 
-            if (this.Players.Count() >= this.Game.Options.NumberOfPlayersPerTeam)
+            if (Players.Count() >= Game.Options.NumberOfPlayersPerTeam)
             {
                 throw new DomainException(ErrorCode.TeamAlreadyFull, "Team is already full");
             }
 
-            var player = new Player(this.Game, user, this);
+            var player = new Player(Game, user, this);
 
-            this.Players.Add(player);
+            Players.Add(player);
 
             return player;
         }
@@ -74,7 +74,7 @@ namespace ImperaPlus.Domain.Games
         {
             Require.NotNull(player, "player");
 
-            this.Players.Remove(player);
+            Players.Remove(player);
         }
     }
 }

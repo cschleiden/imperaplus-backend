@@ -6,7 +6,7 @@
 <h2>Tournaments</h2>
 
 
-@foreach (ImperaPlus.DTO.Tournaments.Tournament tournament in Model)
+@foreach (var tournament in Model)
 {
     <div class="panel panel-default">
         <div class="panel-heading clearfix" role="tab">
@@ -19,7 +19,8 @@
             <div class="pull-right">
                 @using (Html.BeginForm("Delete", "Tournaments", FormMethod.Post))
                 {
-                    @Html.Hidden("id", tournament.Id);
+                    @Html.Hidden("id", tournament.Id)
+                    ;
                     <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                 }
             </div>
@@ -44,7 +45,7 @@
             <div class="panel-collapse collapse" id="tournament-@tournament.Id">
                 <div class="panel-body form-horizontal">
                     <div class="form-group">
-                        @Html.LabelFor(x => tournament.MapTemplates, htmlAttributes: new { @class = "control-label col-md-3" })
+                        @Html.LabelFor(x => tournament.MapTemplates, new { @class = "control-label col-md-3" })
                         <div class="col-md-6">
                             @Html.ListBoxFor(x => tournament.MapTemplates,
                                 new MultiSelectList(ViewBag.MapTemplates as IEnumerable<string>, tournament.MapTemplates),
@@ -53,7 +54,7 @@
                     </div>
 
                     <div class="form-group">
-                        @Html.LabelFor(x => tournament.State, htmlAttributes: new { @class = "control-label col-md-3" })
+                        @Html.LabelFor(x => tournament.State, new { @class = "control-label col-md-3" })
                         <div class="col-md-6">
                             <div class="form-control-static">
                                 @Html.DisplayTextFor(x => tournament.State)
@@ -62,7 +63,7 @@
                     </div>
 
                     <div class="form-group">
-                        @Html.LabelFor(x => tournament.Phase, htmlAttributes: new { @class = "control-label col-md-3" })
+                        @Html.LabelFor(x => tournament.Phase, new { @class = "control-label col-md-3" })
                         <div class="col-md-6">
                             <div class="form-control-static">
                                 @Html.DisplayTextFor(x => tournament.Phase)
@@ -80,5 +81,5 @@
                 </div>
             </div>
         }
-        </div>
-    }
+    </div>
+}

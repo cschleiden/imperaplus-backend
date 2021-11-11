@@ -3,7 +3,7 @@ using ImperaPlus.Domain;
 
 namespace ImperaPlus.TestSupport
 {
-    public class TestLogger : Domain.ILogger
+    public class TestLogger : ILogger
     {
         public void Log(LogLevel level, string format, params object[] args)
         {

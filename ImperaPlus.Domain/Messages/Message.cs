@@ -13,21 +13,21 @@ namespace ImperaPlus.Domain.Messages
 
         public Message(User owner, User from, User to, string subject, string text, MessageFolder folder)
         {
-            this.Id = Guid.NewGuid();
+            Id = Guid.NewGuid();
 
-            this.Subject = subject;
-            this.Text = text;
+            Subject = subject;
+            Text = text;
 
-            this.Owner = owner;
-            this.OwnerId = owner.Id;
+            Owner = owner;
+            OwnerId = owner.Id;
 
-            this.From = from;
-            this.FromId = from.Id;
+            From = from;
+            FromId = from.Id;
 
-            this.Recipient = to;
-            this.RecipientId = to.Id;
+            Recipient = to;
+            RecipientId = to.Id;
 
-            this.Folder = folder;
+            Folder = folder;
         }
 
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -52,6 +52,7 @@ namespace ImperaPlus.Domain.Messages
         /// Message shows up in owner's folders
         /// </summary>
         public string OwnerId { get; internal set; }
+
         public virtual User Owner { get; internal set; }
 
         public string FromId { get; internal set; }

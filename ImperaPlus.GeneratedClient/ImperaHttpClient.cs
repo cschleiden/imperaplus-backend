@@ -15,18 +15,19 @@ namespace ImperaPlus.GeneratedClient
         {
             HttpClient httpClient;
 
-            if (this.MessageHandler != null)
+            if (MessageHandler != null)
             {
-                httpClient = new HttpClient(this.MessageHandler);
+                httpClient = new HttpClient(MessageHandler);
             }
             else
             {
                 httpClient = new HttpClient();
             }
 
-            if (!string.IsNullOrEmpty(this.AuthToken))
+            if (!string.IsNullOrEmpty(AuthToken))
             {
-                httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", this.AuthToken);
+                httpClient.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthToken);
             }
 
             return Task.FromResult(httpClient);
@@ -35,7 +36,8 @@ namespace ImperaPlus.GeneratedClient
 
     public static class ImperaClientFactory
     {
-        public static TClientType GetClient<TClientType>(string baseUri, string authToken = null, HttpMessageHandler messageHandler = null) where TClientType : ImperaHttpClient
+        public static TClientType GetClient<TClientType>(string baseUri, string authToken = null,
+            HttpMessageHandler messageHandler = null) where TClientType : ImperaHttpClient
         {
             var client = (TClientType)Activator.CreateInstance(typeof(TClientType));
 

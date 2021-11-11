@@ -8,9 +8,9 @@
 
         internal NewsContent(string language, string title, string text)
         {
-            this.Language = language;
-            this.Title = title;
-            this.Text = text;
+            Language = language;
+            Title = title;
+            Text = text;
         }
 
         public long Id { get; set; }

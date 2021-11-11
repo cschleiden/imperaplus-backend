@@ -19,8 +19,10 @@ namespace ImperaPlus.Domain.Tests.Map.Distribution
             game.Start(TestUtils.GetMapTemplate(), new TestRandomGen());
 
             // Assert
-            Assert.AreEqual(game.Options.InitialCountryUnits, game.Map.Countries.First(x => !x.IsNeutral).Units, "Units do not match");
-            Assert.IsTrue(game.Map.Countries.Where(x => x.IsNeutral).All(c => c.Units == 1), "Neutral country does not have 1 unit");
+            Assert.AreEqual(game.Options.InitialCountryUnits, game.Map.Countries.First(x => !x.IsNeutral).Units,
+                "Units do not match");
+            Assert.IsTrue(game.Map.Countries.Where(x => x.IsNeutral).All(c => c.Units == 1),
+                "Neutral country does not have 1 unit");
         }
 
         [TestMethod]
@@ -34,7 +36,8 @@ namespace ImperaPlus.Domain.Tests.Map.Distribution
             game.Start(TestUtils.GetMapTemplate(), new TestRandomGen());
 
             // Assert
-            Assert.IsTrue(game.Teams.SelectMany(t => t.Players).All(p => game.Map.Countries.Count(c => c.PlayerId == p.Id) == 3));
+            Assert.IsTrue(game.Teams.SelectMany(t => t.Players)
+                .All(p => game.Map.Countries.Count(c => c.PlayerId == p.Id) == 3));
         }
     }
 }

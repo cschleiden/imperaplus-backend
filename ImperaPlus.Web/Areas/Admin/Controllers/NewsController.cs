@@ -18,27 +18,27 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
 
         public ActionResult Index()
         {
-            var news = this.unitOfWork.News.GetOrdered(10);
+            var news = unitOfWork.News.GetOrdered(10);
 
             return View(news);
         }
-        
+
         [HttpPost]
         public ActionResult PostCreate(NewsContent[] post)
         {
             Require.NotNull(post, nameof(post));
 
-            this.newsService.PostNews(post);
+            newsService.PostNews(post);
 
-            return this.RedirectToAction("Index");
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
         public ActionResult Delete(long id)
         {
-            this.newsService.Delete(id);
+            newsService.Delete(id);
 
-            return this.RedirectToAction("Index");
+            return RedirectToAction("Index");
         }
     }
 }

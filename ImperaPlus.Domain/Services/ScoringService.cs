@@ -43,7 +43,7 @@ namespace ImperaPlus.Domain.Services
 
             // Score losers
             var otherScoreTeams = new List<ScoreTeam>();
-            foreach(var otherTeam in otherTeams)
+            foreach (var otherTeam in otherTeams)
             {
                 var otherScoreTeam = new ScoreTeam();
                 TransformPlayers(ladder, playerStandings, otherTeam, otherScoreTeam);
@@ -59,15 +59,16 @@ namespace ImperaPlus.Domain.Services
             {
                 var data = result[user.Id];
 
-                bool hasWon = winningTeam.Players.Any(x => x.UserId == user.Id);
-              
-                this.UpdatePlayerRating(ladder, playerStandings[user.Id], user, data.Rating, data.Vol, data.Rd, hasWon);
+                var hasWon = winningTeam.Players.Any(x => x.UserId == user.Id);
+
+                UpdatePlayerRating(ladder, playerStandings[user.Id], user, data.Rating, data.Vol, data.Rd, hasWon);
             }
 
             game.LadderScored = true;
         }
 
-        private void TransformPlayers(Ladder ladder, Dictionary<string, LadderStanding> playerStandings, Games.Team team, ScoreTeam scoreTeam)
+        private void TransformPlayers(Ladder ladder, Dictionary<string, LadderStanding> playerStandings,
+            Games.Team team, ScoreTeam scoreTeam)
         {
             foreach (var player in team.Players)
             {
@@ -75,7 +76,7 @@ namespace ImperaPlus.Domain.Services
 
                 // TODO: This makes individual queries, optimize                
                 //var standing = this.unitOfWork.Ladders.GetUserStanding(ladder.Id, player.UserId);
-                var standing = this.unitOfWork.GetGenericRepository<LadderStanding>()
+                var standing = unitOfWork.GetGenericRepository<LadderStanding>()
                     .Query()
                     .FirstOrDefault(x => x.LadderId == ladder.Id && x.UserId == player.UserId);
                 if (standing != null)
@@ -94,14 +95,15 @@ namespace ImperaPlus.Domain.Services
             }
         }
 
-        public virtual void UpdatePlayerRating(Ladder ladder, LadderStanding standing, User user, double rating, double vol, double rd, bool hasWon)
+        public virtual void UpdatePlayerRating(Ladder ladder, LadderStanding standing, User user, double rating,
+            double vol, double rd, bool hasWon)
         {
             if (standing == null)
             {
                 // Player has competed in this league for the first time
                 Log.Info().Message("Adding ladder standing for {0} {1}", ladder.Id, user.Id).Write();
                 standing = new LadderStanding(ladder, user);
-                this.unitOfWork.GetGenericRepository<LadderStanding>().Add(standing);
+                unitOfWork.GetGenericRepository<LadderStanding>().Add(standing);
             }
 
             standing.Rating = rating;

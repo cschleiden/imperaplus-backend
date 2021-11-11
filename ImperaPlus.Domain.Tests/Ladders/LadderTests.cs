@@ -124,15 +124,16 @@ namespace ImperaPlus.Domain.Tests.Ladders
 
                 var gameServiceMock = new Mock<IGameService>();
                 gameServiceMock.Setup(x => x.Create(
-                    Enums.GameType.Ranking,
-                    It.IsAny<User>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>(),
-                    It.IsAny<Domain.Games.GameOptions>()))
+                        Enums.GameType.Ranking,
+                        It.IsAny<User>(),
+                        It.IsAny<string>(),
+                        It.IsAny<string>(),
+                        It.IsAny<string>(),
+                        It.IsAny<Domain.Games.GameOptions>()))
                     .Returns(TestUtils.CreateGame(2, 1, Enums.GameType.Ranking));
 
-                var ladderService = new LadderService(unitOfWork, gameServiceMock.Object, TestUtils.MockMapTemplateProvider(), new Mock<IEventAggregator>().Object);
+                var ladderService = new LadderService(unitOfWork, gameServiceMock.Object,
+                    TestUtils.MockMapTemplateProvider(), new Mock<IEventAggregator>().Object);
 
                 var mapTemplate = TestUtils.GetMapTemplate();
 

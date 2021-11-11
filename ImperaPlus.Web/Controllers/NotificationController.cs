@@ -29,7 +29,7 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(NotificationSummary), 200)]
         public IActionResult GetSummary()
         {
-            return this.Ok(this.notificationService.GetSummary());
+            return Ok(notificationService.GetSummary());
         }
     }
 }

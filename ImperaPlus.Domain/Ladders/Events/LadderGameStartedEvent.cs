@@ -8,7 +8,7 @@ namespace ImperaPlus.Domain.Ladders.Events
         public LadderGameStartedEvent(Ladder ladder, Game game)
             : base(game)
         {
-            this.Ladder = ladder;
+            Ladder = ladder;
         }
 
         public Ladder Ladder { get; set; }

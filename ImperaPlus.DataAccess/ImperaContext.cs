@@ -32,9 +32,9 @@ namespace ImperaPlus.DataAccess
 
         public ImperaContext(
             DbContextOptions<ImperaContext> options,
-            Domain.IUserProvider userProvider,
+            IUserProvider userProvider,
             IEventAggregator eventAggregator)
-            : base(options)
+            : this(options)
         {
             this.userProvider = userProvider;
             this.eventAggregator = eventAggregator;
@@ -64,9 +64,9 @@ namespace ImperaPlus.DataAccess
 
             using (MiniProfiler.Current.Step("Context: Update change tracked entitites"))
             {
-                foreach (var entry in this.ChangeTracker.Entries<IChangeTrackedEntity>().ToArray())
+                foreach (var entry in ChangeTracker.Entries<IChangeTrackedEntity>().ToArray())
                 {
-                    if (entry.State == EntityState.Added && entry.Entity.CreatedAt == default(DateTime))
+                    if (entry.State == EntityState.Added && entry.Entity.CreatedAt == default)
                     {
                         entry.Entity.CreatedAt = DateTime.UtcNow;
                     }
@@ -79,30 +79,31 @@ namespace ImperaPlus.DataAccess
 
                 foreach (
                     var entry in
-                        this.ChangeTracker.Entries<IOwnedEntity>().Where(x => x.State == EntityState.Added && x.Entity.CreatedBy == null).ToArray())
+                    ChangeTracker.Entries<IOwnedEntity>()
+                        .Where(x => x.State == EntityState.Added && x.Entity.CreatedBy == null).ToArray())
                 {
-                    entry.Entity.CreatedById = this.userProvider.GetCurrentUserId();
+                    entry.Entity.CreatedById = userProvider.GetCurrentUserId();
                 }
 
                 // Ensure all serialized collections are updated
-                foreach (var entry in this.ChangeTracker.Entries<ISerializedEntity>())
+                foreach (var entry in ChangeTracker.Entries<ISerializedEntity>())
                 {
                     entry.Entity.Serialize();
                 }
 
                 // Aggregate events
-                foreach (var entry in this.ChangeTracker.Entries<Entity>())
+                foreach (var entry in ChangeTracker.Entries<Entity>())
                 {
                     aggregatedEventQueue.AddRange(entry.Entity.EventQueue.Events);
                     entry.Entity.EventQueue.Events.Clear();
                 }
             }
 
-            if (this.eventAggregator != null)
+            if (eventAggregator != null)
             {
                 foreach (var ev in aggregatedEventQueue)
                 {
-                    this.eventAggregator.Raise(ev);
+                    eventAggregator.Raise(ev);
                 }
             }
 
@@ -114,9 +115,9 @@ namespace ImperaPlus.DataAccess
 
             using (MiniProfiler.Current.Step("Context: Handle Queued Events"))
             {
-                if (this.eventAggregator != null)
+                if (eventAggregator != null)
                 {
-                    this.eventAggregator.HandleQueuedEvents();
+                    eventAggregator.HandleQueuedEvents();
                 }
             }
 
@@ -163,14 +164,14 @@ namespace ImperaPlus.DataAccess
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.SetNull);
             modelBuilder.Entity<Game>()
-                .HasIndex(g => new{ g.State, g.CurrentPlayerId });
+                .HasIndex(g => new { g.State, g.CurrentPlayerId });
             modelBuilder.Entity<Game>(x =>
             {
                 x.HasOne(g => g.Map)
-                 .WithOne(m => m.Game)
-                 .IsRequired(false)
-                 .HasForeignKey<Map>(m => m.GameId)
-                 .OnDelete(DeleteBehavior.Cascade);
+                    .WithOne(m => m.Game)
+                    .IsRequired(false)
+                    .HasForeignKey<Map>(m => m.GameId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Map>();
@@ -210,8 +211,10 @@ namespace ImperaPlus.DataAccess
                 .OnDelete(DeleteBehavior.SetNull);
 
             // Game History
-            modelBuilder.Entity<HistoryEntry>().HasOne(x => x.Actor).WithMany().IsRequired(false).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<HistoryEntry>().HasOne(x => x.OtherPlayer).WithMany().IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<HistoryEntry>().HasOne(x => x.Actor).WithMany().IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<HistoryEntry>().HasOne(x => x.OtherPlayer).WithMany().IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict);
             // SQL Server recommended this...
             // modelBuilder.Entity<HistoryEntry>()
             //     .HasIndex(g => new { g.Action, g.ActorId, g.DateTime, g.DestinationIdentifier, g.OriginIdentifier, g.OtherPlayerId, g.Result, g.TurnNo, g.Units, g.UnitsLost, g.UnitsLostOther });
@@ -239,11 +242,14 @@ namespace ImperaPlus.DataAccess
 
             // Ladder
             modelBuilder.Entity<LadderStanding>().HasKey(x => new { x.LadderId, x.UserId });
-            modelBuilder.Entity<LadderStanding>().HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<LadderStanding>().HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<LadderQueueEntry>().HasKey(x => new { x.LadderId, x.UserId });
-            modelBuilder.Entity<LadderQueueEntry>().HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<LadderQueueEntry>().HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<NewsEntry>().HasMany(x => x.Content).WithOne().IsRequired().OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<NewsEntry>().HasMany(x => x.Content).WithOne().IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<NewsEntry>()
                 .HasOne(x => x.CreatedBy)
                 .WithMany()
@@ -289,23 +295,27 @@ namespace ImperaPlus.DataAccess
                 .HasForeignKey(x => x.DeniedByUserId);
 
             // Tournaments
-            modelBuilder.Entity<Tournament>().HasMany(x => x.Teams).WithOne(x => x.Tournament).HasForeignKey(x => x.TournamentId).IsRequired().OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<Tournament>().HasMany(x => x.Groups).WithOne(x => x.Tournament).HasForeignKey(x => x.TournamentId).IsRequired().OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<Tournament>().HasMany(x => x.Pairings).WithOne(x => x.Tournament).HasForeignKey(x => x.TournamentId).IsRequired().OnDelete(DeleteBehavior.Cascade);
-            modelBuilder.Entity<Tournament>().HasOne(x => x.Winner).WithOne().HasForeignKey<Tournament>(x => x.WinnerId).IsRequired(false);
+            modelBuilder.Entity<Tournament>().HasMany(x => x.Teams).WithOne(x => x.Tournament)
+                .HasForeignKey(x => x.TournamentId).IsRequired().OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Tournament>().HasMany(x => x.Groups).WithOne(x => x.Tournament)
+                .HasForeignKey(x => x.TournamentId).IsRequired().OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Tournament>().HasMany(x => x.Pairings).WithOne(x => x.Tournament)
+                .HasForeignKey(x => x.TournamentId).IsRequired().OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Tournament>().HasOne(x => x.Winner).WithOne().HasForeignKey<Tournament>(x => x.WinnerId)
+                .IsRequired(false);
 
             modelBuilder.Entity<TournamentTeam>()
                 .HasMany(x => x.Participants)
                 .WithOne(x => x.Team)
                 .HasForeignKey(x => x.TeamId)
-                    .IsRequired()
-                    .OnDelete(DeleteBehavior.Cascade);
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<TournamentTeam>()
                 .HasOne(x => x.CreatedBy)
                 .WithMany()
                 .HasForeignKey(x => x.CreatedById)
-                    .IsRequired(false)
-                    .OnDelete(DeleteBehavior.SetNull);
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<TournamentParticipant>()
                 .HasOne(x => x.User)
@@ -314,14 +324,21 @@ namespace ImperaPlus.DataAccess
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.SetNull);
 
-            modelBuilder.Entity<TournamentPairing>().HasMany(x => x.Games).WithOne().IsRequired(false).HasForeignKey(x => x.TournamentPairingId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<TournamentPairing>().HasOne(x => x.TeamA).WithMany().IsRequired().HasForeignKey(x => x.TeamAId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<TournamentPairing>().HasOne(x => x.TeamB).WithMany().IsRequired().HasForeignKey(x => x.TeamBId).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<TournamentPairing>().HasOne(x => x.Group).WithMany().IsRequired(false).HasForeignKey(x => x.GroupId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<TournamentPairing>().HasMany(x => x.Games).WithOne().IsRequired(false)
+                .HasForeignKey(x => x.TournamentPairingId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<TournamentPairing>().HasOne(x => x.TeamA).WithMany().IsRequired()
+                .HasForeignKey(x => x.TeamAId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<TournamentPairing>().HasOne(x => x.TeamB).WithMany().IsRequired()
+                .HasForeignKey(x => x.TeamBId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<TournamentPairing>().HasOne(x => x.Group).WithMany().IsRequired(false)
+                .HasForeignKey(x => x.GroupId).OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<TournamentGroup>().HasMany(x => x.Teams).WithOne(x => x.Group).HasForeignKey(x => x.GroupId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<TournamentGroup>().HasMany(x => x.Pairings).WithOne().IsRequired(false).OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<TournamentGroup>().HasOne(x => x.Tournament).WithMany().IsRequired(true).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<TournamentGroup>().HasMany(x => x.Teams).WithOne(x => x.Group)
+                .HasForeignKey(x => x.GroupId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<TournamentGroup>().HasMany(x => x.Pairings).WithOne().IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<TournamentGroup>().HasOne(x => x.Tournament).WithMany().IsRequired(true)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Messages
             modelBuilder.Entity<Domain.Messages.Message>()

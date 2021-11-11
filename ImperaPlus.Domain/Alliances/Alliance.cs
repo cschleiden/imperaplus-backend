@@ -12,18 +12,18 @@ namespace ImperaPlus.Domain.Alliances
     {
         protected Alliance()
         {
-            this.Id = Guid.NewGuid();
-            this.Members = new HashSet<User>();
-            this.Requests = new HashSet<AllianceJoinRequest>();
+            Id = Guid.NewGuid();
+            Members = new HashSet<User>();
+            Requests = new HashSet<AllianceJoinRequest>();
         }
 
         public Alliance(string name, string description)
             : this()
         {
-            this.Name = name;
-            this.Description = description;
+            Name = name;
+            Description = description;
 
-            this.Channel = new Channel(name, Enums.ChannelType.Alliance);
+            Channel = new Channel(name, Enums.ChannelType.Alliance);
         }
 
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -33,14 +33,7 @@ namespace ImperaPlus.Domain.Alliances
 
         public string Description { get; set; }
 
-        [NotMapped]
-        public IEnumerable<User> Administrators
-        {
-            get
-            {
-                return this.Members.Where(x => x.IsAllianceAdmin);
-            }
-        }
+        [NotMapped] public IEnumerable<User> Administrators => Members.Where(x => x.IsAllianceAdmin);
 
         public virtual ICollection<User> Members { get; private set; }
 
@@ -51,15 +44,15 @@ namespace ImperaPlus.Domain.Alliances
 
         public void AddMember(User user)
         {
-            bool isMemberAlready = this.IsMember(user);
+            var isMemberAlready = IsMember(user);
             if (isMemberAlready)
             {
                 throw new DomainException(
                     ErrorCode.UserAlreadyInAlliance,
-                    "User {0} is already a member of alliance {1}", user.Id, this.Id);
+                    "User {0} is already a member of alliance {1}", user.Id, Id);
             }
 
-            this.Members.Add(user);
+            Members.Add(user);
 
             // Ensure newly added member are not added as admin
             user.IsAllianceAdmin = false;
@@ -67,19 +60,19 @@ namespace ImperaPlus.Domain.Alliances
 
         public bool IsMember(User user)
         {
-            return this.Members.Any(m => m.Id == user.Id);
+            return Members.Any(m => m.Id == user.Id);
         }
 
-        public  void MakeAdmin(User user)
+        public void MakeAdmin(User user)
         {
             Require.NotNull(user, nameof(user));
 
-            bool isMember = this.IsMember(user);
+            var isMember = IsMember(user);
             if (!isMember)
             {
                 throw new DomainException(
                     ErrorCode.UserNotAMemberOfAlliance,
-                    "User {0} is not a member of alliance {1}", user.Id, this.Id);
+                    "User {0} is not a member of alliance {1}", user.Id, Id);
             }
 
             user.IsAllianceAdmin = true;
@@ -87,12 +80,12 @@ namespace ImperaPlus.Domain.Alliances
 
         public void RemoveAdmin(User user)
         {
-            bool isMember = this.IsMember(user);
+            var isMember = IsMember(user);
             if (!isMember)
             {
                 throw new DomainException(
                     ErrorCode.UserNotAMemberOfAlliance,
-                    "User {0} is not a member of alliance {1}", user.Id, this.Id);
+                    "User {0} is not a member of alliance {1}", user.Id, Id);
             }
 
             user.IsAllianceAdmin = false;
@@ -102,23 +95,23 @@ namespace ImperaPlus.Domain.Alliances
         {
             Require.NotNull(currentAdmin, nameof(currentAdmin));
 
-            return this.Administrators.Any(x => x.Id == currentAdmin.Id);
+            return Administrators.Any(x => x.Id == currentAdmin.Id);
         }
 
         public void RemoveMember(User user)
         {
             Require.NotNull(user, nameof(user));
 
-            bool isMember = this.IsMember(user);
+            var isMember = IsMember(user);
             if (!isMember)
             {
                 throw new DomainException(
                     ErrorCode.UserNotAMemberOfAlliance,
-                    "User {0} is not a member of alliance {1}", user.Id, this.Id);
+                    "User {0} is not a member of alliance {1}", user.Id, Id);
             }
 
-            var member = this.Members.FirstOrDefault(x => x.Id == user.Id);
-            this.Members.Remove(member);
+            var member = Members.FirstOrDefault(x => x.Id == user.Id);
+            Members.Remove(member);
 
             user.Alliance = null;
             user.AllianceId = null;
@@ -127,15 +120,15 @@ namespace ImperaPlus.Domain.Alliances
 
         public AllianceJoinRequest RequestToJoin(User user, string reason)
         {
-            bool isMemberAlready = this.IsMember(user);
+            var isMemberAlready = IsMember(user);
             if (isMemberAlready)
             {
                 throw new DomainException(
                     ErrorCode.UserAlreadyInAlliance,
-                    "User {0} is already a member of alliance {1}", user.Id, this.Id);
+                    "User {0} is already a member of alliance {1}", user.Id, Id);
             }
 
-            var activeRequest = this.FindActiveRequestForUser(user);
+            var activeRequest = FindActiveRequestForUser(user);
             if (activeRequest != null)
             {
                 throw new DomainException(
@@ -144,7 +137,7 @@ namespace ImperaPlus.Domain.Alliances
             }
 
             var request = new AllianceJoinRequest(this, user, reason);
-            this.Requests.Add(request);
+            Requests.Add(request);
 
             return request;
         }
@@ -154,9 +147,9 @@ namespace ImperaPlus.Domain.Alliances
         /// </summary>
         public AllianceJoinRequest ApproveRequest(User approver, Guid requestId)
         {
-            var request = this.GetActiveRequest(requestId);
+            var request = GetActiveRequest(requestId);
 
-            this.AddMember(request.RequestedByUser);
+            AddMember(request.RequestedByUser);
             request.Approve(approver);
 
             return request;
@@ -164,7 +157,7 @@ namespace ImperaPlus.Domain.Alliances
 
         public AllianceJoinRequest DenyRequest(User denier, Guid requestId)
         {
-            var request = this.GetActiveRequest(requestId);
+            var request = GetActiveRequest(requestId);
             request.Deny(denier);
 
             return request;
@@ -172,12 +165,12 @@ namespace ImperaPlus.Domain.Alliances
 
         private AllianceJoinRequest GetActiveRequest(Guid requestId)
         {
-            var request = this.Requests.FirstOrDefault(x => x.State == AllianceJoinRequestState.Active && x.Id == requestId);
+            var request = Requests.FirstOrDefault(x => x.State == AllianceJoinRequestState.Active && x.Id == requestId);
             if (request == null)
             {
                 throw new DomainException(
                     ErrorCode.NoActiveRequestToJoinAlliance,
-                    "There is no active request with id {0} to join alliance {1}", requestId, this.Id);
+                    "There is no active request with id {0} to join alliance {1}", requestId, Id);
             }
 
             return request;
@@ -185,7 +178,7 @@ namespace ImperaPlus.Domain.Alliances
 
         private AllianceJoinRequest FindActiveRequestForUser(User user)
         {
-            return this.Requests.FirstOrDefault(
+            return Requests.FirstOrDefault(
                 x => x.State == AllianceJoinRequestState.Active && x.RequestedByUserId == user.Id);
         }
     }

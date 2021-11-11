@@ -1,18 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <AssemblyTitle>ImperaPlus.TestSupport</AssemblyTitle>
     <Product>ImperaPlus.TestSupport</Product>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ImperaPlus.Application\ImperaPlus.Application.csproj" />
-    <ProjectReference Include="..\ImperaPlus.DataAccess.ConvertedMaps\ImperaPlus.DataAccess.ConvertedMaps.csproj" />
-    <ProjectReference Include="..\ImperaPlus.DataAccess\ImperaPlus.DataAccess.csproj" />
-    <ProjectReference Include="..\ImperaPlus.Domain\ImperaPlus.Domain.csproj" />
+    <ProjectReference Include="..\ImperaPlus.Application\ImperaPlus.Application.csproj"/>
+    <ProjectReference Include="..\ImperaPlus.DataAccess.ConvertedMaps\ImperaPlus.DataAccess.ConvertedMaps.csproj"/>
+    <ProjectReference Include="..\ImperaPlus.DataAccess\ImperaPlus.DataAccess.csproj"/>
+    <ProjectReference Include="..\ImperaPlus.Domain\ImperaPlus.Domain.csproj"/>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="5.1.2" />
-    <PackageReference Include="Hangfire" Version="1.7.25" />
-    <PackageReference Include="Hangfire.Autofac" Version="2.3.1" />
+    <PackageReference Include="Autofac" Version="5.1.2"/>
+    <PackageReference Include="Hangfire" Version="1.7.25"/>
+    <PackageReference Include="Hangfire.Autofac" Version="2.3.1"/>
   </ItemGroup>
 </Project>

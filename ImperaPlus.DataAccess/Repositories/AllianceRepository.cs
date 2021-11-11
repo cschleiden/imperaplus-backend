@@ -16,38 +16,32 @@ namespace ImperaPlus.DataAccess.Repositories
 
         public Alliance Get(Guid allianceId)
         {
-            return this
-                .WithMembers
+            return WithMembers
                 .Include(x => x.Requests)
-                    .ThenInclude(x => x.RequestedByUser)
+                .ThenInclude(x => x.RequestedByUser)
                 .FirstOrDefault(x => x.Id == allianceId);
         }
 
         public Alliance FindByName(string name)
         {
             var lowerName = name.ToLower();
-            return this.DbSet.FirstOrDefault(x => x.Name.ToLower() == lowerName);
+            return DbSet.FirstOrDefault(x => x.Name.ToLower() == lowerName);
         }
 
         public IEnumerable<Alliance> GetAll()
         {
-            return this.WithMembers;
+            return WithMembers;
         }
 
         public IEnumerable<AllianceJoinRequest> GetRequestsForUser(string userId)
         {
-            return this.Context.Set<AllianceJoinRequest>()
+            return Context.Set<AllianceJoinRequest>()
                 .Where(x => x.RequestedByUserId == userId)
                 .OrderBy(x => x.CreatedAt);
         }
 
-        private IQueryable<Alliance> WithMembers
-        {
-            get
-            {
-                return this.DbSet
-                    .Include(x => x.Members);
-            }
-        }
+        private IQueryable<Alliance> WithMembers =>
+            DbSet
+                .Include(x => x.Members);
     }
 }

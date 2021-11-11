@@ -19,11 +19,11 @@ namespace ImperaPlus.Domain.Ladders.Events
 
         public void Handle(AccountDeleted evt)
         {
-            var ladders = this.ladderService.GetQueuedLadders(evt.User).ToArray();
+            var ladders = ladderService.GetQueuedLadders(evt.User).ToArray();
 
-            foreach(var ladder in ladders)
+            foreach (var ladder in ladders)
             {
-                this.ladderService.LeaveQueue(ladder.Id, evt.User);
+                ladderService.LeaveQueue(ladder.Id, evt.User);
             }
         }
     }

@@ -17,16 +17,16 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
 
         public ActionResult Index()
         {
-            var ladders = this.ladderService.GetAllFull();
+            var ladders = ladderService.GetAllFull();
 
-            this.AddLookups();
+            AddLookups();
 
             return View(ladders);
         }
 
         public ActionResult Create()
         {
-            this.AddLookups();
+            AddLookups();
 
             var ladder = new DTO.Ladder.Ladder();
             ladder.Options = new DTO.Games.GameOptions();
@@ -38,37 +38,37 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult PostUpdate(DTO.Ladder.Ladder ladder)
         {
-            this.ladderService.UpdateName(ladder.Id, ladder.Name);
-            this.ladderService.ToggleActive(ladder.Id, ladder.IsActive);
-            this.ladderService.UpdateGameOptions(ladder.Id, ladder.Options);
-            this.ladderService.UpdateMapTemplates(ladder.Id, ladder.MapTemplates);
+            ladderService.UpdateName(ladder.Id, ladder.Name);
+            ladderService.ToggleActive(ladder.Id, ladder.IsActive);
+            ladderService.UpdateGameOptions(ladder.Id, ladder.Options);
+            ladderService.UpdateMapTemplates(ladder.Id, ladder.MapTemplates);
 
-            return this.RedirectToAction("Index");
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
         public ActionResult PostCreate(DTO.Ladder.Ladder ladder)
         {
-            var summary = this.ladderService.Create(new DTO.Ladder.Admin.CreationOptions
+            var summary = ladderService.Create(new DTO.Ladder.Admin.CreationOptions
             {
                 Name = ladder.Name,
                 NumberOfPlayers = ladder.Options.NumberOfPlayersPerTeam,
                 NumberOfTeams = ladder.Options.NumberOfTeams
             });
 
-            this.ladderService.UpdateGameOptions(summary.Id, ladder.Options);
-            this.ladderService.UpdateMapTemplates(summary.Id, ladder.MapTemplates);
-            this.ladderService.ToggleActive(summary.Id, ladder.IsActive);
+            ladderService.UpdateGameOptions(summary.Id, ladder.Options);
+            ladderService.UpdateMapTemplates(summary.Id, ladder.MapTemplates);
+            ladderService.ToggleActive(summary.Id, ladder.IsActive);
 
-            return this.RedirectToAction("Index");
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
         public ActionResult PostDelete(Guid id)
         {
-            this.ladderService.Delete(id);
+            ladderService.Delete(id);
 
-            return this.RedirectToAction("Index");
+            return RedirectToAction("Index");
         }
     }
 }

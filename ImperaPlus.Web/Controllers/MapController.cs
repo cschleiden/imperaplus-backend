@@ -24,7 +24,7 @@ namespace ImperaPlus.Backend.Controllers
         [ProducesResponseType(typeof(IEnumerable<MapTemplateDescriptor>), 200)]
         public IEnumerable<MapTemplateDescriptor> GetAllSummary()
         {
-            return this.mapTemplateService.QuerySummary();
+            return mapTemplateService.QuerySummary();
         }
 
         /// <summary>
@@ -36,13 +36,13 @@ namespace ImperaPlus.Backend.Controllers
         {
             try
             {
-                return this.Ok(this.mapTemplateService.Get(name));
+                return Ok(mapTemplateService.Get(name));
             }
             catch (ApplicationException exception)
             {
                 if (exception.ErrorCode == ErrorCode.CannotFindMapTemplate)
                 {
-                    return this.NotFound();
+                    return NotFound();
                 }
 
                 throw;

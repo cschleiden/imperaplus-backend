@@ -22,12 +22,12 @@ namespace ImperaPlus.Domain.VictoryConditions
             }
 
             var ranking = player.Game.Teams.Select(t => new
-            {
-                t.Id,
-                Countries = map.GetCountriesForTeam(t.Id).Count(),
-                Units = map.GetCountriesForTeam(t.Id).Sum(x => x.Units)
-            })
-            .OrderByDescending(x => x.Countries)
+                {
+                    t.Id,
+                    Countries = map.GetCountriesForTeam(t.Id).Count(),
+                    Units = map.GetCountriesForTeam(t.Id).Sum(x => x.Units)
+                })
+                .OrderByDescending(x => x.Countries)
                 .ThenByDescending(x => x.Units)
                 .ThenByDescending(x => x.Id);
 

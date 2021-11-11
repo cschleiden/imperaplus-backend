@@ -21,29 +21,29 @@ namespace ImperaPlus.Application.Jobs
         private IRandomGenProvider randomGenProvider;
 
         public TournamentJob(ILifetimeScope scope)
-        : base(scope)
+            : base(scope)
         {
-            this.unitOfWork = this.LifetimeScope.Resolve<IUnitOfWork>();
-            this.tournamentService = this.LifetimeScope.Resolve<ITournamentService>();
-            this.randomGenProvider = this.LifetimeScope.Resolve<IRandomGenProvider>();
+            unitOfWork = LifetimeScope.Resolve<IUnitOfWork>();
+            tournamentService = LifetimeScope.Resolve<ITournamentService>();
+            randomGenProvider = LifetimeScope.Resolve<IRandomGenProvider>();
         }
 
         public override void Handle(PerformContext performContext)
         {
             base.Handle(performContext);
 
-            this.tournamentService.CheckTournaments(this.Log, this.randomGenProvider.GetRandomGen());
+            tournamentService.CheckTournaments(Log, randomGenProvider.GetRandomGen());
 
             try
             {
-                this.unitOfWork.Commit();
+                unitOfWork.Commit();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                this.Log.Log(LogLevel.Error, "Error: {0}", e);
+                Log.Log(LogLevel.Error, "Error: {0}", e);
             }
 
-            this.Log.Log(LogLevel.Info, "Done");
+            Log.Log(LogLevel.Info, "Done");
         }
     }
 }

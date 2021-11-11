@@ -22,25 +22,25 @@ namespace ImperaPlus.Domain.Games
         {
             get
             {
-                if (this.playerToCountry == null)
+                if (playerToCountry == null)
                 {
-                    this.playerToCountry = this.Countries.GroupBy(x => x.PlayerId)
-                                                            .ToDictionary(x => x.Key, x => x.ToList());
+                    playerToCountry = Countries.GroupBy(x => x.PlayerId)
+                        .ToDictionary(x => x.Key, x => x.ToList());
                 }
 
-                return this.playerToCountry;
+                return playerToCountry;
             }
         }
 
         protected Map()
         {
-            this.Countries = new List<Country>();
+            Countries = new List<Country>();
         }
 
         internal Map(Game game)
             : this()
         {
-            this.Game = game;
+            Game = game;
         }
 
         public long Id { get; set; }
@@ -48,16 +48,13 @@ namespace ImperaPlus.Domain.Games
         // Backing field
         public string SerializedCountries
         {
-            get
-            {
-                return this.countriesSerialized;
-            }
+            get => countriesSerialized;
 
             set
             {
-                this.countriesSerialized = value;
-                this.Countries = Jil.JSON.Deserialize<List<Country>>(this.countriesSerialized);
-                this.ResetTracking();
+                countriesSerialized = value;
+                Countries = Jil.JSON.Deserialize<List<Country>>(countriesSerialized);
+                ResetTracking();
             }
         }
 
@@ -65,27 +62,17 @@ namespace ImperaPlus.Domain.Games
 
         public virtual Game Game { get; set; }
 
-        [NotMapped]
-        public IList<Country> Countries { get; private set; }
+        [NotMapped] public IList<Country> Countries { get; private set; }
 
-        [NotMapped]
-        public IEnumerable<Country> ChangedCountries
-        {
-            get
-            {
-                return this.Countries.Where(x => x.IsUpdated);
-            }
-        }
+        [NotMapped] public IEnumerable<Country> ChangedCountries => Countries.Where(x => x.IsUpdated);
 
         public Map Clone()
         {
-            return new Map(this.Game)
+            return new Map(Game)
             {
-                Countries = this.Countries.Select(country => new Country(country.CountryIdentifier, country.Units)
+                Countries = Countries.Select(country => new Country(country.CountryIdentifier, country.Units)
                 {
-                    PlayerId = country.PlayerId,
-                    TeamId = country.TeamId,
-                    IsUpdated = false
+                    PlayerId = country.PlayerId, TeamId = country.TeamId, IsUpdated = false
                 }).ToList()
             };
         }
@@ -95,7 +82,7 @@ namespace ImperaPlus.Domain.Games
         /// </summary>
         public void ResetTracking()
         {
-            foreach (var country in this.Countries)
+            foreach (var country in Countries)
             {
                 country.IsUpdated = false;
             }
@@ -103,13 +90,13 @@ namespace ImperaPlus.Domain.Games
 
         public Country GetCountry(string identifier)
         {
-            if (this.countryDict == null)
+            if (countryDict == null)
             {
-                this.countryDict = this.Countries.ToDictionary(x => x.CountryIdentifier);
+                countryDict = Countries.ToDictionary(x => x.CountryIdentifier);
             }
 
             Country country;
-            if (!this.countryDict.TryGetValue(identifier, out country))
+            if (!countryDict.TryGetValue(identifier, out country))
             {
                 throw new DomainException(ErrorCode.CountryNotFound, "Cannot find country");
             }
@@ -131,7 +118,8 @@ namespace ImperaPlus.Domain.Games
             return map;
         }
 
-        public void Distribute(GameOptions gameOptions, ICollection<Team> teams, MapTemplate mapTemplate, MapDistribution mapDistribution, IRandomGen random)
+        public void Distribute(GameOptions gameOptions, ICollection<Team> teams, MapTemplate mapTemplate,
+            MapDistribution mapDistribution, IRandomGen random)
         {
             var distribution = MapDistributionFactory.Create(mapDistribution);
             distribution.Distribute(gameOptions, teams, mapTemplate, this, random);
@@ -139,14 +127,14 @@ namespace ImperaPlus.Domain.Games
 
         public IEnumerable<Country> GetCountriesForPlayer(Player player)
         {
-            return this.GetCountriesForPlayer(player.Id);
+            return GetCountriesForPlayer(player.Id);
         }
 
         public IEnumerable<Country> GetCountriesForPlayer(Guid playerId)
         {
-            if (this.PlayerToCountry.ContainsKey(playerId))
+            if (PlayerToCountry.ContainsKey(playerId))
             {
-                return this.PlayerToCountry[playerId];
+                return PlayerToCountry[playerId];
             }
 
             return Enumerable.Empty<Country>();
@@ -154,11 +142,11 @@ namespace ImperaPlus.Domain.Games
 
         public IEnumerable<Country> GetCountriesForTeam(Guid teamId)
         {
-            var playerIds = this.Game
+            var playerIds = Game
                 .Teams.Single(x => x.Id == teamId)
                 .Players.Select(p => p.Id);
 
-            return this.Countries.Where(c => playerIds.Contains(c.PlayerId));
+            return Countries.Where(c => playerIds.Contains(c.PlayerId));
         }
 
         internal void UpdateOwnership(Player oldPlayer, Player newPlayer, Country country)
@@ -166,26 +154,26 @@ namespace ImperaPlus.Domain.Games
             if (oldPlayer == null)
             {
                 // Try to determine player from current map state
-                oldPlayer = this.Game.GetPlayerById(country.PlayerId);
+                oldPlayer = Game.GetPlayerById(country.PlayerId);
             }
 
             if (oldPlayer != null)
             {
-                if (this.PlayerToCountry.ContainsKey(oldPlayer.Id))
+                if (PlayerToCountry.ContainsKey(oldPlayer.Id))
                 {
-                    this.PlayerToCountry[oldPlayer.Id].Remove(country);
+                    PlayerToCountry[oldPlayer.Id].Remove(country);
                 }
             }
 
             if (newPlayer != null)
             {
-                if (this.PlayerToCountry.ContainsKey(newPlayer.Id))
+                if (PlayerToCountry.ContainsKey(newPlayer.Id))
                 {
-                    this.PlayerToCountry[newPlayer.Id].Add(country);
+                    PlayerToCountry[newPlayer.Id].Add(country);
                 }
                 else
                 {
-                    this.PlayerToCountry.Add(newPlayer.Id, new List<Country> { country });
+                    PlayerToCountry.Add(newPlayer.Id, new List<Country> { country });
                 }
 
                 country.PlayerId = newPlayer.Id;
@@ -200,12 +188,12 @@ namespace ImperaPlus.Domain.Games
 
         internal void UpdateOwnership(Player player, Country country)
         {
-            this.UpdateOwnership(null, player, country);
+            UpdateOwnership(null, player, country);
         }
 
         private void ResetChanges()
         {
-            foreach (var country in this.ChangedCountries.ToArray())
+            foreach (var country in ChangedCountries.ToArray())
             {
                 country.IsUpdated = false;
             }
@@ -213,7 +201,7 @@ namespace ImperaPlus.Domain.Games
 
         public void Serialize()
         {
-            this.countriesSerialized = Jil.JSON.Serialize(this.Countries);
+            countriesSerialized = Jil.JSON.Serialize(Countries);
         }
     }
 }

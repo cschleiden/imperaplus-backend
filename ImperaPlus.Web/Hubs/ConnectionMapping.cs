@@ -7,26 +7,26 @@ namespace ImperaPlus.Web.Hubs
     {
         public ConnectionInfo()
         {
-            this.ConnectionIds = new HashSet<string>();
-            this.GroupNames = new HashSet<string>();
+            ConnectionIds = new HashSet<string>();
+            GroupNames = new HashSet<string>();
         }
 
         public HashSet<string> ConnectionIds { get; private set; }
 
-        public HashSet<string> GroupNames { get; private set; } 
+        public HashSet<string> GroupNames { get; private set; }
     }
 
     internal class ConnectionMapping<T>
     {
-        private readonly Dictionary<T, ConnectionInfo> connections = new Dictionary<T, ConnectionInfo>();        
-        private readonly Dictionary<string, T> connectionIds = new Dictionary<string, T>();
+        private readonly Dictionary<T, ConnectionInfo> connections = new();
+        private readonly Dictionary<string, T> connectionIds = new();
 
         public void JoinGroup(T key, string groupName)
         {
-            lock (this.connections)
+            lock (connections)
             {
                 ConnectionInfo connectionInfo;
-                if (!this.connections.TryGetValue(key, out connectionInfo))
+                if (!connections.TryGetValue(key, out connectionInfo))
                 {
                     return;
                 }
@@ -40,9 +40,9 @@ namespace ImperaPlus.Web.Hubs
 
         public void LeaveGroup(T key, string groupName)
         {
-            lock (this.connections)
+            lock (connections)
             {
-                if (!this.connections.TryGetValue(key, out ConnectionInfo connectionInfo))
+                if (!connections.TryGetValue(key, out var connectionInfo))
                 {
                     return;
                 }
@@ -56,19 +56,19 @@ namespace ImperaPlus.Web.Hubs
 
         public void Add(T key, string connectionId)
         {
-            lock (this.connections)
+            lock (connections)
             {
-                if (!this.connections.TryGetValue(key, out ConnectionInfo connectionInfo))
+                if (!connections.TryGetValue(key, out var connectionInfo))
                 {
                     connectionInfo = new ConnectionInfo();
-                    this.connections.Add(key, connectionInfo);
+                    connections.Add(key, connectionInfo);
                 }
 
                 lock (connectionInfo)
                 {
-                    if (!this.connectionIds.ContainsKey(connectionId))
+                    if (!connectionIds.ContainsKey(connectionId))
                     {
-                        this.connectionIds.Add(connectionId, key);
+                        connectionIds.Add(connectionId, key);
                     }
 
                     if (!connectionInfo.ConnectionIds.Contains(connectionId))
@@ -83,9 +83,9 @@ namespace ImperaPlus.Web.Hubs
         {
             ConnectionInfo connectionInfo;
 
-            lock (this.connectionIds)
+            lock (connectionIds)
             {
-                if (this.connections.TryGetValue(key, out connectionInfo))
+                if (connections.TryGetValue(key, out connectionInfo))
                 {
                     return connectionInfo.ConnectionIds;
                 }
@@ -96,20 +96,20 @@ namespace ImperaPlus.Web.Hubs
 
         public bool Remove(string connectionId, out IEnumerable<string> groups, out T key)
         {
-            lock (this.connections)
+            lock (connections)
             {
-                if (!this.connectionIds.ContainsKey(connectionId))
+                if (!connectionIds.ContainsKey(connectionId))
                 {
                     groups = null;
-                    key = default(T);
+                    key = default;
 
                     return false;
                 }
 
-                key = this.connectionIds[connectionId];
+                key = connectionIds[connectionId];
 
                 ConnectionInfo connectionInfo;
-                if (!this.connections.TryGetValue(key, out connectionInfo))
+                if (!connections.TryGetValue(key, out connectionInfo))
                 {
                     groups = null;
 
@@ -118,7 +118,7 @@ namespace ImperaPlus.Web.Hubs
 
                 lock (connectionInfo)
                 {
-                    this.connectionIds.Remove(connectionId);
+                    connectionIds.Remove(connectionId);
 
                     connectionInfo.ConnectionIds.Remove(connectionId);
 
@@ -126,7 +126,7 @@ namespace ImperaPlus.Web.Hubs
                     {
                         groups = connectionInfo.GroupNames;
 
-                        this.connections.Remove(key);
+                        connections.Remove(key);
 
                         // That was the last connection for this user
                         return true;
@@ -141,10 +141,10 @@ namespace ImperaPlus.Web.Hubs
 
         public void Remove(T key, string connectionId)
         {
-            lock (this.connections)
+            lock (connections)
             {
                 ConnectionInfo connectionInfo;
-                if (!this.connections.TryGetValue(key, out connectionInfo))
+                if (!connections.TryGetValue(key, out connectionInfo))
                 {
                     return;
                 }
@@ -155,7 +155,7 @@ namespace ImperaPlus.Web.Hubs
 
                     if (connectionInfo.ConnectionIds.Count == 0)
                     {
-                        this.connections.Remove(key);
+                        connections.Remove(key);
                     }
                 }
             }
@@ -163,22 +163,22 @@ namespace ImperaPlus.Web.Hubs
 
         public IEnumerable<T> GetUsersForGroup(string groupName)
         {
-            lock (this.connections)
+            lock (connections)
             {
-                return this.connections.Where(x => x.Value.GroupNames.Contains(groupName)).Select(x => x.Key);
+                return connections.Where(x => x.Value.GroupNames.Contains(groupName)).Select(x => x.Key);
             }
         }
 
         public IEnumerable<string> GetGroupsForUser(T key)
         {
-            lock (this.connections)
+            lock (connections)
             {
-                if (!this.connections.ContainsKey(key))
+                if (!connections.ContainsKey(key))
                 {
                     return Enumerable.Empty<string>();
                 }
 
-                var connectionInfo = this.connections[key];
+                var connectionInfo = connections[key];
 
                 return connectionInfo.GroupNames;
             }

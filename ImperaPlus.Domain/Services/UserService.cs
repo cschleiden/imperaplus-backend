@@ -30,7 +30,7 @@ namespace ImperaPlus.Domain.Services
             Require.NotNull(user, nameof(user));
 
             // Let sub-systems react to this
-            this.eventAggregator.Raise(new AccountDeleted(user, force));
+            eventAggregator.Raise(new AccountDeleted(user, force));
 
             // Mark as deleted, will be cleaned up by a job
             user.IsDeleted = true;
