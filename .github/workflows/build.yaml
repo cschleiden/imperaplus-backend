@@ -38,7 +38,7 @@ jobs:
       - name: Stop service
         uses: garygrossgarten/github-action-ssh@2b10f41b5a33808f6d24eafd253296766308b7c4
         with:
-          command: sudo /bin/systemctl stop imperadev
+          command: /bin/systemctl stop imperadev
           host: dev.imperaonline.de
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASS }}
@@ -53,7 +53,7 @@ jobs:
       - name: Restart service
         uses: garygrossgarten/github-action-ssh@2b10f41b5a33808f6d24eafd253296766308b7c4
         with:
-          command: sudo /bin/systemctl restart imperadev
+          command: /bin/systemctl restart imperadev
           host: dev.imperaonline.de
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASS }}
