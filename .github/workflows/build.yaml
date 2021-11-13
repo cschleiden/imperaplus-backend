@@ -34,14 +34,7 @@ jobs:
       - name: Restore
         run: dotnet restore -r linux-x64 --force-evaluate
       - name: Build deployment package
-        run: dotnet publish -r linux-x64 -o "/home/runner/drop"
-      - name: Stop service
-        uses: garygrossgarten/github-action-ssh@2b10f41b5a33808f6d24eafd253296766308b7c4
-        with:
-          command: /bin/systemctl stop imperadev
-          host: dev.imperaonline.de
-          username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASS }}
+        run: dotnet publish -r linux-x64 -o "/home/runner/drop"      
       - name: FTP Deploy
         uses: SamKirkland/FTP-Deploy-Action@4.1.0
         with:
