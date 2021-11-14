@@ -196,9 +196,9 @@ namespace ImperaPlus.Web
                     c.UseAspNetCore()
                         .EnableTokenEndpointPassthrough();
 
-                    // Not used when using data protection APIs?
-                    c.AddEphemeralEncryptionKey();
-                    c.AddEphemeralSigningKey();
+                    // // Not used when using data protection APIs?
+                    // c.AddEphemeralEncryptionKey();
+                    // c.AddEphemeralSigningKey();
 
                     c.UseDataProtection();
                 })
