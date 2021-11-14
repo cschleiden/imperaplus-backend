@@ -194,11 +194,15 @@ namespace ImperaPlus.Web
 
                     c.UseAspNetCore()
                         .EnableTokenEndpointPassthrough();
+
+                    c.UseDataProtection();
                 })
                 .AddValidation(builder =>
                 {
                     builder.UseLocalServer();
                     builder.UseAspNetCore();
+
+                    builder.UseDataProtection();
 
                     builder.AddEventHandler<OpenIddictValidationEvents.ProcessAuthenticationContext>(options =>
                     {
