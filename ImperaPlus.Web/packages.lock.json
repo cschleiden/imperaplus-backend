@@ -255,11 +255,29 @@
           "OpenIddict.Server": "3.1.1"
         }
       },
+      "OpenIddict.Server.DataProtection": {
+        "type": "Direct",
+        "requested": "[3.1.1, )",
+        "resolved": "3.1.1",
+        "contentHash": "goyxqC+2caXu/ViYH9+kVUTIIbuZIkDqn9T88XRugCSsQijTIymnFs9gEd//OnhFRExXcxo8+HsIlikY27PnYA==",
+        "dependencies": {
+          "OpenIddict.Server": "3.1.1"
+        }
+      },
       "OpenIddict.Validation.AspNetCore": {
         "type": "Direct",
         "requested": "[3.1.1, )",
         "resolved": "3.1.1",
         "contentHash": "j1h6ZLkrdPL8V1F0Ykl1FtapYVZ9s5rxqGb3BC/+5V2LEBH9gBuDufzk4kTBi+ecsF61rNzlWSyS8UgIWm/AEA==",
+        "dependencies": {
+          "OpenIddict.Validation": "3.1.1"
+        }
+      },
+      "OpenIddict.Validation.DataProtection": {
+        "type": "Direct",
+        "requested": "[3.1.1, )",
+        "resolved": "3.1.1",
+        "contentHash": "m8qmHAqyB3slxF3CfDmNRWWg4C65soaPJnSBS0gCKMNR5T2YMXV9Z15jD6ZI2+YmEadG/lQIZ9oh9DHP9zsDNQ==",
         "dependencies": {
           "OpenIddict.Validation": "3.1.1"
         }
@@ -1398,14 +1416,6 @@
           "OpenIddict.Abstractions": "3.1.1"
         }
       },
-      "OpenIddict.Server.DataProtection": {
-        "type": "Transitive",
-        "resolved": "3.1.1",
-        "contentHash": "goyxqC+2caXu/ViYH9+kVUTIIbuZIkDqn9T88XRugCSsQijTIymnFs9gEd//OnhFRExXcxo8+HsIlikY27PnYA==",
-        "dependencies": {
-          "OpenIddict.Server": "3.1.1"
-        }
-      },
       "OpenIddict.Validation": {
         "type": "Transitive",
         "resolved": "3.1.1",
@@ -1414,14 +1424,6 @@
           "Microsoft.Extensions.Logging": "5.0.0",
           "Microsoft.IdentityModel.Protocols.OpenIdConnect": "6.11.1",
           "OpenIddict.Abstractions": "3.1.1"
-        }
-      },
-      "OpenIddict.Validation.DataProtection": {
-        "type": "Transitive",
-        "resolved": "3.1.1",
-        "contentHash": "m8qmHAqyB3slxF3CfDmNRWWg4C65soaPJnSBS0gCKMNR5T2YMXV9Z15jD6ZI2+YmEadG/lQIZ9oh9DHP9zsDNQ==",
-        "dependencies": {
-          "OpenIddict.Validation": "3.1.1"
         }
       },
       "OpenIddict.Validation.ServerIntegration": {
