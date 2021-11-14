@@ -34,6 +34,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -194,6 +195,10 @@ namespace ImperaPlus.Web
 
                     c.UseAspNetCore()
                         .EnableTokenEndpointPassthrough();
+
+                    // Not used when using data protection APIs?
+                    c.AddEphemeralEncryptionKey();
+                    c.AddEphemeralSigningKey();
 
                     c.UseDataProtection();
                 })
