@@ -226,11 +226,13 @@ namespace ImperaPlus.Web
                                 if (string.IsNullOrEmpty(context.Token))
                                 {
                                     context.Token = request.Cookies["bearer_token"];
+                                    context.TokenType = OpenIddictConstants.TokenTypeHints.AccessToken;
                                 }
 
                                 if (string.IsNullOrEmpty(context.Token))
                                 {
                                     context.Token = request.Query["access_token"];
+                                    context.TokenType = OpenIddictConstants.TokenTypeHints.AccessToken;
                                 }
 
                                 return default;
