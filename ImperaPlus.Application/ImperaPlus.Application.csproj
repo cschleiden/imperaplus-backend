@@ -1,20 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AssemblyTitle>ImperaPlus.Application</AssemblyTitle>
     <Product>ImperaPlus.Business</Product>
+    <LangVersion>10</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="AutoMapper" Version="9.0.0"/>
-    <PackageReference Include="Hangfire" Version="1.7.25"/>
-    <PackageReference Include="Hangfire.Console" Version="1.4.2"/>
-    <PackageReference Include="Hangfire.MemoryStorage" Version="1.7.0"/>
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="Hangfire" Version="1.7.27" />
+    <PackageReference Include="Hangfire.Console" Version="1.4.2" />
+    <PackageReference Include="Hangfire.MemoryStorage" Version="1.7.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ImperaPlus.DataAccess.ConvertedMaps\ImperaPlus.DataAccess.ConvertedMaps.csproj"/>
-    <ProjectReference Include="..\ImperaPlus.DataAccess\ImperaPlus.DataAccess.csproj"/>
-    <ProjectReference Include="..\ImperaPlus.Domain\ImperaPlus.Domain.csproj"/>
-    <ProjectReference Include="..\ImperaPlus.DTO\ImperaPlus.DTO.csproj"/>
-    <ProjectReference Include="..\ImperaPlus.Utils\ImperaPlus.Utils.csproj"/>
+    <ProjectReference Include="..\ImperaPlus.DataAccess.ConvertedMaps\ImperaPlus.DataAccess.ConvertedMaps.csproj" />
+    <ProjectReference Include="..\ImperaPlus.DataAccess\ImperaPlus.DataAccess.csproj" />
+    <ProjectReference Include="..\ImperaPlus.Domain\ImperaPlus.Domain.csproj" />
+    <ProjectReference Include="..\ImperaPlus.DTO\ImperaPlus.DTO.csproj" />
+    <ProjectReference Include="..\ImperaPlus.Utils\ImperaPlus.Utils.csproj" />
   </ItemGroup>
 </Project>

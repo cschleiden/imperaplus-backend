@@ -1,13 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AssemblyTitle>ImperaPlus.DataAccess.ConvertedMaps</AssemblyTitle>
     <Product>ImperaPlus.DataAccess.ConvertedMaps</Product>
+    <LangVersion>10</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ImperaPlus.Domain\ImperaPlus.Domain.csproj"/>
+    <ProjectReference Include="..\ImperaPlus.Domain\ImperaPlus.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="Maps.Spanien.cs"/>
+    <Compile Remove="Maps.Spanien.cs" />
   </ItemGroup>
 </Project>
