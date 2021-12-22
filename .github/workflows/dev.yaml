@@ -46,7 +46,7 @@ jobs:
       - name: Restart service
         uses: garygrossgarten/github-action-ssh@2b10f41b5a33808f6d24eafd253296766308b7c4
         with:
-          command: /bin/systemctl restart imperadev
-          host: dev.imperaonline.de
+          command: sudo /bin/systemctl restart imperadev
+          host: 217.160.244.154
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASS }}
