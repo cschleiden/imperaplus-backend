@@ -13,6 +13,7 @@
     <PackageReference Include="Hangfire.Core" Version="1.7.28" />
     <PackageReference Include="Hangfire.MemoryStorage" Version="1.7.0" />
     <PackageReference Include="Hangfire.SqlServer" Version="1.7.28" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ImperaPlus.DataAccess.ConvertedMaps\ImperaPlus.DataAccess.ConvertedMaps.csproj" />

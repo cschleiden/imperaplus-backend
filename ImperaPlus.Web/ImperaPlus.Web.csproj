@@ -82,6 +82,7 @@
     <PackageReference Include="OpenIddict.Server.DataProtection" Version="3.1.1" />
     <PackageReference Include="OpenIddict.Validation.AspNetCore" Version="3.1.1" />
     <PackageReference Include="OpenIddict.Validation.DataProtection" Version="3.1.1" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
   </ItemGroup>
   <Target Name="PrepublishScript" BeforeTargets="PrepareForPublish">
     <ItemGroup>
