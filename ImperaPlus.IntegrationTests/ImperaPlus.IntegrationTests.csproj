@@ -7,19 +7,19 @@
     <NoWarn>1701;1702;1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.0"/>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0"/>
-    <PackageReference Include="MSTest.TestAdapter" Version="2.2.8"/>
-    <PackageReference Include="MSTest.TestFramework" Version="2.2.8"/>
-    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.2.0"/>
-    <PackageReference Include="Autofac" Version="6.3.0"/>
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0"/>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="2.2.8" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.2.8" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.2.0" />
+    <PackageReference Include="Autofac" Version="6.3.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ImperaPlus.Application\ImperaPlus.Application.csproj"/>
-    <ProjectReference Include="..\ImperaPlus.DTO\ImperaPlus.DTO.csproj"/>
-    <ProjectReference Include="..\ImperaPlus.GeneratedClient\ImperaPlus.GeneratedClient.csproj"/>
-    <ProjectReference Include="..\ImperaPlus.TestSupport\ImperaPlus.TestSupport.csproj"/>
-    <ProjectReference Include="..\ImperaPlus.Web\ImperaPlus.Web.csproj"/>
+    <ProjectReference Include="..\ImperaPlus.Application\ImperaPlus.Application.csproj" />
+    <ProjectReference Include="..\ImperaPlus.DTO\ImperaPlus.DTO.csproj" />
+    <ProjectReference Include="..\ImperaPlus.GeneratedClient\ImperaPlus.GeneratedClient.csproj" />
+    <ProjectReference Include="..\ImperaPlus.TestSupport\ImperaPlus.TestSupport.csproj" />
+    <ProjectReference Include="..\ImperaPlus.Web\ImperaPlus.Web.csproj" />
   </ItemGroup>
 </Project>

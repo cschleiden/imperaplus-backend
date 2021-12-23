@@ -5,14 +5,17 @@
     <Product>ImperaPlus.TestSupport</Product>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ImperaPlus.Application\ImperaPlus.Application.csproj"/>
-    <ProjectReference Include="..\ImperaPlus.DataAccess.ConvertedMaps\ImperaPlus.DataAccess.ConvertedMaps.csproj"/>
-    <ProjectReference Include="..\ImperaPlus.DataAccess\ImperaPlus.DataAccess.csproj"/>
-    <ProjectReference Include="..\ImperaPlus.Domain\ImperaPlus.Domain.csproj"/>
+    <ProjectReference Include="..\ImperaPlus.Application\ImperaPlus.Application.csproj" />
+    <ProjectReference Include="..\ImperaPlus.DataAccess.ConvertedMaps\ImperaPlus.DataAccess.ConvertedMaps.csproj" />
+    <ProjectReference Include="..\ImperaPlus.DataAccess\ImperaPlus.DataAccess.csproj" />
+    <ProjectReference Include="..\ImperaPlus.Domain\ImperaPlus.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="6.3.0"/>
-    <PackageReference Include="Hangfire" Version="1.7.27"/>
-    <PackageReference Include="Hangfire.Autofac" Version="2.3.1"/>
+    <PackageReference Include="Autofac" Version="6.3.0" />
+    <PackageReference Include="Hangfire" Version="1.7.28" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.7.28" />
+    <PackageReference Include="Hangfire.Autofac" Version="2.3.1" />
+    <PackageReference Include="Hangfire.Core" Version="1.7.28" />
+    <PackageReference Include="Hangfire.SqlServer" Version="1.7.28" />
   </ItemGroup>
 </Project>
