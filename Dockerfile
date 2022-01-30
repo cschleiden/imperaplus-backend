@@ -16,4 +16,4 @@ RUN dotnet publish -c Release -o out --no-restore
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app
 COPY --from=build-env /app/out .
-ENTRYPOINT ["dotnet", "ImperaPlus.Web.dll"]
+ENTRYPOINT ["dotnet", "ImperaPlus.Web.dll", "--urls", "http://*:5000"]
