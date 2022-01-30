@@ -1,0 +1,33 @@
+version: "3.2"
+services:
+  backend-dev:
+    container_name: impera-backend-dev
+    image: impera-backend:latest
+    ports:
+      - "5001:5000"
+    secrets:
+      - appsettings.dev.json
+    environment:
+      - ASPNETCORE_ENVIRONMENT=dev
+    # Want to run sql server separately
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  backend-production:
+    container_name: impera-backend-production
+    image: impera-backend:production
+    ports:
+      - "5000:5000"
+    secrets:
+      - appsettings.production.json
+    environment:
+      - ASPNETCORE_ENVIRONMENT=production
+    # Want to run sql server separately
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+secrets:
+  appsettings.dev.json:
+    file: ./appsettings.dev.json
+  appsettings.production.json:
+    file: ./appsettings.production.json

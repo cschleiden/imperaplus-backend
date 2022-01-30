@@ -1,0 +1,66 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+concurrency:
+  group: deployment
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    name: Build & Deploy to dev
+
+    environment:
+      name: dev
+      url: https://dev.imperaonline.de
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: docker/setup-buildx-action@v1
+        name: Set up Docker Buildx
+        id: buildx
+      - run: docker build -t impera-backend:latest -t impera-backend:${{ github.sha }} .
+      - run: docker save impera-backend:latest -o impera-backend.tar
+      - name: Copy container to server
+        uses: garygrossgarten/github-action-scp@dba89d858413133b6e35da91a3c989cc8cde3ad4
+        with:
+          local: impera-backend.tar
+          remote: /images/impera-backend.tar
+          host: 217.160.244.154
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASS }}
+      - name: Import image & use for dev
+        uses: garygrossgarten/github-action-ssh@2b10f41b5a33808f6d24eafd253296766308b7c4
+        with:
+          command: |
+            docker load -i /images/impera-backend.tar
+            docker-compose -p impera-backend -f /images/docker-compose-impera-backend.yml up -d --remove-orphans
+          host: 217.160.244.154
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASS }}
+
+  prod:
+    runs-on: ubuntu-latest
+
+    needs: [build]
+
+    environment:
+      name: production
+      url: https://www.imperaonline.de
+
+    steps:
+      - name: Import image & use for prod
+        uses: garygrossgarten/github-action-ssh@2b10f41b5a33808f6d24eafd253296766308b7c4
+        with:
+          command: |
+            docker tag impera-backend:latest impera-backend:production
+            docker-compose -p impera-backend -f /images/docker-compose-impera-backend.yml up -d --remove-orphans
+          host: 217.160.244.154
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASS }}

@@ -10,6 +10,7 @@ using DataTables.AspNet.AspNetCore;
 using Hangfire;
 using Hangfire.Console;
 using Hangfire.MemoryStorage;
+using Hangfire.SqlServer;
 using ImperaPlus.Application;
 using ImperaPlus.Application.Jobs;
 using ImperaPlus.DataAccess;
@@ -34,16 +35,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using NLog;
 using NLog.Fluent;
 using OpenIddict.Abstractions;
-using OpenIddict.Server;
-using OpenIddict.Server.AspNetCore;
 using OpenIddict.Validation;
 using OpenIddict.Validation.AspNetCore;
 using StackExchange.Profiling.Storage;
@@ -67,7 +64,7 @@ public class Startup
             .AddJsonFile("appsettings.json", true, true)
             // Environment specific settings, i.e., setting db connection string. Do not create in version control repository.
             .AddJsonFile("appsettings.environment.json", true)
-            .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true)
+            .AddJsonFile($"/run/secrets/appsettings.{env.EnvironmentName}.json", true)
             .AddEnvironmentVariables();
 
         if (RunningUnderTest)
@@ -93,6 +90,8 @@ public class Startup
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+        Log.Info().Message("DB: " + Configuration["DBConnection"]).Write();
+
         services.AddDbContext<ImperaContext>(options =>
         {
             var connection = Configuration["DBConnection"];
@@ -262,7 +261,8 @@ public class Startup
                 opt.SerializerSettings.Converters.Add(new StringEnumConverter
                 {
                     // Do not use camel case for enums
-                    NamingStrategy = new DefaultNamingStrategy(), AllowIntegerValues = true
+                    NamingStrategy = new DefaultNamingStrategy(),
+                    AllowIntegerValues = true
                 });
             });
 
@@ -293,7 +293,8 @@ public class Startup
             }
             else
             {
-                x.UseSqlServerStorage(Configuration["DBConnection"]);
+                x.UseSqlServerStorage(Configuration["DBConnection"],
+                    new SqlServerStorageOptions() { });
             }
 
             x.UseSerializerSettings(new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All });
@@ -309,7 +310,8 @@ public class Startup
 
         services.AddSingleton(_ => new JsonSerializer
         {
-            DateTimeZoneHandling = DateTimeZoneHandling.Utc, DateFormatHandling = DateFormatHandling.IsoDateFormat
+            DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+            DateFormatHandling = DateFormatHandling.IsoDateFormat
         });
 
         services
@@ -456,7 +458,8 @@ public class Startup
         {
             builder.RegisterInstance(new MailGunSettings
             {
-                ApiKey = Configuration["MailGunApiKey"], Domain = Configuration["MailGunDomain"]
+                ApiKey = Configuration["MailGunApiKey"],
+                Domain = Configuration["MailGunDomain"]
             });
             builder.RegisterType<MailGunEmailService>().AsImplementedInterfaces();
         }
@@ -482,11 +485,13 @@ public class Startup
 
         var jsonSettings = new JsonSerializerSettings
         {
-            DateTimeZoneHandling = DateTimeZoneHandling.Utc, DateFormatHandling = DateFormatHandling.IsoDateFormat
+            DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+            DateFormatHandling = DateFormatHandling.IsoDateFormat
         };
         jsonSettings.Converters.Add(new StringEnumConverter
         {
-            NamingStrategy = new DefaultNamingStrategy(), AllowIntegerValues = false
+            NamingStrategy = new DefaultNamingStrategy(),
+            AllowIntegerValues = false
         });
 
         builder.RegisterInstance(JsonSerializer.Create(jsonSettings)).As<JsonSerializer>();

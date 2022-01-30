@@ -1,4 +1,4 @@
-version: "3.2"
+version: "3.8"
 services:
   sql-server-db:
     container_name: sql-server-db
@@ -10,6 +10,27 @@ services:
     environment:
       SA_PASSWORD: "Passw0rd1"
       ACCEPT_EULA: "Y"
+
+  backend:
+    container_name: impera-backend-dev
+    image: impera-backend:latest
+    ports:
+      - "8080:5000"
+    secrets:
+      - appsettings.local.json
+    environment:
+      - ASPNETCORE_ENVIRONMENT=local
+
+    depends_on:
+      - sql-server-db
+
+    # Want to run sql server separately
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+secrets:
+  appsettings.local.json:
+    file: ./appsettings.local.json
 
 volumes:
   mssql-server-linux-data:
