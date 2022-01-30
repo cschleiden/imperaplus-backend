@@ -41,8 +41,7 @@ namespace ImperaPlus.Web.Filters
         {
             if (context.ActionDescriptor.Properties.ContainsKey(StackKey))
             {
-                var stack = context.ActionDescriptor.Properties[StackKey] as Stack<IDisposable>;
-                if (stack != null && stack.Count > 0)
+                if (context.ActionDescriptor.Properties[StackKey] is Stack<IDisposable> stack && stack.Count > 0)
                 {
                     stack.Pop().Dispose();
                 }

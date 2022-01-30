@@ -12,8 +12,7 @@ namespace ImperaPlus.Web.Filters
     {
         public override void OnException(ExceptionContext context)
         {
-            var domainException = context.Exception as DomainException;
-            if (domainException != null)
+            if (context.Exception is DomainException domainException)
             {
                 context.ExceptionHandled = true;
                 context.Result = new BadRequestObjectResult(new ErrorResponse(domainException.ErrorCode.ToString(),
@@ -24,8 +23,7 @@ namespace ImperaPlus.Web.Filters
                 return;
             }
 
-            var applicationException = context.Exception as ApplicationException;
-            if (applicationException != null)
+            if (context.Exception is ApplicationException applicationException)
             {
                 context.ExceptionHandled = true;
                 context.Result = new BadRequestObjectResult(new ErrorResponse(applicationException.ErrorCode.ToString(),
