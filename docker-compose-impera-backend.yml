@@ -4,27 +4,37 @@ services:
     container_name: impera-backend-dev
     image: impera-backend:latest
     ports:
-      - "5001:5000"
+      - "5002:5000"
     secrets:
       - appsettings.dev.json
     environment:
       - ASPNETCORE_ENVIRONMENT=dev
-    # Want to run sql server separately
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
 
   backend-production:
     container_name: impera-backend-production
     image: impera-backend:production
     ports:
-      - "5000:5000"
+      - "5004:5000"
     secrets:
       - appsettings.production.json
     environment:
       - ASPNETCORE_ENVIRONMENT=production
-    # Want to run sql server separately
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server
+    volumes:
+      - mssql-server-linux-data:/var/opt/mssql/data
+
+    ports:
+      - "1433:1433"
+
+    volumes:
+      - /opt/docker/mssql-latest:/var/opt/mssql/data
+
+    environment:
+      - PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD
 
 secrets:
   appsettings.dev.json:
