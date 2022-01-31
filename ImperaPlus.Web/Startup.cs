@@ -193,7 +193,8 @@ public class Startup
                 }
 
                 c.UseAspNetCore()
-                    .EnableTokenEndpointPassthrough();
+                    .EnableTokenEndpointPassthrough()
+                    .DisableTransportSecurityRequirement();
 
                 // Not used when using data protection APIs?
                 c.AddEphemeralEncryptionKey();
