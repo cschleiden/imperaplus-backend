@@ -1,7 +1,6 @@
 {
   "github-actions.workflows.pinned.workflows": [
-    ".github/workflows/prod.yaml",
-    ".github/workflows/build.yaml"
+    ".github/workflows/deploy.yaml"
   ],
   "github-actions.workflows.pinned.refresh.enabled": true,
   "csharp.format.enable": true,
