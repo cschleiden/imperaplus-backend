@@ -43,6 +43,7 @@ using NLog.Fluent;
 using OpenIddict.Abstractions;
 using OpenIddict.Validation;
 using OpenIddict.Validation.AspNetCore;
+using StackExchange.Profiling;
 using StackExchange.Profiling.Storage;
 using DependencyInjectionModule = ImperaPlus.Application.DependencyInjectionModule;
 
@@ -408,6 +409,12 @@ public class Startup
                 "Admin/{controller=Home}/{action=Index}/{id?}");
             endpoints.MapControllerRoute(
                 "default", "{controller=Home}/{action=Index}/{id?}");
+
+            endpoints.MapMiniProfilerIncludes(new RenderOptions
+            {
+                StartHidden = true,
+                PopupToggleKeyboardShortcut = "Ctrl+m",
+            });
 
 
             endpoints.MapHub<MessagingHub>("/signalr/chat");
