@@ -241,9 +241,9 @@ namespace ImperaPlus.DataAccess
             modelBuilder.Ignore<MapTemplate>();
 
             // Ladder
+            modelBuilder.Entity<LadderStanding>().HasOne(x => x.User).WithMany(x => x.Standings).HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<LadderStanding>().HasKey(x => new { x.LadderId, x.UserId });
-            modelBuilder.Entity<LadderStanding>().HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<LadderQueueEntry>().HasKey(x => new { x.LadderId, x.UserId });
             modelBuilder.Entity<LadderQueueEntry>().HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
@@ -337,8 +337,6 @@ namespace ImperaPlus.DataAccess
                 .HasForeignKey(x => x.GroupId).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<TournamentGroup>().HasMany(x => x.Pairings).WithOne().IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<TournamentGroup>().HasOne(x => x.Tournament).WithMany().IsRequired(true)
-                .OnDelete(DeleteBehavior.Cascade);
 
             // Messages
             modelBuilder.Entity<Domain.Messages.Message>()

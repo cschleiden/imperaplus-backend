@@ -4,6 +4,7 @@ using ImperaPlus.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ImperaPlus.Web.Migrations
 {
     [DbContext(typeof(ImperaContext))]
-    partial class ImperaContextModelSnapshot : ModelSnapshot
+    [Migration("20220205172909_RemoveTournamentId1")]
+    partial class RemoveTournamentId1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -542,12 +544,17 @@ namespace ImperaPlus.Web.Migrations
                     b.Property<double>("Rd")
                         .HasColumnType("float");
 
+                    b.Property<string>("UserId1")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<double>("Vol")
                         .HasColumnType("float");
 
                     b.HasKey("LadderId", "UserId");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1");
 
                     b.ToTable("LadderStanding");
                 });
@@ -1515,10 +1522,14 @@ namespace ImperaPlus.Web.Migrations
                         .IsRequired();
 
                     b.HasOne("ImperaPlus.Domain.User", "User")
-                        .WithMany("Standings")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("ImperaPlus.Domain.User", null)
+                        .WithMany("Standings")
+                        .HasForeignKey("UserId1");
 
                     b.Navigation("User");
                 });
