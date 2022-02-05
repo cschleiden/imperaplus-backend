@@ -274,6 +274,14 @@ public class Startup
             {
                 (config.Storage as MemoryCacheStorage).CacheDuration = TimeSpan.FromMinutes(5);
                 config.RouteBasePath = "/admin/profiler";
+                config.ResultsAuthorize = request =>
+                {
+                    return request.HttpContext.User.IsInRole("admin");
+                };
+                config.ResultsListAuthorize = request =>
+                {
+                    return request.HttpContext.User.IsInRole("admin");
+                };
             })
             .AddEntityFramework();
 
@@ -414,6 +422,7 @@ public class Startup
             {
                 StartHidden = true,
                 PopupToggleKeyboardShortcut = "Ctrl+m",
+                ShowControls = true
             });
 
 
