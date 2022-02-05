@@ -274,6 +274,7 @@ public class Startup
             {
                 (config.Storage as MemoryCacheStorage).CacheDuration = TimeSpan.FromMinutes(5);
                 config.RouteBasePath = "/admin/profiler";
+                config.UserIdProvider = request => request.HttpContext.User.Identity.Name;
                 config.ResultsAuthorize = request =>
                 {
                     return request.HttpContext.User.IsInRole("admin");
@@ -457,7 +458,7 @@ public class Startup
         Log.Info().Message("...done.").Write();
 
         // Hangfire
-        app.UseHangfireDashboard("/Admin/Hangfire",
+        app.UseHangfireDashboard("/admin/Hangfire",
             new DashboardOptions { Authorization = new[] { new HangfireAuthorizationFilter() } });
 
         // Configure Impera background jobs
