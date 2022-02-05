@@ -386,16 +386,13 @@ public class Startup
         // Enable Cors
         app.UseCors(b => b
             .WithOrigins("http://localhost:8080", "https://dev.imperaonline.de", "https://imperaonline.de",
-                "https://www.imperaonline.de", "https://new.imperaonline.de")
+                "https://www.imperaonline.de", "http://127.0.0.1:8080")
             .AllowAnyMethod()
             .AllowAnyHeader()
             .WithExposedHeaders("X-MiniProfiler-Ids")
             .AllowCredentials());
 
         app.UseStaticFiles();
-
-        // Add profiler support
-        app.UseMiniProfiler();
 
         // Configure swagger generation & UI
         app.UseOpenApi();
@@ -406,6 +403,9 @@ public class Startup
         // Auth
         app.UseAuthentication();
         app.UseAuthorization();
+
+        // Add profiler support
+        app.UseMiniProfiler();
 
         app.UseWebSockets();
 
