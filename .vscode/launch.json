@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/ImperaPlus.Web/bin/Debug/netcoreapp3.1/ImperaPlus.Web.dll",
+            "program": "${workspaceFolder}/ImperaPlus.Web/bin/Debug/net6.0/ImperaPlus.Web.dll",
             "args": [],
             "cwd": "${workspaceFolder}/ImperaPlus.Web",
             "stopAtEntry": false,

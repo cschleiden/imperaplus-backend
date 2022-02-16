@@ -27,17 +27,25 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
             return View(tournaments);
         }
 
+        public ActionResult Show(Guid id)
+        {
+            // var tournament = this.tournamentService.Get(id, false, false);
+
+            return View();
+        }
+
         public ActionResult Create()
         {
             AddLookups();
 
-            var tournament = new DTO.Tournaments.Tournament();
+            var tournament = new DTO.Tournaments.Tournament
+            {
+                StartOfRegistration = DateTime.UtcNow.AddDays(1),
+                StartOfTournament = DateTime.UtcNow.AddDays(2),
 
-            tournament.StartOfRegistration = DateTime.UtcNow.AddDays(1);
-            tournament.StartOfTournament = DateTime.UtcNow.AddDays(2);
-
-            tournament.MapTemplates = new string[0];
-            tournament.Options = new DTO.Games.GameOptions { NumberOfTeams = 2 };
+                MapTemplates = new string[0],
+                Options = new DTO.Games.GameOptions { NumberOfTeams = 2 }
+            };
             GameOptionsHelper.SetDefaultGameOptions(tournament.Options);
 
             ViewBag.FixedOptions = new HashSet<string> { "NumberOfTeams" };
