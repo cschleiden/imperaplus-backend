@@ -27,11 +27,13 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
             return View(tournaments);
         }
 
-        public ActionResult Show(Guid id)
+        public ActionResult Show(Guid tournamentId)
         {
-            // var tournament = this.tournamentService.Get(id, false, false);
+            AddLookups();
 
-            return View();
+            var tournament = this.tournamentService.Get(tournamentId, false, false);
+
+            return View(tournament);
         }
 
         public ActionResult Create()

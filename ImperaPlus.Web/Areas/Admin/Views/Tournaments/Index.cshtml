@@ -16,26 +16,9 @@
                 </a>
             </h4>
 
-            <div class="pull-right">
-                @using (Html.BeginForm("Delete", "Tournaments", FormMethod.Post))
-                {
-                    @Html.Hidden("id", tournament.Id)
-                    ;
-                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                }
+            <div class="pull-right text-nowrap">
+                <a class="btn btn-sm btn-default" href="@Url.Action("Show", "Tournaments", new { tournamentId = tournament.Id })">Details</a>
             </div>
-
-            @* @if (tournament.State == ImperaPlus.DTO.Tournaments.TournamentState.Open)
-                {
-                <div class="pull-right">
-                    @using (Html.BeginForm("PostStart", "Tournaments", FormMethod.Post))
-                    {
-                        @Html.Hidden("id", tournament.Id);
-
-                        <button type="submit" class="btn btn-sm btn-success">Start</button>
-                    }
-                </div>
-            } *@
         </div>
 
         @using (Html.BeginForm("PostUpdate", "Tournaments", FormMethod.Post))
