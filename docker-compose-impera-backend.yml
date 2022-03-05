@@ -2,6 +2,7 @@ version: "3.2"
 services:
   backend-dev:
     container_name: impera-backend-dev
+    restart: always
     image: impera-backend:latest
     ports:
       - "5002:5000"
@@ -12,6 +13,7 @@ services:
 
   backend-production:
     container_name: impera-backend-production
+    restart: always    
     image: impera-backend:production
     ports:
       - "5004:5000"
@@ -22,6 +24,7 @@ services:
 
   mssql:
     image: mcr.microsoft.com/mssql/server
+    restart: always    
     volumes:
       - mssql-server-linux-data:/var/opt/mssql/data
 
