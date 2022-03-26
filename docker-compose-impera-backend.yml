@@ -10,6 +10,9 @@ services:
       - appsettings.dev.json
     environment:
       - ASPNETCORE_ENVIRONMENT=dev
+    # Want to run sql server separately
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   backend-production:
     container_name: impera-backend-production
@@ -21,6 +24,9 @@ services:
       - appsettings.production.json
     environment:
       - ASPNETCORE_ENVIRONMENT=production
+    # Want to run sql server separately
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   mssql:
     image: mcr.microsoft.com/mssql/server
