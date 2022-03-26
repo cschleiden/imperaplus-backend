@@ -8,7 +8,4 @@
   <ItemGroup>
     <ProjectReference Include="..\ImperaPlus.Domain\ImperaPlus.Domain.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Remove="Maps.Spanien.cs" />
-  </ItemGroup>
 </Project>
