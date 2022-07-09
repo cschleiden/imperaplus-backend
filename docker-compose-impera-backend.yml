@@ -1,4 +1,11 @@
 version: "3.2"
+
+logging:
+  driver: "json-file"
+  options:
+    max-size: "10m"
+    max-file: "5"
+
 services:
   backend-dev:
     container_name: impera-backend-dev
