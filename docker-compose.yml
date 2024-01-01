@@ -24,6 +24,11 @@ services:
     depends_on:
       - sql-server-db
 
+    logging:
+      options:
+        max-size: "100m"
+        max-file: "3"
+
     # Want to run sql server separately
     extra_hosts:
       - "host.docker.internal:host-gateway"
