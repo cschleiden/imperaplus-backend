@@ -53,6 +53,14 @@ namespace ImperaPlus.Application.Jobs
                         continue;
                     }
 
+                    // Skip admin users
+                    var userRoles = await userManager.GetRolesAsync(user);
+                    if (userRoles.Any(role => role.Contains("admin")))
+                    {
+                        Log.Log(LogLevel.Info, "Skipping admin user {0} '{1}' from cleanup", user.Id, user.UserName);
+                        continue;
+                    }
+
                     try
                     {
                         Log.Log(LogLevel.Info, "Deleting user {0} '{1}'", user.Id, user.UserName);
