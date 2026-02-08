@@ -334,6 +334,7 @@ namespace ImperaPlus.Domain.Games
         private void RecalculatePlayOrder()
         {
             var orderedTeams = Teams.OrderBy(t => t.PlayOrder).ToList();
+            var actualTeamCount = orderedTeams.Count;
             var teamIndex = 0;
             
             foreach (var currentTeam in orderedTeams)
@@ -345,7 +346,7 @@ namespace ImperaPlus.Domain.Games
                 
                 foreach (var currentPlayer in orderedPlayersInTeam)
                 {
-                    currentPlayer.PlayOrder = teamIndex + (playerIndex * Options.NumberOfTeams);
+                    currentPlayer.PlayOrder = teamIndex + (playerIndex * actualTeamCount);
                     playerIndex++;
                 }
                 
