@@ -323,35 +323,6 @@ namespace ImperaPlus.Domain.Games
                 // Remove empty team
                 Teams.Remove(team);
             }
-
-            // Recalculate PlayOrder to maintain sequential values
-            RecalculatePlayOrder();
-        }
-
-        /// <summary>
-        /// Recalculates PlayOrder for all teams and players to ensure sequential ordering
-        /// </summary>
-        private void RecalculatePlayOrder()
-        {
-            var orderedTeams = Teams.OrderBy(t => t.PlayOrder).ToList();
-            var actualTeamCount = orderedTeams.Count;
-            var teamIndex = 0;
-            
-            foreach (var currentTeam in orderedTeams)
-            {
-                currentTeam.PlayOrder = teamIndex;
-                
-                var orderedPlayersInTeam = currentTeam.Players.OrderBy(p => p.PlayOrder).ToList();
-                var playerIndex = 0;
-                
-                foreach (var currentPlayer in orderedPlayersInTeam)
-                {
-                    currentPlayer.PlayOrder = teamIndex + (playerIndex * actualTeamCount);
-                    playerIndex++;
-                }
-                
-                teamIndex++;
-            }
         }
 
         /// <summary>
