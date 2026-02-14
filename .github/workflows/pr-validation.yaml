@@ -18,7 +18,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "8.0.x"
+          dotnet-version: |
+            6.0.x
+            8.0.x
       - run: dotnet restore ImperaPlus.sln
       - run: dotnet build ImperaPlus.sln --no-restore
       - run: dotnet test ImperaPlus.sln --no-build --no-restore
