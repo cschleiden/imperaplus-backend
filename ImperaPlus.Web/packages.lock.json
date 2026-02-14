@@ -141,6 +141,15 @@
           "Microsoft.EntityFrameworkCore.Relational": "6.0.1"
         }
       },
+      "Microsoft.EntityFrameworkCore.InMemory": {
+        "type": "Direct",
+        "requested": "[6.0.1, )",
+        "resolved": "6.0.1",
+        "contentHash": "ORvH+p+Qu8Lr08gRidXy3BxGXVFEccKi+JTkEtLuKvDJbQ4KICW1YMjI47A/vWnJIB915zz2zDN8YeJfiEkVxg==",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore": "6.0.1"
+        }
+      },
       "Microsoft.EntityFrameworkCore.SqlServer": {
         "type": "Direct",
         "requested": "[6.0.1, )",
@@ -2893,68 +2902,68 @@
       "imperaplus.application": {
         "type": "Project",
         "dependencies": {
-          "AutoMapper": "9.0.0",
-          "Hangfire": "1.7.28",
-          "Hangfire.AspNetCore": "1.7.28",
-          "Hangfire.Console": "1.4.2",
-          "Hangfire.Core": "1.7.28",
-          "Hangfire.MemoryStorage": "1.7.0",
-          "Hangfire.SqlServer": "1.7.28",
-          "ImperaPlus.DTO": "1.0.0",
-          "ImperaPlus.DataAccess": "1.0.0",
-          "ImperaPlus.DataAccess.ConvertedMaps": "1.0.0",
-          "ImperaPlus.Domain": "1.0.0",
-          "ImperaPlus.Utils": "1.0.0",
-          "System.Data.SqlClient": "4.8.3"
+          "AutoMapper": "[9.0.0, )",
+          "Hangfire": "[1.7.28, )",
+          "Hangfire.AspNetCore": "[1.7.28, )",
+          "Hangfire.Console": "[1.4.2, )",
+          "Hangfire.Core": "[1.7.28, )",
+          "Hangfire.MemoryStorage": "[1.7.0, )",
+          "Hangfire.SqlServer": "[1.7.28, )",
+          "ImperaPlus.DTO": "[1.0.0, )",
+          "ImperaPlus.DataAccess": "[1.0.0, )",
+          "ImperaPlus.DataAccess.ConvertedMaps": "[1.0.0, )",
+          "ImperaPlus.Domain": "[1.0.0, )",
+          "ImperaPlus.Utils": "[1.0.0, )",
+          "System.Data.SqlClient": "[4.8.3, )"
         }
       },
       "imperaplus.dataaccess": {
         "type": "Project",
         "dependencies": {
-          "ImperaPlus.DataAccess.ConvertedMaps": "1.0.0",
-          "ImperaPlus.Domain": "1.0.0",
-          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.1",
-          "Microsoft.EntityFrameworkCore.Proxies": "6.0.1",
-          "OpenIddict": "3.1.1",
-          "OpenIddict.EntityFrameworkCore": "3.1.1",
-          "Z.EntityFramework.Plus.EFCore": "6.13.4"
+          "ImperaPlus.DataAccess.ConvertedMaps": "[1.0.0, )",
+          "ImperaPlus.Domain": "[1.0.0, )",
+          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "[6.0.1, )",
+          "Microsoft.EntityFrameworkCore.Proxies": "[6.0.1, )",
+          "OpenIddict": "[3.1.1, )",
+          "OpenIddict.EntityFrameworkCore": "[3.1.1, )",
+          "Z.EntityFramework.Plus.EFCore": "[6.13.4, )"
         }
       },
       "imperaplus.dataaccess.convertedmaps": {
         "type": "Project",
         "dependencies": {
-          "ImperaPlus.Domain": "1.0.0"
+          "ImperaPlus.Domain": "[1.0.0, )"
         }
       },
       "imperaplus.domain": {
         "type": "Project",
         "dependencies": {
-          "Autofac": "6.3.0",
-          "ImperaPlus.Utils": "1.0.0",
-          "Jil": "2.17.0",
-          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.1",
-          "Microsoft.CSharp": "4.7.0",
-          "OpenIddict": "3.1.1",
-          "OpenIddict.EntityFrameworkCore": "3.1.1",
-          "System.ComponentModel.Composition": "6.0.0",
-          "System.Data.DataSetExtensions": "4.5.0"
+          "Autofac": "[6.3.0, )",
+          "ImperaPlus.Utils": "[1.0.0, )",
+          "Jil": "[2.17.0, )",
+          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "[6.0.1, )",
+          "Microsoft.CSharp": "[4.7.0, )",
+          "OpenIddict": "[3.1.1, )",
+          "OpenIddict.EntityFrameworkCore": "[3.1.1, )",
+          "System.ComponentModel.Composition": "[6.0.0, )",
+          "System.Data.DataSetExtensions": "[4.5.0, )"
         }
       },
       "imperaplus.dto": {
         "type": "Project",
         "dependencies": {
-          "Microsoft.CSharp": "4.7.0",
-          "System.Data.DataSetExtensions": "4.5.0",
-          "System.Net.Http": "4.3.4"
+          "Microsoft.CSharp": "[4.7.0, )",
+          "System.Data.DataSetExtensions": "[4.5.0, )",
+          "System.Net.Http": "[4.3.4, )"
         }
       },
       "imperaplus.utils": {
         "type": "Project",
         "dependencies": {
-          "Microsoft.CSharp": "4.7.0",
-          "MiniProfiler.AspNetCore.Mvc": "4.2.22",
-          "NLog": "4.7.13",
-          "System.Net.Http": "4.3.4"
+          "Microsoft.CSharp": "[4.7.0, )",
+          "MiniProfiler.AspNetCore.Mvc": "[4.2.22, )",
+          "NLog": "[4.7.13, )",
+          "System.Net.Http": "[4.3.4, )"
         }
       }
     }
