@@ -269,7 +269,6 @@ namespace ImperaPlus.Domain.Tournaments
         public TournamentTeam AddUser(User user, string tournamentPassword = null)
         {
             Require.NotNull(user, nameof(user));
-            VerifyTournamentPassword(tournamentPassword);
 
             if (!IsSinglePlayerTournament)
             {
