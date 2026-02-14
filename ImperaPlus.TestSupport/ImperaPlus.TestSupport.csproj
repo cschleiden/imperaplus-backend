@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <AssemblyTitle>ImperaPlus.TestSupport</AssemblyTitle>
     <Product>ImperaPlus.TestSupport</Product>
   </PropertyGroup>
@@ -11,12 +11,12 @@
     <ProjectReference Include="..\ImperaPlus.Domain\ImperaPlus.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="6.3.0" />
-    <PackageReference Include="Hangfire" Version="1.7.28" />
-    <PackageReference Include="Hangfire.AspNetCore" Version="1.7.28" />
+    <PackageReference Include="Autofac" Version="8.1.1" />
+    <PackageReference Include="Hangfire" Version="1.8.17" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.8.17" />
     <PackageReference Include="Hangfire.Autofac" Version="2.3.1" />
-    <PackageReference Include="Hangfire.Core" Version="1.7.28" />
-    <PackageReference Include="Hangfire.SqlServer" Version="1.7.28" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+    <PackageReference Include="Hangfire.Core" Version="1.8.17" />
+    <PackageReference Include="Hangfire.SqlServer" Version="1.8.17" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
   </ItemGroup>
 </Project>

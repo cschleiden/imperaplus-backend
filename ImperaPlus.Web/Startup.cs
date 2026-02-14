@@ -224,16 +224,14 @@ public class Startup
                                 throw new InvalidOperationException("Could not get HttpRequest");
                             }
 
-                            if (string.IsNullOrEmpty(context.Token))
+                            if (string.IsNullOrEmpty(context.AccessToken))
                             {
-                                context.Token = request.Cookies["bearer_token"];
-                                context.TokenType = OpenIddictConstants.TokenTypeHints.AccessToken;
+                                context.AccessToken = request.Cookies["bearer_token"];
                             }
 
-                            if (string.IsNullOrEmpty(context.Token))
+                            if (string.IsNullOrEmpty(context.AccessToken))
                             {
-                                context.Token = request.Query["access_token"];
-                                context.TokenType = OpenIddictConstants.TokenTypeHints.AccessToken;
+                                context.AccessToken = request.Query["access_token"];
                             }
 
                             return default;
@@ -396,7 +394,7 @@ public class Startup
 
         // Configure swagger generation & UI
         app.UseOpenApi();
-        app.UseSwaggerUi3();
+        app.UseSwaggerUi();
 
         app.UseRouting();
 

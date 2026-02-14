@@ -144,7 +144,7 @@ namespace ImperaPlus.Application
                 .ForMember(x => x.Cards, c => c.Condition((player, destinationModel, source, destination, context) =>
                 {
                     // Map BonusCards only for current user
-                    var userId = context.Options.Items["userId"] as string;
+                    var userId = context.Items["userId"] as string;
                     return player != null && player.UserId == userId;
                 }))
                 .ForMember(x => x.State, c => c.MapFrom(x => (DTO.Games.PlayerState)x.State))

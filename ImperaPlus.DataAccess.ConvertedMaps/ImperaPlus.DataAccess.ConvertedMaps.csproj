@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <AssemblyTitle>ImperaPlus.DataAccess.ConvertedMaps</AssemblyTitle>
     <Product>ImperaPlus.DataAccess.ConvertedMaps</Product>
-    <LangVersion>10</LangVersion>
+    <LangVersion>12</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\ImperaPlus.Domain\ImperaPlus.Domain.csproj" />
