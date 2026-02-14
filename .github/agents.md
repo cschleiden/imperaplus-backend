@@ -87,6 +87,137 @@ dotnet ef migrations remove --project ImperaPlus.Web --context ImperaContext
 - The `ImperaContextModelSnapshot.cs` is auto-generated — do not edit it manually.
 - Migrations are applied automatically at application startup.
 
+## Updating API Contracts (NSwag Client Generation)
+
+This project uses [NSwag](https://github.com/RicoSuter/NSwag) to generate API client code from the OpenAPI/Swagger specification. Two clients are generated:
+
+- **C# client** → `ImperaPlus.GeneratedClient/ImperaClients.cs`
+- **TypeScript client** → `ImperaPlus.GeneratedClient.TypeScript/imperaClients.ts`
+
+The NSwag configuration files (`clientGenerationSettings dotnet.nswag` and `clientGenerationSettings typescript.nswag`) contain the embedded OpenAPI spec and generation settings. **Any change to controller actions, route parameters, or DTO shapes requires regenerating the clients.**
+
+### Setup
+
+```bash
+# Restore the NSwag CLI tool (first time or after clean)
+dotnet tool restore
+```
+
+### Regenerating Clients
+
+The process has three steps: generate the OpenAPI spec, then regenerate each client.
+
+#### 1. Generate the OpenAPI spec from the ASP.NET Core project
+
+```bash
+dotnet nswag aspnetcore2openapi /project:ImperaPlus.Web/ImperaPlus.Web.csproj /output:swagger.json
+```
+
+This extracts the OpenAPI specification directly from the project assembly without running the server.
+
+#### 2. Regenerate the C# client
+
+```bash
+dotnet nswag openapi2csclient \
+  /input:swagger.json \
+  /classname:"{controller}Client" \
+  /namespace:"ImperaPlus.GeneratedClient" \
+  /output:ImperaPlus.GeneratedClient/ImperaClients.cs \
+  /ClientBaseClass:ImperaHttpClient \
+  /GenerateClientClasses:true \
+  /GenerateClientInterfaces:false \
+  /GenerateDtoTypes:false \
+  /InjectHttpClient:false \
+  /DisposeHttpClient:true \
+  /GenerateExceptionClasses:true \
+  /ExceptionClass:ImperaPlusException \
+  /WrapDtoExceptions:false \
+  /UseHttpClientCreationMethod:true \
+  /HttpClientType:"System.Net.Http.HttpClient" \
+  /UseBaseUrl:true \
+  /GenerateBaseUrlProperty:true \
+  /GenerateSyncMethods:false \
+  /ExposeJsonSerializerSettings:false \
+  /ClientClassAccessModifier:public \
+  /TypeAccessModifier:public \
+  /ParameterDateTimeFormat:s \
+  /GenerateUpdateJsonSerializerSettingsMethod:true \
+  /OperationGenerationMode:MultipleClientsFromOperationId \
+  /AdditionalNamespaceUsages:"System.Collections.Generic,ImperaPlus.DTO,ImperaPlus.DTO.Account,ImperaPlus.DTO.Chat,ImperaPlus.DTO.Games,ImperaPlus.DTO.Games.Play,ImperaPlus.DTO.Games.History,ImperaPlus.DTO.Games.Chat,ImperaPlus.DTO.Games.Map,ImperaPlus.DTO.Ladder,ImperaPlus.DTO.Messages,ImperaPlus.DTO.News,ImperaPlus.DTO.Notifications,ImperaPlus.DTO.Tournaments,ImperaPlus.DTO.Users,ImperaPlus.DTO.Alliances" \
+  /GenerateOptionalParameters:false \
+  /GenerateJsonMethods:true \
+  /ParameterArrayType:"System.Collections.Generic.IEnumerable" \
+  /ParameterDictionaryType:"System.Collections.Generic.IDictionary" \
+  /ResponseArrayType:"System.Collections.ObjectModel.ObservableCollection" \
+  /ResponseDictionaryType:"System.Collections.Generic.Dictionary" \
+  /WrapResponses:false \
+  /GenerateResponseClasses:true \
+  /ResponseClass:SwaggerResponse \
+  /RequiredPropertiesMustBeDefined:true \
+  /DateType:"System.DateTime" \
+  /DateTimeType:"System.DateTime" \
+  /TimeType:"System.TimeSpan" \
+  /TimeSpanType:"System.TimeSpan" \
+  /ArrayType:List \
+  /DictionaryType:"System.Collections.Generic.Dictionary" \
+  /ArrayBaseType:"System.Collections.ObjectModel.ObservableCollection" \
+  /DictionaryBaseType:"System.Collections.Generic.Dictionary" \
+  /ClassStyle:Inpc \
+  /GenerateDefaultValues:true \
+  /GenerateDataAnnotations:true \
+  /HandleReferences:false \
+  /GenerateImmutableArrayProperties:false \
+  /GenerateImmutableDictionaryProperties:false
+```
+
+#### 3. Regenerate the TypeScript client
+
+```bash
+dotnet nswag openapi2tsclient \
+  /input:swagger.json \
+  /classname:"{controller}Client" \
+  /namespace:"" \
+  /output:ImperaPlus.GeneratedClient.TypeScript/imperaClients.ts \
+  /TypeScriptVersion:2.7 \
+  /Template:Fetch \
+  /PromiseType:Promise \
+  /DateTimeType:Date \
+  /NullValue:Undefined \
+  /GenerateClientClasses:true \
+  /GenerateClientInterfaces:false \
+  /GenerateOptionalParameters:false \
+  /WrapDtoExceptions:false \
+  /WrapResponses:false \
+  /GenerateResponseClasses:true \
+  /ResponseClass:SwaggerResponse \
+  /UseTransformOptionsMethod:false \
+  /UseTransformResultMethod:false \
+  /GenerateDtoTypes:true \
+  /OperationGenerationMode:MultipleClientsFromOperationId \
+  /MarkOptionalProperties:true \
+  /GenerateCloneMethod:false \
+  /TypeStyle:Interface \
+  /GenerateDefaultValues:true \
+  /HandleReferences:false \
+  /GenerateConstructorInterface:true \
+  /ConvertConstructorInterfaceData:false \
+  /ImportRequiredTypes:true \
+  /UseGetBaseUrlMethod:false \
+  /BaseUrlTokenName:API_BASE_URL
+```
+
+### Updating the `.nswag` Config Files
+
+The `.nswag` files contain an embedded copy of the OpenAPI spec in their `json` field. After generating a new `swagger.json`, update the embedded spec in both `clientGenerationSettings dotnet.nswag` and `clientGenerationSettings typescript.nswag` by replacing the `json` field value with the contents of the new `swagger.json`.
+
+### Important Notes
+
+- The NSwag CLI version (`nswag.consolecore` in `.config/dotnet-tools.json`) must match the `NSwag.AspNetCore` package version in `ImperaPlus.Web.csproj` (currently 13.15.5). A version mismatch causes `aspnetcore2openapi` to fail.
+- After regenerating clients, always build the solution (`dotnet build ImperaPlus.sln`) to verify there are no breaking changes.
+- If generated client method signatures change (e.g., new required parameters), update callers in `ImperaPlus.IntegrationTests` and any other projects that reference `ImperaPlus.GeneratedClient`.
+- The generated files (`ImperaClients.cs`, `imperaClients.ts`) are auto-generated — do not edit them manually.
+- Delete the `swagger.json` file after updating; it is not checked into the repository.
+
 ## Project Structure
 
 ```
