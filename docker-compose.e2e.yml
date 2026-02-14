@@ -1,0 +1,81 @@
+version: "3.8"
+
+# E2E Local Development Stack
+# Runs the complete ImperaPlus stack: SQL Server, Backend, and Frontend
+#
+# Usage:
+#   docker-compose -f docker-compose.e2e.yml up --build
+#
+# Prerequisites:
+#   - Docker and Docker Compose installed
+#   - For sibling setup: imperaplus-client repo checked out at ../imperaplus-client
+
+services:
+  sql-server:
+    container_name: impera-sql-e2e
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    volumes:
+      - impera-e2e-sqldata:/var/opt/mssql/data
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: "P@ssw0rd1"
+      ACCEPT_EULA: "Y"
+    healthcheck:
+      test: /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P "P@ssw0rd1" -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+  backend:
+    container_name: impera-backend-e2e
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=local
+      - ASPNETCORE_URLS=http://+:5000
+      - DBConnection=Server=sql-server;Database=impera_e2e;MultipleActiveResultSets=true;User Id=sa;Password=P@ssw0rd1;TrustServerCertificate=true
+    depends_on:
+      sql-server:
+        condition: service_healthy
+    networks:
+      - default
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  # Option A: Use published frontend image (DEFAULT)
+  frontend:
+    container_name: impera-frontend-e2e
+    image: impera-frontend:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - BASE_URI=http://backend:5000
+    depends_on:
+      - backend
+
+  # Option B: Build frontend from sibling directory
+  # To build from source, comment out Option A above and uncomment this:
+  # Requires imperaplus-client checked out at ../imperaplus-client
+  # frontend:
+  #   container_name: impera-frontend-e2e
+  #   build:
+  #     context: ../imperaplus-client
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - BASE_URI=http://backend:5000
+  #   depends_on:
+  #     - backend
+
+volumes:
+  impera-e2e-sqldata:
+
+networks:
+  default:
+    name: impera-e2e-network
