@@ -23,5 +23,4 @@ jobs:
             8.0.x
       - run: dotnet restore ImperaPlus.sln
       - run: dotnet build ImperaPlus.sln --no-restore
-      - run: dotnet test ImperaPlus.Domain.Tests --no-build --no-restore
-      - run: dotnet test ImperaPlus.Application.Tests --no-build --no-restore
+      - run: dotnet test ImperaPlus.sln --no-build --no-restore
