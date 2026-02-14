@@ -62,9 +62,9 @@ namespace ImperaPlus.Backend.Controllers
         /// <param name="tournamentId">Id of tournament</param>
         [HttpPost("{tournamentId:guid}")]
         [ProducesResponseType(typeof(DTO.Tournaments.TournamentTeam), 200)]
-        public IActionResult PostJoin(Guid tournamentId)
+        public IActionResult PostJoin(Guid tournamentId, string password = null)
         {
-            return Ok(tournamentService.Join(tournamentId));
+            return Ok(tournamentService.Join(tournamentId, password));
         }
 
         /// <summary>
@@ -98,9 +98,9 @@ namespace ImperaPlus.Backend.Controllers
         /// <returns>Summary of newly created team</returns>
         [HttpPost("{tournamentId:guid}/teams")]
         [ProducesResponseType(typeof(DTO.Tournaments.TournamentTeam), 200)]
-        public IActionResult PostCreateTeam(Guid tournamentId, string name, string password = null)
+        public IActionResult PostCreateTeam(Guid tournamentId, string name, string password = null, string tournamentPassword = null)
         {
-            return Ok(tournamentService.CreateTeam(tournamentId, name, password));
+            return Ok(tournamentService.CreateTeam(tournamentId, name, password, tournamentPassword));
         }
 
         /// <summary>
@@ -111,9 +111,9 @@ namespace ImperaPlus.Backend.Controllers
         /// <param name="password">Optional password for team to join</param>
         [HttpPost("{tournamentId:guid}/teams/{teamId:guid}")]
         [ProducesResponseType(typeof(DTO.Tournaments.TournamentTeam), 200)]
-        public IActionResult PostJoinTeam(Guid tournamentId, Guid teamId, string password = null)
+        public IActionResult PostJoinTeam(Guid tournamentId, Guid teamId, string password = null, string tournamentPassword = null)
         {
-            return Ok(tournamentService.JoinTeam(tournamentId, teamId, password));
+            return Ok(tournamentService.JoinTeam(tournamentId, teamId, password, tournamentPassword));
         }
 
         /// <summary>

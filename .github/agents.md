@@ -46,6 +46,47 @@ Or with Docker:
 docker-compose up
 ```
 
+## Database Migrations
+
+This project uses Entity Framework Core with SQL Server. The `dotnet-ef` CLI tool (version 6.0.1) is configured in `.config/dotnet-tools.json`. **Any change to domain entities that adds, removes, or modifies persisted properties requires a new migration.**
+
+### Setup
+
+```bash
+# Restore the EF CLI tool (first time or after clean)
+dotnet tool restore
+```
+
+### Creating a Migration
+
+When you add or change a persisted property on a domain entity (in `ImperaPlus.Domain`), generate a migration:
+
+```bash
+dotnet ef migrations add <MigrationName> --project ImperaPlus.Web --context ImperaContext
+```
+
+- `--project ImperaPlus.Web` — migrations live in `ImperaPlus.Web/Migrations/`
+- `--context ImperaContext` — the EF Core DbContext defined in `ImperaPlus.DataAccess`
+- `<MigrationName>` — use a descriptive PascalCase name (e.g., `AddTournamentPassword`, `RemoveUserID1`)
+
+This generates three file changes:
+1. `ImperaPlus.Web/Migrations/<timestamp>_<MigrationName>.cs` — the `Up()` and `Down()` migration methods
+2. `ImperaPlus.Web/Migrations/<timestamp>_<MigrationName>.Designer.cs` — model snapshot for this migration
+3. `ImperaPlus.Web/Migrations/ImperaContextModelSnapshot.cs` — updated cumulative model snapshot
+
+### Removing the Last Migration
+
+```bash
+dotnet ef migrations remove --project ImperaPlus.Web --context ImperaContext
+```
+
+### Important Notes
+
+- Always review the generated migration to verify it only contains the intended schema changes.
+- Properties marked with `[NotMapped]` or computed properties do **not** require migrations.
+- The `ImperaContextModelSnapshot.cs` is auto-generated — do not edit it manually.
+- Migrations are applied automatically at application startup.
+
 ## Project Structure
 
 ```

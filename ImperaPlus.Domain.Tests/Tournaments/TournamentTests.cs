@@ -187,6 +187,100 @@ namespace ImperaPlus.Domain.Tests.Tournaments
 
                 tournament.AddUser(TestUtils.CreateUser("User1"));
             }
+
+            [TestMethod]
+            public void SinglePlayerJoin_WithTournamentPassword_Success()
+            {
+                var tournament = CreateTournament(0);
+                tournament.Password = "TournamentSecret";
+
+                tournament.AddUser(TestUtils.CreateUser("User1"), "TournamentSecret");
+
+                Assert.AreEqual(1, tournament.Teams.Count());
+            }
+
+            [TestMethod]
+            [ExpectedDomainException(ErrorCode.TournamentIncorrectPassword)]
+            public void SinglePlayerJoin_WithTournamentPassword_WrongPassword()
+            {
+                var tournament = CreateTournament(0);
+                tournament.Password = "TournamentSecret";
+
+                tournament.AddUser(TestUtils.CreateUser("User1"), "WrongPassword");
+            }
+
+            [TestMethod]
+            [ExpectedDomainException(ErrorCode.TournamentIncorrectPassword)]
+            public void SinglePlayerJoin_WithTournamentPassword_NoPassword()
+            {
+                var tournament = CreateTournament(0);
+                tournament.Password = "TournamentSecret";
+
+                tournament.AddUser(TestUtils.CreateUser("User1"));
+            }
+
+            [TestMethod]
+            public void SinglePlayerJoin_NoTournamentPassword_NullPasswordAccepted()
+            {
+                var tournament = CreateTournament(0);
+
+                tournament.AddUser(TestUtils.CreateUser("User1"));
+
+                Assert.AreEqual(1, tournament.Teams.Count());
+            }
+
+            [TestMethod]
+            public void TeamJoin_WithTournamentPassword_Success()
+            {
+                var tournament = CreateTournament(0);
+                tournament.Options.NumberOfPlayersPerTeam = 2;
+                tournament.Password = "TournamentSecret";
+
+                var team = tournament.CreateTeam(TestUtils.CreateUser("User1"), "Team", null, "TournamentSecret");
+                tournament.AddUser(TestUtils.CreateUser("User2"), team, null, "TournamentSecret");
+
+                Assert.AreEqual(2, team.Participants.Count());
+            }
+
+            [TestMethod]
+            [ExpectedDomainException(ErrorCode.TournamentIncorrectPassword)]
+            public void CreateTeam_WithTournamentPassword_WrongPassword()
+            {
+                var tournament = CreateTournament(0);
+                tournament.Options.NumberOfPlayersPerTeam = 2;
+                tournament.Password = "TournamentSecret";
+
+                tournament.CreateTeam(TestUtils.CreateUser("User1"), "Team", null, "WrongPassword");
+            }
+
+            [TestMethod]
+            [ExpectedDomainException(ErrorCode.TournamentIncorrectPassword)]
+            public void JoinTeam_WithTournamentPassword_WrongPassword()
+            {
+                var tournament = CreateTournament(0);
+                tournament.Options.NumberOfPlayersPerTeam = 2;
+                tournament.Password = "TournamentSecret";
+
+                var team = tournament.CreateTeam(TestUtils.CreateUser("User1"), "Team", null, "TournamentSecret");
+                tournament.AddUser(TestUtils.CreateUser("User2"), team, null, "WrongPassword");
+            }
+
+            [TestMethod]
+            public void HasPassword_ReturnsTrueWhenPasswordSet()
+            {
+                var tournament = CreateTournament(0);
+                tournament.Password = "Secret";
+
+                Assert.IsTrue(tournament.HasPassword);
+            }
+
+            [TestMethod]
+            public void HasPassword_ReturnsFalseWhenNoPassword()
+            {
+                var tournament = CreateTournament(0);
+
+                Assert.IsFalse(tournament.HasPassword);
+            }
         }
 
         [TestClass]
