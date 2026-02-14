@@ -34,5 +34,10 @@
         /// Knockout phase
         /// </summary>
         public int Phase { get; set; }
+
+        /// <summary>
+        /// Optional password required to join the tournament. Only used when creating a tournament.
+        /// </summary>
+        public string Password { get; set; }
     }
 }

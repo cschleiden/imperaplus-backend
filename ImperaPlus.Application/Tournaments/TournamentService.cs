@@ -27,11 +27,11 @@ namespace ImperaPlus.Application.Tournaments
 
         IEnumerable<TournamentTeam> GetTeams(Guid tournamentId);
 
-        TournamentTeam CreateTeam(Guid tournamentId, string name, string password);
+        TournamentTeam CreateTeam(Guid tournamentId, string name, string password, string tournamentPassword = null);
 
-        TournamentTeam Join(Guid tournamentId);
+        TournamentTeam Join(Guid tournamentId, string password = null);
 
-        TournamentTeam JoinTeam(Guid tournamentId, Guid teamId, string password);
+        TournamentTeam JoinTeam(Guid tournamentId, Guid teamId, string password, string tournamentPassword = null);
 
         void DeleteTeam(Guid tournamentId, Guid teamId);
 
@@ -57,10 +57,10 @@ namespace ImperaPlus.Application.Tournaments
             this.roleManager = roleManager;
         }
 
-        public TournamentTeam CreateTeam(Guid tournamentId, string name, string password)
+        public TournamentTeam CreateTeam(Guid tournamentId, string name, string password, string tournamentPassword = null)
         {
             var tournament = GetTournament(tournamentId);
-            var team = tournament.CreateTeam(CurrentUser, name, password);
+            var team = tournament.CreateTeam(CurrentUser, name, password, tournamentPassword);
 
             UnitOfWork.Commit();
 
@@ -114,26 +114,26 @@ namespace ImperaPlus.Application.Tournaments
             return Mapper.Map<IEnumerable<TournamentTeam>>(tournament.Teams);
         }
 
-        public TournamentTeam Join(Guid tournamentId)
+        public TournamentTeam Join(Guid tournamentId, string password = null)
         {
             Require.NotEmpty(tournamentId, nameof(tournamentId));
 
             var tournament = GetTournament(tournamentId);
-            var team = tournament.AddUser(CurrentUser);
+            var team = tournament.AddUser(CurrentUser, password);
 
             UnitOfWork.Commit();
 
             return Mapper.Map<TournamentTeam>(team);
         }
 
-        public TournamentTeam JoinTeam(Guid tournamentId, Guid teamId, string password)
+        public TournamentTeam JoinTeam(Guid tournamentId, Guid teamId, string password, string tournamentPassword = null)
         {
             Require.NotEmpty(tournamentId, nameof(tournamentId));
 
             var tournament = GetTournament(tournamentId);
             var team = GetTeam(tournament, teamId);
 
-            tournament.AddUser(CurrentUser, team, password);
+            tournament.AddUser(CurrentUser, team, password, tournamentPassword);
 
             UnitOfWork.Commit();
 
@@ -207,6 +207,7 @@ namespace ImperaPlus.Application.Tournaments
 
             newTournament.MapTemplates.Clear();
             newTournament.MapTemplates.AddRange(tournament.MapTemplates);
+            newTournament.Password = tournament.Password;
 
             if (UnitOfWork.Tournaments.ExistsWithName(tournament.Name))
             {

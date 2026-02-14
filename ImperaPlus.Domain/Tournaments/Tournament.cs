@@ -169,6 +169,17 @@ namespace ImperaPlus.Domain.Tournaments
 
         public TournamentState State { get; set; }
 
+        /// <summary>
+        /// Optional password required to join the tournament
+        /// </summary>
+        public string Password { get; set; }
+
+        /// <summary>
+        /// Value indicating whether the tournament requires a password to join
+        /// </summary>
+        [NotMapped]
+        public bool HasPassword => !string.IsNullOrWhiteSpace(Password);
+
         [NotMapped] public SerializedCollection<string> MapTemplates { get; private set; }
 
         public string SerializedMapTemplates
@@ -255,9 +266,10 @@ namespace ImperaPlus.Domain.Tournaments
         /// </summary>
         /// <param name="user">User to join</param>
         /// <returns>Team the user was added to</returns>
-        public TournamentTeam AddUser(User user)
+        public TournamentTeam AddUser(User user, string tournamentPassword = null)
         {
             Require.NotNull(user, nameof(user));
+            VerifyTournamentPassword(tournamentPassword);
 
             if (!IsSinglePlayerTournament)
             {
@@ -266,7 +278,7 @@ namespace ImperaPlus.Domain.Tournaments
                     "For team tournaments, joining a team explicitly is required");
             }
 
-            return AddUser(user, null);
+            return AddUser(user, (TournamentTeam)null, null, tournamentPassword);
         }
 
         /// <summary>
@@ -276,9 +288,10 @@ namespace ImperaPlus.Domain.Tournaments
         /// <param name="team">Team to join</param>
         /// <param name="password">Optional password if team is protected</param>
         /// <returns>Team the user was added to</returns>
-        public TournamentTeam AddUser(User user, TournamentTeam team, string password = null)
+        public TournamentTeam AddUser(User user, TournamentTeam team, string password = null, string tournamentPassword = null)
         {
             Require.NotNull(user, nameof(user));
+            VerifyTournamentPassword(tournamentPassword);
 
             if (!CanChangeTeams)
             {
@@ -347,10 +360,11 @@ namespace ImperaPlus.Domain.Tournaments
         /// <param name="user">User creating team</param>
         /// <param name="name">Name of new team</param>
         /// <param name="password">Optional password to protect team membership</param>
-        public TournamentTeam CreateTeam(User user, string name, string password = null)
+        public TournamentTeam CreateTeam(User user, string name, string password = null, string tournamentPassword = null)
         {
             Require.NotNull(user, nameof(user));
             Require.NotNullOrEmpty(name, nameof(name));
+            VerifyTournamentPassword(tournamentPassword);
 
             if (!CanChangeTeams)
             {
@@ -569,6 +583,15 @@ namespace ImperaPlus.Domain.Tournaments
             var pairing = new TournamentPairing(this, Phase, order, teamA, teamB, numberOfGames);
             Pairings.Add(pairing);
             return pairing;
+        }
+
+        private void VerifyTournamentPassword(string password)
+        {
+            if (!string.IsNullOrEmpty(Password) && Password != password)
+            {
+                throw new DomainException(ErrorCode.TournamentIncorrectPassword,
+                    "Tournament password is incorrect");
+            }
         }
     }
 }

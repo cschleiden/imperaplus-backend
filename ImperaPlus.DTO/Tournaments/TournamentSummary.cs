@@ -66,5 +66,10 @@ namespace ImperaPlus.DTO.Tournaments
         /// End of tournament
         /// </summary>
         public DateTime EndOfTournament { get; set; }
+
+        /// <summary>
+        /// Value indicating whether the tournament requires a password to join
+        /// </summary>
+        public bool HasPassword { get; set; }
     }
 }
