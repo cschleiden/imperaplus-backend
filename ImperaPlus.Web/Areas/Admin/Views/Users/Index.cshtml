@@ -4,6 +4,13 @@
 
 <h2>Users</h2>
 
+<div style="margin-bottom:12px">
+    <label for="roleFilterSelect"><b>Role filter:</b></label>
+    <select id="roleFilterSelect" style="width:190px;padding:3px">
+        <option value="">Show all</option>
+    </select>
+</div>
+
 <div class="dataTable_wrapper">
     <table class="display" cellspacing="0" width="100%" id="table-users">
         <thead>
@@ -13,21 +20,72 @@
             <th>Email</th>
             <th>Activated</th>
             <th>Deleted</th>
+            <th>Roles</th>
             <th>Actions</th>
         </tr>
         </thead>
     </table>
 </div>
 
+<div id="dlgManageRoles" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:9999">
+  <div style="background:#fff;margin:80px auto;max-width:450px;border-radius:6px;padding:20px">
+    <h4 id="dlgTitle" style="margin-top:0">Manage Roles</h4>
+    <input type="hidden" id="dlgUserId" />
+    <p><b>Assigned roles:</b></p>
+    <div id="dlgAssignedRoles"></div>
+    <hr/>
+    <p><b>Assign new role:</b></p>
+    <select id="dlgAvailableRoles" style="width:180px;padding:3px"></select>
+    <button class="btn btn-success btn-sm" onclick="assignRoleToUser()">Assign</button>
+    <div style="margin-top:15px;text-align:right">
+      <button class="btn btn-default" onclick="closeDlg()">Done</button>
+    </div>
+  </div>
+</div>
+
 @section scripts {
+    var allRolesCache = [];
+    var tblUsers;
+
+    $.getJSON('@Url.Action("GetRoles", "Users")', function(rolesArr) {
+        allRolesCache = rolesArr;
+        for (var k = 0; k < rolesArr.length; k++) {
+            var opt1 = document.createElement('option');
+            opt1.value = rolesArr[k].name;
+            opt1.textContent = rolesArr[k].name;
+            document.getElementById('roleFilterSelect').appendChild(opt1);
+            var opt2 = document.createElement('option');
+            opt2.value = rolesArr[k].name;
+            opt2.textContent = rolesArr[k].name;
+            document.getElementById('dlgAvailableRoles').appendChild(opt2);
+        }
+    });
+
+    function renderRoleLabels(val) {
+        if (!val || !val.length) return '<em>none</em>';
+        var html = '';
+        for (var i = 0; i < val.length; i++) {
+            html += '<span class="label label-info" style="margin-right:2px">' + val[i] + '</span> ';
+        }
+        return html;
+    }
+
+    function renderActionButtons(cellId, type, rowData) {
+        var h = '<button class="btn btn-danger btn-xs" onclick="deleteUser(\'' + cellId + '\')">Delete</button> ';
+        h += '<button class="btn btn-warning btn-xs" onclick="confirmUser(\'' + cellId + '\')">Confirm</button> ';
+        h += '<button class="btn btn-primary btn-xs" onclick="openRoleDlg(\'' + cellId + '\',\'' + rowData.name + '\')">Roles</button>';
+        return h;
+    }
+
     $(document).ready(function() {
-    $('#table-users').DataTable({
+    tblUsers = $('#table-users').DataTable({
     'responsive': true,
     'processing': true,
     'serverSide': true,
     'ajax': {
     'url': '@Url.Action("Data", "Users")',
-    'type': 'POST'
+    'type': 'POST',
+    'data': function(params) { params.roleFilter = document.getElementById('roleFilterSelect').value; }
     },
     'columns': [
     { 'data': "id" },
@@ -35,38 +93,77 @@
     { 'data': "email" },
     { 'data': "emailConfirmed" },
     { 'data': "isDeleted" },
-    {
-    'data': "id",
-    'render': function (data, type, row, meta) {
-    return '<button onclick="deleteUser(\'' + data + '\')">Delete</button>&nbsp;<button onclick="confirmUser(\'' + data + '\')">Confirm</button>';
-    }
-    }
+    { 'data': "roles", 'render': renderRoleLabels },
+    { 'data': "id", 'render': renderActionButtons }
     ],
     'ordering': false,
     'info': false,
     'searchDelay': 1000
     });
+
+    document.getElementById('roleFilterSelect').addEventListener('change', function() {
+        tblUsers.ajax.reload();
+    });
     });
 
     function deleteUser(id) {
-    $.ajax({
-    url: '@Url.Action("Delete", "Users")' + '?userId=' + id,
-    type: 'POST',
-    contentType: 'application/json',
-    success: function(result) {
-    alert("Removed");
-    }
+    $.post('@Url.Action("Delete", "Users")' + '?userId=' + id, function() {
+        alert("Removed");
+        tblUsers.ajax.reload(null, false);
     });
     }
 
     function confirmUser(id) {
-    $.ajax({
-    url: '@Url.Action("Confirm", "Users")' + '?userId=' + id,
-    type: 'POST',
-    contentType: 'application/json',
-    success: function(result) {
-    alert("Confirmed");
-    }
+    $.post('@Url.Action("Confirm", "Users")' + '?userId=' + id, function() {
+        alert("Confirmed");
+        tblUsers.ajax.reload(null, false);
     });
+    }
+
+    function openRoleDlg(uid, uname) {
+        document.getElementById('dlgUserId').value = uid;
+        document.getElementById('dlgTitle').textContent = 'Manage Roles \u2014 ' + uname;
+        rebuildAssignedList(uid);
+        document.getElementById('dlgManageRoles').style.display = '';
+    }
+
+    function closeDlg() {
+        document.getElementById('dlgManageRoles').style.display = 'none';
+        tblUsers.ajax.reload(null, false);
+    }
+
+    function rebuildAssignedList(uid) {
+        var found = null;
+        tblUsers.rows().every(function() { var d = this.data(); if (d.id === uid) found = d; });
+        var box = document.getElementById('dlgAssignedRoles');
+        box.innerHTML = '';
+        if (found && found.roles && found.roles.length) {
+            for (var i = 0; i < found.roles.length; i++) {
+                var rn = found.roles[i];
+                var sp = document.createElement('span');
+                sp.className = 'label label-info';
+                sp.style.cssText = 'margin-right:4px;font-size:13px';
+                sp.innerHTML = rn + ' <a href="#" style="color:#fff" onclick="unassignRole(\'' + uid + '\',\'' + rn + '\');return false">&times;</a>';
+                box.appendChild(sp);
+            }
+        } else {
+            box.innerHTML = '<em>No roles</em>';
+        }
+    }
+
+    function assignRoleToUser() {
+        var uid = document.getElementById('dlgUserId').value;
+        var rn = document.getElementById('dlgAvailableRoles').value;
+        if (!rn) return;
+        $.post('@Url.Action("AddRole", "Users")', { userId: uid, roleName: rn }, function() {
+            tblUsers.ajax.reload(function() { rebuildAssignedList(uid); }, false);
+        }).fail(function() { alert('Could not assign role'); });
+    }
+
+    function unassignRole(uid, rn) {
+        if (!confirm('Remove role "' + rn + '" from this user?')) return;
+        $.post('@Url.Action("RemoveRole", "Users")', { userId: uid, roleName: rn }, function() {
+            tblUsers.ajax.reload(function() { rebuildAssignedList(uid); }, false);
+        }).fail(function() { alert('Could not remove role'); });
     }
 }
