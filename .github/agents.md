@@ -115,7 +115,7 @@ The `.nswag` files are configured to fetch the OpenAPI spec from the running ser
 dotnet run --project ImperaPlus.Web --launch-profile "IIS Express"
 ```
 
-Or update the `url` field in the `.nswag` files to match your local server address (e.g., `http://localhost:5000/api/swagger/v1/swagger.json`).
+Or update the `url` field in the `.nswag` files to match your local server address (e.g., `http://localhost:5000/swagger/v1/swagger.json`).
 
 #### 2. Regenerate the C# client
 
