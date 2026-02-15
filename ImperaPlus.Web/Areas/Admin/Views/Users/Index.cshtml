@@ -44,7 +44,6 @@
 </div>
 
 @section scripts {
-    <script>
     var allRolesCache = [];
     var tblUsers;
 
@@ -183,5 +182,4 @@
             tblUsers.ajax.reload(function() { rebuildAssignedList(uid); }, false);
         }).fail(function() { alert('Could not remove role'); });
     }
-    </script>
 }
