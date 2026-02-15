@@ -105,7 +105,7 @@ dotnet tool restore
 
 ### Regenerating Clients
 
-The workflow has three steps: generate the OpenAPI spec, regenerate clients, and post-process.
+The workflow has three steps: generate the OpenAPI spec, regenerate clients, and verify.
 
 #### 1. Generate the OpenAPI spec
 
@@ -123,16 +123,7 @@ dotnet nswag run "clientGenerationSettings dotnet.nswag"
 
 This writes to `ImperaPlus.GeneratedClient/ImperaClients.cs`.
 
-#### 3. Add parameterless constructors to the C# client
-
-NSwag v13 generates client constructors that require a `baseUrl` parameter, but `ImperaClientFactory` (in `ImperaHttpClient.cs`) creates clients via `Activator.CreateInstance()` which requires parameterless constructors. After regenerating, add a parameterless constructor to each client class:
-
-```bash
-# Add parameterless constructors (calls baseUrl constructor with "/" as default)
-sed -i 's/        public \(\w\+Client\)(string baseUrl)/        public \1() : this("\/") { }\n\n        public \1(string baseUrl)/' ImperaPlus.GeneratedClient/ImperaClients.cs
-```
-
-#### 4. Regenerate the TypeScript client
+#### 3. Regenerate the TypeScript client
 
 ```bash
 dotnet nswag run "clientGenerationSettings typescript.nswag"
@@ -144,7 +135,7 @@ dotnet nswag run "clientGenerationSettings typescript.nswag"
 cp ../ImperaPlus.Client/src/external/imperaClients.ts ImperaPlus.GeneratedClient.TypeScript/imperaClients.ts
 ```
 
-#### 5. Clean up
+#### 4. Clean up
 
 Delete `swagger.json` — it is not checked into the repository.
 
@@ -159,9 +150,9 @@ The `.nswag` files contain:
 
 - The NSwag CLI version (`nswag.consolecore` in `.config/dotnet-tools.json`) must match the `NSwag.AspNetCore` package version in `ImperaPlus.Web.csproj` (currently 13.15.5). A version mismatch causes runtime failures.
 - After regenerating clients, always build the solution (`dotnet build ImperaPlus.sln`) and run integration tests to verify there are no breaking changes.
-- The C# client **must** have parameterless constructors (see step 3 above). Without them, `ImperaClientFactory.GetClient<T>()` will throw `MissingMethodException` at runtime.
+- `ImperaClientFactory.GetClient<T>()` (in `ImperaHttpClient.cs`) passes `baseUri` directly to the generated client constructor via `Activator.CreateInstance(typeof(T), baseUri)`. No post-processing of the generated code is needed.
 - If generated client method signatures change (e.g., new required parameters), update callers in `ImperaPlus.IntegrationTests` and any other projects that reference `ImperaPlus.GeneratedClient`.
-- The generated files (`ImperaClients.cs`, `imperaClients.ts`) are auto-generated — do not edit them manually except for the parameterless constructor post-processing step.
+- The generated files (`ImperaClients.cs`, `imperaClients.ts`) are auto-generated — do not edit them manually.
 
 ## Project Structure
 

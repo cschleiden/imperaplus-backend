@@ -39,8 +39,6 @@ namespace ImperaPlus.GeneratedClient
         private string _baseUrl = "";
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
-        public AccountClient() : this("/") { }
-
         public AccountClient(string baseUrl)
         {
             BaseUrl = baseUrl;
@@ -1654,8 +1652,6 @@ namespace ImperaPlus.GeneratedClient
         private string _baseUrl = "";
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
-        public AllianceClient() : this("/") { }
-
         public AllianceClient(string baseUrl)
         {
             BaseUrl = baseUrl;
@@ -2755,8 +2751,6 @@ namespace ImperaPlus.GeneratedClient
     {
         private string _baseUrl = "";
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
-
-        public GameClient() : this("/") { }
 
         public GameClient(string baseUrl)
         {
@@ -4007,8 +4001,6 @@ namespace ImperaPlus.GeneratedClient
         private string _baseUrl = "";
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
-        public HistoryClient() : this("/") { }
-
         public HistoryClient(string baseUrl)
         {
             BaseUrl = baseUrl;
@@ -4240,8 +4232,6 @@ namespace ImperaPlus.GeneratedClient
     {
         private string _baseUrl = "";
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
-
-        public LadderClient() : this("/") { }
 
         public LadderClient(string baseUrl)
         {
@@ -4740,8 +4730,6 @@ namespace ImperaPlus.GeneratedClient
         private string _baseUrl = "";
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
-        public MapClient() : this("/") { }
-
         public MapClient(string baseUrl)
         {
             BaseUrl = baseUrl;
@@ -5048,8 +5036,6 @@ namespace ImperaPlus.GeneratedClient
     {
         private string _baseUrl = "";
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
-
-        public MessageClient() : this("/") { }
 
         public MessageClient(string baseUrl)
         {
@@ -5684,8 +5670,6 @@ namespace ImperaPlus.GeneratedClient
         private string _baseUrl = "";
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
-        public NewsClient() : this("/") { }
-
         public NewsClient(string baseUrl)
         {
             BaseUrl = baseUrl;
@@ -5912,8 +5896,6 @@ namespace ImperaPlus.GeneratedClient
         private string _baseUrl = "";
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
 
-        public NotificationClient() : this("/") { }
-
         public NotificationClient(string baseUrl)
         {
             BaseUrl = baseUrl;
@@ -6137,8 +6119,6 @@ namespace ImperaPlus.GeneratedClient
     {
         private string _baseUrl = "";
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
-
-        public PlayClient() : this("/") { }
 
         public PlayClient(string baseUrl)
         {
@@ -6880,8 +6860,6 @@ namespace ImperaPlus.GeneratedClient
     {
         private string _baseUrl = "";
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
-
-        public TournamentClient() : this("/") { }
 
         public TournamentClient(string baseUrl)
         {
@@ -7898,8 +7876,6 @@ namespace ImperaPlus.GeneratedClient
     {
         private string _baseUrl = "";
         private System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings;
-
-        public UserClient() : this("/") { }
 
         public UserClient(string baseUrl)
         {
