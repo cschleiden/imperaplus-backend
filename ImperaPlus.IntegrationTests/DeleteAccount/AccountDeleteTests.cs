@@ -125,7 +125,7 @@ namespace ImperaPlus.IntegrationTests
 
             // Join tournament
             var tournamentClient = await ApiClient.GetAuthenticatedClient<TournamentClient>(0);
-            await tournamentClient.PostJoinAsync(teamTournamentId);
+            await tournamentClient.PostJoinAsync(teamTournamentId, null);
         }
 
         private async Task JoinGame()
