@@ -111,7 +111,7 @@ namespace ImperaPlus.Backend.Controllers
         /// Cancel/delete the requested game, if possible.
         /// </summary>
         /// <remarks>
-        /// This is only posssible, if the requested game is in a state that
+        /// This is only possible, if the requested game is in a state that
         /// can be deleted
         /// </remarks>
         /// <param name="gameId">Id of the game to delete</param>

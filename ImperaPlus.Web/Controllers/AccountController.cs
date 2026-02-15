@@ -603,7 +603,7 @@ namespace ImperaPlus.Web.Controllers
 
         // POST Account/RegisterExternal
         /// <summary>
-        ///     Create user accout for an external login
+        ///     Create user account for an external login
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>

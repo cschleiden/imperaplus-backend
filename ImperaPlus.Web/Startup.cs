@@ -342,7 +342,10 @@ public class Startup
         services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
 
         // Swagger document
-        services.AddOpenApiDocument();
+        services.AddOpenApiDocument(config =>
+        {
+            config.Title = "Impera Backend API";
+        });
 
         // Allow other parts to access the http context
         services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();

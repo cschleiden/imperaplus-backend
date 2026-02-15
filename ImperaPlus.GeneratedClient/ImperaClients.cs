@@ -1456,7 +1456,7 @@ namespace ImperaPlus.GeneratedClient
         }
 
         /// <summary>
-        /// Create user accout for an external login
+        /// Create user account for an external login
         /// </summary>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task RegisterExternalAsync(RegisterExternalBindingModel model)
@@ -1466,7 +1466,7 @@ namespace ImperaPlus.GeneratedClient
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
-        /// Create user accout for an external login
+        /// Create user account for an external login
         /// </summary>
         /// <exception cref="ImperaPlusException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task RegisterExternalAsync(RegisterExternalBindingModel model, System.Threading.CancellationToken cancellationToken)
