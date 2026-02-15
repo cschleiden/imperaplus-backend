@@ -23,4 +23,5 @@ jobs:
             8.0.x
       - run: dotnet restore ImperaPlus.sln
       - run: dotnet build ImperaPlus.sln --no-restore
+      - run: dotnet publish ImperaPlus.Web/ImperaPlus.Web.csproj -c Release --no-restore
       - run: dotnet test ImperaPlus.sln --no-build --no-restore
