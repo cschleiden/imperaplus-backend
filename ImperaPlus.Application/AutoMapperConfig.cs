@@ -238,7 +238,8 @@ namespace ImperaPlus.Application
         private void CreateTournamentMapping()
         {
             CreateMap<Domain.Tournaments.Tournament, DTO.Tournaments.TournamentSummary>();
-            CreateMap<Domain.Tournaments.Tournament, DTO.Tournaments.Tournament>();
+            CreateMap<Domain.Tournaments.Tournament, DTO.Tournaments.Tournament>()
+                .ForMember(x => x.Password, x => x.Ignore());
 
             CreateMap<Domain.Tournaments.TournamentTeam, DTO.Tournaments.TournamentTeam>()
                 .ForMember(x => x.RequiresPassword, x => x.MapFrom(t => !string.IsNullOrWhiteSpace(t.Password)));

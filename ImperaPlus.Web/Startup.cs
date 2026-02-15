@@ -104,6 +104,10 @@ public class Startup
                         .MigrationsAssembly("ImperaPlus.Web")
                         .EnableRetryOnFailure());
             }
+            else
+            {
+                options.UseInMemoryDatabase("ImperaPlusTest");
+            }
 
             options.UseLazyLoadingProxies(true);
             options.UseChangeTrackingProxies(false);
@@ -436,6 +440,7 @@ public class Startup
             if (RunningUnderTest)
             {
                 dbContext.Database.EnsureDeleted();
+                dbContext.Database.EnsureCreated();
             }
             else
             {
