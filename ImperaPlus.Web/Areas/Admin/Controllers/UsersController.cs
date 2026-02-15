@@ -138,7 +138,8 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
                 })
                 .ToList();
 
-            // Map role IDs to role names in memory
+            // Map role IDs to role names in memory using dictionary for O(1) lookups
+            var rolesDict = rolesLookup.ToDictionary(r => r.Id, r => r.Name);
             var resultItems = pageItems.Select(u => new
             {
                 u.Id,
@@ -147,9 +148,8 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
                 u.EmailConfirmed,
                 u.IsDeleted,
                 Roles = u.RoleIds
-                    .Select(rid => rolesLookup.FirstOrDefault(rl => rl.Id == rid))
-                    .Where(rl => rl != null)
-                    .Select(rl => rl.Name)
+                    .Where(rid => rolesDict.ContainsKey(rid))
+                    .Select(rid => rolesDict[rid])
                     .ToList()
             }).ToList();
 
