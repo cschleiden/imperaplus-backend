@@ -101,8 +101,9 @@ namespace ImperaPlus.Backend.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public DataTablesJsonResult Data(IDataTablesRequest request, string roleFilter)
+        public DataTablesJsonResult Data(IDataTablesRequest request)
         {
+            var roleFilter = HttpContext.Request.Form["roleFilter"].FirstOrDefault() ?? string.Empty;
             var rolesLookup = unitOfWork.Roles.Query().ToList();
             var data = unitOfWork.Users.Query();
 
