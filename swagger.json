@@ -1,0 +1,4963 @@
+{
+  "x-generator": "NSwag v13.15.5.0 (NJsonSchema v10.6.6.0 (Newtonsoft.Json v13.0.0.0))",
+  "openapi": "3.0.0",
+  "info": {
+    "title": "My Title",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/Account/token": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "Account_Exchange",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "properties": {
+                  "grant_type": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "username": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "password": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "scope": {
+                    "type": "string",
+                    "nullable": true
+                  },
+                  "refresh_token": {
+                    "type": "string",
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponseModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Account/UserNameAvailable": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Checks if a username is available",
+        "operationId": "Account_GetUserNameAvailable",
+        "parameters": [
+          {
+            "name": "userName",
+            "in": "query",
+            "description": "Username to check",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "True if username is available"
+          }
+        }
+      }
+    },
+    "/Account/UserInfo": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Get user information",
+        "operationId": "Account_GetUserInfo",
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInfo"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Account/Logout": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "Account_Logout",
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/Account/ManageInfo": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "Account_GetManageInfo",
+        "parameters": [
+          {
+            "name": "returnUrl",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "generateState",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManageInfoViewModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Account/ChangePassword": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "Account_ChangePassword",
+        "requestBody": {
+          "x-name": "model",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangePasswordBindingModel"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/Account/SetPassword": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "Account_SetPassword",
+        "requestBody": {
+          "x-name": "model",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetPasswordBindingModel"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/Account/Delete": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "Account_DeleteAccount",
+        "requestBody": {
+          "x-name": "model",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteAccountBindingModel"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/Account/Language": {
+      "patch": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "Account_SetLanguage",
+        "parameters": [
+          {
+            "name": "Language",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 2,
+              "minLength": 0,
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/Account/RemoveLogin": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "Account_RemoveLogin",
+        "requestBody": {
+          "x-name": "model",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveLoginBindingModel"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/Account/ExternalLogins": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "Account_GetExternalLogins",
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ExternalLoginViewModel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/Account/Register": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "operationId": "Account_Register",
+        "requestBody": {
+          "x-name": "model",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterBindingModel"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/Account/ResendConfirmation": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Resend the email confirmation account to the given user account",
+        "operationId": "Account_ResendConfirmationCode",
+        "requestBody": {
+          "x-name": "model",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResendConfirmationModel"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/Account/ConfirmEmail": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Confirm user account using code provided in mail",
+        "operationId": "Account_ConfirmEmail",
+        "requestBody": {
+          "x-name": "model",
+          "description": "Model containing id and code",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmationModel"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Success if successfully activated"
+          }
+        }
+      }
+    },
+    "/Account/ForgotPassword": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Request password reset link",
+        "operationId": "Account_ForgotPassword",
+        "requestBody": {
+          "x-name": "model",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordViewModel"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/Account/ResetPassword": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Reset password confirmation",
+        "operationId": "Account_ResetPassword",
+        "requestBody": {
+          "x-name": "model",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordViewModel"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/Account/RegisterExternal": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Create user accout for an external login",
+        "operationId": "Account_RegisterExternal",
+        "requestBody": {
+          "x-name": "model",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterExternalBindingModel"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/alliances": {
+      "get": {
+        "tags": [
+          "Alliance"
+        ],
+        "summary": "Get a list of all alliances",
+        "operationId": "Alliance_GetAll",
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Alliance summaries",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AllianceSummary"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Alliance"
+        ],
+        "summary": "Create a new alliance",
+        "operationId": "Alliance_Create",
+        "requestBody": {
+          "x-name": "creationOptions",
+          "description": "Creation options",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AllianceCreationOptions"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Summary of new alliance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AllianceSummary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/alliances/requests": {
+      "get": {
+        "tags": [
+          "Alliance"
+        ],
+        "summary": "Lists all requests to join an alliance by the current user",
+        "operationId": "Alliance_GetAllRequests",
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "List of requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AllianceJoinRequest"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/alliances/{allianceId}": {
+      "get": {
+        "tags": [
+          "Alliance"
+        ],
+        "summary": "Get detailed information about a single alliance",
+        "operationId": "Alliance_Get",
+        "parameters": [
+          {
+            "name": "allianceId",
+            "in": "path",
+            "required": true,
+            "description": "Id of the requested alliance",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Information about the requested alliance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Alliance"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Alliance"
+        ],
+        "summary": "Delete alliance",
+        "operationId": "Alliance_Delete",
+        "parameters": [
+          {
+            "name": "allianceId",
+            "in": "path",
+            "required": true,
+            "description": "Id of alliance",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Summary of new alliance"
+          }
+        }
+      }
+    },
+    "/alliances/{allianceId}/members/{userId}": {
+      "delete": {
+        "tags": [
+          "Alliance"
+        ],
+        "summary": "Remove member from alliance",
+        "operationId": "Alliance_RemoveMember",
+        "parameters": [
+          {
+            "name": "allianceId",
+            "in": "path",
+            "required": true,
+            "description": "Id of alliance",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "Id of user to remove",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Summary of new alliance"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Alliance"
+        ],
+        "summary": "Change member's admin status",
+        "operationId": "Alliance_ChangeAdmin",
+        "parameters": [
+          {
+            "name": "allianceId",
+            "in": "path",
+            "required": true,
+            "description": "Id of alliance",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "Id of user to make admin",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "requestBody": {
+          "x-name": "isAdmin",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "boolean"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 3
+        },
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Summary of new alliance"
+          }
+        }
+      }
+    },
+    "/alliances/{allianceId}/requests": {
+      "post": {
+        "tags": [
+          "Alliance"
+        ],
+        "summary": "Request to join an alliance",
+        "operationId": "Alliance_RequestJoin",
+        "parameters": [
+          {
+            "name": "allianceId",
+            "in": "path",
+            "required": true,
+            "description": "Id of the requested alliance",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "reason",
+          "description": "Reason why user wants to join the alliance",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Id of join request if created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AllianceJoinRequest"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Alliance"
+        ],
+        "summary": "Lists requests to join an alliance",
+        "operationId": "Alliance_GetRequests",
+        "parameters": [
+          {
+            "name": "allianceId",
+            "in": "path",
+            "required": true,
+            "description": "Id of the alliance",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "List of requests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AllianceJoinRequest"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/alliances/{allianceId}/requests/{requestId}": {
+      "patch": {
+        "tags": [
+          "Alliance"
+        ],
+        "summary": "Updates a request to join an alliance. Requests can only be updated when they are in a pending state",
+        "operationId": "Alliance_UpdateRequest",
+        "parameters": [
+          {
+            "name": "allianceId",
+            "in": "path",
+            "required": true,
+            "description": "Id of the requested alliance",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "requestId",
+            "in": "path",
+            "required": true,
+            "description": "Id of the request to change",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 2
+          }
+        ],
+        "requestBody": {
+          "x-name": "state",
+          "description": "New request state",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AllianceJoinRequestState"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 3
+        },
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AllianceJoinRequest"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/games/open": {
+      "get": {
+        "tags": [
+          "Game"
+        ],
+        "summary": "Get a list of open games, excluding games by the current player",
+        "operationId": "Game_GetAll",
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "List of games",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GameSummary"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/games/my": {
+      "get": {
+        "tags": [
+          "Game"
+        ],
+        "summary": "Get a list of the games for the current player",
+        "operationId": "Game_GetMy",
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "List of games for the current user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GameSummary"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/games/myturn": {
+      "get": {
+        "tags": [
+          "Game"
+        ],
+        "summary": "Get list of games where it's the current player's team",
+        "operationId": "Game_GetMyTurn",
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "List of games where it's the current user's team",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GameSummary"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/games": {
+      "post": {
+        "tags": [
+          "Game"
+        ],
+        "summary": "Create a new game",
+        "operationId": "Game_Post",
+        "requestBody": {
+          "x-name": "creationOptions",
+          "description": "Creation options",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GameCreationOptions"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Summary of newly created game",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameSummary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/games/{gameId}": {
+      "get": {
+        "tags": [
+          "Game"
+        ],
+        "summary": "Get detailed information about a single game",
+        "operationId": "Game_Get",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "description": "Id of the requested game",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Information about the requested game",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Game"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Game"
+        ],
+        "summary": "Cancel/delete the requested game, if possible.",
+        "description": "This is only posssible, if the requested game is in a state that\ncan be deleted",
+        "operationId": "Game_Delete",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "description": "Id of the game to delete",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Status"
+          }
+        }
+      }
+    },
+    "/games/{gameId}/messages": {
+      "get": {
+        "tags": [
+          "Game"
+        ],
+        "summary": "Get messages for a single game",
+        "operationId": "Game_GetMessages",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "description": "Id of the requested game",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "isPublic",
+            "in": "query",
+            "description": "Value indicating whether to return only public messages, default is true",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Messages posted in the requested game",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GameChatMessage"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/games/{gameId}/join": {
+      "post": {
+        "tags": [
+          "Game"
+        ],
+        "summary": "Join the given game",
+        "operationId": "Game_PostJoin",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "description": "Id of game to join",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "description": "Optional password",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/games/{gameId}/leave": {
+      "post": {
+        "tags": [
+          "Game"
+        ],
+        "summary": "Leave the given game, only possible if game hasn't started yet, and current player\nis not the creator.",
+        "operationId": "Game_PostLeave",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "description": "Id of game to leave",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/games/{gameId}/surrender": {
+      "post": {
+        "tags": [
+          "Game"
+        ],
+        "summary": "Surrender in the given game, only possible if current player\nand game are still active.",
+        "operationId": "Game_PostSurrender",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "description": "Id of game to surrender in",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameSummary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/games/{gameId}/hide": {
+      "patch": {
+        "tags": [
+          "Game"
+        ],
+        "summary": "Hides the given game for the current player",
+        "operationId": "Game_PatchHide",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "description": "Id of game to hide",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/games/hide": {
+      "patch": {
+        "tags": [
+          "Game"
+        ],
+        "summary": "Hide all games which can be hidden for the current player",
+        "operationId": "Game_PatchHideAll",
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/games/{gameId}/history/{turnId}": {
+      "get": {
+        "tags": [
+          "History"
+        ],
+        "summary": "Gets the specified turn including the actions and current state of the map",
+        "operationId": "History_GetTurn",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "turnId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HistoryTurn"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ladder": {
+      "get": {
+        "tags": [
+          "Ladder"
+        ],
+        "summary": "Returns active ladders",
+        "operationId": "Ladder_GetAll",
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "List of ladders",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LadderSummary"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ladder/{ladderId}": {
+      "get": {
+        "tags": [
+          "Ladder"
+        ],
+        "summary": "Gets ladder identified by given id",
+        "operationId": "Ladder_Get",
+        "parameters": [
+          {
+            "name": "ladderId",
+            "in": "path",
+            "required": true,
+            "description": "Id of ladder",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Ladder"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ladder/{ladderId}/queue": {
+      "post": {
+        "tags": [
+          "Ladder"
+        ],
+        "summary": "Queue up for a new game in the given ladder",
+        "operationId": "Ladder_PostJoin",
+        "parameters": [
+          {
+            "name": "ladderId",
+            "in": "path",
+            "required": true,
+            "description": "Ladder id",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Ladder"
+        ],
+        "summary": "Leave the queue for a ladder",
+        "operationId": "Ladder_DeleteJoin",
+        "parameters": [
+          {
+            "name": "ladderId",
+            "in": "path",
+            "required": true,
+            "description": "Ladder Id",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/map": {
+      "get": {
+        "tags": [
+          "Map"
+        ],
+        "operationId": "Map_GetAllSummary",
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MapTemplateDescriptor"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/map/{name}": {
+      "get": {
+        "tags": [
+          "Map"
+        ],
+        "summary": "Get map template identified by name",
+        "operationId": "Map_GetMapTemplate",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MapTemplate"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/messages/folder/{messageFolder}": {
+      "get": {
+        "tags": [
+          "Message"
+        ],
+        "operationId": "Message_GetAll",
+        "parameters": [
+          {
+            "name": "messageFolder",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "default": "Inbox",
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/MessageFolder"
+                }
+              ]
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Message"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/messages/{messageId}": {
+      "get": {
+        "tags": [
+          "Message"
+        ],
+        "operationId": "Message_Get",
+        "parameters": [
+          {
+            "name": "messageId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Message"
+        ],
+        "operationId": "Message_PatchMarkRead",
+        "parameters": [
+          {
+            "name": "messageId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Message"
+        ],
+        "operationId": "Message_Delete",
+        "parameters": [
+          {
+            "name": "messageId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/messages/folders": {
+      "get": {
+        "tags": [
+          "Message"
+        ],
+        "operationId": "Message_GetFolderInformation",
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FolderInformation"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/messages": {
+      "post": {
+        "tags": [
+          "Message"
+        ],
+        "operationId": "Message_PostSend",
+        "requestBody": {
+          "x-name": "message",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendMessage"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/news": {
+      "get": {
+        "tags": [
+          "News"
+        ],
+        "summary": "Returns the last 10 news items for all languages",
+        "operationId": "News_GetAll",
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "List of news items",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/NewsItem"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notifications/summary": {
+      "get": {
+        "tags": [
+          "Notification"
+        ],
+        "summary": "Get notification summary for current user",
+        "operationId": "Notification_GetSummary",
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationSummary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/games/{gameId}/play/place": {
+      "post": {
+        "tags": [
+          "Play"
+        ],
+        "summary": "Place units to countries.",
+        "operationId": "Play_PostPlace",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "description": "Id of the game",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "placeUnitsOptions",
+          "description": "List of country/unit count pairs",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PlaceUnitsOptions"
+                }
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "GameActionResult of action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameActionResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/games/{gameId}/play/exchange": {
+      "post": {
+        "tags": [
+          "Play"
+        ],
+        "summary": "Exchange cards for the current player. Which cards to exchange is automatically chosen to gain the most bonus for the player.",
+        "operationId": "Play_PostExchange",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "description": "Id of the game",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "GameActionResult of action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameActionResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/games/{gameId}/play/attack": {
+      "post": {
+        "tags": [
+          "Play"
+        ],
+        "summary": "Attack from one to another country.",
+        "operationId": "Play_PostAttack",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "description": "Id of the game",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "options",
+          "description": "Options for the command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AttackOptions"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "GameActionResult of action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameActionResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/games/{gameId}/play/endattack": {
+      "post": {
+        "tags": [
+          "Play"
+        ],
+        "summary": "Switch to moving.",
+        "operationId": "Play_PostEndAttack",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "description": "Id of the game",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "GameActionResult of action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameActionResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/games/{gameId}/play/move": {
+      "post": {
+        "tags": [
+          "Play"
+        ],
+        "summary": "Move units between countries. Only allowed after placing. Cancels any attacks that the player had left before. Attacking is not\npossible anymore after moving.",
+        "operationId": "Play_PostMove",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "description": "Id of the game",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "options",
+          "description": "Options for the command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MoveOptions"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "GameActionResult of action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameActionResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/games/{gameId}/play/endturn": {
+      "post": {
+        "tags": [
+          "Play"
+        ],
+        "summary": "End the current turn",
+        "operationId": "Play_PostEndTurn",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "description": "Id of the game",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "GameActionResult of action",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Game"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tournaments": {
+      "get": {
+        "tags": [
+          "Tournament"
+        ],
+        "summary": "Returns tournaments",
+        "operationId": "Tournament_GetAll",
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "List of tournaments",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TournamentSummary"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tournaments/{tournamentId}": {
+      "get": {
+        "tags": [
+          "Tournament"
+        ],
+        "summary": "Get tournament identified by Id",
+        "operationId": "Tournament_GetById",
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "required": true,
+            "description": "Id of tournament",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tournament"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Tournament"
+        ],
+        "summary": "Join tournament",
+        "operationId": "Tournament_PostJoin",
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "required": true,
+            "description": "Id of tournament",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TournamentTeam"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tournaments/{tournamentId}/teams": {
+      "get": {
+        "tags": [
+          "Tournament"
+        ],
+        "summary": "Get teams for tournament",
+        "operationId": "Tournament_GetTeams",
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "required": true,
+            "description": "Id of tournament",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TournamentTeam"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Tournament"
+        ],
+        "summary": "Create new team for a tournament",
+        "operationId": "Tournament_PostCreateTeam",
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "required": true,
+            "description": "Id of tournament",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Name of team",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "description": "Optional password for team",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          },
+          {
+            "name": "tournamentPassword",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 4
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Summary of newly created team",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TournamentTeam"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tournaments/pairings/{pairingId}": {
+      "get": {
+        "tags": [
+          "Tournament"
+        ],
+        "summary": "Get teams for tournament pairing",
+        "operationId": "Tournament_GetGamesForPairing",
+        "parameters": [
+          {
+            "name": "pairingId",
+            "in": "path",
+            "required": true,
+            "description": "Id of tournament pairing",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GameSummary"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tournaments/{tournamentId}/teams/{teamId}": {
+      "post": {
+        "tags": [
+          "Tournament"
+        ],
+        "summary": "Join existing team",
+        "operationId": "Tournament_PostJoinTeam",
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "required": true,
+            "description": "Id of tournament",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "teamId",
+            "in": "path",
+            "required": true,
+            "description": "Id of team",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "password",
+            "in": "query",
+            "description": "Optional password for team to join",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          },
+          {
+            "name": "tournamentPassword",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 4
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TournamentTeam"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Tournament"
+        ],
+        "summary": "Delete a team. Only allowed if user created it",
+        "operationId": "Tournament_DeleteTeam",
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "required": true,
+            "description": "Id of tournament",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "teamId",
+            "in": "path",
+            "required": true,
+            "description": "Id of team to delete",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/tournaments/{tournamentId}/teams/me": {
+      "delete": {
+        "tags": [
+          "Tournament"
+        ],
+        "summary": "Leave a team and tournament",
+        "operationId": "Tournament_LeaveTournament",
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "required": true,
+            "description": "Id of tournament",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/users/find/{query}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Find users starting with the given query",
+        "operationId": "User_FindUsers",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "path",
+            "required": true,
+            "description": "Query to search for",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserReference"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "error": {
+            "type": "string",
+            "nullable": true
+          },
+          "error_Description": {
+            "type": "string",
+            "nullable": true
+          },
+          "parameter_Errors": {
+            "type": "object",
+            "nullable": true,
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "LoginResponseModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "nullable": true
+          },
+          "refresh_token": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "UserInfo": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "userName": {
+            "type": "string",
+            "nullable": true
+          },
+          "hasRegistered": {
+            "type": "boolean"
+          },
+          "loginProvider": {
+            "type": "string",
+            "nullable": true
+          },
+          "language": {
+            "type": "string",
+            "nullable": true
+          },
+          "roles": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "allianceId": {
+            "type": "string",
+            "format": "guid",
+            "nullable": true
+          },
+          "allianceAdmin": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ManageInfoViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "localLoginProvider": {
+            "type": "string",
+            "nullable": true
+          },
+          "userName": {
+            "type": "string",
+            "nullable": true
+          },
+          "logins": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/UserLoginInfoViewModel"
+            }
+          },
+          "externalLoginProviders": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/ExternalLoginViewModel"
+            }
+          }
+        }
+      },
+      "UserLoginInfoViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "loginProvider": {
+            "type": "string",
+            "nullable": true
+          },
+          "providerKey": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "ExternalLoginViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "authenticationScheme": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "ChangePasswordBindingModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "oldPassword",
+          "newPassword"
+        ],
+        "properties": {
+          "oldPassword": {
+            "type": "string",
+            "minLength": 1
+          },
+          "newPassword": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 6
+          },
+          "confirmPassword": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "SetPasswordBindingModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "newPassword"
+        ],
+        "properties": {
+          "newPassword": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 6
+          },
+          "confirmPassword": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "DeleteAccountBindingModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "password"
+        ],
+        "properties": {
+          "password": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "RemoveLoginBindingModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "loginProvider",
+          "providerKey"
+        ],
+        "properties": {
+          "loginProvider": {
+            "type": "string",
+            "minLength": 1
+          },
+          "providerKey": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "RegisterBindingModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "userName",
+          "password",
+          "email",
+          "language",
+          "callbackUrl"
+        ],
+        "properties": {
+          "userName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "password": {
+            "type": "string",
+            "minLength": 1
+          },
+          "confirmPassword": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "minLength": 1
+          },
+          "language": {
+            "type": "string",
+            "maxLength": 2,
+            "minLength": 0
+          },
+          "callbackUrl": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "ResendConfirmationModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "callbackUrl",
+          "userName",
+          "password",
+          "language"
+        ],
+        "properties": {
+          "callbackUrl": {
+            "type": "string",
+            "minLength": 1
+          },
+          "userName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "password": {
+            "type": "string",
+            "minLength": 1
+          },
+          "language": {
+            "type": "string",
+            "maxLength": 2,
+            "minLength": 0
+          }
+        }
+      },
+      "ConfirmationModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "userId",
+          "code"
+        ],
+        "properties": {
+          "userId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "code": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "ForgotPasswordViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "callbackUrl",
+          "userName",
+          "email",
+          "language"
+        ],
+        "properties": {
+          "callbackUrl": {
+            "type": "string",
+            "minLength": 1
+          },
+          "userName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "minLength": 1
+          },
+          "language": {
+            "type": "string",
+            "maxLength": 2,
+            "minLength": 0
+          }
+        }
+      },
+      "ResetPasswordViewModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "userId",
+          "password",
+          "code"
+        ],
+        "properties": {
+          "userId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 6
+          },
+          "confirmPassword": {
+            "type": "string",
+            "nullable": true
+          },
+          "code": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "RegisterExternalBindingModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "userName",
+          "email"
+        ],
+        "properties": {
+          "userName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "minLength": 1
+          }
+        }
+      },
+      "AllianceSummary": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "numberOfMembers": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "admins": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/UserReference"
+            }
+          }
+        }
+      },
+      "UserReference": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "AllianceJoinRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "allianceId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "lastModifiedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "requestedByUser": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/UserReference"
+              }
+            ]
+          },
+          "state": {
+            "$ref": "#/components/schemas/AllianceJoinRequestState"
+          },
+          "reason": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "AllianceJoinRequestState": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "Active",
+          "Approved",
+          "Denied"
+        ],
+        "enum": [
+          "Active",
+          "Approved",
+          "Denied"
+        ]
+      },
+      "Alliance": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/AllianceSummary"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "members": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/UserReference"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "AllianceCreationOptions": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "description"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 3
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 256,
+            "minLength": 3
+          }
+        }
+      },
+      "GameSummary": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "type": {
+            "$ref": "#/components/schemas/GameType"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "hasPassword": {
+            "type": "boolean"
+          },
+          "ladderId": {
+            "type": "string",
+            "format": "guid",
+            "nullable": true
+          },
+          "ladderName": {
+            "type": "string",
+            "nullable": true
+          },
+          "options": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/GameOptions"
+              }
+            ]
+          },
+          "createdByUserId": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdByName": {
+            "type": "string",
+            "nullable": true
+          },
+          "startedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "lastActionAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "timeoutSecondsLeft": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "mapTemplate": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "$ref": "#/components/schemas/GameState"
+          },
+          "currentPlayer": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PlayerSummary"
+              }
+            ]
+          },
+          "teams": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/TeamSummary"
+            }
+          },
+          "turnCounter": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "GameType": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "Fun",
+          "Ranking",
+          "Tournament"
+        ],
+        "enum": [
+          "Fun",
+          "Ranking",
+          "Tournament"
+        ]
+      },
+      "GameOptions": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "numberOfPlayersPerTeam",
+          "numberOfTeams",
+          "attacksPerTurn",
+          "movesPerTurn",
+          "mapDistribution",
+          "timeoutInSeconds",
+          "maximumNumberOfCards",
+          "victoryConditions",
+          "visibilityModifier"
+        ],
+        "properties": {
+          "numberOfPlayersPerTeam": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 8.0,
+            "minimum": 1.0
+          },
+          "numberOfTeams": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 16.0,
+            "minimum": 2.0
+          },
+          "minUnitsPerCountry": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 5.0,
+            "minimum": 0.0
+          },
+          "newUnitsPerTurn": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 10.0,
+            "minimum": 3.0
+          },
+          "attacksPerTurn": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 100.0,
+            "minimum": 1.0
+          },
+          "movesPerTurn": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 100.0,
+            "minimum": 1.0
+          },
+          "initialCountryUnits": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 5.0,
+            "minimum": 0.0
+          },
+          "mapDistribution": {
+            "$ref": "#/components/schemas/MapDistribution"
+          },
+          "timeoutInSeconds": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 432000.0,
+            "minimum": 180.0
+          },
+          "maximumTimeoutsPerPlayer": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maximumNumberOfCards": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 10.0,
+            "minimum": 0.0
+          },
+          "victoryConditions": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/VictoryConditionType"
+            }
+          },
+          "visibilityModifier": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "$ref": "#/components/schemas/VisibilityModifierType"
+            }
+          }
+        }
+      },
+      "MapDistribution": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "Default",
+          "Malibu",
+          "Malibu3"
+        ],
+        "enum": [
+          "Default",
+          "Malibu",
+          "Malibu3"
+        ]
+      },
+      "VictoryConditionType": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "Survival",
+          "ControlContinent",
+          "Capitals",
+          "Rush"
+        ],
+        "enum": [
+          "Survival",
+          "ControlContinent",
+          "Capitals",
+          "Rush"
+        ]
+      },
+      "VisibilityModifierType": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "None",
+          "Fog"
+        ],
+        "enum": [
+          "None",
+          "Fog"
+        ]
+      },
+      "GameState": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "None",
+          "Open",
+          "Active",
+          "Ended"
+        ],
+        "enum": [
+          "None",
+          "Open",
+          "Active",
+          "Ended"
+        ]
+      },
+      "PlayerSummary": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "state": {
+            "$ref": "#/components/schemas/PlayerState"
+          },
+          "outcome": {
+            "$ref": "#/components/schemas/PlayerOutcome"
+          },
+          "teamId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "playOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "timeouts": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "PlayerState": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "None",
+          "Active",
+          "InActive"
+        ],
+        "enum": [
+          "None",
+          "Active",
+          "InActive"
+        ]
+      },
+      "PlayerOutcome": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "None",
+          "Won",
+          "Defeated",
+          "Surrendered",
+          "Timeout"
+        ],
+        "enum": [
+          "None",
+          "Won",
+          "Defeated",
+          "Surrendered",
+          "Timeout"
+        ]
+      },
+      "TeamSummary": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "playOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "players": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/PlayerSummary"
+            }
+          }
+        }
+      },
+      "GameCreationOptions": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/GameOptions"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "name",
+              "mapTemplate"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "maxLength": 64,
+                "minLength": 3
+              },
+              "password": {
+                "type": "string",
+                "maxLength": 64,
+                "minLength": 3,
+                "nullable": true
+              },
+              "addBot": {
+                "type": "boolean"
+              },
+              "mapTemplate": {
+                "type": "string",
+                "maxLength": 64,
+                "minLength": 1
+              }
+            }
+          }
+        ]
+      },
+      "Game": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "type": {
+            "$ref": "#/components/schemas/GameType"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "hasPassword": {
+            "type": "boolean"
+          },
+          "mapTemplate": {
+            "type": "string",
+            "nullable": true
+          },
+          "teams": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Team"
+            }
+          },
+          "state": {
+            "$ref": "#/components/schemas/GameState"
+          },
+          "playState": {
+            "$ref": "#/components/schemas/PlayState"
+          },
+          "currentPlayer": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PlayerSummary"
+              }
+            ]
+          },
+          "map": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Map"
+              }
+            ]
+          },
+          "options": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/GameOptions"
+              }
+            ]
+          },
+          "lastModifiedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "timeoutSecondsLeft": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "turnCounter": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "unitsToPlace": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "attacksInCurrentTurn": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "movesInCurrentTurn": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "Team": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "playOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "players": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Player"
+            }
+          }
+        }
+      },
+      "Player": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/PlayerSummary"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "cards": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/BonusCard"
+                }
+              },
+              "placedInitialUnits": {
+                "type": "boolean"
+              },
+              "numberOfUnits": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "numberOfCountries": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          }
+        ]
+      },
+      "BonusCard": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "A",
+          "B",
+          "C"
+        ],
+        "enum": [
+          "A",
+          "B",
+          "C"
+        ]
+      },
+      "PlayState": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "None",
+          "PlaceUnits",
+          "Attack",
+          "Move",
+          "Done"
+        ],
+        "enum": [
+          "None",
+          "PlaceUnits",
+          "Attack",
+          "Move",
+          "Done"
+        ]
+      },
+      "Map": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "countries": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Country"
+            }
+          }
+        }
+      },
+      "Country": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "identifier": {
+            "type": "string",
+            "nullable": true
+          },
+          "playerId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "teamId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "units": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "flags": {
+            "$ref": "#/components/schemas/CountryFlags"
+          }
+        }
+      },
+      "CountryFlags": {
+        "type": "string",
+        "description": "",
+        "x-enumFlags": true,
+        "x-enumNames": [
+          "None",
+          "Capital"
+        ],
+        "enum": [
+          "None",
+          "Capital"
+        ]
+      },
+      "GameChatMessage": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "gameId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "user": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/UserReference"
+              }
+            ]
+          },
+          "teamId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "dateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "text": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "HistoryTurn": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "gameId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "turnId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "actions": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/HistoryEntry"
+            }
+          },
+          "game": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Game"
+              }
+            ]
+          }
+        }
+      },
+      "HistoryEntry": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "turnNo": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "dateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "actorId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "otherPlayerId": {
+            "type": "string",
+            "format": "guid",
+            "nullable": true
+          },
+          "action": {
+            "$ref": "#/components/schemas/HistoryAction"
+          },
+          "originIdentifier": {
+            "type": "string",
+            "nullable": true
+          },
+          "destinationIdentifier": {
+            "type": "string",
+            "nullable": true
+          },
+          "units": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "unitsLost": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "unitsLostOther": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "result": {
+            "type": "boolean",
+            "nullable": true
+          }
+        }
+      },
+      "HistoryAction": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "None",
+          "StartGame",
+          "EndGame",
+          "PlaceUnits",
+          "Attack",
+          "Move",
+          "ExchangeCards",
+          "PlayerLost",
+          "PlayerWon",
+          "PlayerTimeout",
+          "OwnerChange",
+          "EndTurn",
+          "PlayerSurrendered",
+          "CapitalLost"
+        ],
+        "enum": [
+          "None",
+          "StartGame",
+          "EndGame",
+          "PlaceUnits",
+          "Attack",
+          "Move",
+          "ExchangeCards",
+          "PlayerLost",
+          "PlayerWon",
+          "PlayerTimeout",
+          "OwnerChange",
+          "EndTurn",
+          "PlayerSurrendered",
+          "CapitalLost"
+        ]
+      },
+      "LadderSummary": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "mapTemplates"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "options": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/GameOptions"
+              }
+            ]
+          },
+          "standing": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/LadderStanding"
+              }
+            ]
+          },
+          "isQueued": {
+            "type": "boolean"
+          },
+          "queueCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "mapTemplates": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "LadderStanding": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userId": {
+            "type": "string",
+            "nullable": true
+          },
+          "userName": {
+            "type": "string",
+            "nullable": true
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "gamesPlayed": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "gamesWon": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "gamesLost": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rating": {
+            "type": "number",
+            "format": "double"
+          },
+          "lastGame": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Ladder": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/LadderSummary"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "standings": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/LadderStanding"
+                }
+              },
+              "isActive": {
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      },
+      "MapTemplateDescriptor": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        }
+      },
+      "MapTemplate": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "image": {
+            "type": "string",
+            "nullable": true
+          },
+          "countries": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/CountryTemplate"
+            }
+          },
+          "connections": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Connection"
+            }
+          },
+          "continents": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Continent"
+            }
+          }
+        }
+      },
+      "CountryTemplate": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "identifier": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "x": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "y": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "Connection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "origin": {
+            "type": "string",
+            "nullable": true
+          },
+          "destination": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "Continent": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "bonus": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "countries": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Message": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SendMessage"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "guid"
+              },
+              "from": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/UserReference"
+                  }
+                ]
+              },
+              "folder": {
+                "$ref": "#/components/schemas/MessageFolder"
+              },
+              "sentAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "isRead": {
+                "type": "boolean"
+              }
+            }
+          }
+        ]
+      },
+      "MessageFolder": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "None",
+          "Inbox",
+          "Sent"
+        ],
+        "enum": [
+          "None",
+          "Inbox",
+          "Sent"
+        ]
+      },
+      "SendMessage": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "to"
+        ],
+        "properties": {
+          "to": {
+            "$ref": "#/components/schemas/UserReference"
+          },
+          "subject": {
+            "type": "string",
+            "nullable": true
+          },
+          "text": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "FolderInformation": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "folder": {
+            "$ref": "#/components/schemas/MessageFolder"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "unreadCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "NewsItem": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "dateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "postedBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "content": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/NewsContent"
+            }
+          }
+        }
+      },
+      "NewsContent": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "language": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "text": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "NotificationSummary": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "numberOfGames": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "numberOfMessages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "GameActionResult": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "turnCounter": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "teams": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Team"
+            }
+          },
+          "state": {
+            "$ref": "#/components/schemas/GameState"
+          },
+          "playState": {
+            "$ref": "#/components/schemas/PlayState"
+          },
+          "countryUpdates": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/Country"
+            }
+          },
+          "actionResult": {
+            "$ref": "#/components/schemas/Result"
+          },
+          "unitsToPlace": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "attacksInCurrentTurn": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "movesInCurrentTurn": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cards": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/BonusCard"
+            }
+          },
+          "currentPlayer": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Player"
+              }
+            ]
+          }
+        }
+      },
+      "Result": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "None",
+          "Successful",
+          "NotSuccessful"
+        ],
+        "enum": [
+          "None",
+          "Successful",
+          "NotSuccessful"
+        ]
+      },
+      "PlaceUnitsOptions": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "countryIdentifier"
+        ],
+        "properties": {
+          "countryIdentifier": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1
+          },
+          "numberOfUnits": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 64000.0,
+            "minimum": 1.0
+          }
+        }
+      },
+      "AttackOptions": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "originCountryIdentifier",
+          "destinationCountryIdentifier"
+        ],
+        "properties": {
+          "originCountryIdentifier": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1
+          },
+          "destinationCountryIdentifier": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1
+          },
+          "numberOfUnits": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 64000.0,
+            "minimum": 1.0
+          }
+        }
+      },
+      "MoveOptions": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "originCountryIdentifier",
+          "destinationCountryIdentifier"
+        ],
+        "properties": {
+          "originCountryIdentifier": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1
+          },
+          "destinationCountryIdentifier": {
+            "type": "string",
+            "maxLength": 64,
+            "minLength": 1
+          },
+          "numberOfUnits": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 64000.0,
+            "minimum": 1.0
+          }
+        }
+      },
+      "TournamentSummary": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 256,
+            "minLength": 0
+          },
+          "state": {
+            "$ref": "#/components/schemas/TournamentState"
+          },
+          "options": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/GameOptions"
+              }
+            ]
+          },
+          "numberOfTeams": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "numberOfGroupGames": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "numberOfKnockoutGames": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "numberOfFinalGames": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "startOfRegistration": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "startOfTournament": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endOfTournament": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "hasPassword": {
+            "type": "boolean"
+          }
+        }
+      },
+      "TournamentState": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "Open",
+          "Groups",
+          "Knockout",
+          "Closed"
+        ],
+        "enum": [
+          "Open",
+          "Groups",
+          "Knockout",
+          "Closed"
+        ]
+      },
+      "Tournament": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/TournamentSummary"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "teams": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/TournamentTeam"
+                }
+              },
+              "groups": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/TournamentGroup"
+                }
+              },
+              "pairings": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/TournamentPairing"
+                }
+              },
+              "mapTemplates": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "type": "string"
+                }
+              },
+              "winner": {
+                "nullable": true,
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/TournamentTeam"
+                  }
+                ]
+              },
+              "phase": {
+                "type": "integer",
+                "format": "int32"
+              },
+              "password": {
+                "type": "string",
+                "nullable": true
+              }
+            }
+          }
+        ]
+      },
+      "TournamentTeam": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/TournamentTeamSummary"
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "participants": {
+                "type": "array",
+                "nullable": true,
+                "items": {
+                  "$ref": "#/components/schemas/UserReference"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "TournamentTeamSummary": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "requiresPassword": {
+            "type": "boolean"
+          },
+          "createdById": {
+            "type": "string",
+            "nullable": true
+          },
+          "groupOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "state": {
+            "$ref": "#/components/schemas/TournamentTeamState"
+          }
+        }
+      },
+      "TournamentTeamState": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "Open",
+          "Active",
+          "InActive"
+        ],
+        "enum": [
+          "Open",
+          "Active",
+          "InActive"
+        ]
+      },
+      "TournamentGroup": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "teams": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/TournamentTeamSummary"
+            }
+          }
+        }
+      },
+      "TournamentPairing": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "teamA": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TournamentTeamSummary"
+              }
+            ]
+          },
+          "teamB": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TournamentTeamSummary"
+              }
+            ]
+          },
+          "teamAWon": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "teamBWon": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "numberOfGames": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "phase": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "order": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    }
+  }
+}
