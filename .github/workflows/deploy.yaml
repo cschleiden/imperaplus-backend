@@ -28,14 +28,11 @@ jobs:
       - run: docker build -t impera-backend:latest -t impera-backend:${{ github.sha }} .
       - run: docker save impera-backend:latest -o impera-backend.tar
       - name: Copy container to server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          source: impera-backend.tar
-          target: /images
-          host: 217.160.244.154
-          username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASS }}
-          timeout: 10m
+        env:
+          SSHPASS: ${{ secrets.SSH_PASS }}
+        run: |
+          sudo apt-get update && sudo apt-get install -y sshpass
+          sshpass -e scp -o StrictHostKeyChecking=no impera-backend.tar ${{ secrets.SSH_USER }}@217.160.244.154:/images/impera-backend.tar
       - name: Import image & use for dev
         uses: appleboy/ssh-action@v1.2.0
         with:
