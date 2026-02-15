@@ -1,0 +1,16 @@
+name: "Copilot Setup Steps"
+
+on: workflow_dispatch
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            6.0.x
+            8.0.x
+      - run: dotnet restore ImperaPlus.sln
